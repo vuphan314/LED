@@ -1,0 +1,1 @@
+[['constDef', ('identifier', 'tuple'), ['rhs', ['body', ['tuple', ['numeral', ('numeral', '1')], ['numeral', ('numeral', '2')]]]]], ['constDef', ('identifier', 'expr1'), ['rhs', ['body', ['inf5', ['inf5', ['numeral', ('numeral', '1')], ['numeral', ('numeral', '2')]], ['numeral', ('numeral', '3')]]]]]]

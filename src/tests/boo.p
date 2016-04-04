@@ -1,0 +1,1 @@
+[['constDef', ('identifier', 'gameOverDisplay'), ['rhs', ['body', ['inf5', ['id', ('identifier', 'alwaysDisplay')], ['id', ('identifier', 'gameResultDisplay')]]]]], ['constDef', ('identifier', 'display'), ['rhs', ['body', ['bso', ['ifs', ['ifb', ['id', ('identifier', 'gameOverDisplay')], ['defrel', ('identifier', 'gameOver')]]], ['id', ('identifier', 'gameInPlayDisplay')]]]]]]
