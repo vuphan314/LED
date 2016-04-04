@@ -60,16 +60,15 @@ class Preprocessor:
         cur_contents = self.contents
         cur_line = 1
         while not done:
+		# delimiters changed: from /-+ * -+/, to /\$ * \$/
             # search for the start of the next program region
-            region_start_comment = re.search(r"/-+", cur_contents)
+            region_start_comment = re.search(r"/\$", cur_contents)
             if region_start_comment is None:
                 done = True
                 continue
-
             cur_line += cur_contents[:region_start_comment.start()].count('\n')
-
             # find matching end of the program region
-            region_end_comment = re.search(r"-+/", cur_contents)
+            region_end_comment = re.search(r"\$/", cur_contents)
 
             if region_end_comment.start() is None:
                 raise UnmatchedRegionComment(cur_line)
