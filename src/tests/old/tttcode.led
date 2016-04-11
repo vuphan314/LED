@@ -17,7 +17,7 @@
    all c in cells. occupied(c)
 gameOver iff
     boardFull or threeInRow(x) or threeInRow(o)
- If ~gameOver then
+ if ~gameOver then
    currentPlayer:=
      x if even(|Gamma|);
      o otherwise
@@ -57,7 +57,7 @@ xImage(c) :=
    A4 = ((500,475),(500,425)) &
    txt = ((450, 450), 15,restart)
 
- If gameOver then
+ if gameOver then
  gameResultDisplay := 
     {((100,450),15,xwon)} if threeInRow(x);
     {((100,450),15,owon)} if threeInRow(o);

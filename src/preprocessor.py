@@ -230,8 +230,8 @@ class InvalidProgramElement(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return "The program file contains an invalid program element " \
-               + self.contents + " in the" \
+        return "\n\nThe program file contains an invalid program element: \n\n" \
+               + self.contents + "\n\nin the" \
                                  " region starting from line " \
                                  "number " + str(self.line_number) + "."
 

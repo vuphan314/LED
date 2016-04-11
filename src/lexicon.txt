@@ -15,7 +15,7 @@ mult = \*
 div = /
 U = U
 mod = mod
-nrsec = nrsec
+sec = sec
 backslash = \\
 lambda = lambda
 dot = \.
@@ -26,7 +26,7 @@ greater = >
 lessoreq = <=
 greateroreq = >=
 in = in
-subeq = subeq
+sub = sub
 colon = :
 some = some
 all = all
@@ -35,7 +35,6 @@ and = &
 or = or
 implies = =>
 equivalence = <=>
-If = If
 then = then
 def = :=
 semicolon = ;

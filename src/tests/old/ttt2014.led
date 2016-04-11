@@ -105,7 +105,7 @@ If the game is not over, the *player to move* is 'x' if an even number of moves 
 and 'o' otherwise.
 
 /$
- If ~gameOver then
+ if ~gameOver then
    currentPlayer:=
      'x' if even(|Gamma|);
      'o' otherwise
@@ -198,7 +198,7 @@ If the game is over, *gameResultDisplay* is a display in the upper left region o
 
 /$
 
-If gameOver then
+if gameOver then
  gameResultDisplay := 
     {((100,450),15,'x won')} if threeInRow('x');
     {((100,450),15,'o won')} if threeInRow('o');
@@ -275,12 +275,3 @@ newState :=
   init               if restartClicked;
   Gamma U movesMade  otherwise
 $/
-
-
-
-
-
-
-
-
-
