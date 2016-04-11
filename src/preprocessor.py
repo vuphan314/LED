@@ -45,9 +45,9 @@ class Preprocessor:
 
         #initialize lexer and parser
         lexicon_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "genparser", "src", "astgen", "tests", "led", "lexicon")
+                                    "lexicon.txt")
         grammar_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "genparser", "src", "astgen", "tests", "led", "grammar_1")
+                                    "grammar.txt")
         self.lexer = Lexer(lexicon_file, False)
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
 

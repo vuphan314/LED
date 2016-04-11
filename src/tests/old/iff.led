@@ -1,5 +1,5 @@
- /--
+ /$
 
 
  occupied(c)   iff occupies(x,c)
--/
+$/
