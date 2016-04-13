@@ -1,2 +1,3 @@
 # LEDtoSLtranslator
-Translator: from LED (Language of Effective Definitions) to SequenceL
+- translating from LED (Language of Effective Definitions) to SequenceL
+- under construction
