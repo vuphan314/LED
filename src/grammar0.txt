@@ -1,15 +1,15 @@
-program(program E) ::= programElement(E)
-program(program E cut_root(P)) ::= programElement(E) program(P)
+program(program E) ::= prog_el(E)
+program(program E cut_root(P)) ::= prog_el(E) program(P)
 
 Stmt(S6) ::= S6
 
 term(T5) ::= T5
 
-programElement(V) ::= varDecl(V)
-programElement(C) ::= constDef(C)
-programElement(F) ::= funcDef(F)
-programElement(R) ::= relDef(R)
-programElement(T) ::= typeDef(T)
+prog_el(V) ::= varDecl(V)
+prog_el(C) ::= constDef(C)
+prog_el(F) ::= funcDef(F)
+prog_el(R) ::= relDef(R)
+prog_el(T) ::= typeDef(T)
 
 typeDef(typedef I B) ::= identifier(I) ddef typeDefBody(B)
 
