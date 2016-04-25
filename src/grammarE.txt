@@ -1,17 +1,17 @@
-program(program E) ::= prog_el(E)
-program(program E cut_root(P)) ::= prog_el(E) program(P)
+program(program E) ::= programElement(E)
+program(program E cut_root(P)) ::= programElement(E) program(P)
 
 Stmt(S6) ::= S6
 
 term(T5) ::= T5
 
-prog_el(V) ::= varDecl(V)
-prog_el(C) ::= constDef(C)
-prog_el(F) ::= funcDef(F)
-prog_el(R) ::= relDef(R)
-prog_el(T) ::= typeDef(T)
+programElement(V) ::= varDecl(V)
+programElement(C) ::= constDef(C)
+programElement(F) ::= funcDef(F)
+programElement(R) ::= relDef(R)
+programElement(T) ::= typeDef(T)
 
-typeDef(typedef I B) ::= identifier(I) ddef typeDefBody(B)
+typeDef(typedef I B) ::= id(I) ddef typeDefBody(B)
 
 typeDefBody(body T) ::= indefiniteTerm(T)
 typeDefBody(body T cut_root(B)) ::= indefiniteTerm(T) pipe typeDefBody(B)
@@ -23,7 +23,7 @@ indefiniteTerm(wherestmt VL S) ::= lparen varList(VL) rparen where Stmt(S)
 typeProduct(typeProd T1 T2) ::= type(T1) mult type(T2)
 typeProduct(typeProd T1 cut_root(Tp)) ::= type(T1) mult typeProduct(Tp)
 
-type(id_type ID) ::= identifier(ID)
+type(id_type ID) ::= id(ID)
 type(prod_type Prod) ::= typeProduct(Prod)
 type(set T) ::= Set lparen type(T) rparen
 type(list T) ::= List lparen type(T) rparen
@@ -33,23 +33,23 @@ type(part_func T1 T2) ::= type(T1) partmap type(T2)
 decls(decls V T) ::= varList(V) colon type(T)
 decls(decls V T cut_root(D)) ::= varList(V) colon type(T) comma decls(D)
 
-varDecl(vardecl V T) ::= var identifier(V) type(T)
+varDecl(vardecl V T) ::= var id(V) type(T)
 varDecl(vardecls D) ::= vars decls(D)
 
 params(params cut_root(VL)) ::= lparen varList(VL) rparen
 
-varList(varList V) ::= identifier(V)
-varList(varList V cut_root(VL)) ::= identifier(V) comma varList(VL)
+varList(varList V) ::= id(V)
+varList(varList V cut_root(VL)) ::= id(V) comma varList(VL)
 
-relDef(grelDef G S Ps St) ::= guard(G) identifier(S) params(Ps) iff Stmt(St)
-relDef(relDef S Ps St) ::= identifier(S) params(Ps) iff Stmt(St)
-relDef(grelDefnoparams G S St) ::= guard(G) identifier(S) iff Stmt(St)
-relDef(relDefnoparams S St) ::= identifier(S) iff Stmt(St)
+relDef(grelDef G S Ps St) ::= guard(G) id(S) params(Ps) iff Stmt(St)
+relDef(relDef S Ps St) ::= id(S) params(Ps) iff Stmt(St)
+relDef(grelDefnoparams G S St) ::= guard(G) id(S) iff Stmt(St)
+relDef(relDefnoparams S St) ::= id(S) iff Stmt(St)
 
-funcDef(gfuncDefw G S Ps B W) ::= guard(G) identifier(S) params(Ps) def funDefBod(B) whereClause(W)
-funcDef(gfuncDef G S Ps B) ::= guard(G) identifier(S) params(Ps) def funDefBod(B) 
-funcDef(funcDefw S Ps B W) ::= identifier(S) params(Ps) def funDefBod(B) whereClause(W)
-funcDef(funcDef S Ps B) ::= identifier(S) params(Ps) def funDefBod(B)
+funcDef(gfuncDefw G S Ps B W) ::= guard(G) id(S) params(Ps) def funDefBod(B) whereClause(W)
+funcDef(gfuncDef G S Ps B) ::= guard(G) id(S) params(Ps) def funDefBod(B) 
+funcDef(funcDefw S Ps B W) ::= id(S) params(Ps) def funDefBod(B) whereClause(W)
+funcDef(funcDef S Ps B) ::= id(S) params(Ps) def funDefBod(B)
 
 funRHS(rhs F) ::= funDefBod(F)
 funRHS(rhs F W ) ::= funDefBod(F) whereClause(W)
@@ -67,13 +67,13 @@ ifBranches(ifs IF cut_root(IFS)) ::= ifBranch(IF) semicolon ifBranches(IFS)
 
 ifBranch(ifb T S) ::= term(T) if Stmt(S)
 
-constDef(constDef C B) ::= identifier(C) def funRHS(B)
-constDef(constDef G C B) ::= guard(G) identifier(C) def funRHS(B)
+constDef(constDef C B) ::= id(C) def funRHS(B)
+constDef(constDef G C B) ::= guard(G) id(C) def funRHS(B)
 
 guard(guard S) ::= if Stmt(S) then
 
-variables(vars V) ::= identifier(V)
-variables(vars V Vs) ::= identifier(V) variables(Vs)
+variables(vars V) ::= id(V)
+variables(vars V Vs) ::= id(V) variables(Vs)
 
 S6(S5) ::= S5
 S6(eqStmt S5 S6) ::= S5 equivalence S6
@@ -91,12 +91,12 @@ S2(S1) ::= S1
 S2(notStmt S2) ::= not S2
 
 S1(S0) ::= S0
-S1(someStmt V T S1) ::= some identifier(V) in term(T) dot S1
-S1(allStmt V T S1) ::= all identifier(V) in term(T) dot S1
+S1(someStmt V T S1) ::= some id(V) in term(T) dot S1
+S1(allStmt V T S1) ::= all id(V) in term(T) dot S1
 
-S0(defrel S Ts) ::= identifier(S) lparen terms(Ts) rparen
+S0(defrel S Ts) ::= id(S) lparen terms(Ts) rparen
 S0(rel P T1 T2) ::= term(T1) infpred(P) term(T2)
-S0(defrel S) ::= identifier(S) 
+S0(defrel S) ::= id(S) 
 S0(type T Tp) ::= term(T) colon type(Tp)
 S0(stmt S) ::= lparen Stmt(S) rparen 
 S0(infpred S) ::= infpredString(S) 
@@ -117,7 +117,7 @@ terms(terms T cut_root(Ts)) ::= term(T) comma terms(Ts)
 
 term(T5) ::= T5
 term(lambdaterm Vs T) ::= lambda variables(Vs) dot term(T)
-term(vtype T V) ::= type(T) identifier(V)
+term(vtype T V) ::= type(T) id(V)
 
 T5(T4) ::= T4
 T5(inf5 T5 T4) ::= T5 infix5 T4
@@ -141,7 +141,7 @@ T3(unop P T3) ::= Prefix(P) T3
 Prefix(minus) ::= minus
 Prefix(plus) ::= plus
 Prefix(bigop B S) ::= Bigop(B) lsqparen Stmt(S) rsqparen
-Prefix(funct I) ::= identifier(I)
+Prefix(funct I) ::= id(I)
 Prefix(floor) ::= floor
 Prefix(ceil) ::= ceil
 
@@ -156,7 +156,7 @@ T2(power T1 T2) ::= T1 hat T2
 T1(T0) ::= T0
 T1(idx T1 T) ::= T1 lsqparen term(T) rsqparen
 
-T0(id I) ::= identifier(I)
+T0(id I) ::= id(I)
 T0(numeral N) ::= numeral(N)
 T0(empty_sequence) ::= less greater
 T0(sequence Ts) ::= less terms(Ts) greater

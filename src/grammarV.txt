@@ -1,0 +1,84 @@
+program(prog PE) ::= prog_el(PE)
+program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
+
+
+term(T) ::= lPar term(T) rPar
+term(V) ::= variable(V)
+term(N) ::= num(N)
+term(T) ::= tuple(T)
+term(S) ::= set(S)
+term(II) ::= int_nrval(II)
+term(LE) ::= lam_ex(LE)
+term(BT) ::= bool_term(BT)
+term(AT) ::= ar_term(AT)
+
+term_list(termList T) ::= term(T)
+term_list(termList T cut_root(TL)) ::= term(T) comma term_list(TL)
+
+truth_val(truthVal T) ::= true(T)
+truth_val(truthVal F) ::= false(F)
+
+tuple(tup T TL) ::= lPar term(T) comma term_list(TL) rPar
+
+set(st) ::= lBrace rBrace
+set(st TL) ::= lBrace term_list(TL) rBrace
+
+int_nrval(intNrval N1 N2) ::= lBrace num(N1) twoDot num(N2) rBrace
+
+lam_ex(lamEx VL T) ::= lam var_list(VL) dot term(T)
+
+bool_term(TV) ::= truth_val(TV)
+bool_term(BR) ::= bin_rel(BR)
+
+bin_rel(eq AT1 AT2) ::= ar_term(AT1) equal ar_term(AT2)
+bin_rel(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
+bin_rel(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
+bin_rel(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
+bin_rel(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
+
+ar_term(BS) ::= bin_sum(BS)
+
+bin_sum(BP) ::= bin_prod(BP)
+bin_sum(add BS BP) ::= bin_sum(BS) plus bin_prod(BP)
+bin_sum(subtr BS BP) ::= bin_sum(BS) minus bin_prod(BP)
+
+bin_prod(ST) ::= sign_term(ST)
+bin_prod(mult BP ST) ::= bin_prod(BP) multiplied sign_term(ST)
+bin_prod(div BP ST) ::= bin_prod(BP) divided sign_term(ST)
+bin_prod(md BP ST) ::= bin_prod(BP) mod sign_term(ST)
+
+sign_term(E) ::= expo(E)
+sign_term(E) ::= plus expo(E)
+sign_term(neg E) ::= minus expo(E)
+
+expo(AAT) ::= at_ar_term(AAT)
+expo(exp AAT E) ::= at_ar_term(AAT) caret expo(E)
+
+at_ar_term(AT) ::= lPar ar_term(AT) rPar
+at_ar_term(V) ::= variable(V)
+at_ar_term(N) ::= num(N)
+at_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
+at_ar_term(cl AT) ::= ceil lPar ar_term(AT) rPar
+at_ar_term(abs AT) ::= bar ar_term(AT) bar
+
+variable(var I) ::= id(I)
+
+var_list(varList V) ::= variable(V)
+var_list(varList V cut_root(VL)) ::= variable(V) comma var_list(VL)
+
+var_list_in_term(varListInTerm VL T) ::= var_list(VL) in term(T)
+
+var_list_in_term_list(varListInTermList VLIT) ::= var_list_in_term(VLIT)
+var_list_in_term_list(varListInTermList VLIT cut_root(VLITL)) ::= var_list_in_term(VLIT) comma var_list_in_term_list(VLITL)
+
+var_decl(varDecl V T) ::= var variable(V) in term(T) diamond
+var_decl(varDecl VLITL) ::= vars var_list_in_term_list(VLITL) diamond
+
+function(fun I) ::= id(I)
+
+def_head(defHead F) ::= function(F)
+def_head(defHead F VL) ::= function(F) lPar var_list(VL) rPar
+
+fun_def(funDef DH T) ::= def def_head(DH) equal term(T) diamond
+
+prog_el(FD) ::= fun_def(FD)

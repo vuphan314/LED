@@ -45,9 +45,9 @@ class Preprocessor:
 
         #initialize lexer and parser
         lexicon_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "lexicon.txt")
+                                    "lexiconV.txt")
         grammar_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "grammar.txt")
+                                    "grammarV.txt")
         self.lexer = Lexer(lexicon_file, False)
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
 
@@ -231,7 +231,7 @@ class InvalidProgramElement(Exception):
 
     def __repr__(self):
         return "\n\nThe program file contains an invalid program element: \n\n" \
-               + self.contents + "\n\nin the" \
+               + self.contents + "\nin the" \
                                  " region starting from line " \
                                  "number " + str(self.line_number) + "."
 
