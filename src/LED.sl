@@ -18,20 +18,47 @@ Val ::= (	type: char(1),
 //// constants
 
 numb0 := [0, 1];
+numb10 := [10, 1];
 
 //// numeral
 
+intNum: char(1) -> int(1);
+intNum(iN(1)) := [Conversion::stringToInt(iN), 1];
+
 repBl: char(1) -> int(1);
-repBl(bl(1)) :=
-	let 
-		ind1 := Sequence::firstIndexOf(bl, '(') + 1;
-		ind2 := Sequence::firstIndexOf(bl, '.') - 1;
-		trim := bl[ind1...ind2];
-		patt := Conversion::stringToInt(trim);
-		len := size(trim);
-		div := subtr(exp([10, 1], [len, 1]), [1, 1]);
-	in  red([patt, div[1]]) when size(bl) > 0 else
-		numb0;
+repBl(rB(1)) :=
+	let iN := rB[2 ... size(rB) - 3];
+		numb := intNum(iN);
+		len := [size(iN), 1];
+		div := subtr(exp(numb10, len), [1, 1]);
+	in	numb0 when size(rB) = 0 else	
+		quot(numb, div);
+		
+decFracNoRep: char(1) -> int(1);
+decFracNoRep(dFNR(1)) :=
+	let iN := Sequence::drop(dFNR, 1);
+		len := [size(iN), 1];
+		shift := exp(numb10, uMinus(len));
+		numbIN := prod(shift, intNum(iN));
+	in numbIN;
+	
+decFracRep: char(1) -> int(1);
+decFracRep(dFR(1)) :=
+	let lPar := Sequence::firstIndexOf(dFR, '(');
+		dFNR := Sequence::take(dFR, lPar - 1);
+		rB := Sequence::drop(dFR, lPar - 1);
+		numbDFNR := decFracNoRep(dFNR);
+		len := [size(dFNR) - 1, 1];
+		shift := exp(numb10, uMinus(len));
+		numbRB := prod(shift, repBl(rB));
+	in 	numb0 when size(dFR) = 0 else
+		add(numbDFNR, numbRB);
+		
+decFrac: char(1) -> int(1);
+decFrac(dF(1)) :=
+	let lPar := Sequence::firstIndexOf(dF, '(');
+	in 	decFracNoRep(dF) when lPar = 0 else
+		decFracRep(dF);
 
 //// arithmetic
 
@@ -63,7 +90,7 @@ nrvalList: int * int -> Val(1);
 nrvalList(int1, int2)[i] :=
 	let n := [i, 1];
 	in (type: "Numb", numb: n)
-	foreach i within int1...int2;
+	foreach i within int1 ... int2;
 
 /// LED
 	
