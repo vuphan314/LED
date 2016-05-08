@@ -45,9 +45,9 @@ class Preprocessor:
 
         #initialize lexer and parser
         lexicon_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "lexiconV.txt")
+                                    "LedLexicon.txt")
         grammar_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "grammarV.txt")
+                                    "LedGrammar.txt")
         self.lexer = Lexer(lexicon_file, False)
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
 
@@ -75,7 +75,8 @@ class Preprocessor:
 
             # get the elements from the found region
 
-            region = cur_contents[region_start_comment.end() + 1:region_end_comment.start()]
+            region = cur_contents[  region_start_comment.end() + 1 : \
+                                    region_end_comment.start()]
             elements.extend(self.get_elements_from_region(region, cur_line))
 
             # update line numbers
@@ -162,7 +163,7 @@ class Preprocessor:
                     raise InvalidProgramElement(region, line_number)
                 else:
                     break
-            next_i = self.find_first_special_lexeme_idx(lexing_sequence[i + 1:])
+            next_i = self.find_first_special_lexeme_idx(lexing_sequence[i + 1 :])
             if next_i is None:
                 ast = self.parser.get_ast(lexing_sequence, False)
                 if ast is None:
@@ -170,14 +171,17 @@ class Preprocessor:
                 elements.append(ast.children[0])
                 break
             else:
-                elem_last_idx = Preprocessor.find_element_start_idx(lexing_sequence, next_i + i + 1) - 1
+                elem_last_idx = \
+                    Preprocessor.find_element_start_idx( \
+                        lexing_sequence, next_i + i + 1) - 1
                 if elem_last_idx < 0:
-                    raise InvalidProgramElement(Preprocessor.get_text_from_lexemes(lexing_sequence),  line_number)
-                ast = self.parser.get_ast(lexing_sequence[:elem_last_idx + 1], False)
+                    raise InvalidProgramElement(Preprocessor.get_text_from_lexemes( \
+                        lexing_sequence),  line_number)
+                ast = self.parser.get_ast(lexing_sequence[: elem_last_idx + 1], False)
                 if ast is None:
-                    raise InvalidProgramElement(region,  line_number)
+                    raise InvalidProgramElement(region, line_number)
                 elements.append(ast.children[0])
-                lexing_sequence = lexing_sequence[elem_last_idx + 1:]
+                lexing_sequence = lexing_sequence[elem_last_idx + 1 :]
 
         return elements
 
