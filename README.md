@@ -30,4 +30,4 @@
 [LED]: https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
 [SL]: http://www.texasmulticoretechnologies.com/content/SequenceL_Language_Reference_m.pdf
 [sli]: http://www.texasmulticoretechnologies.com/content/SequenceL_Interpreter_Reference.pdf
-[lediZip]: https://github.com/vuphan314/LEDtoSLtranslator/blob/master/ledi.zip
+[lediZip]: https://github.com/vuphan314/LEDtoSLtranslator/blob/master/ledi.zip?raw=true
