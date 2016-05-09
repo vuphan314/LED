@@ -2,13 +2,12 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%testLed
+    set fil=%fold%test
 	for %%i in (%fil%.led) do (
 		set o=%fold%%%~ni.sl
-        REM main %%i
-		REM translator %%i 
+		REM translator %%i
         translator %%i > !o!
-        type !o!
+        REM !o!
         sli -l !o!
 	)
 	goto done
