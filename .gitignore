@@ -1,7 +1,7 @@
 # Vu's tmp dir
-tmp/
+#tmp/
 
-#######################################################
+###########################################################################
 
 *.aux
 *.glo
@@ -66,4 +66,3 @@ com_crashlytics_export_strings.xml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-

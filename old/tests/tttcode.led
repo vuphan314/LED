@@ -92,11 +92,3 @@ newState :=
   init               if restartClicked;
   Gamma U movesMade  otherwise
 $/
-
-
-
-
-
-
-
-
