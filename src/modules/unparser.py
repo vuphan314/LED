@@ -26,7 +26,7 @@ def convert(T):
         return recurStr(T[0], T[1:], convert)
         
 def unparseArOps(T):    
-    ret = prependLib(arOps[T[0]])
+    ret = prependLib(T[0])
     ret += '(' + convert(T[1])
     if len(T) == 3:
         ret += ', ' + convert(T[2])
@@ -44,7 +44,7 @@ def recurStr(head, tail, func):
     
 ########## ########## ########## ########## ########## ########## ########## ##########
 
-arOps = {'exp': 'exp'}
+arOps = {'add', 'biMinus', 'uMinus', 'mult', 'div', 'flr', 'clng', 'abs', 'md', 'exp'}
 
 libName = 'lib'
 

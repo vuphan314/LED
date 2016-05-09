@@ -1,7 +1,6 @@
 program(prog PE) ::= prog_el(PE)
 program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
 
-
 term(T) ::= lPar term(T) rPar
 term(V) ::= variable(V)
 term(N) ::= num(N)
@@ -40,7 +39,7 @@ ar_term(BS) ::= bin_sum(BS)
 
 bin_sum(BP) ::= bin_prod(BP)
 bin_sum(add BS BP) ::= bin_sum(BS) plus bin_prod(BP)
-bin_sum(subtr BS BP) ::= bin_sum(BS) minus bin_prod(BP)
+bin_sum(biMinus BS BP) ::= bin_sum(BS) minus bin_prod(BP)
 
 bin_prod(ST) ::= sign_term(ST)
 bin_prod(mult BP ST) ::= bin_prod(BP) multiplied sign_term(ST)
@@ -49,7 +48,7 @@ bin_prod(md BP ST) ::= bin_prod(BP) mod sign_term(ST)
 
 sign_term(E) ::= expo(E)
 sign_term(E) ::= plus expo(E)
-sign_term(neg E) ::= minus expo(E)
+sign_term(uMinus E) ::= minus expo(E)
 
 expo(AAT) ::= at_ar_term(AAT)
 expo(exp AAT E) ::= at_ar_term(AAT) caret expo(E)
@@ -58,7 +57,6 @@ at_ar_term(AT) ::= lPar ar_term(AT) rPar
 at_ar_term(V) ::= variable(V)
 at_ar_term(N) ::= num(N)
 at_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
-at_ar_term(cl AT) ::= ceil lPar ar_term(AT) rPar
 at_ar_term(abs AT) ::= bar ar_term(AT) bar
 
 variable(var I) ::= id(I)
