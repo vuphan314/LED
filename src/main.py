@@ -31,14 +31,25 @@ from optparse import OptionParser
 
 from preprocessor import *
 
+########## ########## ########## ########## ########## ########## ########## ##########
+    
+def parse_file(program_file):
+    # create preprocessor instance
+    preprocessor_instance = Preprocessor(program_file)
+
+    # get the list of program elements
+    parsed = preprocessor_instance.get_elements()
+    
+    return parsed
+    
+########## ########## ########## ########## ########## ########## ########## ##########
 
 def parse_arguments():
     """
     Returns the arguments passed to the program. The arguments are parsed from sys.argv.
     """
     parser = OptionParser()
-    return parser.parse_args()[1]
-
+    return parser.parse_args()[1]  
 
 def main():
     """
@@ -50,16 +61,9 @@ def main():
 
     # read arguments
     args = parse_arguments()
-
     program_file = args[0]
-
     
-    # create preprocessor instance
-    preprocessor_instance = Preprocessor(program_file)
-
-    # print the list of program elements
-    print(preprocessor_instance.get_elements())
-
+    print(parse_file(program_file))
 
 if __name__ == '__main__':
-    main()
+    main()    

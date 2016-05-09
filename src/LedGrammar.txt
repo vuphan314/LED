@@ -74,7 +74,7 @@ var_list_in_term_list(varListInTermList VLIT cut_root(VLITL)) ::= var_list_in_te
 var_decl(varDecl V T) ::= var variable(V) in term(T) diamond
 var_decl(varDecl VLITL) ::= vars var_list_in_term_list(VLITL) diamond
 
-function(fun I) ::= id(I)
+function(funName I) ::= id(I)
 
 def_head(defHead F) ::= function(F)
 def_head(defHead F VL) ::= function(F) lPar var_list(VL) rPar

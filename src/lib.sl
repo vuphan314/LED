@@ -3,7 +3,11 @@
 import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
 import <Utilities/Sequence.sl>;
-import <Utilities/Set.sl>;
+// import <Utilities/Set.sl>;
+
+// exports
+
+public numeral, exp;
 
 // types
 
@@ -14,7 +18,7 @@ Value ::= ( type: char(1),
 typeNumber := "number";
 typeTruth := "truth";
 typeTuple := "tuple";
-typeSet := "set";
+// typeSet := "set";
         
 // functions
 
@@ -101,11 +105,11 @@ isInt(n(1)) := numberReduce(n)[2] = 1;
 reciprocal: int(1) -> int(1);
 reciprocal(n(1)) := numberReduce(Sequence::reverse(n));
 
-nrvalList: int * int -> Value(1);
-nrvalList(int1, int2)[i] :=
-    let n := [i, 1];
-    in (type: typeNumber, number: n)
-    foreach i within int1 ... int2;
+// nrvalList: int * int -> Value(1);
+// nrvalList(int1, int2)[i] :=
+    // let n := [i, 1];
+    // in (type: typeNumber, number: n)
+    // foreach i within int1 ... int2;
 
 /// LED
     
@@ -170,17 +174,17 @@ numbLEq(n1(1), n2(1)) := numbL(n1, n2) or numbEq(n1, n2);
 numbGrEq: int(1) * int(1) -> bool;
 numbGrEq(n1(1), n2(1)) := numbGr(n1, n2) or numbEq(n1, n2);
 
-nrval: int(1) * int(1) -> Value;
-nrval(n1(1), n2(1)) :=
-    let int1 := n1[1];
-        int2 := n2[1];
-        list := nrvalList(int1, int2);
-    in (type: typeSet, set: list);    
+// nrval: int(1) * int(1) -> Value;
+// nrval(n1(1), n2(1)) :=
+    // let int1 := n1[1];
+        // int2 := n2[1];
+        // list := nrvalList(int1, int2);
+    // in (type: typeSet, set: list);    
 
 //// set
     
-biUnion: Value * Value -> Value;
-biUnion(valSet1, valSet2) :=
-    let set1 := valSet1.set;
-        set2 := valSet2.set;
-    in (type: typeSet, set: Set::union(set1, set2));
+// biUnion: Value * Value -> Value;
+// biUnion(valSet1, valSet2) :=
+    // let set1 := valSet1.set;
+        // set2 := valSet2.set;
+    // in (type: typeSet, set: Set::union(set1, set2));
