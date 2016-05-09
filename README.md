@@ -5,7 +5,7 @@
 ## CURRENT VERSION
 2016-05-09
 
-### LANGUAGE LIMITATION
+### LANGUAGE RESTRICTION
 - values must be numerals
 - arithemetic operations only
 - functions must be nullary
