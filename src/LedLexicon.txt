@@ -2,6 +2,8 @@ spaces = \s+
 
 lPar = \(
 rPar = \)
+lBrack = \[
+rBrack = \]
 lBrace = \{
 rBrace = \}
 
@@ -14,13 +16,18 @@ floor = floor
 ceil = ceil
 mod = mod
 or = or
+sub = sub
+U = U
+sec = sec
+P = P
 
+backsl = \\
 comma = ,
 dot = \.
 twoDot = \.\.
 plus = \+
 minus = -
-multiplied = \*
+asterisk = \*
 divided = /
 bar = \|
 caret = \^
@@ -33,7 +40,7 @@ diamond = <>
 amperstand = &
 tilde = ~
 implies = =>
-ifF = <=>
+equivalent = <=>
 
 tru = true|false
 id = [a-zA-Z][a-zA-Z0-9]*

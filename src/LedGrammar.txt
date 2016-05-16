@@ -1,36 +1,55 @@
 program(prog PE) ::= prog_el(PE)
 program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
 
+prog_el(VD) ::= var_decl(VD)
+prog_el(FD) ::= f_def(FD)
+
+var_decl(varDecl VIT) ::= var var_in_term(VIT) diamond
+var_decl(varDecl VsITs) ::= vars var_s_in_term_s(VsITs) diamond
+
+f_def(fDef DH T) ::= def def_head(DH) equal term(T) diamond
+
+def_head(defHead FN) ::= f_name(FN)
+def_head(defHead FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
+
 term(T) ::= lPar term(T) rPar
 term(V) ::= variable(V)
 term(T) ::= tuple(T)
-term(S) ::= set(S)
+term(TI) ::= tuple_indexing(TI)
 term(I) ::= interval(I)
+term(ST) ::= set_term(ST)
 term(LE) ::= lam_ex(LE)
-term(boolT BT) ::= bool_term(BT)
-term(ar AT) ::= ar_term(AT)
-//todo tup index
-term_s(terms T) ::= term(T)
-term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
+term(BT) ::= bool_term(BT)
+term(AT) ::= ar_term(AT)
 
-variable(vName I) ::= id(I)
-
-var_s(vars V) ::= variable(V)
-var_s(vars V cut_root(Vs)) ::= variable(V) comma var_s(Vs)
-
+tuple(V) ::= variable(V)
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
-set(st) ::= lBrace rBrace
-set(st Ts) ::= lBrace term_s(Ts) rBrace
+tuple_indexing(tupInd T AT) ::= tuple(T) lBrack ar_term(AT) rBrack
 
 interval(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
+
+set_term(ST1) ::= set_term_1(ST1)
+
+set_term_1(ST2) ::= set_term_2(ST2)
+set_term_1(union ST1 ST2) ::= set_term_1(ST1) U set_term_2(ST2)
+set_term_1(setDiff ST1 ST2) ::= set_term_1(ST1) backsl set_term_2(ST2)
+
+set_term_2(ST3) ::= set_term_3(ST3)
+set_term_2(nrsec ST2 ST3) ::= set_term_2(ST2) sec set_term_3(ST3)
+set_term_2(cross ST2 ST3) ::= set_term_2(ST2) asterisk set_term_3(ST3)
+
+set_term_3(V) ::= variable(V)
+set_term_3(st) ::= lBrace rBrace
+set_term_3(st Ts) ::= lBrace term_s(Ts) rBrace
+set_term_3(powSet ST) ::= P lPar set_term(ST) rPar
 
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
 
 bool_term(I) ::= equivalence(I)
 
 equivalence(I) ::= implication(I)
-equivalence(equiv I E) ::= implication(I) ifF equivalence(E)
+equivalence(equiv I E) ::= implication(I) equivalent equivalence(E)
 
 implication(D) ::= disjunction(D)
 implication(impl D I) ::= disjunction(D) implies implication(I)
@@ -44,18 +63,22 @@ conjunction(conj C N) ::= conjunction(C) amperstand negation(N)
 negation(IBT) ::= inner_bool_term(IBT)
 negation(neg IBT) ::= tilde inner_bool_term(IBT)
 
-inner_bool_term(V) ::= variable(V)
-inner_bool_term(T) ::= tru(T)
-inner_bool_term(comp C) ::= compare(C)
 inner_bool_term(PBT) ::= par_bool_term(PBT)
+inner_bool_term(V) ::= variable(V)
+inner_bool_term(BST) ::= bool_set_term(BST)
+inner_bool_term(T) ::= tru(T)
+inner_bool_term(E) ::= equality(E)
 
-par_bool_term(BT) ::= lPar bool_term(BT) rPar
+bool_set_term(mem T S) ::= term(T) in set_term(S)
+bool_set_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
 
-compare(eq AT1 AT2) ::= ar_term(AT1) equal ar_term(AT2)
-compare(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
-compare(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
-compare(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
-compare(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
+equality(R) ::= relational(R)
+equality(eq T1 T2) ::= term(T1) equal term(T2)
+
+relational(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
+relational(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
+relational(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
+relational(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
 
 ar_term(BS) ::= bi_sum(BS)
 
@@ -64,7 +87,7 @@ bi_sum(add BS BP) ::= bi_sum(BS) plus bi_prod(BP)
 bi_sum(biMinus BS BP) ::= bi_sum(BS) minus bi_prod(BP)
 
 bi_prod(ST) ::= sign_term(ST)
-bi_prod(mult BP ST) ::= bi_prod(BP) multiplied sign_term(ST)
+bi_prod(mult BP ST) ::= bi_prod(BP) asterisk sign_term(ST)
 bi_prod(div BP ST) ::= bi_prod(BP) divided sign_term(ST)
 bi_prod(md BP ST) ::= bi_prod(BP) mod sign_term(ST)
 
@@ -75,14 +98,22 @@ sign_term(uMinus E) ::= minus expo(E)
 expo(IAT) ::= inner_ar_term(IAT)
 expo(exp IAT E) ::= inner_ar_term(IAT) caret expo(E)
 
+inner_ar_term(PAT) ::= par_ar_term(PAT)
 inner_ar_term(V) ::= variable(V)
 inner_ar_term(N) ::= num(N)
+inner_ar_term(card ST) ::= bar set_term(ST) bar
 inner_ar_term(abs AT) ::= bar ar_term(AT) bar
 inner_ar_term(flr PAT) ::= floor par_ar_term(PAT)
 inner_ar_term(clng PAT) ::= ceil par_ar_term(PAT)
-inner_ar_term(PAT) ::= par_ar_term(PAT)
 
+par_bool_term(BT) ::= lPar bool_term(BT) rPar
 par_ar_term(AT) ::= lPar ar_term(AT) rPar
+
+term_s(terms T) ::= term(T)
+term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
+
+var_s(vars V) ::= variable(V)
+var_s(vars V cut_root(Vs)) ::= variable(V) comma var_s(Vs)
 
 var_in_term(varInT V T) ::= variable(V) in term(T)
 
@@ -91,15 +122,5 @@ var_s_in_term(varsInT Vs T) ::= var_s(Vs) in term(T)
 var_s_in_term_s(varsInTs VsIT) ::= var_s_in_term(VsIT)
 var_s_in_term_s(varsInTs VsIT cut_root(VsITs)) ::= var_s_in_term(VsIT) comma var_s_in_term_s(VsITs)
 
-var_decl(varDecl VIT) ::= var var_in_term(VIT) diamond
-var_decl(varDecl VsITs) ::= vars var_s_in_term_s(VsITs) diamond
-
+variable(vName I) ::= id(I)
 f_name(fName I) ::= id(I)
-
-def_head(defHead FN) ::= f_name(FN)
-def_head(defHead FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
-
-f_def(fDef DH T) ::= def def_head(DH) equal term(T) diamond
-
-prog_el(VD) ::= var_decl(VD)
-prog_el(FD) ::= f_def(FD)
