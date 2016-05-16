@@ -1,6 +1,5 @@
 spaces = \s+
 
-
 lPar = \(
 rPar = \)
 lBrace = \{
@@ -16,6 +15,7 @@ lam = lam
 floor = floor
 ceil = ceil
 mod = mod
+or = or
 
 comma = ,
 dot = \.
@@ -32,6 +32,10 @@ greaterThan = >
 lessOrEq = <=
 greaterOrEq = >=
 diamond = <>
+ampersand = &
+tilde = ~
+implies = =>
+iff = <=>
 
 id = [a-zA-Z][a-zA-Z0-9]*
 num = [0-9]+|[0-9]*\.[0-9]+|[0-9]*\.[0-9]*\([0-9]+\.\.\)
