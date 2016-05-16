@@ -6,35 +6,56 @@ term(V) ::= variable(V)
 term(T) ::= tuple(T)
 term(S) ::= set(S)
 term(I) ::= interval(I)
-term(BT) ::= bool_term(BT)
-term(AT) ::= ar_term(AT)
 term(LE) ::= lam_ex(LE)
-
+term(boolT BT) ::= bool_term(BT)
+term(ar AT) ::= ar_term(AT)
+//todo tup index
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 
-truth(tru T) ::= true(T)
-truth(tru F) ::= false(F)
+variable(vName I) ::= id(I)
 
-tuple(tup T Ts) ::= lPar term(T) comma term_s(Ts) rPar
+var_s(vars V) ::= variable(V)
+var_s(vars V cut_root(Vs)) ::= variable(V) comma var_s(Vs)
+
+tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
 set(st) ::= lBrace rBrace
 set(st Ts) ::= lBrace term_s(Ts) rBrace
 
-interval(nrval N1 N2) ::= lBrace num(N1) twoDot num(N2) rBrace
+interval(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
 
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
 
-bool_term(T) ::= truth(T)
-bool_term(BR) ::= bi_rel(BR)
+bool_term(I) ::= equivalence(I)
 
-//todo bool connectives
+equivalence(I) ::= implication(I)
+equivalence(equiv I E) ::= implication(I) ifF equivalence(E)
 
-bi_rel(eq AT1 AT2) ::= ar_term(AT1) equal ar_term(AT2)
-bi_rel(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
-bi_rel(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
-bi_rel(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
-bi_rel(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
+implication(D) ::= disjunction(D)
+implication(impl D I) ::= disjunction(D) implies implication(I)
+
+disjunction(C) ::= conjunction(C)
+disjunction(disj D C) ::= disjunction(D) or conjunction(C)
+
+conjunction(N) ::= negation(N)
+conjunction(conj C N) ::= conjunction(C) amperstand negation(N)
+
+negation(IBT) ::= inner_bool_term(IBT)
+negation(neg IBT) ::= tilde inner_bool_term(IBT)
+
+inner_bool_term(V) ::= variable(V)
+inner_bool_term(T) ::= tru(T)
+inner_bool_term(comp C) ::= compare(C)
+inner_bool_term(PBT) ::= par_bool_term(PBT)
+
+par_bool_term(BT) ::= lPar bool_term(BT) rPar
+
+compare(eq AT1 AT2) ::= ar_term(AT1) equal ar_term(AT2)
+compare(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
+compare(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
+compare(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
+compare(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
 
 ar_term(BS) ::= bi_sum(BS)
 
@@ -51,20 +72,17 @@ sign_term(E) ::= expo(E)
 sign_term(E) ::= plus expo(E)
 sign_term(uMinus E) ::= minus expo(E)
 
-expo(AAT) ::= atom_ar_term(AAT)
-expo(exp AAT E) ::= atom_ar_term(AAT) caret expo(E)
+expo(IAT) ::= inner_ar_term(IAT)
+expo(exp IAT E) ::= inner_ar_term(IAT) caret expo(E)
 
-atom_ar_term(AT) ::= lPar ar_term(AT) rPar
-atom_ar_term(V) ::= variable(V)
-atom_ar_term(N) ::= num(N)
-atom_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
-atom_ar_term(clng AT) ::= ceil lPar ar_term(AT) rPar
-atom_ar_term(abs AT) ::= bar ar_term(AT) bar
+inner_ar_term(V) ::= variable(V)
+inner_ar_term(N) ::= num(N)
+inner_ar_term(abs AT) ::= bar ar_term(AT) bar
+inner_ar_term(flr PAT) ::= floor par_ar_term(PAT)
+inner_ar_term(clng PAT) ::= ceil par_ar_term(PAT)
+inner_ar_term(PAT) ::= par_ar_term(PAT)
 
-variable(vName I) ::= id(I)
-
-var_s(vars V) ::= variable(V)
-var_s(vars V cut_root(Vs)) ::= variable(V) comma var_s(Vs)
+par_ar_term(AT) ::= lPar ar_term(AT) rPar
 
 var_in_term(varInT V T) ::= variable(V) in term(T)
 
