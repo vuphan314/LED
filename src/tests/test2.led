@@ -1,5 +1,5 @@
 /$
-def f (x, y) = |z|
+def f (x, y) = 1 /= true
     <> $/
     
 /$

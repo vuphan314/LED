@@ -74,6 +74,7 @@ set_bool_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
 
 equality(R) ::= relational(R)
 equality(eq T1 T2) ::= term(T1) equal term(T2)
+equality(uneq T1 T2) ::= term(T1) unequal term(T2)
 
 relational(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
 relational(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
