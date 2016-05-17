@@ -1,16 +1,22 @@
-program(prog PE) ::= prog_el(PE)
-program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
-
 prog_el(VD) ::= var_decl(VD)
-prog_el(FD) ::= f_def(FD)
+prog_el(D) ::= definition(D)
 
 var_decl(varDecl VIT) ::= var var_in_term(VIT) diamond
 var_decl(varDecl VsITs) ::= vars var_s_in_term_s(VsITs) diamond
 
-f_def(fDef DH T) ::= def def_head(DH) equal term(T) diamond
+definition(FD) ::= f_def(FD)
+definition(RD) ::= r_def(RD)
 
-def_head(defHead FN) ::= f_name(FN)
-def_head(defHead FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
+f_def(fDef DH DB) ::= def_head(DH) colonEq def_body(DB) diamond
+
+r_def(rDef DH S) ::= def_head(DH) iff statement(S)
+
+def_head(head FN) ::= f_name(FN)
+def_head(head FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
+
+def_body(T) ::= term(T)
+
+statement(BT) ::= bool_term(BT)
 
 term(T) ::= lPar term(T) rPar
 term(V) ::= variable(V)
@@ -127,3 +133,6 @@ var_s_in_term_s(varsInTs VsIT cut_root(VsITs)) ::= var_s_in_term(VsIT) comma var
 
 variable(vName I) ::= id(I)
 f_name(fName I) ::= id(I)
+
+program(prog PE) ::= prog_el(PE)
+program(prog PE cut_root(P)) ::= prog_el(PE) program(P)

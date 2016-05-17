@@ -7,7 +7,6 @@ rBrack = \]
 lBrace = \{
 rBrace = \}
 
-def = def
 in = in
 var = var
 vars = vars
@@ -20,7 +19,9 @@ sub = sub
 U = U
 sec = sec
 P = P
+iff = iff
 
+colonEq = :=
 backsl = \\
 comma = ,
 dot = \.
