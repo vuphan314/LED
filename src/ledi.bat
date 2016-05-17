@@ -2,11 +2,11 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%test2
+    set fil=%fold%test
 	for %%i in (%fil%.led) do (
 		set o=%fold%%%~ni.sl
-        main %%i
-		REM translator %%i
+        REM parser %%i
+		translator %%i
         REM translator %%i > !o!
         REM !o!
         REM sli -l !o!

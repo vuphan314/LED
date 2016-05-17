@@ -51,7 +51,7 @@ def parse_arguments():
     parser = OptionParser()
     return parser.parse_args()[1]  
 
-def main():
+def parse():
     """
     Main entry point into the program.  Parse the command line arguments of the
     form  [program_file].
@@ -66,4 +66,4 @@ def main():
     print(parse_file(program_file))
 
 if __name__ == '__main__':
-    main()    
+    parse()    

@@ -16,7 +16,6 @@ term(T) ::= lPar term(T) rPar
 term(V) ::= variable(V)
 term(T) ::= tuple(T)
 term(TI) ::= tuple_indexing(TI)
-term(I) ::= interval(I)
 term(ST) ::= set_term(ST)
 term(LE) ::= lam_ex(LE)
 term(BT) ::= bool_term(BT)
@@ -26,8 +25,6 @@ tuple(V) ::= variable(V)
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
 tuple_indexing(tupInd T AT) ::= tuple(T) lBrack ar_term(AT) rBrack
-
-interval(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
 
 set_term(ST1) ::= set_term_1(ST1)
 
@@ -40,9 +37,12 @@ set_term_2(nrsec ST2 ST3) ::= set_term_2(ST2) sec set_term_3(ST3)
 set_term_2(cross ST2 ST3) ::= set_term_2(ST2) asterisk set_term_3(ST3)
 
 set_term_3(V) ::= variable(V)
-set_term_3(st) ::= lBrace rBrace
-set_term_3(st Ts) ::= lBrace term_s(Ts) rBrace
 set_term_3(powSet ST) ::= P lPar set_term(ST) rPar
+set_term_3(BS) ::= brace_set(BS)
+
+brace_set(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
+brace_set(st) ::= lBrace rBrace
+brace_set(st Ts) ::= lBrace term_s(Ts) rBrace
 
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
 
@@ -65,12 +65,12 @@ negation(neg IBT) ::= tilde inner_bool_term(IBT)
 
 inner_bool_term(PBT) ::= par_bool_term(PBT)
 inner_bool_term(V) ::= variable(V)
-inner_bool_term(BST) ::= bool_set_term(BST)
+inner_bool_term(BST) ::= set_bool_term(BST)
 inner_bool_term(T) ::= tru(T)
 inner_bool_term(E) ::= equality(E)
 
-bool_set_term(mem T S) ::= term(T) in set_term(S)
-bool_set_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
+set_bool_term(mem T S) ::= term(T) in set_term(S)
+set_bool_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
 
 equality(R) ::= relational(R)
 equality(eq T1 T2) ::= term(T1) equal term(T2)
@@ -101,10 +101,12 @@ expo(exp IAT E) ::= inner_ar_term(IAT) caret expo(E)
 inner_ar_term(PAT) ::= par_ar_term(PAT)
 inner_ar_term(V) ::= variable(V)
 inner_ar_term(N) ::= num(N)
-inner_ar_term(card ST) ::= bar set_term(ST) bar
-inner_ar_term(abs AT) ::= bar ar_term(AT) bar
 inner_ar_term(flr PAT) ::= floor par_ar_term(PAT)
 inner_ar_term(clng PAT) ::= ceil par_ar_term(PAT)
+inner_ar_term(barT BT) ::= bar bar_term(BT) bar
+
+bar_term(ST) ::= set_term(ST)
+bar_term(AT) ::= ar_term(AT)
 
 par_bool_term(BT) ::= lPar bool_term(BT) rPar
 par_ar_term(AT) ::= lPar ar_term(AT) rPar
