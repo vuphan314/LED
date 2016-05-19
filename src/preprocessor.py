@@ -102,19 +102,19 @@ class Preprocessor:
     @staticmethod
     def find_guard_if_idx(lexing_sequence, then_idx):
         """ 
-        Find the index for matching If given the index of then in the
+        Find the index for matching 'if' given the index of 'then' in the
         lexing sequence
         """
         idx = then_idx
-        # go left until the corresponding If  is found
-        while idx > 0 and lexing_sequence[idx][0] != 'If':
+        # go left until the corresponding 'if' is found
+        while idx > 0 and lexing_sequence[idx][0] != 'if':
             idx -= 1
         return idx
 
     @staticmethod
     def find_element_start_idx(lexing_sequence, spec_sym_idx):
-        if lexing_sequence[spec_sym_idx][0] in ['def', 'iff']:
-            # we found a constant, function or relation definition
+        if lexing_sequence[spec_sym_idx][0] in ['iff']:
+            # we found a relation definition
             # need to go back through [guard][id][ params]
             # first, check if there are params
 
@@ -175,11 +175,10 @@ class Preprocessor:
                 break
             else:
                 elem_last_idx = \
-                    Preprocessor.find_element_start_idx( \
-                        lexing_sequence, next_i + i + 1) - 1
+                Preprocessor.find_element_start_idx(lexing_sequence, next_i + i + 1) - 1
                 if elem_last_idx < 0:
-                    raise InvalidProgramElement(Preprocessor.get_text_from_lexemes( \
-                        lexing_sequence),  line_number)
+                    raise InvalidProgramElement( \
+                    Preprocessor.get_text_from_lexemes(lexing_sequence), line_number)
                 ast = self.parser.get_ast(lexing_sequence[: elem_last_idx + 1], False)
                 if ast is None:
                     raise InvalidProgramElement(region, line_number)
@@ -188,7 +187,7 @@ class Preprocessor:
 
         return elements
 
-    special_lexemes = ["var", "vars", "def", "ddef", "iff"]
+    special_lexemes = ["var", "vars", "iff"]
 
     @staticmethod
     def find_first_special_lexeme_idx(lexing_sequence):
@@ -237,10 +236,9 @@ class InvalidProgramElement(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return "\n\nThe program file contains an invalid program element: \n\n" \
-               + self.contents + "\nin the" \
-                                 " region starting from line " \
-                                 "number " + str(self.line_number) + "."
+        return  "\n\nThe program file contains an invalid program element: \n\n" + \
+                self.contents + "\n\nin the region starting from line number " + \
+                str(self.line_number) + "."
 
     def __str__(self):
         return self.__repr__()
