@@ -28,29 +28,24 @@ either expressed or implied, of the FreeBSD Project.
 """
 
 from optparse import OptionParser
-
 from preprocessor import *
 
-########## ########## ########## ########## ########## ########## ########## ##########
-    
+def parse_arguments():
+    """
+    Returns the arguments passed to the program. The arguments are parsed from sys.argv.
+    """
+    optParser = OptionParser()
+    return optParser.parse_args()[1]
+
 def parse_file(program_file):
     # create preprocessor instance
     preprocessor_instance = Preprocessor(program_file)
 
     # get the list of program elements
     parsed = preprocessor_instance.get_elements()
-    
+
     return parsed
     
-########## ########## ########## ########## ########## ########## ########## ##########
-
-def parse_arguments():
-    """
-    Returns the arguments passed to the program. The arguments are parsed from sys.argv.
-    """
-    parser = OptionParser()
-    return parser.parse_args()[1]  
-
 def parse():
     """
     Main entry point into the program.  Parse the command line arguments of the

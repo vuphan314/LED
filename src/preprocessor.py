@@ -31,14 +31,15 @@ import os
 from genparser.src.astgen.parsing.lexer import *
 from genparser.src.astgen.parsing.parser import *
 
-
 class Preprocessor:
-    """The preprocessor takes a LED program, removes comments from it, and splits
+    """ 
+    The preprocessor takes a LED program, removes comments from it, and splits
     it into a list of separate program elements (as defined by LED grammar)
     """
 
     def __init__(self, program_file):
-        """Read the program file; initialize lexer and parser instances
+        """ 
+        Read the program file; initialize lexer and parser instances
         """
         with open(program_file) as lf:
             self.contents = lf.read()
@@ -52,7 +53,8 @@ class Preprocessor:
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
 
     def get_elements(self):
-        """ get the list of program elements
+        """ 
+        Get the list of program elements
         """
 
         done = False
@@ -89,7 +91,8 @@ class Preprocessor:
 
     @staticmethod
     def all_spaces(lexing_sequence):
-        """Checks if the lexing sequence contains only spaces
+        """ 
+        Checks if the lexing sequence contains only spaces
         """
         for c in lexing_sequence:
             if c[0] != 'spaces':
@@ -98,7 +101,7 @@ class Preprocessor:
 
     @staticmethod
     def find_guard_if_idx(lexing_sequence, then_idx):
-        """
+        """ 
         Find the index for matching If given the index of then in the
         lexing sequence
         """
