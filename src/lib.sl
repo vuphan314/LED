@@ -1,7 +1,7 @@
 // exports
 
-public  numeral,
-        add, biMinus, uMinus, mult, div, flr, clng, abs, md, exp;
+// public  numeral,
+        // add, biMinus, uMinus, mult, div, flr, clng, abs, md, exp;
 
 // imports
 
@@ -12,15 +12,12 @@ import <Utilities/Sequence.sl>;
 
 // types
 
-Value ::= ( type: char(1), 
-            number: int(1), truth: bool, 
-            tuple: Value(1), set: Value(1));      
-            
-typeNumber := "number";
+Object ::= (type: char(1), truth: bool, list: Object(1));
+
 typeTruth := "truth";
 typeTuple := "tuple";
-// typeSet := "set";
-        
+typeSet := "set";
+
 // functions
 
 /// helpers
@@ -38,7 +35,8 @@ intNumeral(iN(1)) := [Conversion::stringToInt(iN), 1];
 
 repeatBlock: char(1) -> int(1);
 repeatBlock(rB(1)) :=
-    let iN := rB[2 ... size(rB) - 3];
+    let 
+        iN := rB[2 ... size(rB) - 3];
         number := intNumeral(iN);
         len := [size(iN), 1];
         divisor := biMinus(exp(number10, len), number1);
@@ -56,12 +54,12 @@ fractionRepeat: char(1) -> int(1);
 fractionRepeat(dFR(1)) :=
     let lPar := Sequence::firstIndexOf(dFR, '(');
         dFNR := Sequence::take(dFR, lPar - 1);
+        numbFNR := fractionNoRepeat(dFNR);
         rB := Sequence::drop(dFR, lPar - 1);
-        numbDFNR := fractionNoRepeat(dFNR);
         len := [size(dFNR) - 1, 1];
         shift := exp(number10, uMinus(len));
         numbRB := mult(shift, repeatBlock(rB));
-    in  add(numbDFNR, numbRB);
+    in  add(numbFNR, numbRB);
     
 fraction: char(1) -> int(1);
 fraction(dF(1)) :=
@@ -69,6 +67,7 @@ fraction(dF(1)) :=
     in  fractionNoRepeat(dF) when lPar = 0 else
         fractionRepeat(dF);
         
+//todo fix [1, 23]
 numeral: char(1) -> int(1);
 numeral(n(1)) :=
     let dot := Sequence::firstIndexOf(n, '.');
@@ -79,7 +78,7 @@ numeral(n(1)) :=
     in  intNumeral(n) when dot = 0 else
         fraction(n) when dot = 1 else
         add(numbIN, numbDF);
-
+        
 //// arithmetic
 
 GCD: int(1) -> int;
@@ -106,7 +105,7 @@ isInt(n(1)) := reduce(n)[2] = 1;
 reciprocal: int(1) -> int(1);
 reciprocal(n(1)) := reduce(Sequence::reverse(n));
 
-// nrvalList: int * int -> Value(1);
+// nrvalList: int * int -> Object(1);
 // nrvalList(int1, int2)[i] :=
     // let n := [i, 1];
     // in (type: typeNumber, number: n)
@@ -175,7 +174,7 @@ numbLEq(n1(1), n2(1)) := numbL(n1, n2) or numbEq(n1, n2);
 numbGrEq: int(1) * int(1) -> bool;
 numbGrEq(n1(1), n2(1)) := numbGr(n1, n2) or numbEq(n1, n2);
 
-// nrval: int(1) * int(1) -> Value;
+// nrval: int(1) * int(1) -> Object;
 // nrval(n1(1), n2(1)) :=
     // let int1 := n1[1];
         // int2 := n2[1];
@@ -184,7 +183,7 @@ numbGrEq(n1(1), n2(1)) := numbGr(n1, n2) or numbEq(n1, n2);
 
 //// set
     
-// biUnion: Value * Value -> Value;
+// biUnion: Object * Object -> Object;
 // biUnion(valSet1, valSet2) :=
     // let set1 := valSet1.set;
         // set2 := valSet2.set;
