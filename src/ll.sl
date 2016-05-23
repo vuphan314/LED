@@ -115,16 +115,15 @@ repeatBlock(rB(1)) :=
 reduce(n(1)) :=
     let signN := signNumb(n);
         abN := Math::abs(n);
-        gcdAbN := GCD(abN);
+        gcdAbN := GCD(abN[1], abN[2]);
         redAbN := abN / gcdAbN;
     in [signN * redAbN[1], redAbN[2]];
     
-
-//todo comment out signature to make sli run?
-// GCD: int(1) -> int;
-GCD(n(1)) :=
-    n[1] when n[2] = 0 else
-    GCD([n[2], n[1] mod n[2]]);
+//todo sli stuck iff signature is uncommented
+GCD: int * int -> int;
+GCD(n1, n2) :=
+    n1 when n2 = 0 else
+    GCD(n2, n1 mod n2);
     
 signNumb: int(1) -> int;
 signNumb(n(1)) := 
