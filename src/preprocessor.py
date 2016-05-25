@@ -45,10 +45,10 @@ class Preprocessor:
             self.contents = lf.read()
 
         #initialize lexer and parser
-        lexicon_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "lexicon.txt")
-        grammar_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "grammar.txt")
+        lexicon_file = \
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon.txt")
+        grammar_file = \
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "grammar.txt")
         self.lexer = Lexer(lexicon_file, False)
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
 
@@ -62,7 +62,6 @@ class Preprocessor:
         cur_contents = self.contents
         cur_line = 1
         while not done:
-		# delimiters changed: from /-+ * -+/, to /\$ * \$/
             # search for the start of the next program region
             region_start_comment = re.search(r"/\$", cur_contents)
             if region_start_comment is None:
@@ -76,7 +75,6 @@ class Preprocessor:
                 raise UnmatchedRegionComment(cur_line)
 
             # get the elements from the found region
-
             region = cur_contents[  region_start_comment.end() + 1 : \
                                     region_end_comment.start()]
             elements.extend(self.get_elements_from_region(region, cur_line))

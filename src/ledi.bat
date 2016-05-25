@@ -3,11 +3,14 @@ goto starting
 :body
     set fold=tests\
     set fil=%fold%test2
+    set genparserpy=genparser\src\astgen\main.py
 	for %%i in (%fil%.led) do (
-		set o=%fold%%%~ni.sl
-        parser %%i
-		REM translator %%i
-        REM translator %%i > !o!
+        %genparserpy% lexicon.txt grammar.txt %%i
+        REM parser.py %%i
+		REM translator.py %%i
+        
+		REM set o=%fold%%%~ni.sl
+        REM translator.py %%i > !o!
         REM sli -l !o!
 	)
 	goto done

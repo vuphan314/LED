@@ -1,3 +1,6 @@
+program(prog PE) ::= prog_el(PE)
+program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
+
 prog_el(VD) ::= var_decl(VD)
 prog_el(D) ::= definition(D)
 
@@ -133,6 +136,3 @@ var_s_in_term_s(varsInTs VsIT cut_root(VsITs)) ::= var_s_in_term(VsIT) comma var
 
 variable(vName I) ::= id(I)
 f_name(fName I) ::= id(I)
-
-program(prog PE) ::= prog_el(PE)
-program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
