@@ -34,6 +34,8 @@ term(T) ::= tuple(T)
 term(ST) ::= set_term(ST)
 term(BT) ::= bool_term(BT)
 term(AT) ::= ar_term(AT)
+term(A) ::= atom(A)
+term(S) ::= str(S)
 
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
@@ -51,11 +53,15 @@ set_term_2(cross ST2 ST3) ::= set_term_2(ST2) star set_term_3(ST3)
 
 set_term_3(V) ::= v_name(V)
 set_term_3(powSet ST) ::= pow lPar set_term(ST) rPar
+set_term_3(S) ::= sequence(S)
 set_term_3(BS) ::= brace_set(BS)
 
+sequence(seq) ::= lArrow rArrow
+sequence(seq Ts) ::= lArrow term_s(Ts) rArrow
+
+brace_set(set) ::= lBrace rBrace
+brace_set(set Ts) ::= lBrace term_s(Ts) rBrace
 brace_set(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
-brace_set(st) ::= lBrace rBrace
-brace_set(st Ts) ::= lBrace term_s(Ts) rBrace
 
 lam_ex(V) ::= v_name(V)
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
@@ -90,8 +96,8 @@ equality(R) ::= relational(R)
 equality(eq T1 T2) ::= term(T1) equal term(T2)
 equality(uneq T1 T2) ::= term(T1) unequal term(T2)
 
-relational(less AT1 AT2) ::= ar_term(AT1) lessThan ar_term(AT2)
-relational(greater AT1 AT2) ::= ar_term(AT1) greaterThan ar_term(AT2)
+relational(less AT1 AT2) ::= ar_term(AT1) lArrow ar_term(AT2)
+relational(greater AT1 AT2) ::= ar_term(AT1) rArrow ar_term(AT2)
 relational(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
 relational(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
 

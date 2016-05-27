@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%test2
+    set fil=%fold%test3
     set genparserpy=genparser\src\astgen\main.py
 	for %%i in (%fil%.led) do (
         %genparserpy% lexicon.txt grammar.txt %%i

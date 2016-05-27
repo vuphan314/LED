@@ -40,9 +40,7 @@ bar = \|
 hat = \^
 equal = =
 unequal = /=
-lessThan = <
 lessOrEq = <=
-greaterThan = >
 greaterOrEq = >=
 amperstand = &
 tilde = ~
@@ -54,6 +52,8 @@ colon = :
 colonEq = :=
 partialMap = ~>
 
+lArrow = <
+rArrow = >
 lPar = \(
 rPar = \)
 lBracket = \[
