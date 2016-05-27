@@ -2,9 +2,9 @@ num = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 str = "[^"]*"
 atom = `[a-zA-Z][a-zA-Z0-9]*
 
-id = [a-zA-Z][a-zA-Z0-9]*
-tru = true
 primType = Nat|Int|Num|Bool
+truth = true|false
+id = [a-zA-Z][a-zA-Z0-9]*
 
 comma = ,
 dot = \.
