@@ -1,10 +1,33 @@
-num = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
-str = "[^"]*"
-atom = `[a-zA-Z][a-zA-Z0-9]*
+lam = lam
+floor = floor
+ceil = ceil
+mod = mod
+or = or
+in = in
+sub = sub
+U = U
+sec = sec
+pow = pow
+some = some
+all = all
+Sum = Sum
+Prod = Prod
+Sec = Sec
+var = var
+vars = vars
+if = if
+iff = iff
+where = where
+Set = Set
+
+primType = Nat|Int|Num|Bool
+tru = true|false
 
 id = [a-zA-Z][a-zA-Z0-9]*
-tru = true
-primType = Nat|Int|Num|Bool
+
+atom = `[a-zA-Z][a-zA-Z0-9]*
+str = "[^"]*"
+num = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 
 comma = ,
 dot = \.
@@ -30,28 +53,6 @@ semicolon = ;
 colon = :
 colonEq = :=
 partialMap = ~>
-
-lam = lam
-floor = floor
-ceil = ceil
-mod = mod
-or = or
-in = in
-sub = sub
-U = U
-sec = sec
-pow = pow
-some = some
-all = all
-Sum = Sum
-Prod = Prod
-Sec = Sec
-var = var
-vars = vars
-if = if
-iff = iff
-where = where
-Set = Set
 
 lPar = \(
 rPar = \)

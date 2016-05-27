@@ -17,7 +17,7 @@ c_def(cDef C T S) ::= c_name(C) colonEq term(T) where statement(S)
 f_def(fDef F FDB) ::= function(F) colonEq f_def_body(FDB)
 f_def(fDef F FDB S) ::= function(F) colonEq f_def_body(FDB) where statement(S)
 
-f_def_body(T) ::= tru(T)
+f_def_body(T) ::= term(T)
 f_def_body(T) ::= term_if_stat_s(T)
 
 r_def(rDef F S) ::= function(F) iff statement(S)
@@ -26,18 +26,16 @@ function(fun FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
 
 statement(BT) ::= bool_term(BT)
 
-term(T) ::= tru(T)
+term(V) ::= v_name(V)
 term(T) ::= lPar term(T) rPar
-term(T) ::= tuple(T)
 term(TI) ::= tuple_indexing(TI)
-term(ST) ::= set_term(ST)
 term(LE) ::= lam_ex(LE)
+term(T) ::= tuple(T)
+term(ST) ::= set_term(ST)
 term(BT) ::= bool_term(BT)
 term(AT) ::= ar_term(AT)
-term(V) ::= v_name(V)
 
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
-tuple(V) ::= v_name(V)
 
 tuple_indexing(tupInd T AT) ::= tuple(T) lBracket ar_term(AT) rBracket
 
@@ -51,9 +49,9 @@ set_term_2(ST3) ::= set_term_3(ST3)
 set_term_2(nrsec ST2 ST3) ::= set_term_2(ST2) sec set_term_3(ST3)
 set_term_2(cross ST2 ST3) ::= set_term_2(ST2) star set_term_3(ST3)
 
+set_term_3(V) ::= v_name(V)
 set_term_3(powSet ST) ::= pow lPar set_term(ST) rPar
 set_term_3(BS) ::= brace_set(BS)
-set_term_3(V) ::= v_name(V)
 
 brace_set(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
 brace_set(st) ::= lBrace rBrace
@@ -78,11 +76,11 @@ conjunction(conj C N) ::= conjunction(C) amperstand negation(N)
 negation(IBT) ::= inner_bool_term(IBT)
 negation(neg IBT) ::= tilde inner_bool_term(IBT)
 
+inner_bool_term(V) ::= v_name(V)
+inner_bool_term(BT) ::= lPar bool_term(BT) rPar
 inner_bool_term(T) ::= tru(T)
-inner_bool_term(PBT) ::= par_bool_term(PBT)
 inner_bool_term(BST) ::= set_bool_term(BST)
 inner_bool_term(E) ::= equality(E)
-inner_bool_term(V) ::= v_name(V)
 
 set_bool_term(setMem T S) ::= term(T) in set_term(S)
 set_bool_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
@@ -114,18 +112,15 @@ sign_term(uMinus E) ::= minus expo(E)
 expo(IAT) ::= inner_ar_term(IAT)
 expo(exp IAT E) ::= inner_ar_term(IAT) hat expo(E)
 
-inner_ar_term(PAT) ::= par_ar_term(PAT)
-inner_ar_term(N) ::= num(N)
-inner_ar_term(flr PAT) ::= floor par_ar_term(PAT)
-inner_ar_term(clng PAT) ::= ceil par_ar_term(PAT)
-inner_ar_term(barT BT) ::= bar bar_term(BT) bar
 inner_ar_term(V) ::= v_name(V)
+inner_ar_term(AT) ::= lPar ar_term(AT) rPar
+inner_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
+inner_ar_term(clng AT) ::= ceil lPar ar_term(AT) rPar
+inner_ar_term(N) ::= num(N)
+inner_ar_term(barT BT) ::= bar bar_term(BT) bar
 
 bar_term(ST) ::= set_term(ST)
 bar_term(AT) ::= ar_term(AT)
-
-par_bool_term(BT) ::= lPar bool_term(BT) rPar
-par_ar_term(AT) ::= lPar ar_term(AT) rPar
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
