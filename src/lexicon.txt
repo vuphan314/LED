@@ -21,7 +21,6 @@ where = where
 Set = Set
 
 primType = Nat|Int|Num|Bool
-<<<<<<< HEAD
 tru = true|false
 
 id = [a-zA-Z][a-zA-Z0-9]*
@@ -29,10 +28,6 @@ id = [a-zA-Z][a-zA-Z0-9]*
 atom = `[a-zA-Z][a-zA-Z0-9]*
 str = "[^"]*"
 num = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
-=======
-truth = true|false
-id = [a-zA-Z][a-zA-Z0-9]*
->>>>>>> b1300e5b3f362622b33d62295518269534a9ea1d
 
 comma = ,
 dot = \.
