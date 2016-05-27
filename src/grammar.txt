@@ -35,6 +35,10 @@ term(ST) ::= set_term(ST)
 term(BT) ::= bool_term(BT)
 term(AT) ::= ar_term(AT)
 
+<<<<<<< HEAD
+=======
+tuple(V) ::= v_name(V)
+>>>>>>> b1300e5b3f362622b33d62295518269534a9ea1d
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
 tuple_indexing(tupInd T AT) ::= tuple(T) lBracket ar_term(AT) rBracket
@@ -57,6 +61,7 @@ brace_set(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
 brace_set(st) ::= lBrace rBrace
 brace_set(st Ts) ::= lBrace term_s(Ts) rBrace
 
+lam_ex(V) ::= v_name(V)
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
 
 bool_term(I) ::= equivalence(I)
@@ -77,8 +82,13 @@ negation(IBT) ::= inner_bool_term(IBT)
 negation(neg IBT) ::= tilde inner_bool_term(IBT)
 
 inner_bool_term(V) ::= v_name(V)
+<<<<<<< HEAD
 inner_bool_term(BT) ::= lPar bool_term(BT) rPar
 inner_bool_term(T) ::= tru(T)
+=======
+inner_bool_term(T) ::= truth(T)
+inner_bool_term(PBT) ::= par_bool_term(PBT)
+>>>>>>> b1300e5b3f362622b33d62295518269534a9ea1d
 inner_bool_term(BST) ::= set_bool_term(BST)
 inner_bool_term(E) ::= equality(E)
 
@@ -113,9 +123,13 @@ expo(IAT) ::= inner_ar_term(IAT)
 expo(exp IAT E) ::= inner_ar_term(IAT) hat expo(E)
 
 inner_ar_term(V) ::= v_name(V)
+<<<<<<< HEAD
 inner_ar_term(AT) ::= lPar ar_term(AT) rPar
 inner_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
 inner_ar_term(clng AT) ::= ceil lPar ar_term(AT) rPar
+=======
+inner_ar_term(PAT) ::= par_ar_term(PAT)
+>>>>>>> b1300e5b3f362622b33d62295518269534a9ea1d
 inner_ar_term(N) ::= num(N)
 inner_ar_term(barT BT) ::= bar bar_term(BT) bar
 
