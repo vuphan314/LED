@@ -16,8 +16,8 @@ goto starting
 	goto done
 	
 :starting
-	@echo off
 	cls
+	@echo off
 	setlocal enabledelayedexpansion
 	echo starting...
 	echo:
