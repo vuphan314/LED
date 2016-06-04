@@ -30,9 +30,9 @@ r_def(rDef R B B2) ::= relation(R) iff bool_term(B) where bool_term(B2)
 relation(rel R V) ::= rel_(R) lPar var_s(V) rPar
 
 term(V) ::= var_term(V)
+term(T) ::= lPar term(T) rPar
 term(A) ::= atom_term(A)
 term(S) ::= string_term(S)
-term(T) ::= lPar term(T) rPar
 term(T) ::= tuple_term(T)
 term(T) ::= tuple_indexed_term(T)
 term(L) ::= lambda_term(L)
@@ -72,10 +72,15 @@ set_term_2(S3) ::= set_term_3(S3)
 set_term_2(nrsec S2 S3) ::= set_term_2(S2) sec set_term_3(S3)
 set_term_2(cross S2 S3) ::= set_term_2(S2) star set_term_3(S3)
 
-set_term_3(setV V) ::= var_(V)
-set_term_3(powSet S) ::= pow lPar set_term(S) rPar
-set_term_3(S) ::= sequence(S)
-set_term_3(B) ::= brace_set(B)
+set_term_3(S4) ::= set_term_4(S4)
+set_term_3(aggrUnion B S4) ::= U lBracket bool_term(B) rBracket set_term_4(S4)
+set_term_3(aggrNrsec B S4) ::= Sec lBracket bool_term(B) rBracket set_term_4(S4)
+
+set_term_4(setV V) ::= var_(V)
+set_term_4(S) ::= lPar set_term(S) rPar
+set_term_4(powSet S) ::= pow lPar set_term(S) rPar
+set_term_4(S) ::= sequence(S)
+set_term_4(B) ::= brace_set(B)
 
 sequence(seq) ::= lArrow rArrow
 sequence(seq T) ::= lArrow term_s(T) rArrow
@@ -143,6 +148,8 @@ ar_term_2(md A2 A3) ::= ar_term_2(A2) mod ar_term_3(A3)
 ar_term_3(A4) ::= ar_term_4(A4)
 ar_term_3(A4) ::= plus ar_term_4(A4)
 ar_term_3(uMinus A4) ::= minus ar_term_4(A4)
+ar_term_3(sum B A4) ::= Sum lBracket bool_term(B) rBracket ar_term_4(A4)
+ar_term_3(prod B A4) ::= Prod lBracket bool_term(B) rBracket ar_term_4(A4)
 
 ar_term_4(A5) ::= ar_term_5(A5)
 ar_term_4(exp A5 A4) ::= ar_term_5(A5) hat ar_term_4(A4)
@@ -152,10 +159,10 @@ ar_term_5(A) ::= lPar ar_term(A) rPar
 ar_term_5(flr A) ::= floor lPar ar_term(A) rPar
 ar_term_5(clng A) ::= ceil lPar ar_term(A) rPar
 ar_term_5(N) ::= num(N)
-ar_term_5(barOp B) ::= bar bar_arg(B) bar
+ar_term_5(barOperation B) ::= bar bar_operand(B) bar
 
-bar_arg(setArg S) ::= set_term(S)
-bar_arg(arArg A) ::= ar_term(A)
+bar_operand(setBarOperand S) ::= set_term(S)
+bar_operand(arBarOperand A) ::= ar_term(A)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
