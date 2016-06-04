@@ -22,9 +22,7 @@ all = all
 
 tru = true|false
 primType = Nat|Int|Num|Bool
-
 id = [a-zA-Z][a-zA-Z0-9]*
-
 atom = `[a-zA-Z][a-zA-Z0-9]*
 str = "[^"]*"
 num = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
