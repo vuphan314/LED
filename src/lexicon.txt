@@ -8,8 +8,6 @@ sub = sub
 U = U
 sec = sec
 pow = pow
-some = some
-all = all
 Sum = Sum
 Prod = Prod
 Sec = Sec
@@ -19,9 +17,11 @@ if = if
 iff = iff
 where = where
 Set = Set
+some = some
+all = all
 
-primType = Nat|Int|Num|Bool
 tru = true|false
+primType = Nat|Int|Num|Bool
 
 id = [a-zA-Z][a-zA-Z0-9]*
 

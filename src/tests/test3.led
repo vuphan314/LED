@@ -1,1 +1,2 @@
-c := lam x . <y , `bla, "hi\t">
+c := (some x in S . (all y in x . |y| > 2)) & z = 3
+c2 := {x | x in {} & x < 2}

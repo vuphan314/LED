@@ -83,7 +83,7 @@ class Preprocessor:
             cur_line += cur_contents[:region_end_comment.start()].count('\n')
 
             # remove the region from the beginning of cur_contents
-            cur_contents = cur_contents[region_end_comment.end() + 1:]
+            cur_contents = cur_contents[region_end_comment.end() + 1 :]
 
         return elements
 

@@ -4,38 +4,41 @@ program(prog PE cut_root(P)) ::= prog_el(PE) program(P)
 prog_el(VD) ::= var_decl(VD)
 prog_el(D) ::= definition(D)
 
-var_decl(varDecl VIT) ::= var var_in_term(VIT)
-var_decl(varDecl VsITs) ::= vars var_s_in_term_s(VsITs)
+var_decl(varDecl V) ::= var var_of_type(V)
+var_decl(varDecl Vs) ::= vars var_s_of_type_s(Vs)
+
+type(typ S) ::= set_term(S)
 
 definition(CD) ::= c_def(CD)
 definition(FD) ::= f_def(FD)
 definition(RD) ::= r_def(RD)
 
-c_def(cDef C T) ::= c_name(C) colonEq term(T)
-c_def(cDef C T S) ::= c_name(C) colonEq term(T) where statement(S)
+c_def(cDef C T) ::= const(C) colonEq term(T)
+c_def(cDef C T B) ::= const(C) colonEq term(T) where bool_term(B)
 
 f_def(fDef F FDB) ::= function(F) colonEq f_def_body(FDB)
-f_def(fDef F FDB S) ::= function(F) colonEq f_def_body(FDB) where statement(S)
-
-f_def_body(T) ::= term(T)
-f_def_body(T) ::= term_if_stat_s(T)
-
-r_def(rDef F S) ::= function(F) iff statement(S)
+f_def(fDef F FDB B) ::= function(F) colonEq f_def_body(FDB) where bool_term(B)
 
 function(fun FN Vs) ::= f_name(FN) lPar var_s(Vs) rPar
 
-statement(BT) ::= bool_term(BT)
+f_def_body(T) ::= term(T)
+f_def_body(T) ::= term_if_bool_term_s(T)
 
-term(V) ::= v_name(V)
-term(T) ::= lPar term(T) rPar
-term(TI) ::= tuple_indexing(TI)
+r_def(rDef R B) ::= relation(R) iff bool_term(B)
+r_def(rDef R B B2) ::= relation(R) iff bool_term(B) where bool_term(B2)
+
+relation(rel R Vs) ::= r_name(R) lPar var_s(Vs) rPar
+
+term(V) ::= var_(V)
 term(LE) ::= lam_ex(LE)
-term(T) ::= tuple(T)
 term(ST) ::= set_term(ST)
 term(BT) ::= bool_term(BT)
 term(AT) ::= ar_term(AT)
 term(A) ::= atom(A)
 term(S) ::= str(S)
+term(T) ::= lPar term(T) rPar
+term(T) ::= tuple(T)
+term(TI) ::= tuple_indexing(TI)
 
 tuple(tup Ts) ::= lPar term_s(Ts) rPar
 
@@ -51,7 +54,7 @@ set_term_2(ST3) ::= set_term_3(ST3)
 set_term_2(nrsec ST2 ST3) ::= set_term_2(ST2) sec set_term_3(ST3)
 set_term_2(cross ST2 ST3) ::= set_term_2(ST2) star set_term_3(ST3)
 
-set_term_3(V) ::= v_name(V)
+set_term_3(V) ::= var_(V)
 set_term_3(powSet ST) ::= pow lPar set_term(ST) rPar
 set_term_3(S) ::= sequence(S)
 set_term_3(BS) ::= brace_set(BS)
@@ -62,8 +65,9 @@ sequence(seq Ts) ::= lArrow term_s(Ts) rArrow
 brace_set(set) ::= lBrace rBrace
 brace_set(set Ts) ::= lBrace term_s(Ts) rBrace
 brace_set(nrval N1 N2) ::= lBrace ar_term(N1) twoDot ar_term(N2) rBrace
+brace_set(setCompr T B) ::= lBrace term(T) bar bool_term(B) rBrace
 
-lam_ex(V) ::= v_name(V)
+lam_ex(V) ::= var_(V)
 lam_ex(lamEx Vs T) ::= lam var_s(Vs) dot term(T)
 
 bool_term(I) ::= equivalence(I)
@@ -83,23 +87,27 @@ conjunction(conj C N) ::= conjunction(C) amperstand negation(N)
 negation(IBT) ::= inner_bool_term(IBT)
 negation(neg IBT) ::= tilde inner_bool_term(IBT)
 
-inner_bool_term(V) ::= v_name(V)
+inner_bool_term(V) ::= var_(V)
 inner_bool_term(BT) ::= lPar bool_term(BT) rPar
 inner_bool_term(T) ::= tru(T)
 inner_bool_term(BST) ::= set_bool_term(BST)
+inner_bool_term(Q) ::= quantified_term(Q)
 inner_bool_term(E) ::= equality(E)
 
 set_bool_term(setMem T S) ::= term(T) in set_term(S)
 set_bool_term(subset S1 S2) ::= set_term(S1) sub set_term(S2)
 
-equality(R) ::= relational(R)
+quantified_term(exist V B) ::= some var_s_in_set_term(V) dot inner_bool_term(B)
+quantified_term(univ V B) ::= all var_s_in_set_term(V) dot inner_bool_term(B)
+
+equality(C) ::= compare(C)
 equality(eq T1 T2) ::= term(T1) equal term(T2)
 equality(uneq T1 T2) ::= term(T1) unequal term(T2)
 
-relational(less AT1 AT2) ::= ar_term(AT1) lArrow ar_term(AT2)
-relational(greater AT1 AT2) ::= ar_term(AT1) rArrow ar_term(AT2)
-relational(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
-relational(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
+compare(less AT1 AT2) ::= ar_term(AT1) lArrow ar_term(AT2)
+compare(greater AT1 AT2) ::= ar_term(AT1) rArrow ar_term(AT2)
+compare(lessEq AT1 AT2) ::= ar_term(AT1) lessOrEq ar_term(AT2)
+compare(greaterEq AT1 AT2) ::= ar_term(AT1) greaterOrEq ar_term(AT2)
 
 ar_term(BS) ::= bi_sum(BS)
 
@@ -119,12 +127,12 @@ sign_term(uMinus E) ::= minus expo(E)
 expo(IAT) ::= inner_ar_term(IAT)
 expo(exp IAT E) ::= inner_ar_term(IAT) hat expo(E)
 
-inner_ar_term(V) ::= v_name(V)
+inner_ar_term(V) ::= var_(V)
 inner_ar_term(AT) ::= lPar ar_term(AT) rPar
 inner_ar_term(flr AT) ::= floor lPar ar_term(AT) rPar
 inner_ar_term(clng AT) ::= ceil lPar ar_term(AT) rPar
 inner_ar_term(N) ::= num(N)
-inner_ar_term(barT BT) ::= bar bar_term(BT) bar
+inner_ar_term(barO BT) ::= bar bar_term(BT) bar
 
 bar_term(ST) ::= set_term(ST)
 bar_term(AT) ::= ar_term(AT)
@@ -132,21 +140,24 @@ bar_term(AT) ::= ar_term(AT)
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 
-var_s(vars V) ::= v_name(V)
-var_s(vars V cut_root(Vs)) ::= v_name(V) comma var_s(Vs)
+var_s(vars V) ::= var_(V)
+var_s(vars V cut_root(Vs)) ::= var_(V) comma var_s(Vs)
 
-var_in_term(varInT V T) ::= v_name(V) colon term(T)
+var_s_in_set_term(varsInS V S) ::= var_s(V) in set_term(S)
 
-var_s_in_term(varsInT Vs T) ::= var_s(Vs) colon term(T)
+var_of_type(varOfT V T) ::= var_(V) colon type(T)
 
-var_s_in_term_s(varsInTs VsIT) ::= var_s_in_term(VsIT)
-var_s_in_term_s(varsInTs VsIT cut_root(VsITs)) ::= var_s_in_term(VsIT) comma var_s_in_term_s(VsITs)
+var_s_of_type(varsOfT Vs T) ::= var_s(Vs) colon type(T)
 
-term_if_stat(tIfS T S) ::= term(T) if statement(S)
+var_s_of_type_s(varsOfTs V) ::= var_s_of_type(V)
+var_s_of_type_s(varsOfTs V cut_root(Vs)) ::= var_s_of_type(V) comma var_s_of_type_s(Vs)
 
-term_if_stat_s(tIfSs T) ::= term_if_stat(T)
-term_if_stat_s(tIfSs T cut_root(Ts)) ::= term_if_stat(T) semicolon term_if_stat_s(Ts)
+term_if_bool_term(tIfBT T B) ::= term(T) if bool_term(B)
 
-v_name(vName I) ::= id(I)
-c_name(cName I) ::= id(I)
+term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
+term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
+
+var_(vName I) ::= id(I)
+const(cName I) ::= id(I)
 f_name(fName I) ::= id(I)
+r_name(rName I) ::= id(I)
