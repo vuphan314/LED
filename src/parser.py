@@ -39,10 +39,10 @@ def parse_arguments():
 
 def parse_file(program_file):
     # create preprocessor instance
-    preprocessor_instance = Preprocessor(program_file)
+    parser_instance = RegionParser(program_file)
 
     # get the list of program elements
-    parsed = preprocessor_instance.get_elements()
+    parsed = parser_instance.get_parsed_elements()
 
     return parsed
     
