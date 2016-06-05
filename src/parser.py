@@ -28,37 +28,37 @@ either expressed or implied, of the FreeBSD Project.
 """
 
 from optparse import OptionParser
-from preprocessor import *
+from regparser import *
 
-def parse_arguments():
+def optparse_arguments():
     """
-    Returns the arguments passed to the program. The arguments are parsed from sys.argv.
+    Return arguments parsed from sys.argv
     """
     optParser = OptionParser()
     return optParser.parse_args()[1]
 
-def parse_file(program_file):
-    # create preprocessor instance
-    parser_instance = RegionParser(program_file)
+def regparse_file(program_file):
+    # create regparser instance
+    regparser_instance = RegionParser(program_file)
 
     # get the list of program elements
-    parsed = parser_instance.get_parsed_elements()
+    parsed_file = regparser_instance.get_parsed_elements()
 
-    return parsed
+    return parsed_file
     
 def parse():
     """
-    Main entry point into the program.  Parse the command line arguments of the
-    form  [program_file].
-    Initialize the preprocessor with the contents of the file.
-    Remove comments and print the list of program elements found in the file.
+    Main entry point into the program
+    Parse the command line arguments of the form: <program_file>
+    Initialize the regparser with the contents of the input file
+    Remove comments and print the list of program elements found in the file
     """
 
     # read arguments
-    args = parse_arguments()
+    args = optparse_arguments()
     program_file = args[0]
     
-    print(parse_file(program_file))
+    print(regparse_file(program_file))
 
 if __name__ == '__main__':
     parse()    

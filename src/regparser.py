@@ -32,9 +32,6 @@ from genparser.src.astgen.parsing.lexer import *
 from genparser.src.astgen.parsing.parser import *
 
 class RegionParser:
-    """ 
-    """
-
     def __init__(self, program_file):
         """ 
         Read the program file; initialize lexer and parser instances
@@ -49,9 +46,6 @@ class RegionParser:
             os.path.join(os.path.dirname(os.path.abspath(__file__)), "grammar.txt")
         self.lexer = Lexer(lexicon_file, False)
         self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
-
-
-
         
     def get_parsed_elements(self):
         """ 
@@ -61,85 +55,79 @@ class RegionParser:
 
         # split the program into regions
         # call the parser for every region separately
-        all_regions_parsed= False
+        all_regions_parsed = False
         parsed_elements = []
         unparsed_program_string = self.program_string
-        cur_line = 1 
+        cur_line = 1
         while not all_regions_parsed: 
             # search for the start of the next program region
             region_start = re.search(r"/\$", unparsed_program_string)
             if region_start is None:
                 all_regions_parsed = True
                 break
+                
             # set cur_line to the line where the regions start
             cur_line += unparsed_program_string[:region_start.start()].count('\n')
 
-            # find matching end of the program region
+            # find the matching end of the program region
             region_end = re.search(r"\$/", unparsed_program_string)
 
             if region_end.start() is None:
-                raise UnmatchedRegionComment(cur_line)
+                raise UnmatchedRegion(cur_line)
 
-            # get the elements from the found region
-            region = unparsed_program_string[  region_start.end() + 1 : \
-                                    region_end.start()]
+            # get elements from the found region
+            region = unparsed_program_string[   region_start.end() + 1 : \
+                                                region_end.start()]
             parsed_elements.extend(self.get_elements_from_region(region, cur_line))
 
-            # update line numbers, add the number of lines inside the region
+            # update line number by adding the number of lines inside the region
             cur_line += unparsed_program_string[:region_end.start()].count('\n')
 
             # remove the region from the beginning of unparsed_program_string
             unparsed_program_string = unparsed_program_string[region_end.end() + 1 :]
+            
         return parsed_elements
-
-
 
     def get_elements_from_region(self, region, line_number):
         # obtain lexing sequence from the region starting at line_number
         lexing_sequence = self.lexer.get_lexing_sequence(region)
+        
         # obtain parse tree
         ast = self.parser.get_ast(lexing_sequence)
-        # get the children of the root of the tree (which correspond to program elements)
         if ast is None:
-            raise InvalidProgramRegion(region, line_number)
+            raise InvalidRegion(region, line_number)
+            
+        # return cut_root (list of program elements) of the parse tree
         return ast.children_list()
 
-
-class UnmatchedRegionComment(Exception):
-    """
-    Defines a class for representing exceptions which are thrown in the event of
-    an invalid lexeme declaration in the lexicon file
-    """
-
+class UnmatchedRegion(Exception):
     def __init__(self, line_number):
-        super(UnmatchedRegionComment, self).__init__()
+        super(UnmatchedRegion, self).__init__()
         self.line_number = line_number
 
     def __repr__(self):
-        return "The program contains " \
-               "a region starting from line " \
-               "number " + str(self.line_number) + "."\
-               "which does not end"
+        return  "The program file contains an unmatched region starting from line " + \
+                str(self.line_number)
 
     def __str__(self):
         return self.__repr__()
 
 
-class InvalidProgramRegion(Exception):
+class InvalidRegion(Exception):
     """
     Defines a class for representing exceptions which are thrown in the event of
-    a (syntactically) invalid program element in the program file
+    a (syntactically) invalid program element in a region
     """
 
     def __init__(self, contents, line_number):
-        super(InvalidProgramRegion, self).__init__()
+        super(InvalidRegion, self).__init__()
         self.contents = contents
         self.line_number = line_number
 
     def __repr__(self):
-        return  "\n\nThe program file contains an invalid program region: \n\n" + \
-                self.contents + "\n\n starting from line number " + \
-                str(self.line_number) + "."
+        return  "\n\nThe program file contains an invalid region " + \
+                "starting from line " + str(self.line_number) + ":\n\n" + \
+                self.contents + "\n\n"
 
     def __str__(self):
         return self.__repr__()
