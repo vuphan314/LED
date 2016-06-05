@@ -132,7 +132,7 @@ class InvalidProgramRegion(Exception):
     """
 
     def __init__(self, contents, line_number):
-        super(InvalidProgramElement, self).__init__()
+        super(InvalidProgramRegion, self).__init__()
         self.contents = contents
         self.line_number = line_number
 
