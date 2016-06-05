@@ -11,7 +11,8 @@ goto starting
         type %%i
         echo:
         
-        %comm%
+        py parser.py %%i
+        REM %comm%
         
 		REM set o=%fold%%%~ni.p
         REM %comm% > !o!
