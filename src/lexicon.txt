@@ -19,6 +19,7 @@ where = where
 Set = Set
 some = some
 all = all
+otherwise = otherwise
 
 tru = true|false
 primType = Nat|Int|Num|Bool

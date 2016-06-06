@@ -50,7 +50,7 @@ def parse():
     """
     Main entry point into the program
     Parse the command line arguments of the form: <program_file>
-    Initialize the regparser with the contents of the input file
+    Initialize regparser with the contents of the program file
     Remove comments and print the list of program elements found in the file
     """
 
@@ -58,7 +58,10 @@ def parse():
     args = optparse_arguments()
     program_file = args[0]
     
-    print(regparse_file(program_file))
+    # parse file
+    parsed_file = regparse_file(program_file)
+    
+    print(parsed_file)
 
 if __name__ == '__main__':
     parse()    

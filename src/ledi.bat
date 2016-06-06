@@ -1,20 +1,18 @@
 goto starting
 
 :body
-    set genparserpy=genparser\src\astgen\main.py
-    set genparse=%genparserpy% lexicon.txt grammar.txt %%i
-    set comm=%genparse%
-    
+    set comm=py parser.py %%i
+
     set fold=tests\
-    set fil=%fold%test3
+    set fil=%fold%test2
 	for %%i in (%fil%.led) do (
-        type %%i
+		set o=%fold%%%~ni.p
+        
+        REM type %%i
         echo:
         
-        py parser.py %%i
-        REM %comm%
+        %comm%
         
-		REM set o=%fold%%%~ni.p
         REM %comm% > !o!
         REM !o!
 	)
