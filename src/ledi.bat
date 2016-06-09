@@ -11,10 +11,10 @@ goto starting
         REM type %%i
         echo:
         
-        %comm%
+        REM %comm%
         
-        REM %comm% > !o!
-        REM !o!
+        %comm% > !o!
+        !o!
 	)
 	goto done
 	
