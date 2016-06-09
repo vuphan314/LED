@@ -63,28 +63,28 @@ class RegionParser:
             # search for the start of the next program region
             region_start = re.search(r"/\$", unparsed_program_string)
             if region_start is None:
-                all_regions_parsed = True
                 break
                 
-            # set cur_line to the line where the regions start
-            cur_line += unparsed_program_string[:region_start.start()].count('\n')
-
+            # set cur_line to the line where the region starts
+            pre_region = unparsed_program_string[:region_start.start()]            
+            cur_line += pre_region.count('\n')
+            
             # find the matching end of the program region
-            region_end = re.search(r"\$/", unparsed_program_string)
+            region_end = re.search(r"\$/", unparsed_program_string)            
 
             if region_end.start() is None:
                 raise UnmatchedRegion(cur_line)
 
             # get elements from the found region
-            region = unparsed_program_string[   region_start.end() + 1 : \
-                                                region_end.start()]
+            region = unparsed_program_string[region_start.end():region_end.start()]
             parsed_elements.extend(self.get_elements_from_region(region, cur_line))
 
             # update line number by adding the number of lines inside the region
-            cur_line += unparsed_program_string[:region_end.start()].count('\n')
+            cur_line += region.count('\n')
 
-            # remove the region from the beginning of unparsed_program_string
-            unparsed_program_string = unparsed_program_string[region_end.end() + 1 :]
+            # remove this pre-region and region from unparsed_program_string
+            post_region = unparsed_program_string[region_end.end():]
+            unparsed_program_string = post_region
             
         return parsed_elements
 

@@ -1,18 +1,17 @@
+Tic Tac Toe
+by Qianji Zheng and J. Nelson Rushton, Texas Tech University
+
+This is an LED program that defines a simple tic tac toe game to run in the Easel game engine.
+
+The game begins with an empty grid and player x to move. When an empty cell is clicked, the player whose turn it occupies that cell and it becomes the other player's turn, until the game is over. When the game is over a message is displayed giving the result of the  game. The player can press the "reset" button at any time to restart the game.
+
 ======================================================================
 DATA MODEL
 ======================================================================
 
 A *player* is the string "x" or the string "o". In this program, the variable p will range over players. 
 /$  Player := {"x", "o"} 
-    var p: Player          $/
+    var p: Player             $/
                   
 A *cell* is an integer in {1..9}. In this program, the variable c will range over cells.
-/$ xx       Cell := {1..9}
-        var c: Cell              $/
-
-Cells represent squares on the tic tac toe board as pictured below:
-    1|2|3
-    -----
-    4|5|6
-    -----
-    7|8|9
+/$Cell := {1..9}var c: Cell x$/
