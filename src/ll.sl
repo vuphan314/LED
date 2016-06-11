@@ -1,221 +1,110 @@
-/* exports */
+/* importing */
 
-public  numeral,
-        add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp;
-
-/* imports */
-
-import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
-import <Utilities/Sequence.sl>;
-import <Utilities/Set.sl>;
 
-/* types */
+/* number type */
 
-// Value ::= (kind: char(1), truth: bool, number: int(1), container: Value(1));
+Numb ::= (Numr: int, Denr: int);
 
-/* functions */
-
-/* helpers */
-
-/* constants */
-
-number0 := [0, 1];
-number1 := [1, 1];
-number10 := [10, 1];
-
-/* numeral */
-
-// getNumeral: int(1) -> char(1);
-// getNumeral(n(1)) :=
-    // let
-        // signN := signNumb(n);
-        // abN := ab(n);
-        // quot := abN[1] / abN[2];        
-        // rem := abN[1] mod abN[2];        
-    // in
+getNumr: Numb -> int;
+getNumr(numb) :=
+    numb.Numr;
     
+getDenr: Numb -> int;
+getDenr(numb) :=
+    numb.Denr;
+
+newNumb: int * int -> Numb;
+newNumb(i1, i2) :=
+    (Numr: i1, Denr: i2);
+    
+newInt: int -> Numb;
+newInt(i) :=
+    newNumb(i, 1);
+    
+/* LED arithmetic */
+
+add: Numb * Numb -> Numb;
+add(numb1, numb2) :=
+    let
+        redNumb1 := reduce(numb1); redNumb2 := reduce(numb2);
+        numr := 
+            getNumr(redNumb1) * getDenr(redNumb2) + 
+            getDenr(redNumb1) * getNumr(redNumb2);
+        denr := getDenr(redNumb1) * getDenr(redNumb2);
+    in
+        newNumb(numr, denr);
         
-// printFraction: int(1) -> char(1);
-// printFraction(n(1)) :=
-    // let
-        // divisor := n[2];
-        // rem := n[1];
-        // fr := calculateFraction(divisor, [rem], []);
-        // rems := fr[1];
-        // lastRem := Sequence::last(rems);
-        // pos := Sequence::firstIndexOf(rems, lastRem);
-    // in
-
-
-// calculateFraction: int * int(1) * int(1) -> int(2);
-// calculateFraction(divisor, rems(1), quots(1)) :=
-    // let
-        // dividend := Sequence::last(rems) * 10;
-        // rem := dividend mod divisor;
-        // pos := Sequence::firstIndexOf(rems, rem);
-        // rems2 := rems ++ [rem];
-        // quot := dividend / divisor;
-        // quots2 := quots ++ [quot];
-    // in
-        // [rems2, quots2] when rem = 0 or pos > 0 else
-        // calculateFraction(divisor, rems2, quots2);
-
-// numeral: char(1) -> int(1);
-numeral(n(1)) :=
-    let dot := Sequence::firstIndexOf(n, '.');
-        iN := Sequence::take(n, dot - 1);
-        dF := Sequence::drop(n, dot - 1);
-        numbIN := intNumeral(iN);
-        numbF := fraction(dF);
-    in  intNumeral(n) when dot = 0 else
-        fraction(n) when dot = 1 else
-        add(numbIN, numbF);
+biMinus: Numb * Numb -> Numb;
+biMinus(numb1, numb2) :=
+    add(numb1, uMinus(numb2));
+    
+uMinus: Numb -> Numb;
+uMinus(numb) :=    
+    reduce(newNumb(-getNumr(numb), getDenr(numb)));
+    
+mult: Numb * Numb -> Numb;
+mult(numb1, numb2) :=
+    let
+        redNumb1 := reduce(numb1); redNumb2 := reduce(numb2);
+        numr := getNumr(redNumb1) * getNumr(redNumb2);
+        denr := getDenr(redNumb1) * getDenr(redNumb2);
+    in
+        reduce(newNumb(numr, denr));
         
-// intNumeral: char(1) -> int(1);
-intNumeral(iN(1)) := [Conversion::stringToInt(iN), 1];
+div: Numb * Numb -> Numb;
+div(numb1, numb2) := 
+    mult(numb1, recipr(numb2));
+        
+flr: Numb -> Numb;
+flr(numb) := 
+    newInt(getNumr(numb) / getDenr(numb));
 
-// fraction: char(1) -> int(1);
-fraction(dF(1)) :=
-    let lPar := Sequence::firstIndexOf(dF, '(');
-    in  fractionNoRepeat(dF) when lPar = 0 else
-        fractionRepeat(dF);
+clng: Numb -> Numb;
+clng(numb) :=
+    numb when isInt(numb) else
+    newInt(getNumr(flr(numb)) + 1);
+
+ab: Numb -> Numb;
+ab(numb) :=
+    let
+        absNumr := Math::abs(getNumr(numb));
+        absDenr := Math::abs(getDenr(numb));
+    in
+        reduce(newNumb(absNumr, absDenr));
+
+/* arithmetic helpers */
+
+recipr: Numb -> Numb;
+recipr(numb) :=
+    reduce(newNumb(getDenr(numb), getNumr(numb)));
+
+reduce: Numb -> Numb;
+reduce(numb) :=
+    let
+        signOfNumb := signNumb(numb);
+        absNumr := Math::abs(getNumr(numb)); absDenr := Math::abs(getDenr(numb));
+        gcdNumb := gcd(absNumr, absDenr);
+        redAbsNumr := absNumr / gcdNumb; redAbsDenr := absDenr / gcdNumb;
+        redNumr := signOfNumb * redAbsNumr;
+    in
+        newNumb(redNumr, redAbsDenr);
+
+gcd: int * int -> int;
+gcd(i1, i2) :=
+    i1 when i2 = 0 else
+    gcd(i2, i1 mod i2);
     
-// fractionNoRepeat: char(1) -> int(1);
-fractionNoRepeat(fNR(1)) :=
-    let iN := Sequence::drop(fNR, 1);
-        len := [size(iN), 1];
-        shift := exp(number10, uMinus(len));
-        numbIN := mult(shift, intNumeral(iN));
-    in numbIN;
+signNumb: Numb -> int;
+signNumb(numb) :=
+    Math::sign(getNumr(numb)) * Math::sign(getDenr(numb));
     
-// fractionRepeat: char(1) -> int(1);
-fractionRepeat(fR(1)) :=
-    let lPar := Sequence::firstIndexOf(fR, '(');
-        fNR := Sequence::take(fR, lPar - 1);
-        numbFNR := fractionNoRepeat(fNR);
-        rB := Sequence::drop(fR, lPar - 1);
-        len := [size(fNR) - 1, 1];
-        shift := exp(number10, uMinus(len));
-        numbRB := mult(shift, repeatBlock(rB));
-    in  add(numbFNR, numbRB);
-
-// repeatBlock: char(1) -> int(1);
-repeatBlock(rB(1)) :=
-    let 
-        iN := rB[2 ... size(rB) - 3];
-        number := intNumeral(iN);
-        len := [size(iN), 1];
-        divisor := biMinus(exp(number10, len), number1);
-    in  div(number, divisor);
+isInt: Numb -> bool;
+isInt(numb) :=
+    getNumr(numb) mod getDenr(numb) = 0;
     
-/* arithmetic */
+/* numbers */
 
-// reduce: int(1) -> int(1);
-reduce(n(1)) :=
-    let signN := signNumb(n);
-        abN := Math::abs(n);
-        gcdAbN := GCD(abN[1], abN[2]);
-        redAbN := abN / gcdAbN;
-    in [signN * redAbN[1], redAbN[2]];
-    
-//todo sli stuck iff signature is uncommented
-GCD: int * int -> int;
-GCD(n1, n2) :=
-    n1 when n2 = 0 else
-    GCD(n2, n1 mod n2);
-    
-signNumb: int(1) -> int;
-signNumb(n(1)) := 
-    product(Math::sign(n));
-    
-isInt: int(1) -> bool;
-isInt(n(1)) := 
-    n[1] mod n[2] = 0;
-
-reciprocal: int(1) -> int(1);
-reciprocal(n(1)) := reduce(Sequence::reverse(n));
-
-// nrvalList: int * int -> Value(1);
-// nrvalList(int1, int2)[i] :=
-    // let n := [i, 1];
-    // in (kind: typeNumber, number: n)
-    // foreach i within int1 ... int2;
-
-/* LED */
-    
-/* arithmetic */
-
-add: int(1) * int(1) -> int(1);
-add(n1(1), n2(1)) :=
-    let int1 := n1[1] * n2[2] + n1[2] * n2[1];
-        int2 := n1[2] * n2[2];
-        number := [int1, int2];
-    in reduce(number);
-    
-biMinus: int(1) * int(1) -> int(1);
-biMinus(n1(1), n2(1)) := add(n1, uMinus(n2));
-
-uMinus: int(1) -> int(1);
-uMinus(n(1)) := reduce([-n[1], n[2]]);
-
-mult: int(1) * int(1) -> int(1);
-mult(n1(1), n2(1)) := reduce(n1 * n2);
-
-div: int(1) * int(1) -> int(1);
-div(n1(1), n2(1)) := mult(n1, reciprocal(n2));
-
-flr: int(1) -> int(1);
-flr(n(1)) := [n[1] / n[2], 1];
-
-clng: int(1) -> int(1);
-clng(n(1)) := 
-    n when isInt(n) else
-    [n[1] / n[2] + 1, 1];
-    
-ab: int(1) -> int(1);
-ab(n(1)) := reduce(Math::abs(n));
-
-md: int(1) * int(1) -> int(1);
-md(n1(1), n2(1)) := [n1[1] mod n2[1], 1];
-
-exp: int(1) * int(1) -> int(1);
-exp(n1(1), n2(1)) :=
-    let pow := n2[1];
-    in  [1, 1] when pow = 0 else
-        mult(n1, exp(n1, [pow - 1, 1])) when pow > 0 else
-        exp(reciprocal(n1), uMinus(n2));
-    
-numbEq: int(1) * int(1) -> bool;
-numbEq(n1(1), n2(1)) := not (numbL(n1, n2) or numbGr(n1, n2));
-    
-numbL: int(1) * int(1) -> bool;
-numbL(n1(1), n2(1)) :=
-    let diff := biMinus(n1, n2);
-    in signNumb(diff) < 0;
-
-numbGr: int(1) * int(1) -> bool;
-numbGr(n1(1), n2(1)) :=
-    let diff := biMinus(n1, n2);
-    in signNumb(diff) > 0;
-    
-numbLEq: int(1) * int(1) -> bool;
-numbLEq(n1(1), n2(1)) := numbL(n1, n2) or numbEq(n1, n2);
-    
-numbGrEq: int(1) * int(1) -> bool;
-numbGrEq(n1(1), n2(1)) := numbGr(n1, n2) or numbEq(n1, n2);
-
-// nrval: int(1) * int(1) -> Value;
-// nrval(n1(1), n2(1)) :=
-    // let int1 := n1[1];
-        // int2 := n2[1];
-        // list := nrvalList(int1, int2);
-    // in (kind: typeSet, set: list);    
-
-/* set */
-    
-// biUnion: V alue * Value -> Value;
-// biUnion(valSet1, valSet2) :=
-    // let set1 := valSet1.set;
-        // set2 := valSet2.set;
-    // in (kind: typeSet, set: Set::union(set1, set2));
+zero := newInt(0);
+one := newInt(1);
+ten := newInt(10);
