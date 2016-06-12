@@ -21,7 +21,7 @@ some = some
 all = all
 otherwise = otherwise
 
-tru = true|false
+truth = true|false
 primType = Nat|Int|Num|Bool
 id = [a-zA-Z][a-zA-Z0-9]*
 atom = `[a-zA-Z][a-zA-Z0-9]*

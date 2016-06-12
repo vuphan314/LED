@@ -6,6 +6,10 @@ import <Utilities/Math.sl>;
 
 Numb ::= (Numr: int, Denr: int);
 
+newNumb: int * int -> Numb;
+newNumb(i1, i2) :=
+    reduce((Numr: i1, Denr: i2));
+
 getNumr: Numb -> int;
 getNumr(numb) :=
     numb.Numr;
@@ -13,25 +17,26 @@ getNumr(numb) :=
 getDenr: Numb -> int;
 getDenr(numb) :=
     numb.Denr;
-
-newNumb: int * int -> Numb;
-newNumb(i1, i2) :=
-    (Numr: i1, Denr: i2);
     
+/* integer pseudotype */
+
 newInt: int -> Numb;
 newInt(i) :=
     newNumb(i, 1);
+    
+getInt: Numb -> int;
+getInt(numb) :=
+    getNumr(reduce(numb));
     
 /* LED arithmetic */
 
 add: Numb * Numb -> Numb;
 add(numb1, numb2) :=
     let
-        redNumb1 := reduce(numb1); redNumb2 := reduce(numb2);
         numr := 
-            getNumr(redNumb1) * getDenr(redNumb2) + 
-            getDenr(redNumb1) * getNumr(redNumb2);
-        denr := getDenr(redNumb1) * getDenr(redNumb2);
+            getNumr(numb1) * getDenr(numb2) + 
+            getDenr(numb1) * getNumr(numb2);
+        denr := getDenr(numb1) * getDenr(numb2);
     in
         newNumb(numr, denr);
         
@@ -41,16 +46,15 @@ biMinus(numb1, numb2) :=
     
 uMinus: Numb -> Numb;
 uMinus(numb) :=    
-    reduce(newNumb(-getNumr(numb), getDenr(numb)));
+    newNumb(-getNumr(numb), getDenr(numb));
     
 mult: Numb * Numb -> Numb;
 mult(numb1, numb2) :=
     let
-        redNumb1 := reduce(numb1); redNumb2 := reduce(numb2);
-        numr := getNumr(redNumb1) * getNumr(redNumb2);
-        denr := getDenr(redNumb1) * getDenr(redNumb2);
+        numr := getNumr(numb1) * getNumr(numb2);
+        denr := getDenr(numb1) * getDenr(numb2);
     in
-        reduce(newNumb(numr, denr));
+        newNumb(numr, denr);
         
 div: Numb * Numb -> Numb;
 div(numb1, numb2) := 
@@ -63,7 +67,7 @@ flr(numb) :=
 clng: Numb -> Numb;
 clng(numb) :=
     numb when isInt(numb) else
-    newInt(getNumr(flr(numb)) + 1);
+    newInt(getInt(flr(numb)) + 1);
 
 ab: Numb -> Numb;
 ab(numb) :=
@@ -71,13 +75,13 @@ ab(numb) :=
         absNumr := Math::abs(getNumr(numb));
         absDenr := Math::abs(getDenr(numb));
     in
-        reduce(newNumb(absNumr, absDenr));
+        newNumb(absNumr, absDenr);
 
 /* arithmetic helpers */
 
 recipr: Numb -> Numb;
 recipr(numb) :=
-    reduce(newNumb(getDenr(numb), getNumr(numb)));
+    newNumb(getDenr(numb), getNumr(numb));
 
 reduce: Numb -> Numb;
 reduce(numb) :=
@@ -88,7 +92,7 @@ reduce(numb) :=
         redAbsNumr := absNumr / gcdNumb; redAbsDenr := absDenr / gcdNumb;
         redNumr := signOfNumb * redAbsNumr;
     in
-        newNumb(redNumr, redAbsDenr);
+        (Numr: redNumr, Denr: redAbsDenr);
 
 gcd: int * int -> int;
 gcd(i1, i2) :=

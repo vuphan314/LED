@@ -108,7 +108,7 @@ bool_term_5(not B6) ::= tilde bool_term_6(B6)
 
 bool_term_6(boolUT U) ::= user_term(U)
 bool_term_6(B) ::= lPar bool_term(B) rPar
-bool_term_6(T) ::= tru(T)
+bool_term_6(T) ::= truth(T)
 bool_term_6(S) ::= set_bool_term(S)
 bool_term_6(Q) ::= quantified_term(Q)
 bool_term_6(E) ::= equality(E)
