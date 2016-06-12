@@ -289,7 +289,7 @@ getFrRep(repRemPos, quots(1)) :=
         
 getRepBl: int(1) -> char(1);
 getRepBl(repQuots(1)) :=
-    "(" ++ getIntNuml(repQuots) ++ ")";
+    "(" ++ getIntNuml(repQuots) ++ "..)";
 
 getFrNRep: int(1) -> char(1);
 getFrNRep(quots(1)) :=
