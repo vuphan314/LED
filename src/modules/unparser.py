@@ -12,23 +12,23 @@ def unparse(T):
 def convert(T):
     if T[0] == 'id':
         return T[1]
-    elif T[0] == 'num':
-        ret = prependLib('numeral') + '("' + T[1] + '")'
+    elif T[0] == 'numl':
+        ret = prependLib('numlToNumb') + '("' + T[1] + '")'
         return ret
-    elif T[0] == 'funDef':
+    elif T[0] == 'cDef':
         st1 = convert(T[1])
         st2 = convert(T[2])
-        return st1 + ' := ' + st2 + ';\n\n'
+        ret = st1 + ' := ' + st2 + ';\n\n'
         return ret
     elif T[0] in arOps:
         return unparseArOps(T)
     else:
         return recurStr(T[0], T[1:], convert)
         
-def unparseArOps(T):    
+def unparseArOps(T):
     ret = prependLib(T[0])
     ret += '(' + convert(T[1])
-    if len(T) == 3:
+    if len(T) == 3: # second operand
         ret += ', ' + convert(T[2])
     ret += ')'    
     return ret
@@ -36,7 +36,6 @@ def unparseArOps(T):
 ########## ########## ########## ########## ########## ########## ########## ##########
 
 def recurStr(head, tail, func):
-    # print(head)
     st = ''
     for t in tail:
         st += func(t)
@@ -44,9 +43,9 @@ def recurStr(head, tail, func):
     
 ########## ########## ########## ########## ########## ########## ########## ##########
 
-arOps = {'add', 'biMinus', 'uMinus', 'mult', 'div', 'flr', 'clng', 'abs', 'md', 'exp'}
+arOps = {'add', 'biMinus', 'uMinus', 'mult', 'div', 'flr', 'clng', 'ab', 'md', 'exp'}
 
-libName = 'lib'
+libName = 'll'
 
 def prependLib(st):
     return libName + "::" + st

@@ -1,5 +1,5 @@
 '''
-This file contains miscellaneous constructs used by most other files
+This file contains miscellaneous constructs used by other files
 '''
 
 ########## ########## ########## ########## ########## ########## ########## ##########

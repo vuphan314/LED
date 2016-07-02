@@ -152,7 +152,7 @@ ar_term_5(arUT U) ::= user_term(U)
 ar_term_5(A) ::= lPar ar_term(A) rPar
 ar_term_5(flr A) ::= floor lPar ar_term(A) rPar
 ar_term_5(clng A) ::= ceil lPar ar_term(A) rPar
-ar_term_5(N) ::= num(N)
+ar_term_5(N) ::= numl(N)
 ar_term_5(barT B) ::= bar bar_arg(B) bar
 
 bar_arg(barUT U) ::= user_term(U)

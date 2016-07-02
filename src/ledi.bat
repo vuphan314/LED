@@ -1,20 +1,23 @@
 goto starting
 
 :body
-    set comm=py parser.py %%i
-
     set fold=tests\
     set fil=%fold%test2
 	for %%i in (%fil%.led) do (
-		set o=%fold%%%~ni.p
+		set p=%fold%%%~ni.p
+        
+        set parse=py ledparser.py %%i
+        set transl=py translator.py %%i
         
         REM type %%i
+        
+        REM !parse!
+        
+        !parse! > !p!
+        type !p!
         echo:
         
-        REM %comm%
-        
-        %comm% > !o!
-        !o!
+        !transl!
 	)
 	goto done
 	

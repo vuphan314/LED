@@ -4,13 +4,13 @@ This module transforms an LED parse-forest to a SL parse-tree
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
-from . import housekeeper
+from . import helper
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
 def transform(L):
     L = ['prog'] + L
-    T = housekeeper.tupleFromList(L)
+    T = helper.tupleFromList(L)
     transformed = convert(T)
     return transformed
     
