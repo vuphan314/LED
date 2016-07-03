@@ -28,8 +28,11 @@ either expressed or implied, of the FreeBSD Project.
 """
 
 import os
+
 from genparser.src.astgen.parsing.lexer import *
 from genparser.src.astgen.parsing.parser import *
+
+from modules.helper import *
 
 class RegionParser:
     def __init__(self, program_file):
@@ -49,12 +52,9 @@ class RegionParser:
         
     def get_parsed_elements(self):
         """ 
-        Get the list of parse trees corresponding
-        to the elements of the given program
+        Get the list of parse trees corresponding to the elements of the given program
         """
-
-        # split the program into regions
-        # call the parser for every region separately
+        # split the program into regions and parse each region
         all_regions_parsed = False
         parsed_elements = []
         unparsed_program_string = self.program_string
@@ -66,15 +66,16 @@ class RegionParser:
                 break
                 
             # set cur_line to the line where the region starts
-            pre_region = unparsed_program_string[:region_start.start()]            
+            pre_region = unparsed_program_string[:region_start.start()]
             cur_line += pre_region.count('\n')
             
             # find the matching end of the program region
-            region_end = re.search(r"\$/", unparsed_program_string)            
-
-            if region_end.start() is None:
+            end_delimiter = re.compile(r"\$/")
+            region_end = \
+                end_delimiter.search(unparsed_program_string, region_start.end())
+            if region_end is None:
                 raise UnmatchedRegion(cur_line)
-
+            
             # get elements from the found region
             region = unparsed_program_string[region_start.end():region_end.start()]
             parsed_elements.extend(self.get_elements_from_region(region, cur_line))
@@ -82,7 +83,7 @@ class RegionParser:
             # update line number by adding the number of lines inside the region
             cur_line += region.count('\n')
 
-            # remove this pre-region and region from unparsed_program_string
+            # remove the current pre-region and region from unparsed_program_string
             post_region = unparsed_program_string[region_end.end():]
             unparsed_program_string = post_region
             
@@ -106,8 +107,9 @@ class UnmatchedRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return  "The program file contains an unmatched region starting from line " + \
-                str(self.line_number)
+        return \
+            "\n\nThe program file contains an unmatched region starting from line " + \
+            str(self.line_number)
 
     def __str__(self):
         return self.__repr__()
