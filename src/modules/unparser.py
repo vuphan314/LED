@@ -1,5 +1,5 @@
 '''
-This module unparses a SL tree to a string which represents a SL program
+This module unparses a SL tree to a string which represents a SL program.
 '''
 
 ########## ########## ########## ########## ########## ########## ########## ##########

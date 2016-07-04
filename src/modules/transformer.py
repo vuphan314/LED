@@ -1,5 +1,5 @@
 '''
-This module transforms an LED parse-forest to a SL parse-tree
+This module transforms an LED parse-forest to a SL parse-tree.
 '''
 
 ########## ########## ########## ########## ########## ########## ########## ##########

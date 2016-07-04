@@ -15,7 +15,6 @@ goto starting
         
         REM !parse! > !p!
         REM type !p!
-        REM echo:
         
         REM !transl!
 	)
