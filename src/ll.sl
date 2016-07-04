@@ -1,3 +1,5 @@
+/* LED Library */
+
 /* exporting */
 
 public  
@@ -11,7 +13,23 @@ Val ::=
     (typ: char(1), 
     truth: bool, numb: Numb, atom: char(1), 
     lst: Val(1), lmbd: (Val(1) -> Val));
+    
+typNumb: char(1);
+typNumb :=
+    "numb";
+    
+valToNumb: Val -> Numb;
+valToNumb(v) :=
+    v.numb;
+    
+numbToVal: Numb -> Val;
+numbToVal(n) :=
+    (typ: typNumb, numb: n);
 
+numlToVal: char(1) -> Val;
+numlToVal(n) :=
+    numbToVal(numlToNumb(n));
+    
 /* number type */
 
 Numb ::= 
