@@ -12,9 +12,12 @@ import modules.unparser
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
-if __name__ == '__main__':
+def main():
     led = sys.argv[1]
     parsed = ledparser.regparse_file(led)
-    transformed = modules.transformer.transform(parsed)
-    sl = modules.unparser.unparse(transformed)
+    transformed = modules.transformer.main(parsed)
+    sl = modules.unparser.main(transformed)
     print(sl)
+
+if __name__ == '__main__':
+    main()

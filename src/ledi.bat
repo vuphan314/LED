@@ -11,12 +11,12 @@ goto starting
         
         REM type %%i
         
-        !parse!
+        REM !parse!
         
         REM !parse! > !p!
         REM type !p!
         
-        REM !transl!
+        !transl!
 	)
 	goto done
 	
