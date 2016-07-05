@@ -33,27 +33,27 @@ numlToVal(n) :=
 /* number type */
 
 Numb ::= 
-    (Numr: int, Denr: int);
+    (Numr: int64, Denr: int64);
 
-newNumb: int * int -> Numb;
+newNumb: int64 * int64 -> Numb;
 newNumb(i1, i2) :=
     reduce(i1, i2);
 
-getNumr: Numb -> int;
+getNumr: Numb -> int64;
 getNumr(numb) :=
     numb.Numr;
     
-getDenr: Numb -> int;
+getDenr: Numb -> int64;
 getDenr(numb) :=
     numb.Denr;
     
 /* integer pseudotype */
 
-newInt: int -> Numb;
+newInt: int64 -> Numb;
 newInt(i) :=
     newNumb(i, 1);
     
-getInt: Numb -> int;
+getInt: Numb -> int64;
 getInt(numb) :=
     getNumr(numb);
     
@@ -76,7 +76,7 @@ isInt(numb) :=
         // list := nrvalList(int1, int2);
     // in (typ: typeSet, set: list);    
 
-// nrvalList: int * int -> Val(1);
+// nrvalList: int64 * int64 -> Val(1);
 // nrvalList(int1, int2)[i] :=
     // let n := [i, 1];
     // in (typ: typeNumber, number: n)
@@ -140,7 +140,7 @@ div: Numb * Numb -> Numb;
 div(numb1, numb2) := 
     mult(numb1, recipr(numb2));
 
-flr: Numb -> int;
+flr: Numb -> int64;
 flr(numb) := 
     let        
         quot := getNumr(numb) / getDenr(numb);
@@ -149,7 +149,7 @@ flr(numb) :=
         quot - 1 when badCase else
         quot;
         
-clng: Numb -> int;
+clng: Numb -> int64;
 clng(numb) :=
     getInt(numb) when isInt(numb) else
     flr(numb) + 1;
@@ -158,11 +158,11 @@ ab: Numb -> Numb;
 ab(numb) :=
     newNumb(Math::abs(getNumr(numb)), getDenr(numb));
         
-md: int * int -> int;
+md: int64 * int64 -> int64;
 md(i1, i2) :=
     i1 mod i2;
     
-exp: Numb * int -> Numb;
+exp: Numb * int64 -> Numb;
 exp(numb, i) :=
     one when i = 0 else
     mult(numb, exp(numb, i - 1)) when i > 0 else
@@ -174,11 +174,11 @@ recipr: Numb -> Numb;
 recipr(numb) :=
     newNumb(getDenr(numb), getNumr(numb));
 
-sgn: Numb -> int;
+sgn: Numb -> int64;
 sgn(numb) :=
     Math::sign(getNumr(numb));
     
-reduce: int * int -> Numb;
+reduce: int64 * int64 -> Numb;
 reduce(i1, i2) :=
     let
         signOfNumb := Math::sign(i1) * Math::sign(i2);
@@ -189,7 +189,7 @@ reduce(i1, i2) :=
     in
         (Numr: redNumr, Denr: redAbsDenr);
 
-gcd: int * int -> int;
+gcd: int64 * int64 -> int64;
 gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
@@ -275,7 +275,7 @@ numbToNuml(numb) :=
         "-" ++ getAbsNuml(absNumr, denr) when negative else
         getAbsNuml(absNumr, denr);
     
-getAbsNuml: int * int -> char(1);
+getAbsNuml: int64 * int64 -> char(1);
 getAbsNuml(absNumr, denr) :=
     let
         integralPart := Conversion::intToString(absNumr / denr);        
@@ -284,7 +284,7 @@ getAbsNuml(absNumr, denr) :=
         integralPart when minAbsNumr = 0 else
         integralPart ++ getFr(minAbsNumr, denr);
         
-getFr: int * int -> char(1);
+getFr: int64 * int64 -> char(1);
 getFr(minAbsNumr, denr) :=
     let
         remsQuots := getRemsQuots(denr, [minAbsNumr], []);
@@ -297,7 +297,7 @@ getFr(minAbsNumr, denr) :=
         getFrRep(repRemPos, quots) when rep else
         getFrNRep(quots);
     
-getFrRep: int * int(1) -> char(1);
+getFrRep: int64 * int64(1) -> char(1);
 getFrRep(repRemPos, quots(1)) :=
     let
         nRepQuots := Sequence::take(quots, repRemPos - 1);
@@ -305,19 +305,19 @@ getFrRep(repRemPos, quots(1)) :=
     in
         getFrNRep(nRepQuots) ++ getRepBl(repQuots);
         
-getRepBl: int(1) -> char(1);
+getRepBl: int64(1) -> char(1);
 getRepBl(repQuots(1)) :=
     "(" ++ getIntNuml(repQuots) ++ "..)";
 
-getFrNRep: int(1) -> char(1);
+getFrNRep: int64(1) -> char(1);
 getFrNRep(quots(1)) :=
     "." ++ getIntNuml(quots);
     
-getIntNuml: int(1) -> char(1);
+getIntNuml: int64(1) -> char(1);
 getIntNuml(quots(1)) :=
     join(Conversion::intToString(quots));
 
-getRemsQuots: int * int(1) * int(1) -> int(2);
+getRemsQuots: int64 * int64(1) * int64(1) -> int64(2);
 getRemsQuots(divisor, rems(1), quots(1)) :=
     let
         dividend := Sequence::last(rems) * 10;
