@@ -1,4 +1,6 @@
-/* LED Library */
+/* 
+LED Library 
+*/
 
 /* exporting */
 
@@ -7,46 +9,46 @@ public
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
     numlToNumb, numbToNuml;
         
-/* value type */
+/* type: value */
 
 Val ::= 
-    (typ: char(1), 
-    trth: bool, numb: Numb, atm: char(1), 
-    lst: Val(1), lmbd: (Val(1) -> Val));
-    
-valToTyp: Val -> char(1);
-valToTyp(v) :=
-    v.typ;
-    
-valTypTrth: char(1);
-valTypTrth :=
-    "trth";
-    
-valTypNumb: char(1);
-valTypNumb :=
-    "numb";
-    
-trthToVal: bool -> Val;
-trthToVal(t) :=
-    (typ: valTypTrth, trth: t);
-    
+    (kind: char(1), 
+    trth: bool, numb: Numb, 
+    atm: char(1), coll: Val(1), lmbd: (Val(1) -> Val));
+        
+valToKind: Val -> char(1);
+valToKind(v) :=
+    v.kind;
+
 valIsNumb: Val -> bool;
 valIsNumb(v) :=
-    equalList(valToTyp(v), valTypNumb);
+    equalList(valToKind(v), kindNumb);
+    
+numlToVal: char(1) -> Val;
+numlToVal(n(1)) :=
+    numbToVal(numlToNumb(n));
+    
+/* value to thing */
+
+valToTrth: Val -> bool;
+valToTrth(v) :=
+    v.trth;
     
 valToNumb: Val -> Numb;
 valToNumb(v) :=
     v.numb;
     
+/* thing to value */
+    
+trthToVal: bool -> Val;
+trthToVal(t) :=
+    (kind: kindTrth, trth: t);
+    
 numbToVal: Numb -> Val;
 numbToVal(n) :=
-    (typ: valTypNumb, numb: n);
+    (kind: kindNumb, numb: n);
 
-numlToVal: char(1) -> Val;
-numlToVal(n(1)) :=
-    numbToVal(numlToNumb(n));
-    
-/* number type */
+/* type: number */
 
 Numb ::= 
     (Numr: int64, Denr: int64);
@@ -63,7 +65,7 @@ numbToDenr: Numb -> int64;
 numbToDenr(numb) :=
     numb.Denr;
     
-/* integer pseudotype */
+/* pseudotype: integer */
 
 intToNumb: int64 -> Numb;
 intToNumb(i) :=
@@ -77,41 +79,25 @@ numbIsInt: Numb -> bool;
 numbIsInt(numb) :=
     numbToDenr(numb) = 1;
     
-/* set operations */
-    
-// biUnion: Val * Val -> Val;
-// biUnion(valSet1, valSet2) :=
-    // let set1 := valSet1.set;
-        // set2 := valSet2.set;
-    // in (typ: typeSet, set: Set::union(set1, set2));
-    
-// nrval: Numb * Numb -> Val;
-// nrval(n1(1), n2(1)) :=
-    // let int1 := n1.num;
-        // int2 := n2.num;
-        // list := nrvalList(int1, int2);
-    // in (typ: typeSet, set: list);    
-
-// nrvalList: int64 * int64 -> Val(1);
-// nrvalList(int1, int2)[i] :=
-    // let n := [i, 1];
-    // in (typ: typeNumber, number: n)
-    // foreach i within int1 ... int2;
-    
 /* equality */
 
-// todo
-eq: Val * Val -> bool;
+eq: Val * Val -> Val;
 eq(v1, v2) :=
     let
         bothNumbs := valIsNumb(v1) and valIsNumb(v2);
+        equalNumbs := eqNumb(valToNumb(v1), valToNumb(v2));
+        equalTrths := valToTrth(v1) = valToTrth(v2);
     in
-        eqNumb(valToNumb(v1), valToNumb(v2)) when bothNumbs else
-        false;
+        trthToVal(equalNumbs) when bothNumbs else
+        trthToVal(equalTrths);
     
-uneq: Val * Val -> bool;
+uneq: Val * Val -> Val;
 uneq(v1, v2) :=
-    not eq(v1, v2);
+    let
+        equalVal := eq(v1, v2);
+        unequalTrth := not valToTrth(eq(v1, v2));
+    in
+        trthToVal(unequalTrth);
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
@@ -121,19 +107,30 @@ uneqNumb: Numb * Numb -> bool;
 uneqNumb(numb1, numb2) :=
     not eqNumb(numb1, numb2);
     
+/* standardizers */
+    
+standNumbNumbToBool: (Numb * Numb -> bool) * Val * Val -> Val;
+standNumbNumbToBool(f, v1, v2) :=
+    let
+        n1 := valToNumb(v1);
+        n2 := valToNumb(v2);
+        b := f(n1, n2);
+    in  
+        trthToVal(b);
+        
 /* relational */
-
-less: Numb * Numb -> bool;
-less(numb1, numb2) :=
+//todo
+lessNumb: Numb * Numb -> bool;
+lessNumb(numb1, numb2) :=
     sgn(biMinus(numb1, numb2)) < 0;
 
 greater: Numb * Numb -> bool;
 greater(numb1, numb2) :=
-    not (less(numb1, numb2) or eqNumb(numb1, numb2));
+    not (lessNumb(numb1, numb2) or eqNumb(numb1, numb2));
 
 lessEq: Numb * Numb -> bool;
 lessEq(numb1, numb2) :=
-    less(numb1, numb2) or eqNumb(numb1, numb2);
+    lessNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
 greaterEq: Numb * Numb -> bool;
 greaterEq(numb1, numb2) :=
@@ -224,16 +221,6 @@ gcd: int64 * int64 -> int64;
 gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
-
-/* some numbers */
-
-numbOne: Numb;
-numbOne := 
-    intToNumb(1);
-    
-numbTen: Numb;
-numbTen :=
-    intToNumb(10);
 
 /* numeral to number */
 
@@ -365,6 +352,36 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
 TwoIntLists ::= 
     (l1: int64(1), l2: int64(1));
         
+/* kinds */
+    
+kindTrth: char(1);
+kindTrth :=
+    "trth";
+    
+kindNumb: char(1);
+kindNumb :=
+    "numb";
+    
+/* pseudokinds */
+    
+kindBool: char(1);
+kindBool := 
+    "bool";
+    
+kindInt: char(1);
+kindInt :=
+    "int";
+    
+/* some numbers */
+
+numbOne: Numb;
+numbOne := 
+    intToNumb(1);
+    
+numbTen: Numb;
+numbTen :=
+    intToNumb(10);
+
 /* importing */
 
 import <Utilities/Conversion.sl>;
