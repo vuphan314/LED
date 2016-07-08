@@ -11,12 +11,28 @@ public
 
 Val ::= 
     (typ: char(1), 
-    truth: bool, numb: Numb, atom: char(1), 
+    trth: bool, numb: Numb, atm: char(1), 
     lst: Val(1), lmbd: (Val(1) -> Val));
     
-typNumb: char(1);
-typNumb :=
+valToTyp: Val -> char(1);
+valToTyp(v) :=
+    v.typ;
+    
+valTypTrth: char(1);
+valTypTrth :=
+    "trth";
+    
+valTypNumb: char(1);
+valTypNumb :=
     "numb";
+    
+trthToVal: bool -> Val;
+trthToVal(t) :=
+    (typ: valTypTrth, trth: t);
+    
+valIsNumb: Val -> bool;
+valIsNumb(v) :=
+    equalList(valToTyp(v), valTypNumb);
     
 valToNumb: Val -> Numb;
 valToNumb(v) :=
@@ -24,10 +40,10 @@ valToNumb(v) :=
     
 numbToVal: Numb -> Val;
 numbToVal(n) :=
-    (typ: typNumb, numb: n);
+    (typ: valTypNumb, numb: n);
 
 numlToVal: char(1) -> Val;
-numlToVal(n) :=
+numlToVal(n(1)) :=
     numbToVal(numlToNumb(n));
     
 /* number type */
@@ -35,31 +51,31 @@ numlToVal(n) :=
 Numb ::= 
     (Numr: int64, Denr: int64);
 
-newNumb: int64 * int64 -> Numb;
-newNumb(i1, i2) :=
+intsToNumb: int64 * int64 -> Numb;
+intsToNumb(i1, i2) :=
     reduce(i1, i2);
 
-getNumr: Numb -> int64;
-getNumr(numb) :=
+numbToNumr: Numb -> int64;
+numbToNumr(numb) :=
     numb.Numr;
     
-getDenr: Numb -> int64;
-getDenr(numb) :=
+numbToDenr: Numb -> int64;
+numbToDenr(numb) :=
     numb.Denr;
     
 /* integer pseudotype */
 
-newInt: int64 -> Numb;
-newInt(i) :=
-    newNumb(i, 1);
+intToNumb: int64 -> Numb;
+intToNumb(i) :=
+    intsToNumb(i, 1);
     
-getInt: Numb -> int64;
-getInt(numb) :=
-    getNumr(numb);
+numbToInt: Numb -> int64;
+numbToInt(numb) :=
+    numbToNumr(numb);
     
-isInt: Numb -> bool;
-isInt(numb) :=
-    getDenr(numb) = 1;
+numbIsInt: Numb -> bool;
+numbIsInt(numb) :=
+    numbToDenr(numb) = 1;
     
 /* set operations */
     
@@ -82,7 +98,20 @@ isInt(numb) :=
     // in (typ: typeNumber, number: n)
     // foreach i within int1 ... int2;
     
-/* arithmetic comparison */
+/* equality */
+
+// todo
+eq: Val * Val -> bool;
+eq(v1, v2) :=
+    let
+        bothNumbs := valIsNumb(v1) and valIsNumb(v2);
+    in
+        eqNumb(valToNumb(v1), valToNumb(v2)) when bothNumbs else
+        false;
+    
+uneq: Val * Val -> bool;
+uneq(v1, v2) :=
+    not eq(v1, v2);
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
@@ -92,6 +121,8 @@ uneqNumb: Numb * Numb -> bool;
 uneqNumb(numb1, numb2) :=
     not eqNumb(numb1, numb2);
     
+/* relational */
+
 less: Numb * Numb -> bool;
 less(numb1, numb2) :=
     sgn(biMinus(numb1, numb2)) < 0;
@@ -114,11 +145,11 @@ add: Numb * Numb -> Numb;
 add(numb1, numb2) :=
     let
         numr := 
-            getNumr(numb1) * getDenr(numb2) + 
-            getDenr(numb1) * getNumr(numb2);
-        denr := getDenr(numb1) * getDenr(numb2);
+            numbToNumr(numb1) * numbToDenr(numb2) + 
+            numbToDenr(numb1) * numbToNumr(numb2);
+        denr := numbToDenr(numb1) * numbToDenr(numb2);
     in
-        newNumb(numr, denr);
+        intsToNumb(numr, denr);
         
 biMinus: Numb * Numb -> Numb;
 biMinus(numb1, numb2) :=
@@ -126,15 +157,15 @@ biMinus(numb1, numb2) :=
     
 uMinus: Numb -> Numb;
 uMinus(numb) :=    
-    newNumb(-getNumr(numb), getDenr(numb));
+    intsToNumb(-numbToNumr(numb), numbToDenr(numb));
     
 mult: Numb * Numb -> Numb;
 mult(numb1, numb2) :=
     let
-        numr := getNumr(numb1) * getNumr(numb2);
-        denr := getDenr(numb1) * getDenr(numb2);
+        numr := numbToNumr(numb1) * numbToNumr(numb2);
+        denr := numbToDenr(numb1) * numbToDenr(numb2);
     in
-        newNumb(numr, denr);
+        intsToNumb(numr, denr);
         
 div: Numb * Numb -> Numb;
 div(numb1, numb2) := 
@@ -143,20 +174,20 @@ div(numb1, numb2) :=
 flr: Numb -> int64;
 flr(numb) := 
     let        
-        quot := getNumr(numb) / getDenr(numb);
-        badCase := not isInt(numb) and sgn(numb) < 0;
+        quot := numbToNumr(numb) / numbToDenr(numb);
+        badCase := not numbIsInt(numb) and sgn(numb) < 0;
     in
         quot - 1 when badCase else
         quot;
         
 clng: Numb -> int64;
 clng(numb) :=
-    getInt(numb) when isInt(numb) else
+    numbToInt(numb) when numbIsInt(numb) else
     flr(numb) + 1;
         
 ab: Numb -> Numb;
 ab(numb) :=
-    newNumb(Math::abs(getNumr(numb)), getDenr(numb));
+    intsToNumb(Math::abs(numbToNumr(numb)), numbToDenr(numb));
         
 md: int64 * int64 -> int64;
 md(i1, i2) :=
@@ -164,7 +195,7 @@ md(i1, i2) :=
     
 exp: Numb * int64 -> Numb;
 exp(numb, i) :=
-    one when i = 0 else
+    numbOne when i = 0 else
     mult(numb, exp(numb, i - 1)) when i > 0 else
     exp(recipr(numb), -i);
 
@@ -172,11 +203,11 @@ exp(numb, i) :=
 
 recipr: Numb -> Numb;
 recipr(numb) :=
-    newNumb(getDenr(numb), getNumr(numb));
+    intsToNumb(numbToDenr(numb), numbToNumr(numb));
 
-sgn: Numb -> int64;
+sgn: Numb -> int8;
 sgn(numb) :=
-    Math::sign(getNumr(numb));
+    Math::sign(numbToNumr(numb));
     
 reduce: int64 * int64 -> Numb;
 reduce(i1, i2) :=
@@ -196,13 +227,13 @@ gcd(i1, i2) :=
 
 /* some numbers */
 
-one: Numb;
-one := 
-    newInt(1);
+numbOne: Numb;
+numbOne := 
+    intToNumb(1);
     
-ten: Numb;
-ten :=
-    newInt(10);
+numbTen: Numb;
+numbTen :=
+    intToNumb(10);
 
 /* numeral to number */
 
@@ -234,7 +265,7 @@ frRepToNumb(fR(1)) :=
         fNR := Sequence::take(fR, lPar - 1);
         numbFNR := frNRepToNumb(fNR);
         shift := size(fNR) - 1;
-        factor := exp(ten, -shift);
+        factor := exp(numbTen, -shift);
         rB := Sequence::drop(fR, lPar - 1);
         numbRB := mult(factor, repBlToNumb(rB));
     in  
@@ -246,7 +277,7 @@ repBlToNumb(rB(1)) :=
         iN := rB[2 ... size(rB) - 3];
         rept := intNumlToNumb(iN);
         lenRept := size(iN);
-        divisor := biMinus(exp(ten, lenRept), one);
+        divisor := biMinus(exp(numbTen, lenRept), numbOne);
     in      
         div(rept, divisor);
         
@@ -255,13 +286,13 @@ frNRepToNumb(fNR(1)) :=
     let 
         iN := Sequence::drop(fNR, 1);
         lenIN := size(iN);
-        factor := exp(ten, -lenIN);
+        factor := exp(numbTen, -lenIN);
     in 
         mult(factor, intNumlToNumb(iN));
     
 intNumlToNumb: char(1) -> Numb;
 intNumlToNumb(iN(1)) := 
-    newInt(Conversion::stringToInt(iN));
+    intToNumb(Conversion::stringToInt(iN));
     
 /* number to numeral */
     
@@ -269,8 +300,8 @@ numbToNuml: Numb -> char(1);
 numbToNuml(numb) :=
     let
         negative := sgn(numb) < 0;
-        absNumr := Math::abs(getNumr(numb));
-        denr := getDenr(numb);
+        absNumr := Math::abs(numbToNumr(numb));
+        denr := numbToDenr(numb);
     in
         "-" ++ getAbsNuml(absNumr, denr) when negative else
         getAbsNuml(absNumr, denr);
@@ -288,11 +319,11 @@ getFr: int64 * int64 -> char(1);
 getFr(minAbsNumr, denr) :=
     let
         remsQuots := getRemsQuots(denr, [minAbsNumr], []);
-        rems := remsQuots[1];
+        rems := remsQuots.l1;
         lastRem := Sequence::last(rems);
         rep := lastRem /= 0;
         repRemPos := Sequence::firstIndexOf(rems, lastRem);
-        quots := remsQuots[2];
+        quots := remsQuots.l2;
     in
         getFrRep(repRemPos, quots) when rep else
         getFrNRep(quots);
@@ -317,7 +348,7 @@ getIntNuml: int64(1) -> char(1);
 getIntNuml(quots(1)) :=
     join(Conversion::intToString(quots));
 
-getRemsQuots: int64 * int64(1) * int64(1) -> int64(2);
+getRemsQuots: int64 * int64(1) * int64(1) -> TwoIntLists;
 getRemsQuots(divisor, rems(1), quots(1)) :=
     let
         dividend := Sequence::last(rems) * 10;
@@ -328,8 +359,11 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
         posRem := Sequence::firstIndexOf(rems, rem);
         rep := posRem > 0;
     in
-        [rems2, quots2] when rem = 0 or rep else
-        getRemsQuots(divisor, rems2, quots2);    
+        (l1: rems2, l2: quots2) when rem = 0 or rep else
+        getRemsQuots(divisor, rems2, quots2);
+        
+TwoIntLists ::= 
+    (l1: int64(1), l2: int64(1));
         
 /* importing */
 
