@@ -1,7 +1,7 @@
-import "../ll.sl";
+import * from "../ll.sl" as *;
 
-c := ll::numlToNumb("0");
+c := n("0");
 
-c2 := ll::add(ll::numlToNumb("2.4(3..)"), ll::mult(ll::uMinus(ll::numlToNumb("2")), ll::numlToNumb("3")));
+c2 := add(n("2.4(3..)"), mult(uMinus(n("2")), n("3")));
 
 

@@ -5,9 +5,10 @@ LED Library
 /* exporting */
 
 public  
-    Val, Numb, 
+    Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
-    numlToNumb, numbToNuml;
+    n, // numeral to number
+    numbToNuml;
         
 /* type: value */
 
@@ -20,10 +21,6 @@ valToKind: Val -> char(1);
 valToKind(v) :=
     v.kind;
 
-numlToVal: char(1) -> Val;
-numlToVal(n(1)) :=
-    numbToVal(numlToNumb(n));
-    
 /* value to thing */
 
 valToTrth: Val -> bool;
@@ -35,6 +32,13 @@ valToNumb(v) :=
     v.numb;
     
 /* thing to value */
+
+numlToVal: char(1) -> Val;
+numlToVal(n(1)) :=
+    numbToVal(numlToNumb(n));
+n: char(1) -> Val;
+n(numl(1)) :=
+    numlToVal(numl);
     
 trthToVal: bool -> Val;
 trthToVal(t) :=

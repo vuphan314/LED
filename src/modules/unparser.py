@@ -10,7 +10,7 @@ This module unparses a SL tree to a string which represents a SL program.
 
 # tuple -> str
 def main(T):
-    st = 'import "../' + libName + '.sl";\n\n'
+    st = 'import * from "../' + libName + '.sl" as *;\n\n'
     st += unparse(T)
     return st
 
@@ -19,7 +19,7 @@ def unparse(T):
     if T[0] == 'id':
         return T[1]
     if T[0] == 'numl':
-        fun = prependLib('numlToNumb')
+        fun = prependLib('n')
         st = fun + '("' + T[1] + '")'
         return st
     if T[0] == 'cDef':
@@ -64,4 +64,5 @@ def recurStr(func, tupl):
 libName = 'll'
 
 def prependLib(st):
-    return libName + "::" + st
+    # st = libName + "::" + st
+    return st
