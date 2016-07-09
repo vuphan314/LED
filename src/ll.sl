@@ -20,10 +20,6 @@ valToKind: Val -> char(1);
 valToKind(v) :=
     v.kind;
 
-valIsNumb: Val -> bool;
-valIsNumb(v) :=
-    equalList(valToKind(v), kindNumb);
-    
 numlToVal: char(1) -> Val;
 numlToVal(n(1)) :=
     numbToVal(numlToNumb(n));
@@ -53,10 +49,6 @@ numbToVal(n) :=
 Numb ::= 
     (Numr: int64, Denr: int64);
 
-intsToNumb: int64 * int64 -> Numb;
-intsToNumb(i1, i2) :=
-    reduce(i1, i2);
-
 numbToNumr: Numb -> int64;
 numbToNumr(numb) :=
     numb.Numr;
@@ -65,7 +57,23 @@ numbToDenr: Numb -> int64;
 numbToDenr(numb) :=
     numb.Denr;
     
+intsToNumb: int64 * int64 -> Numb;
+intsToNumb(i1, i2) :=
+    reduce(i1, i2);
+
+valIsNumb: Val -> bool;
+valIsNumb(v) :=
+    equalList(valToKind(v), kindNumb);
+    
 /* pseudotype: integer */
+
+valToInt: Val -> int64;
+valToInt(v) :=
+    numbToInt(valToNumb(v));
+    
+intToVal: int64 -> Val;
+intToVal(i) :=
+    numbToVal(intToNumb(i));
 
 intToNumb: int64 -> Numb;
 intToNumb(i) :=
@@ -101,45 +109,54 @@ uneq(v1, v2) :=
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
-    sgn(biMinus(numb1, numb2)) = 0;
+    sgn(biMinusNumb(numb1, numb2)) = 0;
     
 uneqNumb: Numb * Numb -> bool;
 uneqNumb(numb1, numb2) :=
     not eqNumb(numb1, numb2);
     
-/* standardizers */
-    
-standNumbNumbToBool: (Numb * Numb -> bool) * Val * Val -> Val;
-standNumbNumbToBool(f, v1, v2) :=
-    let
-        n1 := valToNumb(v1);
-        n2 := valToNumb(v2);
-        b := f(n1, n2);
-    in  
-        trthToVal(b);
-        
 /* relational */
-//todo
+
+less: Val * Val -> Val;
+less(v1, v2) :=
+    stdNumbNumbToTrth(lessNumb, v1, v2);
+    
 lessNumb: Numb * Numb -> bool;
 lessNumb(numb1, numb2) :=
-    sgn(biMinus(numb1, numb2)) < 0;
+    sgn(biMinusNumb(numb1, numb2)) < 0;
 
-greater: Numb * Numb -> bool;
-greater(numb1, numb2) :=
+greater: Val * Val -> Val;
+greater(v1, v2) :=
+    stdNumbNumbToTrth(greaterNumb, v1, v2);
+    
+greaterNumb: Numb * Numb -> bool;
+greaterNumb(numb1, numb2) :=
     not (lessNumb(numb1, numb2) or eqNumb(numb1, numb2));
 
-lessEq: Numb * Numb -> bool;
-lessEq(numb1, numb2) :=
+lessEq: Val * Val -> Val;
+lessEq(v1, v2) :=
+    stdNumbNumbToTrth(lessEqNumb, v1, v2);
+    
+lessEqNumb: Numb * Numb -> bool;
+lessEqNumb(numb1, numb2) :=
     lessNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
-greaterEq: Numb * Numb -> bool;
-greaterEq(numb1, numb2) :=
-    greater(numb1, numb2) or eqNumb(numb1, numb2);
+greaterEq: Val * Val -> Val;
+greaterEq(v1, v2) :=
+    stdNumbNumbToTrth(greaterEqNumb, v1, v2);
+    
+greaterEqNumb: Numb * Numb -> bool;
+greaterEqNumb(numb1, numb2) :=
+    greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
 /* arithmetic-valued functions */
 
-add: Numb * Numb -> Numb;
-add(numb1, numb2) :=
+add: Val * Val -> Val;
+add(v1, v2) :=
+    stdNumbNumbToNumb(addNumb, v1, v2);
+
+addNumb: Numb * Numb -> Numb;
+addNumb(numb1, numb2) :=
     let
         numr := 
             numbToNumr(numb1) * numbToDenr(numb2) + 
@@ -148,28 +165,48 @@ add(numb1, numb2) :=
     in
         intsToNumb(numr, denr);
         
-biMinus: Numb * Numb -> Numb;
-biMinus(numb1, numb2) :=
-    add(numb1, uMinus(numb2));
+biMinus: Val * Val -> Val;
+biMinus(v1, v2) :=
+    stdNumbNumbToNumb(biMinusNumb, v1, v2);
+        
+biMinusNumb: Numb * Numb -> Numb;
+biMinusNumb(numb1, numb2) :=
+    addNumb(numb1, uMinusNumb(numb2));
     
-uMinus: Numb -> Numb;
-uMinus(numb) :=    
+uMinus: Val -> Val;
+uMinus(v) :=
+    stdNumbToNumb(uMinusNumb, v);
+    
+uMinusNumb: Numb -> Numb;
+uMinusNumb(numb) :=    
     intsToNumb(-numbToNumr(numb), numbToDenr(numb));
     
-mult: Numb * Numb -> Numb;
-mult(numb1, numb2) :=
+mult: Val * Val -> Val;
+mult(v1, v2) :=
+    stdNumbNumbToNumb(multNumb, v1, v2);
+    
+multNumb: Numb * Numb -> Numb;
+multNumb(numb1, numb2) :=
     let
         numr := numbToNumr(numb1) * numbToNumr(numb2);
         denr := numbToDenr(numb1) * numbToDenr(numb2);
     in
         intsToNumb(numr, denr);
         
-div: Numb * Numb -> Numb;
-div(numb1, numb2) := 
-    mult(numb1, recipr(numb2));
+div: Val * Val -> Val;
+div(v1, v2) :=
+    stdNumbNumbToNumb(divNumb, v1, v2);
+        
+divNumb: Numb * Numb -> Numb;
+divNumb(numb1, numb2) := 
+    multNumb(numb1, recipr(numb2));
+    
+flr: Val -> Val;
+flr(v) :=
+    stdNumbToInt(flrNumb, v);
 
-flr: Numb -> int64;
-flr(numb) := 
+flrNumb: Numb -> int64;
+flrNumb(numb) := 
     let        
         quot := numbToNumr(numb) / numbToDenr(numb);
         badCase := not numbIsInt(numb) and sgn(numb) < 0;
@@ -177,24 +214,40 @@ flr(numb) :=
         quot - 1 when badCase else
         quot;
         
-clng: Numb -> int64;
-clng(numb) :=
+clng: Val -> Val;
+clng(v) :=
+    stdNumbToInt(clngNumb, v);
+        
+clngNumb: Numb -> int64;
+clngNumb(numb) :=
     numbToInt(numb) when numbIsInt(numb) else
-    flr(numb) + 1;
+    flrNumb(numb) + 1;
+    
+ab: Val -> Val;
+ab(v) :=
+    stdNumbToNumb(abNumb, v);
         
-ab: Numb -> Numb;
-ab(numb) :=
+abNumb: Numb -> Numb;
+abNumb(numb) :=
     intsToNumb(Math::abs(numbToNumr(numb)), numbToDenr(numb));
+    
+md: Val * Val -> Val;
+md(v1, v2) :=
+    stdIntIntToInt(mdNumb, v1, v2);
         
-md: int64 * int64 -> int64;
-md(i1, i2) :=
+mdNumb: int64 * int64 -> int64;
+mdNumb(i1, i2) :=
     i1 mod i2;
     
-exp: Numb * int64 -> Numb;
-exp(numb, i) :=
+exp: Val * Val -> Val;
+exp(v1, v2) :=
+    stdNumbIntToNumb(expNumb, v1, v2);
+    
+expNumb: Numb * int64 -> Numb;
+expNumb(numb, i) :=
     numbOne when i = 0 else
-    mult(numb, exp(numb, i - 1)) when i > 0 else
-    exp(recipr(numb), -i);
+    multNumb(numb, expNumb(numb, i - 1)) when i > 0 else
+    expNumb(recipr(numb), -i);
 
 /* arithmetic helpers */
 
@@ -235,7 +288,7 @@ numlToNumb(numl(1)) :=
     in  
         intNumlToNumb(numl) when dot = 0 else
         frToNumb(numl) when dot = 1 else
-        add(numbIN, numbF);
+        addNumb(numbIN, numbF);
         
 frToNumb: char(1) -> Numb;
 frToNumb(f(1)) :=
@@ -252,11 +305,11 @@ frRepToNumb(fR(1)) :=
         fNR := Sequence::take(fR, lPar - 1);
         numbFNR := frNRepToNumb(fNR);
         shift := size(fNR) - 1;
-        factor := exp(numbTen, -shift);
+        factor := expNumb(numbTen, -shift);
         rB := Sequence::drop(fR, lPar - 1);
-        numbRB := mult(factor, repBlToNumb(rB));
+        numbRB := multNumb(factor, repBlToNumb(rB));
     in  
-        add(numbFNR, numbRB);
+        addNumb(numbFNR, numbRB);
 
 repBlToNumb: char(1) -> Numb;
 repBlToNumb(rB(1)) :=
@@ -264,18 +317,18 @@ repBlToNumb(rB(1)) :=
         iN := rB[2 ... size(rB) - 3];
         rept := intNumlToNumb(iN);
         lenRept := size(iN);
-        divisor := biMinus(exp(numbTen, lenRept), numbOne);
+        divisor := biMinusNumb(expNumb(numbTen, lenRept), numbOne);
     in      
-        div(rept, divisor);
+        divNumb(rept, divisor);
         
 frNRepToNumb: char(1) -> Numb;
 frNRepToNumb(fNR(1)) :=
     let 
         iN := Sequence::drop(fNR, 1);
         lenIN := size(iN);
-        factor := exp(numbTen, -lenIN);
+        factor := expNumb(numbTen, -lenIN);
     in 
-        mult(factor, intNumlToNumb(iN));
+        multNumb(factor, intNumlToNumb(iN));
     
 intNumlToNumb: char(1) -> Numb;
 intNumlToNumb(iN(1)) := 
@@ -362,16 +415,71 @@ kindNumb: char(1);
 kindNumb :=
     "numb";
     
-/* pseudokinds */
+/* standardizers */
     
-kindBool: char(1);
-kindBool := 
-    "bool";
+stdNumbNumbToTrth: (Numb * Numb -> bool) * Val * Val -> Val;
+stdNumbNumbToTrth(f, v1, v2) :=
+    let
+        n1 := valToNumb(v1);
+        n2 := valToNumb(v2);
+        t := f(n1, n2);
+    in  
+        trthToVal(t);
+        
+stdNumbNumbToNumb: (Numb * Numb -> Numb) * Val * Val -> Val;
+stdNumbNumbToNumb(f, v1, v2) :=
+    let
+        n1 := valToNumb(v1);
+        n2 := valToNumb(v2);
+        n := f(n1, n2);
+    in
+        numbToVal(n);
+        
+stdNumbToNumb: (Numb -> Numb) * Val -> Val;
+stdNumbToNumb(f, v) :=
+    let
+        n := valToNumb(v);
+        n2 := f(n);
+    in
+        numbToVal(n2);
+        
+stdNumbToInt: (Numb -> int64) * Val -> Val;
+stdNumbToInt(f, v) :=
+    let
+        n := valToNumb(v);
+        i := f(n);
+        n2 := intToNumb(i);
+    in
+        numbToVal(n2);
+        
+stdIntIntToInt: (int64 * int64 -> int64) * Val * Val -> Val;
+stdIntIntToInt(f, v1, v2) :=
+    let
+        i1 := valToInt(v1);
+        i2 := valToInt(v2);
+        i := f(i1, i2);
+    in
+        intToVal(i);
+        
+stdNumbIntToNumb: (Numb * int64 -> Numb) * Val * Val -> Val;
+stdNumbIntToNumb(f, v1, v2) :=
+    let
+        n := valToNumb(v1);
+        i := valToInt(v2);
+        n2 := f(n, i);
+    in
+        numbToVal(n2);
+        
+/* some values */
+
+valOne: Val;
+valOne :=
+    numbToVal(numbOne);
     
-kindInt: char(1);
-kindInt :=
-    "int";
-    
+valTen: Val;
+valTen :=
+    numbToVal(numbTen);
+       
 /* some numbers */
 
 numbOne: Numb;
