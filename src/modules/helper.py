@@ -8,6 +8,7 @@ lexemes = {'id', 'num'}
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
+# tupleFromList: list -> tuple
 def tupleFromList(L):
     if type(L) != list:
         return L

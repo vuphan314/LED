@@ -8,12 +8,14 @@ from . import helper
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
+# main: list -> tuple
 def main(L):
     L = ['prog'] + L
     T = helper.tupleFromList(L)
     transformed = transform(T)
     return transformed
     
+# transform: tuple -> tuple
 def transform(T):
     if type(T) != tuple:
         return T

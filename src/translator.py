@@ -12,6 +12,7 @@ import modules.unparser
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
+# main: print
 def main():
     led = sys.argv[1]
     parsed = ledparser.regparse_file(led)

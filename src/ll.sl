@@ -1,5 +1,5 @@
 /* 
-LED Library 
+LED Library written in SequenceL
 */
 
 /* exporting */
@@ -7,15 +7,16 @@ LED Library
 public  
     Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
-    n, // numeral to number
-    numbToNuml;
+    n, // numeral to value
+    numbToNuml,
+    atmToVal;
         
 /* type: value */
 
 Val ::= 
     (kind: char(1), 
-    trth: bool, numb: Numb, 
-    atm: char(1), coll: Val(1), lmbd: (Val(1) -> Val));
+    trth: bool, numb: Numb, atm: char(1),
+    coll: Val(1), lmbd: (Val(1) -> Val));
         
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -33,12 +34,14 @@ valToNumb(v) :=
     
 /* thing to value */
 
-numlToVal: char(1) -> Val;
-numlToVal(n(1)) :=
-    numbToVal(numlToNumb(n));
+// numeral to value
 n: char(1) -> Val;
 n(numl(1)) :=
     numlToVal(numl);
+    
+numlToVal: char(1) -> Val;
+numlToVal(n(1)) :=
+    numbToVal(numlToNumb(n));
     
 trthToVal: bool -> Val;
 trthToVal(t) :=
@@ -47,6 +50,10 @@ trthToVal(t) :=
 numbToVal: Numb -> Val;
 numbToVal(n) :=
     (kind: kindNumb, numb: n);
+    
+atmToVal: char(1) -> Val;
+atmToVal(a(1)) :=
+    (kind: kindAtm, atm: a);
 
 /* type: number */
 
@@ -91,7 +98,7 @@ numbIsInt: Numb -> bool;
 numbIsInt(numb) :=
     numbToDenr(numb) = 1;
     
-/* equality */
+/* equality operations */
 
 eq: Val * Val -> Val;
 eq(v1, v2) :=
@@ -119,7 +126,7 @@ uneqNumb: Numb * Numb -> bool;
 uneqNumb(numb1, numb2) :=
     not eqNumb(numb1, numb2);
     
-/* relational */
+/* relational operations */
 
 less: Val * Val -> Val;
 less(v1, v2) :=
@@ -153,7 +160,7 @@ greaterEqNumb: Numb * Numb -> bool;
 greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
-/* arithmetic-valued functions */
+/* arithmetic operations */
 
 add: Val * Val -> Val;
 add(v1, v2) :=
@@ -279,6 +286,95 @@ gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
 
+/* kinds */
+    
+kindTrth: char(1);
+kindTrth :=
+    "trth";
+    
+kindNumb: char(1);
+kindNumb :=
+    "numb";
+    
+kindAtm: char(1);
+kindAtm :=
+    "atm";
+    
+/* some values */
+
+valOne: Val;
+valOne :=
+    numbToVal(numbOne);
+    
+valTen: Val;
+valTen :=
+    numbToVal(numbTen);
+       
+/* some numbers */
+
+numbOne: Numb;
+numbOne := 
+    intToNumb(1);
+    
+numbTen: Numb;
+numbTen :=
+    intToNumb(10);
+
+/* standardizer functions */
+    
+stdNumbNumbToTrth: (Numb * Numb -> bool) * Val * Val -> Val;
+stdNumbNumbToTrth(f, v1, v2) :=
+    let
+        n1 := valToNumb(v1);
+        n2 := valToNumb(v2);
+        t := f(n1, n2);
+    in  
+        trthToVal(t);
+        
+stdNumbNumbToNumb: (Numb * Numb -> Numb) * Val * Val -> Val;
+stdNumbNumbToNumb(f, v1, v2) :=
+    let
+        n1 := valToNumb(v1);
+        n2 := valToNumb(v2);
+        n := f(n1, n2);
+    in
+        numbToVal(n);
+        
+stdNumbToNumb: (Numb -> Numb) * Val -> Val;
+stdNumbToNumb(f, v) :=
+    let
+        n := valToNumb(v);
+        n2 := f(n);
+    in
+        numbToVal(n2);
+        
+stdNumbToInt: (Numb -> int64) * Val -> Val;
+stdNumbToInt(f, v) :=
+    let
+        n := valToNumb(v);
+        i := f(n);
+        n2 := intToNumb(i);
+    in
+        numbToVal(n2);
+        
+stdIntIntToInt: (int64 * int64 -> int64) * Val * Val -> Val;
+stdIntIntToInt(f, v1, v2) :=
+    let
+        i1 := valToInt(v1);
+        i2 := valToInt(v2);
+        i := f(i1, i2);
+    in
+        intToVal(i);
+        
+stdNumbIntToNumb: (Numb * int64 -> Numb) * Val * Val -> Val;
+stdNumbIntToNumb(f, v1, v2) :=
+    let
+        n := valToNumb(v1);
+        i := valToInt(v2);
+        n2 := f(n, i);
+    in
+        numbToVal(n2);
+        
 /* numeral to number */
 
 numlToNumb: char(1) -> Numb;
@@ -409,91 +505,6 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
 TwoIntLists ::= 
     (l1: int64(1), l2: int64(1));
         
-/* kinds */
-    
-kindTrth: char(1);
-kindTrth :=
-    "trth";
-    
-kindNumb: char(1);
-kindNumb :=
-    "numb";
-    
-/* standardizers */
-    
-stdNumbNumbToTrth: (Numb * Numb -> bool) * Val * Val -> Val;
-stdNumbNumbToTrth(f, v1, v2) :=
-    let
-        n1 := valToNumb(v1);
-        n2 := valToNumb(v2);
-        t := f(n1, n2);
-    in  
-        trthToVal(t);
-        
-stdNumbNumbToNumb: (Numb * Numb -> Numb) * Val * Val -> Val;
-stdNumbNumbToNumb(f, v1, v2) :=
-    let
-        n1 := valToNumb(v1);
-        n2 := valToNumb(v2);
-        n := f(n1, n2);
-    in
-        numbToVal(n);
-        
-stdNumbToNumb: (Numb -> Numb) * Val -> Val;
-stdNumbToNumb(f, v) :=
-    let
-        n := valToNumb(v);
-        n2 := f(n);
-    in
-        numbToVal(n2);
-        
-stdNumbToInt: (Numb -> int64) * Val -> Val;
-stdNumbToInt(f, v) :=
-    let
-        n := valToNumb(v);
-        i := f(n);
-        n2 := intToNumb(i);
-    in
-        numbToVal(n2);
-        
-stdIntIntToInt: (int64 * int64 -> int64) * Val * Val -> Val;
-stdIntIntToInt(f, v1, v2) :=
-    let
-        i1 := valToInt(v1);
-        i2 := valToInt(v2);
-        i := f(i1, i2);
-    in
-        intToVal(i);
-        
-stdNumbIntToNumb: (Numb * int64 -> Numb) * Val * Val -> Val;
-stdNumbIntToNumb(f, v1, v2) :=
-    let
-        n := valToNumb(v1);
-        i := valToInt(v2);
-        n2 := f(n, i);
-    in
-        numbToVal(n2);
-        
-/* some values */
-
-valOne: Val;
-valOne :=
-    numbToVal(numbOne);
-    
-valTen: Val;
-valTen :=
-    numbToVal(numbTen);
-       
-/* some numbers */
-
-numbOne: Numb;
-numbOne := 
-    intToNumb(1);
-    
-numbTen: Numb;
-numbTen :=
-    intToNumb(10);
-
 /* importing */
 
 import <Utilities/Conversion.sl>;

@@ -4,7 +4,7 @@ This file contains constructs for testing.
 
 ########## ########## ########## ########## ########## ########## ########## ##########
 
-# print test string
+# test: str -> print
 def test(S):
     startD = '/*'
     endD = '*/'
