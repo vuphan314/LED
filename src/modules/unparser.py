@@ -16,6 +16,11 @@ def main(T):
 
 # unparse: tuple -> str
 def unparse(T):
+    if T[0] == 'truth':
+        func = 'trthToVal'
+        arg = T[1]
+        st = operate(func, arg)
+        return st
     if T[0] == 'id':
         return T[1]
     if T[0] == 'atom':

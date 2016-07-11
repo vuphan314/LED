@@ -1,3 +1,7 @@
+valIsNumb: Val -> bool;
+valIsNumb(v) :=
+    equalList(valToKind(v), kindNumb);
+    
 /* 
 LED Library written in SequenceL
 */
@@ -9,16 +13,11 @@ public
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
     atmToVal,
     n, // numeral to value
+    t, // truth to value
     valToNuml;
         
 /* type: value */
 
-Val ::= 
-    (kind: char(1), 
-    trth: bool, numb: Numb, atm: char(1),
-    coll: Val(1), //todo
-    lmbd: (Val(1) -> Val));
-        
 valToKind: Val -> char(1);
 valToKind(v) :=
     v.kind;
@@ -36,6 +35,10 @@ valToNuml(v) :=
 valToNumb: Val -> Numb;
 valToNumb(v) :=
     v.numb;
+    
+valToTpl: Val -> Val(1);
+valToTpl(v) :=
+    v.tpl;
    
 /* thing to value */
 
@@ -53,32 +56,18 @@ numbToVal(n) :=
 trthToVal: bool -> Val;
 trthToVal(t) :=
     (kind: kindTrth, trth: t);
+t: bool -> Val;
+t(tr) :=
+    trthToVal(tr);
     
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
     (kind: kindAtm, atm: a);
-
-/* type: number */
-
-Numb ::= 
-    (Numr: int64, Denr: int64);
-
-numbToNumr: Numb -> int64;
-numbToNumr(numb) :=
-    numb.Numr;
     
-numbToDenr: Numb -> int64;
-numbToDenr(numb) :=
-    numb.Denr;
-    
-intsToNumb: int64 * int64 -> Numb;
-intsToNumb(i1, i2) :=
-    reduce(i1, i2);
+tplToVal: Val(1) -> Val;
+tplToVal(t(1)) :=
+    (kind: kindTpl, tpl: t);
 
-valIsNumb: Val -> bool;
-valIsNumb(v) :=
-    equalList(valToKind(v), kindNumb);
-    
 /* pseudotype: integer */
 
 valToInt: Val -> int64;
@@ -263,32 +252,6 @@ expNumb(numb, i) :=
     multNumb(numb, expNumb(numb, i - 1)) when i > 0 else
     expNumb(recipr(numb), -i);
 
-/* arithmetic helpers */
-
-recipr: Numb -> Numb;
-recipr(numb) :=
-    intsToNumb(numbToDenr(numb), numbToNumr(numb));
-
-sgn: Numb -> int8;
-sgn(numb) :=
-    Math::sign(numbToNumr(numb));
-    
-reduce: int64 * int64 -> Numb;
-reduce(i1, i2) :=
-    let
-        signOfNumb := Math::sign(i1) * Math::sign(i2);
-        absNumr := Math::abs(i1); absDenr := Math::abs(i2);
-        gcdNumb := gcd(absNumr, absDenr);
-        redAbsNumr := absNumr / gcdNumb; redAbsDenr := absDenr / gcdNumb;
-        redNumr := signOfNumb * redAbsNumr;
-    in
-        (Numr: redNumr, Denr: redAbsDenr);
-
-gcd: int64 * int64 -> int64;
-gcd(i1, i2) :=
-    i1 when i2 = 0 else
-    gcd(i2, i1 mod i2);
-
 /* kinds */
     
 kindNumb: char(1);
@@ -302,6 +265,10 @@ kindTrth :=
 kindAtm: char(1);
 kindAtm :=
     "atm";
+    
+kindTpl: char(1);
+kindTpl :=
+    "tpl";
     
 /* some values */
 
@@ -437,80 +404,6 @@ intNumlToNumb: char(1) -> Numb;
 intNumlToNumb(iN(1)) := 
     intToNumb(Conversion::stringToInt(iN));
     
-/* number to numeral */
-    
-numbToNuml: Numb -> char(1);
-numbToNuml(numb) :=
-    let
-        negative := sgn(numb) < 0;
-        absNumr := Math::abs(numbToNumr(numb));
-        denr := numbToDenr(numb);
-    in
-        "-" ++ getAbsNuml(absNumr, denr) when negative else
-        getAbsNuml(absNumr, denr);
-    
-getAbsNuml: int64 * int64 -> char(1);
-getAbsNuml(absNumr, denr) :=
-    let
-        integralPart := Conversion::intToString(absNumr / denr);        
-        minAbsNumr := absNumr mod denr;        
-    in
-        integralPart when minAbsNumr = 0 else
-        integralPart ++ getFr(minAbsNumr, denr);
-        
-getFr: int64 * int64 -> char(1);
-getFr(minAbsNumr, denr) :=
-    let
-        remsQuots := getRemsQuots(denr, [minAbsNumr], []);
-        rems := remsQuots.l1;
-        lastRem := Sequence::last(rems);
-        rep := lastRem /= 0;
-        repRemPos := Sequence::firstIndexOf(rems, lastRem);
-        quots := remsQuots.l2;
-    in
-        getFrRep(repRemPos, quots) when rep else
-        getFrNRep(quots);
-    
-getFrRep: int64 * int64(1) -> char(1);
-getFrRep(repRemPos, quots(1)) :=
-    let
-        nRepQuots := Sequence::take(quots, repRemPos - 1);
-        repQuots := Sequence::drop(quots, repRemPos - 1);
-    in
-        getFrNRep(nRepQuots) ++ getRepBl(repQuots);
-        
-getRepBl: int64(1) -> char(1);
-getRepBl(repQuots(1)) :=
-    "(" ++ getIntNuml(repQuots) ++ "..)";
-
-getFrNRep: int64(1) -> char(1);
-getFrNRep(quots(1)) :=
-    "." ++ getIntNuml(quots);
-    
-getIntNuml: int64(1) -> char(1);
-getIntNuml(quots(1)) :=
-    join(Conversion::intToString(quots));
-
-getRemsQuots: int64 * int64(1) * int64(1) -> TwoIntLists;
-getRemsQuots(divisor, rems(1), quots(1)) :=
-    let
-        dividend := Sequence::last(rems) * 10;
-        rem := dividend mod divisor;
-        rems2 := rems ++ [rem];
-        quot := dividend / divisor;
-        quots2 := quots ++ [quot];
-        posRem := Sequence::firstIndexOf(rems, rem);
-        rep := posRem > 0;
-    in
-        (l1: rems2, l2: quots2) when rem = 0 or rep else
-        getRemsQuots(divisor, rems2, quots2);
-        
-TwoIntLists ::= 
-    (l1: int64(1), l2: int64(1));
-        
 /* importing */
 
-import <Utilities/Conversion.sl>;
-import <Utilities/Math.sl>;
-import <Utilities/Sequence.sl>;
 import <Utilities/Set.sl>;
