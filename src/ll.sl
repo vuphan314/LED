@@ -7,16 +7,17 @@ LED Library written in SequenceL
 public  
     Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
+    atmToVal,
     n, // numeral to value
-    numbToNuml,
-    atmToVal;
+    valToNuml;
         
 /* type: value */
 
 Val ::= 
     (kind: char(1), 
     trth: bool, numb: Numb, atm: char(1),
-    coll: Val(1), lmbd: (Val(1) -> Val));
+    coll: Val(1), //todo
+    lmbd: (Val(1) -> Val));
         
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -28,28 +29,30 @@ valToTrth: Val -> bool;
 valToTrth(v) :=
     v.trth;
     
+valToNuml: Val -> char(1);
+valToNuml(v) :=
+    numbToNuml(valToNumb(v));
+    
 valToNumb: Val -> Numb;
 valToNumb(v) :=
     v.numb;
-    
+   
 /* thing to value */
 
-// numeral to value
+numlToVal: char(1) -> Val;
+numlToVal(n(1)) :=
+    numbToVal(numlToNumb(n));
 n: char(1) -> Val;
 n(numl(1)) :=
     numlToVal(numl);
     
-numlToVal: char(1) -> Val;
-numlToVal(n(1)) :=
-    numbToVal(numlToNumb(n));
+numbToVal: Numb -> Val;
+numbToVal(n) :=
+    (kind: kindNumb, numb: n);
     
 trthToVal: bool -> Val;
 trthToVal(t) :=
     (kind: kindTrth, trth: t);
-    
-numbToVal: Numb -> Val;
-numbToVal(n) :=
-    (kind: kindNumb, numb: n);
     
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
@@ -288,13 +291,13 @@ gcd(i1, i2) :=
 
 /* kinds */
     
-kindTrth: char(1);
-kindTrth :=
-    "trth";
-    
 kindNumb: char(1);
 kindNumb :=
     "numb";
+    
+kindTrth: char(1);
+kindTrth :=
+    "trth";
     
 kindAtm: char(1);
 kindAtm :=
