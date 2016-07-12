@@ -27,16 +27,14 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 """
 
-########## ########## ########## ########## ########## ########## ########## ##########
+########## ########## ########## ########## ########## ########## 
 
 import os
 
 from genparser.src.astgen.parsing.lexer import *
 from genparser.src.astgen.parsing.parser import *
 
-from modules.helper import *
-
-########## ########## ########## ########## ########## ########## ########## ##########
+########## ########## ########## ########## ########## ########## 
 
 class RegionParser:
     def __init__(self, program_file):
