@@ -1,5 +1,5 @@
 '''
-This translator converts an LED program into a semantically equivalent SL program.
+convert an LED program into a semantically equivalent SL program
 '''
 
 ########## ########## ########## ########## ########## ########## 
@@ -7,18 +7,16 @@ This translator converts an LED program into a semantically equivalent SL progra
 import sys
 
 import ledparser
-import modules.transformer
-import modules.unparser
+import unparser
 
 ########## ########## ########## ########## ########## ########## 
 
-# main: print
-def main():
+# translate: print
+def translate():
     led = sys.argv[1]
     parsed = ledparser.regparse_file(led)
-    transformed = modules.transformer.main(parsed)
-    sl = modules.unparser.main(transformed)
+    sl = unparser.unparse(parsed)
     print(sl)
 
 if __name__ == '__main__':
-    main()
+    translate()

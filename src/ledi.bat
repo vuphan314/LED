@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%test3
+    set fil=%fold%test2
 	for %%i in (%fil%.led) do (
 		set b=%fold%%%~ni
         set p=!b!.p
@@ -13,10 +13,10 @@ goto starting
         
         type %%i & echo:
         
-        !parse! & echo:
+        REM !parse! & echo:
         
-        REM !transl! > !sl! & type !sl! 
-        REM sli -l !sl!
+        !transl! > !sl! & type !sl! 
+        sli -l !sl! 
 	)
 	goto done
 	

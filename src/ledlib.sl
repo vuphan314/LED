@@ -1,11 +1,14 @@
 /* 
 LED library written in SequenceL
- */
+*/
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* importing */
 
+import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
+import <Utilities/Sequence.sl>;
+import <Utilities/String.sl>;
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* exporting */
