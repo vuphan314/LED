@@ -1,39 +1,143 @@
-////////// ////////// ////////// ////////// ////////// ////////// 
+/* 
+LED library written in SequenceL
+ */
 
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* importing */
 
 import <Utilities/Math.sl>;
-import <Utilities/Conversion.sl>;
-import <Utilities/Sequence.sl>;
 
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* exporting */
 
-public
-    Val, Numb,
-    numbToNumr, numbToDenr, intsToNumb, numbIsInt, numbToInt, intToNumb,
-    valToNumb, valToTrth,
-    trthToVal,
-    valIsNumb,
-    sgn, recipr,
-    numbOne, numbTen,
-    stdNumbNumbToTrth, stdNumbNumbToNumb, stdNumbToNumb, stdNumbToInt, stdIntIntToInt,
-    stdNumbIntToNumb;
+public 
+    Val, Numb, // types
+    add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
+    n, // numeral to value
+    t, // truth to value
+    valToNuml;
+        
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* equality operations */
 
+eq: Val * Val -> Val;
+eq(v1, v2) :=
+    let
+        bothNumbs := valIsNumb(v1) and valIsNumb(v2);
+        equalNumbs := eqNumb(valToNumb(v1), valToNumb(v2));
+        equalTrths := valToTrth(v1) = valToTrth(v2);
+    in
+        trthToVal(equalNumbs) when bothNumbs else
+        trthToVal(equalTrths);
+    
+uneq: Val * Val -> Val;
+uneq(v1, v2) :=
+    let
+        equalVal := eq(v1, v2);
+        unequalTrth := not valToTrth(eq(v1, v2));
+    in
+        trthToVal(unequalTrth);
+
+eqNumb: Numb * Numb -> bool;
+eqNumb(numb1, numb2) :=
+    sgn(biMinusNumb(numb1, numb2)) = 0;
+    
+uneqNumb: Numb * Numb -> bool;
+uneqNumb(numb1, numb2) :=
+    not eqNumb(numb1, numb2);
+    
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* relational operations */
+
+less: Val * Val -> Val;
+less(v1, v2) :=
+    stdNumbNumbToTrth(lessNumb, v1, v2);
+    
+lessNumb: Numb * Numb -> bool;
+lessNumb(numb1, numb2) :=
+    sgn(biMinusNumb(numb1, numb2)) < 0;
+
+greater: Val * Val -> Val;
+greater(v1, v2) :=
+    stdNumbNumbToTrth(greaterNumb, v1, v2);
+    
+greaterNumb: Numb * Numb -> bool;
+greaterNumb(numb1, numb2) :=
+    not (lessNumb(numb1, numb2) or eqNumb(numb1, numb2));
+
+lessEq: Val * Val -> Val;
+lessEq(v1, v2) :=
+    stdNumbNumbToTrth(lessEqNumb, v1, v2);
+    
+lessEqNumb: Numb * Numb -> bool;
+lessEqNumb(numb1, numb2) :=
+    lessNumb(numb1, numb2) or eqNumb(numb1, numb2);
+
+greaterEq: Val * Val -> Val;
+greaterEq(v1, v2) :=
+    stdNumbNumbToTrth(greaterEqNumb, v1, v2);
+    
+greaterEqNumb: Numb * Numb -> bool;
+greaterEqNumb(numb1, numb2) :=
+    greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* arithmetic operations (value) */
+
+add: Val * Val -> Val;
+add(v1, v2) :=
+    stdNumbNumbToNumb(addNumb, v1, v2);
+
+biMinus: Val * Val -> Val;
+biMinus(v1, v2) :=
+    stdNumbNumbToNumb(biMinusNumb, v1, v2);
+        
+uMinus: Val -> Val;
+uMinus(v) :=
+    stdNumbToNumb(uMinusNumb, v);
+    
+mult: Val * Val -> Val;
+mult(v1, v2) :=
+    stdNumbNumbToNumb(multNumb, v1, v2);
+    
+div: Val * Val -> Val;
+div(v1, v2) :=
+    stdNumbNumbToNumb(divNumb, v1, v2);
+        
+flr: Val -> Val;
+flr(v) :=
+    stdNumbToInt(flrNumb, v);
+
+clng: Val -> Val;
+clng(v) :=
+    stdNumbToInt(clngNumb, v);
+        
+ab: Val -> Val;
+ab(v) :=
+    stdNumbToNumb(abNumb, v);
+        
+md: Val * Val -> Val;
+md(v1, v2) :=
+    stdIntIntToInt(mdNumb, v1, v2);
+        
+exp: Val * Val -> Val;
+exp(v1, v2) :=
+    stdNumbIntToNumb(expNumb, v1, v2);    
+
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: value */
 
 Val ::= 
     (kind: char(1), 
-    numb: Numb, trth: bool, atm: char(1), tpl: Val(1), 
-    set: Val(1), lmbd: (Val(1) -> Val));
+    atm: char(1), //todo
+    numb: Numb, trth: bool, 
+    coll: Val(1), lmbd: (Val(1) -> Val));
         
 valToKind: Val -> char(1);
 valToKind(v) :=
     v.kind;
 
-valIsNumb: Val -> bool;
-valIsNumb(v) :=
-    equalList(valToKind(v), kindNumb);
-    
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* value to thing */
 
 valToTrth: Val -> bool;
@@ -50,8 +154,9 @@ valToNumb(v) :=
     
 valToTpl: Val -> Val(1);
 valToTpl(v) :=
-    v.tpl;
+    v.coll;
    
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* thing to value */
 
 numlToVal: char(1) -> Val;
@@ -78,13 +183,22 @@ atmToVal(a(1)) :=
     
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
-    (kind: kindTpl, tpl: t);
+    (kind: kindTpl, coll: t);
 
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: number */
 
 Numb ::= 
     (Numr: int64, Denr: int64);
     
+valIsNumb: Val -> bool;
+valIsNumb(v) :=
+    equalList(valToKind(v), kindNumb);
+    
+intsToNumb: int64 * int64 -> Numb;
+intsToNumb(i1, i2) :=
+    reduce(i1, i2);
+
 numbToNumr: Numb -> int64;
 numbToNumr(numb) :=
     numb.Numr;
@@ -93,20 +207,13 @@ numbToDenr: Numb -> int64;
 numbToDenr(numb) :=
     numb.Denr;
     
-intsToNumb: int64 * int64 -> Numb;
-intsToNumb(i1, i2) :=
-    reduce(i1, i2);
-
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* pseudotype: integer */
 
-valToInt: Val -> int64;
-valToInt(v) :=
-    numbToInt(valToNumb(v));
+numbIsInt: Numb -> bool;
+numbIsInt(numb) :=
+    numbToDenr(numb) = 1;
     
-intToVal: int64 -> Val;
-intToVal(i) :=
-    numbToVal(intToNumb(i));
-
 intToNumb: int64 -> Numb;
 intToNumb(i) :=
     intsToNumb(i, 1);
@@ -115,10 +222,15 @@ numbToInt: Numb -> int64;
 numbToInt(numb) :=
     numbToNumr(numb);
     
-numbIsInt: Numb -> bool;
-numbIsInt(numb) :=
-    numbToDenr(numb) = 1;
+intToVal: int64 -> Val;
+intToVal(i) :=
+    numbToVal(intToNumb(i));
+
+valToInt: Val -> int64;
+valToInt(v) :=
+    numbToInt(valToNumb(v));
     
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* kinds */
     
 kindNumb: char(1);
@@ -137,6 +249,7 @@ kindTpl: char(1);
 kindTpl :=
     "tpl";
     
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* some values */
 
 valOne: Val;
@@ -147,6 +260,7 @@ valTen: Val;
 valTen :=
     numbToVal(numbTen);
        
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* some numbers */
 
 numbOne: Numb;
@@ -157,6 +271,7 @@ numbTen: Numb;
 numbTen :=
     intToNumb(10);
 
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* arithmetic helper functions */
 
 recipr: Numb -> Numb;
@@ -183,6 +298,7 @@ gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
 
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* number to numeral */
     
 numbToNuml: Numb -> char(1);
@@ -254,6 +370,7 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
 TwoIntLists ::= 
     (l1: int64(1), l2: int64(1));        
     
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* numeral to number */
 
 numlToNumb: char(1) -> Numb;
@@ -313,6 +430,7 @@ intNumlToNumb: char(1) -> Numb;
 intNumlToNumb(iN(1)) := 
     intToNumb(Conversion::stringToInt(iN));
     
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* standardizer functions */
     
 stdNumbNumbToTrth: (Numb * Numb -> bool) * Val * Val -> Val;
@@ -367,3 +485,64 @@ stdNumbIntToNumb(f, v1, v2) :=
         n2 := f(n, i);
     in
         numbToVal(n2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* arithmetic operations (number) */
+
+addNumb: Numb * Numb -> Numb;
+addNumb(numb1, numb2) :=
+    let
+        numr := 
+            numbToNumr(numb1) * numbToDenr(numb2) + 
+            numbToDenr(numb1) * numbToNumr(numb2);
+        denr := numbToDenr(numb1) * numbToDenr(numb2);
+    in
+        intsToNumb(numr, denr);
+        
+biMinusNumb: Numb * Numb -> Numb;
+biMinusNumb(numb1, numb2) :=
+    addNumb(numb1, uMinusNumb(numb2));
+    
+uMinusNumb: Numb -> Numb;
+uMinusNumb(numb) :=    
+    intsToNumb(-numbToNumr(numb), numbToDenr(numb));
+    
+multNumb: Numb * Numb -> Numb;
+multNumb(numb1, numb2) :=
+    let
+        numr := numbToNumr(numb1) * numbToNumr(numb2);
+        denr := numbToDenr(numb1) * numbToDenr(numb2);
+    in
+        intsToNumb(numr, denr);
+        
+divNumb: Numb * Numb -> Numb;
+divNumb(numb1, numb2) := 
+    multNumb(numb1, recipr(numb2));
+    
+flrNumb: Numb -> int64;
+flrNumb(numb) := 
+    let        
+        quot := numbToNumr(numb) / numbToDenr(numb);
+        badCase := not numbIsInt(numb) and sgn(numb) < 0;
+    in
+        quot - 1 when badCase else
+        quot;
+        
+clngNumb: Numb -> int64;
+clngNumb(numb) :=
+    numbToInt(numb) when numbIsInt(numb) else
+    flrNumb(numb) + 1;
+    
+abNumb: Numb -> Numb;
+abNumb(numb) :=
+    intsToNumb(Math::abs(numbToNumr(numb)), numbToDenr(numb));
+    
+mdNumb: int64 * int64 -> int64;
+mdNumb(i1, i2) :=
+    i1 mod i2;
+    
+expNumb: Numb * int64 -> Numb;
+expNumb(numb, i) :=
+    numbOne when i = 0 else
+    multNumb(numb, expNumb(numb, i - 1)) when i > 0 else
+    expNumb(recipr(numb), -i);
