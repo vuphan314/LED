@@ -17,8 +17,9 @@ public
     Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
     a, // atom to value
-    n, // numeral to value
+    tu, // tuple to value
     tr, // truth to value
+    n, // numeral to value
     valToNuml;
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
@@ -191,6 +192,9 @@ a(at(1)) :=
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
     (kind: kindTpl, coll: t);
+tu: Val(1) -> Val;
+tu(t(1)) :=
+    tplToVal(t);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: number */

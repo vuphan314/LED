@@ -1,5 +1,5 @@
 '''
-convert an LED program into a semantically equivalent SL program
+translate an LED program into a semantically equivalent SL program
 '''
 
 ########## ########## ########## ########## ########## ########## 

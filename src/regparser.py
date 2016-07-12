@@ -116,7 +116,6 @@ class UnmatchedRegion(Exception):
     def __str__(self):
         return self.__repr__()
 
-
 class InvalidRegion(Exception):
     """
     Defines a class for representing exceptions which are thrown in the event of
