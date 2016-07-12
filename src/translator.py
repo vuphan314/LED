@@ -2,7 +2,7 @@
 This translator converts an LED program into a semantically equivalent SL program.
 '''
 
-########## ########## ########## ########## ########## ########## ########## ##########
+########## ########## ########## ########## ########## ########## 
 
 import sys
 
