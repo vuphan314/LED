@@ -13,8 +13,9 @@ import <Utilities/Math.sl>;
 public 
     Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
+    a, // atom to value
     n, // numeral to value
-    t, // truth to value
+    tr, // truth to value
     valToNuml;
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
@@ -129,9 +130,9 @@ exp(v1, v2) :=
 
 Val ::= 
     (kind: char(1), 
-    atm: char(1), //todo
-    numb: Numb, trth: bool, 
-    coll: Val(1), lmbd: (Val(1) -> Val));
+    atm: char(1), numb: Numb, trth: bool, 
+    coll: Val(1), //todo
+    lmbd: (Val(1) -> Val));
         
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -173,13 +174,16 @@ numbToVal(n) :=
 trthToVal: bool -> Val;
 trthToVal(t) :=
     (kind: kindTrth, trth: t);
-t: bool -> Val;
-t(tr) :=
-    trthToVal(tr);
+tr: bool -> Val;
+tr(t) :=
+    trthToVal(t);
     
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
     (kind: kindAtm, atm: a);
+a: char(1) -> Val;
+a(at(1)) :=
+    atmToVal(at);
     
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
