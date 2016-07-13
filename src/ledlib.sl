@@ -16,12 +16,24 @@ import <Utilities/String.sl>;
 public 
     Val, Numb, // types
     add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
+    tuIn,
     a, // atom to value
     tu, // tuple to value
     tr, // truth to value
     n, // numeral to value
     valToNuml;
         
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* tuple indexing */
+
+tuIn: Val * Val -> Val;
+tuIn(valT, valI) :=
+    let
+        tplT := valToTpl(valT);
+        intI := valToInt(valI);
+    in
+        tplT[intI];
+
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* equality operations */
 
@@ -188,7 +200,7 @@ atmToVal(a(1)) :=
 a: char(1) -> Val;
 a(at(1)) :=
     atmToVal(at);
-    
+
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
     (kind: kindTpl, coll: t);

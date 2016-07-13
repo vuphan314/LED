@@ -11,12 +11,12 @@ goto starting
         set parse=py ledparser.py %%i
         set transl=py translator.py %%i
         
-        type %%i & echo:
+        REM type %%i & echo:
         
-        REM !parse! & echo:
+        !parse! & echo:
         
         !transl! > !sl! & type !sl! 
-        REM sli -l !sl! 
+        sli -l !sl! 
 	)
 	goto done
 	

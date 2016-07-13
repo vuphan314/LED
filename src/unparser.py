@@ -25,6 +25,12 @@ def unparseRecur(T):
         return unparseLexemes(T)
     if T[0] == 'id':
         return T[1]
+    if T[0] == 'tup':
+        return unparseTuple(T)
+    if T[0] == 'tupInd':
+        func = 'tuIn'
+        st = applyNaryRecur(func, T[1:])
+        return st
     if T[0] in arOps:
         return unparseArOps(T)
     if T[0] == 'cDef':
@@ -67,6 +73,18 @@ def unparseLexemes(T):
 
 ########## ########## ########## ########## ########## ########## 
 '''
+unparse collections
+'''
+
+# unparseTuple: tuple -> str
+def unparseTuple(T):
+    func = 'tu'
+    terms = T[1]
+    st = applyNaryRecur(func, terms[1:], True)
+    return st
+
+########## ########## ########## ########## ########## ########## 
+'''
 unparse arithmetic operations
 '''
 
@@ -90,11 +108,16 @@ def applyUnary(func, arg):
     return st
 
 # applyNaryRecur: str * tuple -> str
-def applyNaryRecur(func, args):
+def applyNaryRecur(func, args, listSL = False):
     func = prependLib(func)
-    st = func + '(' + unparseRecur(args[0])
+    st = func + '('
+    if listSL:
+        st += '['
+    st += unparseRecur(args[0])
     for arg in args[1:]:
         st += ', ' + unparseRecur(arg)
+    if listSL:
+        st += ']'
     st += ')'
     return st
     
