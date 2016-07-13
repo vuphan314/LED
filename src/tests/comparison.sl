@@ -4,7 +4,7 @@ import * from "../ledlib.sl" as *;
 
 c0 := uneq(n("3"), n("5"));
 
-c1 := eq(uMns(n("2.(6..)")), mult(uMns(n("2")), n("1.(3..)")));
+c1 := greaterEq(uMns(n("2.(6..)")), mult(uMns(n("2")), n("1.(3..)")));
 
 c2 := eq(a("`a"), a("`a"));
 
