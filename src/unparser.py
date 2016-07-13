@@ -25,14 +25,16 @@ def unparseRecur(T):
         return unparseLexemes(T)
     if T[0] == 'id':
         return T[1]
+    if T[0] == 'set':
+        return unparseSet(T)
     if T[0] == 'tup':
         return unparseTuple(T)
     if T[0] == 'tupInd':
         func = 'tuIn'
         st = applyNaryRecur(func, T[1:])
         return st
-    if T[0] in arOps:
-        return unparseArOps(T)
+    if T[0] in libOps:
+        return unparseLibOps(T)
     if T[0] == 'cDef':
         st1 = unparseRecur(T[1])
         st2 = unparseRecur(T[2])
@@ -82,16 +84,32 @@ def unparseTuple(T):
     terms = T[1]
     st = applyNaryRecur(func, terms[1:], True)
     return st
+    
+# unparseSet: tuple -> str
+def unparseSet(T):
+    func = 's'
+    st = ''
+    if len(T) == 1: # empty set
+        arg = '[]'
+        st += applyUnary(func, arg)
+    else:
+        terms = T[1]
+        args = terms[1:]
+        st += applyNaryRecur(func, args, True)
+    return st
 
 ########## ########## ########## ########## ########## ########## 
 '''
 unparse arithmetic operations
 '''
 
-arOps = {'add', 'biMinus', 'uMinus', 'mult', 'div', 'flr', 'clng', 'ab', 'md', 'exp'}
+equalityOps = {'eq', 'uneq'}
+relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
+arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'ab', 'md', 'exp'}
+libOps = equalityOps | relationalOps | arOps
 
-# unparseArOps: tuple -> str
-def unparseArOps(T):
+# unparseLibOps: tuple -> str
+def unparseLibOps(T):
     func = T[0]
     st = applyNaryRecur(func, T[1:])
     return st

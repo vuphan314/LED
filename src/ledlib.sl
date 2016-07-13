@@ -15,13 +15,16 @@ import <Utilities/String.sl>;
 
 public 
     Val, Numb, // types
-    add, biMinus, uMinus, mult, div, flr, clng, ab, md, exp,
+    eq, uneq,
+    less, greater, lessEq, greaterEq,
+    add, bMns, uMns, mult, div, flr, clng, ab, md, exp,
     tuIn,
-    a, // atom to value
     tu, // tuple to value
+    s, // set to value
+    a, // atom to value
     tr, // truth to value
     n, // numeral to value
-    valToNuml;
+    valToNuml, valToSet;
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple indexing */
@@ -39,29 +42,30 @@ tuIn(valT, valI) :=
 
 eq: Val * Val -> Val;
 eq(v1, v2) :=
-    let
-        bothNumbs := valIsNumb(v1) and valIsNumb(v2);
-        equalNumbs := eqNumb(valToNumb(v1), valToNumb(v2));
-        equalTrths := valToTrth(v1) = valToTrth(v2);
-    in
-        trthToVal(equalNumbs) when bothNumbs else
-        trthToVal(equalTrths);
-    
+    trthToVal(trthEq(v1, v2));
+        
 uneq: Val * Val -> Val;
 uneq(v1, v2) :=
-    let
-        equalVal := eq(v1, v2);
-        unequalTrth := not valToTrth(eq(v1, v2));
-    in
-        trthToVal(unequalTrth);
+    trthToVal(not trthEq(v1, v2));
 
+trthEq: Val * Val -> bool;
+trthEq(v1, v2) :=
+    let
+        n1 := valToNumb(v1); n2 := valToNumb(v2);
+        a1 := valToAtm(v1); a2 := valToAtm(v2);
+        tr1 := valToTrth(v1); tr2 := valToTrth(v2);
+        c1 := valToColl(v1); c2 := valToColl(v2);
+    in
+        eqNumb(n1, n2) when valsOfKind(v1, v2, kindNumb) else
+        equalList(a1, a2) when valsOfKind(v1, v2, kindAtm) else
+        tr1 = tr2 when valsOfKind(v1, v2, kindTrth) else
+        equalList(c1, c2) when valsOfKind(v1, v2, kindTpl) else
+        equalSet(c1, c2) when valsOfKind(v1, v2, kindSet) else
+        false;
+    
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
-    sgn(biMinusNumb(numb1, numb2)) = 0;
-    
-uneqNumb: Numb * Numb -> bool;
-uneqNumb(numb1, numb2) :=
-    not eqNumb(numb1, numb2);
+    sgn(bMnsNumb(numb1, numb2)) = 0;
     
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* relational operations */
@@ -72,7 +76,7 @@ less(v1, v2) :=
     
 lessNumb: Numb * Numb -> bool;
 lessNumb(numb1, numb2) :=
-    sgn(biMinusNumb(numb1, numb2)) < 0;
+    sgn(bMnsNumb(numb1, numb2)) < 0;
 
 greater: Val * Val -> Val;
 greater(v1, v2) :=
@@ -105,13 +109,13 @@ add: Val * Val -> Val;
 add(v1, v2) :=
     stdNumbNumbToNumb(addNumb, v1, v2);
 
-biMinus: Val * Val -> Val;
-biMinus(v1, v2) :=
-    stdNumbNumbToNumb(biMinusNumb, v1, v2);
+bMns: Val * Val -> Val;
+bMns(v1, v2) :=
+    stdNumbNumbToNumb(bMnsNumb, v1, v2);
         
-uMinus: Val -> Val;
-uMinus(v) :=
-    stdNumbToNumb(uMinusNumb, v);
+uMns: Val -> Val;
+uMns(v) :=
+    stdNumbToNumb(uMnsNumb, v);
     
 mult: Val * Val -> Val;
 mult(v1, v2) :=
@@ -154,6 +158,14 @@ valToKind: Val -> char(1);
 valToKind(v) :=
     v.kind;
 
+valOfKind: Val * char(1) -> bool;
+valOfKind(v, k(1)) :=
+    equalList(valToKind(v), k);
+    
+valsOfKind: Val * Val * char(1) -> bool;
+valsOfKind(v1, v2, k(1)) :=
+    valOfKind(v1, k) and valOfKind(v2, k);
+    
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* value to thing */
 
@@ -169,10 +181,20 @@ valToNumb: Val -> Numb;
 valToNumb(v) :=
     v.numb;
     
+valToAtm: Val -> char(1);
+valToAtm(v) :=
+    v.atm;
+    
+valToColl: Val -> Val(1);
+valToColl(v) :=
+    v.coll;  
 valToTpl: Val -> Val(1);
 valToTpl(v) :=
-    v.coll;
-   
+    valToColl(v);
+valToSet: Val -> Val(1);
+valToSet(v) :=
+    valToColl(v);
+
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* thing to value */
 
@@ -207,16 +229,18 @@ tplToVal(t(1)) :=
 tu: Val(1) -> Val;
 tu(t(1)) :=
     tplToVal(t);
+    
+setToVal: Val(1) -> Val;
+setToVal(s(1)) :=
+    (kind: kindSet, coll: removeDups(s));
+s(se(1)) :=
+    setToVal(se);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: number */
 
 Numb ::= 
     (Numr: int64, Denr: int64);
-    
-valIsNumb: Val -> bool;
-valIsNumb(v) :=
-    equalList(valToKind(v), kindNumb);
     
 intsToNumb: int64 * int64 -> Numb;
 intsToNumb(i1, i2) :=
@@ -271,6 +295,10 @@ kindAtm :=
 kindTpl: char(1);
 kindTpl :=
     "tpl";
+    
+kindSet: char(1);
+kindSet :=
+    "set";
     
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* some values */
@@ -436,7 +464,7 @@ repBlToNumb(rB(1)) :=
         iN := rB[2 ... size(rB) - 3];
         rept := intNumlToNumb(iN);
         lenRept := size(iN);
-        divisor := biMinusNumb(expNumb(numbTen, lenRept), numbOne);
+        divisor := bMnsNumb(expNumb(numbTen, lenRept), numbOne);
     in      
         divNumb(rept, divisor);
         
@@ -522,12 +550,12 @@ addNumb(numb1, numb2) :=
     in
         intsToNumb(numr, denr);
         
-biMinusNumb: Numb * Numb -> Numb;
-biMinusNumb(numb1, numb2) :=
-    addNumb(numb1, uMinusNumb(numb2));
+bMnsNumb: Numb * Numb -> Numb;
+bMnsNumb(numb1, numb2) :=
+    addNumb(numb1, uMnsNumb(numb2));
     
-uMinusNumb: Numb -> Numb;
-uMinusNumb(numb) :=    
+uMnsNumb: Numb -> Numb;
+uMnsNumb(numb) :=    
     intsToNumb(-numbToNumr(numb), numbToDenr(numb));
     
 multNumb: Numb * Numb -> Numb;

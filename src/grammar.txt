@@ -132,7 +132,7 @@ ar_term(arT A1) ::= ar_term_1(A1)
 
 ar_term_1(A2) ::= ar_term_2(A2)
 ar_term_1(add A1 A2) ::= ar_term_1(A1) plus ar_term_2(A2)
-ar_term_1(biMinus A1 A2) ::= ar_term_1(A1) minus ar_term_2(A2)
+ar_term_1(bMns A1 A2) ::= ar_term_1(A1) minus ar_term_2(A2)
 
 ar_term_2(A3) ::= ar_term_3(A3)
 ar_term_2(mult A2 A3) ::= ar_term_2(A2) star ar_term_3(A3)
@@ -141,7 +141,7 @@ ar_term_2(md A2 A3) ::= ar_term_2(A2) mod ar_term_3(A3)
 
 ar_term_3(A4) ::= ar_term_4(A4)
 ar_term_3(A4) ::= plus ar_term_4(A4)
-ar_term_3(uMinus A4) ::= minus ar_term_4(A4)
+ar_term_3(uMns A4) ::= minus ar_term_4(A4)
 ar_term_3(sum B A4) ::= Sum lBracket bool_term(B) rBracket ar_term_4(A4)
 ar_term_3(prod B A4) ::= Prod lBracket bool_term(B) rBracket ar_term_4(A4)
 
