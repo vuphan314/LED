@@ -1,3 +1,10 @@
+numl = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
+string = "[^"]*"
+atom = `[a-zA-Z][a-zA-Z\d]*
+
+primType = Nat|Int|Num|Bool
+truth = true|false
+
 lam = lam
 floor = floor
 ceil = ceil
@@ -21,12 +28,7 @@ some = some
 all = all
 otherwise = otherwise
 
-truth = true|false
-primType = Nat|Int|Num|Bool
 id = [a-zA-Z][a-zA-Z\d]*
-atom = `[a-zA-Z][a-zA-Z\d]*
-string = "[^"]*"
-numl = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 
 comma = ,
 dot = \.

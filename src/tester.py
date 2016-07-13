@@ -2,8 +2,21 @@
 print test string
 '''
 
-# test: str -> print
-def test(s):
-    startD = '/*'
-    endD = '*/'
-    print(startD, s, endD, sep = '\n', end = '\n\n')
+# test: object -> print
+def test(o):
+    st = str(o)
+    st = markerComment + '\n\n' + st + '\n\n' + markerComment + '\n'
+    print(st)
+    
+########## ########## ########## ########## ########## ########## 
+'''
+mark begin and end of wanted string
+'''
+
+markerComment = \
+'////////// ////////// ////////// ////////// ////////// //////////'
+
+# markBeginEnd: str -> str
+def markBeginEnd(st):
+    st = markerComment + '\n\n' + st + markerComment
+    return st

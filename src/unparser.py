@@ -1,43 +1,70 @@
 '''
+convert an LED parse-forest into a SL program
+'''
+
+########## ########## ########## ########## ########## ########## 
+
+from tester import *
+
+########## ########## ########## ########## ########## ########## 
+'''
 unparse an LED parse-forest (list) into a string which represents a SL program
 '''
 
 # unparse: list -> str
 def unparse(L):
     T = forestToTree(L)
-    st = importLib + unparseRecur(T)
+    st = unparseRecur(T)
+    st = importLib + st
     st = markBeginEnd(st)
     return st
 
 # unparseRecur: tuple -> str
 def unparseRecur(T):
-    if T[0] == 'atom':
-        func = 'a'
-        arg = addDoubleQuotes(T[1])
-        st = applyUnary(func, arg)
-        return st
-    if T[0] == 'truth':
-        func = 'tr'
-        arg = T[1]
-        st = applyUnary(func, arg)
-        return st
-    if T[0] == 'numl':
-        func = 'n'
-        arg = addDoubleQuotes(T[1])
-        st = applyUnary(func, arg)
-        return st
+    if T[0] in lexemes:
+        return unparseLexemes(T)
     if T[0] == 'id':
         return T[1]
+    if T[0] in arOps:
+        return unparseArOps(T)
     if T[0] == 'cDef':
         st1 = unparseRecur(T[1])
         st2 = unparseRecur(T[2])
         st = st1 + ' := ' + st2 + ';\n\n'
         return st
-    if T[0] in arOps:
-        return unparseArOps(T)
     else:
         return recurStr(unparseRecur, T[1:])
         
+########## ########## ########## ########## ########## ########## 
+'''
+misc functions
+'''
+
+# unionDicts: tuple(dict) -> dict
+def unionDicts(ds):
+    D = {}
+    for d in ds:
+        D.update(d)
+    return D
+    
+########## ########## ########## ########## ########## ########## 
+'''
+unparse lexemes
+'''
+
+lexemesDoublyQuoted = {'numl': 'n', 'atom': 'a'}
+lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
+
+# unparseLexemes: tuple -> str
+def unparseLexemes(T):
+    lex = T[0]
+    func = lexemes[lex]
+    arg = T[1]
+    if lex in lexemesDoublyQuoted:
+        arg = addDoubleQuotes(arg)
+    st = applyUnary(func, arg)
+    return st
+
 ########## ########## ########## ########## ########## ########## 
 '''
 unparse arithmetic operations
@@ -72,7 +99,7 @@ def applyNaryRecur(func, args):
     return st
     
 # recurStr: function * tuple -> str
-def recurStr(func, tupl):
+def recurStr(func, tupl):   
     st = ''
     for t in tupl:
         st += func(t)
@@ -89,29 +116,13 @@ importing and using LED library
 '''
 
 libLoc = '../'
-
 libName = 'ledlib'
-
 libAs = ''
-
 importLib = 'import * from "' + libLoc + libName + '.sl" as ' + libAs + '*;\n\n'
 
 # str -> str
 def prependLib(st):
     st = libAs + st
-    return st
-
-########## ########## ########## ########## ########## ########## 
-'''
-mark begin and end of output SL program
-'''
-
-markerSL = \
-'////////// ////////// ////////// ////////// ////////// //////////'
-
-# markBeginEnd: str -> str
-def markBeginEnd(st):
-    st = markerSL + '\n\n' + st + markerSL
     return st
 
 ########## ########## ########## ########## ########## ########## 
@@ -135,7 +146,3 @@ def listToTuple(L):
         for l in L[1:]:
             T += listToTuple(l),
         return T
-        
-########## ########## ########## ########## ########## ########## 
-
-from tester import *

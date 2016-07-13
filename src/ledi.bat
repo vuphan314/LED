@@ -13,9 +13,9 @@ goto starting
         
         type %%i & echo:
         
-        !parse! & echo:
+        REM !parse! & echo:
         
-        REM !transl! > !sl! & type !sl! 
+        !transl! > !sl! & type !sl! 
         REM sli -l !sl! 
 	)
 	goto done
