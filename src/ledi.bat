@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%test2
+    set fil=%fold%test
 	for %%i in (%fil%.led) do (
 		set b=%fold%%%~ni
         set p=!b!.p

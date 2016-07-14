@@ -1,9 +1,27 @@
-import "../lib.sl";
+////////// ////////// ////////// ////////// ////////// //////////
 
-c1 := lib::flr(lib::numeral("0.(9..)"));
+import * from "../ledlib.sl" as *;
 
-c2 := lib::clng(lib::uMinus(lib::numeral("2.(9..)")));
+c0 := uneq(n("3"), n("5"));
 
-c3 := lib::biMinus(lib::add(lib::biMinus(lib::add(lib::numeral("1"), lib::numeral("2")), lib::numeral("3.2")), lib::div(lib::mult(lib::uMinus(lib::numeral("0.(2..)")), lib::numeral("2.5")), lib::numeral("2.(3..)"))), lib::md(lib::abs(lib::uMinus(lib::numeral("1.2"))), lib::exp(lib::numeral("2"), lib::numeral("3"))));
+c1 := greaterEq(uMns(n("2.(6..)")), mult(uMns(n("2")), n("1.(3..)")));
 
+c2 := eq(a("`a"), a("`a"));
 
+c3 := eq(a("`a"), a("`b"));
+
+c4 := eq(tr(true), tr(false));
+
+c5 := eq(tr(true), tr(true));
+
+c6 := eq(tu([n("1"), n("2")]), tu([n("1"), n("2"), n("4")]));
+
+c7 := eq(tu([n("1"), n("2")]), tu([n("1"), mult(n("2"), n("1"))]));
+
+c8 := eq(s([n("1")]), s([s([n("1"), n("3")]), n("5")]));
+
+c9 := eq(s([s([])]), s([s([]), s([])]));
+
+c10 := uneq(tr(true), s([]));
+
+////////// ////////// ////////// ////////// ////////// //////////
