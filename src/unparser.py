@@ -27,6 +27,10 @@ def unparseRecur(T):
         return T[1]
     if T[0] == 'set':
         return unparseSet(T)
+    if T[0] == 'nrval':
+        func = 'iv'
+        st = applyNaryRecur(func, T[1:])
+        return st
     if T[0] == 'tup':
         return unparseTuple(T)
     if T[0] == 'tupInd':

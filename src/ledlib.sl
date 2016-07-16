@@ -21,6 +21,7 @@ public
     tuIn,
     tu, // tuple to value
     se, // set to value
+    iv, // interval to value
     at, // atom to value
     tr, // truth to value
     nu, // numeral to value
@@ -233,8 +234,28 @@ tu(t(1)) :=
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
     (kind: kindSet, coll: removeDups(s));
+se: Val(1) -> Val;
 se(s(1)) :=
     setToVal(s);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* interval */
+
+intervalToVal: Val * Val -> Val;
+intervalToVal(v1, v2) :=
+    let
+        i1 := valToInt(v1); 
+        i2 := valToInt(v2); 
+        s := intsToSet(i1, i2);
+    in
+        setToVal(s);
+iv: Val * Val -> Val;
+iv(v1, v2) :=
+    intervalToVal(v1, v2);
+
+intsToSet: int64 * int64 -> Val(1);
+intsToSet(i1, i2)[ind] :=
+    intToVal(ind) foreach ind within i1...i2;
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: number */
