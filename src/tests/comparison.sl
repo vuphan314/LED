@@ -2,26 +2,26 @@
 
 import * from "../ledlib.sl" as *;
 
-c0 := uneq(n("3"), n("5"));
+c0 := uneq(nu("3"), nu("5"));
 
-c1 := greaterEq(uMns(n("2.(6..)")), mult(uMns(n("2")), n("1.(3..)")));
+c1 := greaterEq(uMns(nu("2.(6..)")), mult(uMns(nu("2")), nu("1.(3..)")));
 
-c2 := eq(a("`a"), a("`a"));
+c2 := eq(at("`a"), at("`a"));
 
-c3 := eq(a("`a"), a("`b"));
+c3 := eq(at("`a"), at("`b"));
 
 c4 := eq(tr(true), tr(false));
 
 c5 := eq(tr(true), tr(true));
 
-c6 := eq(tu([n("1"), n("2")]), tu([n("1"), n("2"), n("4")]));
+c6 := eq(tu([nu("1"), nu("2")]), tu([nu("1"), nu("2"), nu("4")]));
 
-c7 := eq(tu([n("1"), n("2")]), tu([n("1"), mult(n("2"), n("1"))]));
+c7 := eq(tu([nu("1"), nu("2")]), tu([nu("1"), mult(nu("2"), nu("1"))]));
 
-c8 := eq(s([n("1")]), s([s([n("1"), n("3")]), n("5")]));
+c8 := eq(se([nu("1")]), se([se([nu("1"), nu("3")]), nu("5")]));
 
-c9 := eq(s([s([])]), s([s([]), s([])]));
+c9 := eq(se([se([])]), se([se([]), se([])]));
 
-c10 := uneq(tr(true), s([]));
+c10 := uneq(tr(true), se([]));
 
 ////////// ////////// ////////// ////////// ////////// //////////

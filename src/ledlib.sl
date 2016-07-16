@@ -20,10 +20,10 @@ public
     add, bMns, uMns, mult, div, flr, clng, ab, md, exp,
     tuIn,
     tu, // tuple to value
-    s, // set to value
-    a, // atom to value
+    se, // set to value
+    at, // atom to value
     tr, // truth to value
-    n, // numeral to value
+    nu, // numeral to value
     valToNuml, valToSet;
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
@@ -201,9 +201,9 @@ valToSet(v) :=
 numlToVal: char(1) -> Val;
 numlToVal(n(1)) :=
     numbToVal(numlToNumb(n));
-n: char(1) -> Val;
-n(numl(1)) :=
-    numlToVal(numl);
+nu: char(1) -> Val;
+nu(n(1)) :=
+    numlToVal(n);
     
 numbToVal: Numb -> Val;
 numbToVal(n) :=
@@ -219,9 +219,9 @@ tr(t) :=
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
     (kind: kindAtm, atm: a);
-a: char(1) -> Val;
-a(at(1)) :=
-    atmToVal(at);
+at: char(1) -> Val;
+at(a(1)) :=
+    atmToVal(a);
 
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
@@ -233,8 +233,8 @@ tu(t(1)) :=
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
     (kind: kindSet, coll: removeDups(s));
-s(se(1)) :=
-    setToVal(se);
+se(s(1)) :=
+    setToVal(s);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: number */

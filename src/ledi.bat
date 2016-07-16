@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%test
+    set fil=%fold%comparison
 	for %%i in (%fil%.led) do (
 		set b=%fold%%%~ni
         set p=!b!.p
@@ -11,9 +11,9 @@ goto starting
         set parse=py ledparser.py %%i
         set transl=py translator.py %%i
         
-        REM type %%i & echo:
+        type %%i & echo:
         
-        !parse! & echo:
+        REM !parse! & echo:
         
         !transl! > !sl! & type !sl! 
         sli -l !sl! 

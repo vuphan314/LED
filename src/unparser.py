@@ -60,7 +60,7 @@ def unionDicts(ds):
 unparse lexemes
 '''
 
-lexemesDoublyQuoted = {'numl': 'n', 'atom': 'a'}
+lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
 
 # unparseLexemes: tuple -> str
@@ -87,7 +87,7 @@ def unparseTuple(T):
     
 # unparseSet: tuple -> str
 def unparseSet(T):
-    func = 's'
+    func = 'se'
     st = ''
     if len(T) == 1: # empty set
         arg = '[]'
