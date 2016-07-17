@@ -25,6 +25,8 @@ def unparseRecur(T):
         return unparseLexemes(T)
     if T[0] == 'id':
         return T[1]
+    if T[0] == 'normT':
+        return unparseNorm(T[1])
     if T[0] == 'set':
         return unparseSet(T)
     if T[0] == 'nrval':
@@ -104,18 +106,26 @@ def unparseSet(T):
 
 ########## ########## ########## ########## ########## ########## 
 '''
-unparse arithmetic operations
+unparse library operations
 '''
 
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
-arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'ab', 'md', 'exp'}
+arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
 libOps = equalityOps | relationalOps | arOps | boolOps
 
 # unparseLibOps: tuple -> str
 def unparseLibOps(T):
     func = T[0]
+    st = applyNaryRecur(func, T[1:])
+    return st
+    
+def unparseNorm(T):
+    if T[0] == 'setT':
+        func = 'card'
+    else: # 'arT'
+        func = 'ab'
     st = applyNaryRecur(func, T[1:])
     return st
     

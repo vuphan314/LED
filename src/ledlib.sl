@@ -15,10 +15,11 @@ import <Utilities/String.sl>;
 
 public 
     Val, Numb, // types
+    card, ab, // norm
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
-    add, bMns, uMns, mult, div, flr, clng, ab, md, exp, // arithmetic
+    add, bMns, uMns, mult, div, flr, clng, md, exp, // arithmetic
     tuIn, // tuple indexing
     tu, // tuple to value
     se, // set to value
@@ -103,6 +104,13 @@ greaterEq(v1, v2) :=
 greaterEqNumb: Numb * Numb -> bool;
 greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* set operations (value) */
+
+card: Val -> Val;
+card(v) :=
+    stdSetToInt(cardSet, v);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* boolean operations (value) */
@@ -529,6 +537,14 @@ intNumlToNumb(iN(1)) :=
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* standardizer functions */
 
+stdSetToInt: (Val(1) -> int64) * Val -> Val;
+stdSetToInt(f, v) :=
+    let
+        s := valToSet(v);
+        i := f(s);
+    in
+        intToVal(i);
+
 stdTrthTrthToTrth: (bool * bool -> bool) * Val * Val -> Val;
 stdTrthTrthToTrth(f, v1, v2) :=
     let
@@ -598,6 +614,13 @@ stdNumbIntToNumb(f, v1, v2) :=
         n2 := f(n, i);
     in
         numbToVal(n2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* set operations (non-value) */
+
+cardSet: Val(1) -> int64;
+cardSet(v(1)) :=
+    size(v);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* boolean operations (truth) */

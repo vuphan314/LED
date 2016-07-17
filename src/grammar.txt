@@ -153,11 +153,11 @@ ar_term_5(A) ::= lPar ar_term(A) rPar
 ar_term_5(flr A) ::= floor lPar ar_term(A) rPar
 ar_term_5(clng A) ::= ceil lPar ar_term(A) rPar
 ar_term_5(N) ::= numl(N)
-ar_term_5(barT B) ::= bar bar_arg(B) bar
+ar_term_5(normT B) ::= bar norm_arg(B) bar
 
-bar_arg(barUT U) ::= user_term(U)
-bar_arg(S) ::= set_term(S)
-bar_arg(A) ::= ar_term(A)
+norm_arg(normUT U) ::= user_term(U)
+norm_arg(S) ::= set_term(S)
+norm_arg(A) ::= ar_term(A)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)

@@ -13,7 +13,7 @@ goto starting
         
         type %%i & echo:
         
-        REM !parse! & echo:
+        !parse! & echo:
         
         !transl! > !sl! & type !sl! 
         sli -l !sl! 
