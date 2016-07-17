@@ -104,7 +104,7 @@ bool_term_4(B5) ::= bool_term_5(B5)
 bool_term_4(conj B4 B5) ::= bool_term_4(B4) amperstand bool_term_5(B5)
 
 bool_term_5(B6) ::= bool_term_6(B6)
-bool_term_5(not B6) ::= tilde bool_term_6(B6)
+bool_term_5(neg B6) ::= tilde bool_term_6(B6)
 
 bool_term_6(boolUT U) ::= user_term(U)
 bool_term_6(B) ::= lPar bool_term(B) rPar

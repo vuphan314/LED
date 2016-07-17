@@ -110,7 +110,8 @@ unparse arithmetic operations
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
 arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'ab', 'md', 'exp'}
-libOps = equalityOps | relationalOps | arOps
+boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
+libOps = equalityOps | relationalOps | arOps | boolOps
 
 # unparseLibOps: tuple -> str
 def unparseLibOps(T):

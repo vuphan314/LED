@@ -15,17 +15,18 @@ import <Utilities/String.sl>;
 
 public 
     Val, Numb, // types
-    eq, uneq,
-    less, greater, lessEq, greaterEq,
-    add, bMns, uMns, mult, div, flr, clng, ab, md, exp,
-    tuIn,
+    equiv, impl, disj, conj, neg, // boolean
+    eq, uneq, // equality
+    less, greater, lessEq, greaterEq, // relational
+    add, bMns, uMns, mult, div, flr, clng, ab, md, exp, // arithmetic
+    tuIn, // tuple indexing
     tu, // tuple to value
     se, // set to value
     iv, // interval to value
     at, // atom to value
     tr, // truth to value
     nu, // numeral to value
-    valToNuml, valToSet;
+    valToNuml; // value to numeral
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple indexing */
@@ -103,6 +104,29 @@ greaterEqNumb: Numb * Numb -> bool;
 greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* boolean operations (value) */
+
+equiv: Val * Val -> Val;
+equiv(v1, v2) :=
+    stdTrthTrthToTrth(equivTrth, v1, v2);
+
+impl: Val * Val -> Val;
+impl(v1, v2) :=
+    stdTrthTrthToTrth(implTrth, v1, v2);
+    
+disj: Val * Val -> Val;
+disj(v1, v2) :=
+    stdTrthTrthToTrth(disjTrth, v1, v2);
+    
+conj: Val * Val -> Val;
+conj(v1, v2) :=
+    stdTrthTrthToTrth(conjTrth, v1, v2);
+    
+neg: Val -> Val;
+neg(v) :=
+    stdTrthToTrth(negTrth, v);
+    
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* arithmetic operations (value) */
 
@@ -504,6 +528,23 @@ intNumlToNumb(iN(1)) :=
     
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* standardizer functions */
+
+stdTrthTrthToTrth: (bool * bool -> bool) * Val * Val -> Val;
+stdTrthTrthToTrth(f, v1, v2) :=
+    let
+        t1 := valToTrth(v1);
+        t2 := valToTrth(v2);
+        t := f(t1, t2);
+    in
+        trthToVal(t);
+
+stdTrthToTrth: (bool -> bool) * Val -> Val;
+stdTrthToTrth(f, v) :=
+    let 
+        t := valToTrth(v);
+        t2 := f(t);
+    in
+        trthToVal(t2);
     
 stdNumbNumbToTrth: (Numb * Numb -> bool) * Val * Val -> Val;
 stdNumbNumbToTrth(f, v1, v2) :=
@@ -557,6 +598,35 @@ stdNumbIntToNumb(f, v1, v2) :=
         n2 := f(n, i);
     in
         numbToVal(n2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* boolean operations (truth) */
+
+equivTrth: bool * bool -> bool;
+equivTrth(t1, t2) :=
+    let
+        if := implTrth(t1, t2);
+        onlyIf := implTrth(t2, t1);
+    in
+        conjTrth(if, onlyIf);
+
+implTrth: bool * bool -> bool;
+implTrth(t1, t2) :=
+    disjTrth(negTrth(t1), t2);
+
+disjTrth: bool * bool -> bool;
+disjTrth(t1, t2) :=
+    true when t1 else
+    t2;
+
+conjTrth: bool * bool -> bool;
+conjTrth(t1, t2) :=
+    false when not t1 else
+    t2;
+
+negTrth: bool -> bool;
+negTrth(t) :=
+    not t;
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* arithmetic operations (number) */

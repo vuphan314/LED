@@ -2,4 +2,6 @@
 
 import * from "../ledlib.sl" as *;
 
+c := equiv(impl(disj(conj(tr(true), tr(false)), neg(eq(nu("1"), div(nu("2"), nu("2"))))), tr(false)), uneq(at("`a"), se([])));
+
 ////////// ////////// ////////// ////////// ////////// //////////
