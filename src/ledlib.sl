@@ -8,6 +8,7 @@ LED library written in SequenceL
 import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
 import <Utilities/Sequence.sl>;
+import <Utilities/Set.sl>;
 import <Utilities/String.sl>;
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
@@ -16,6 +17,7 @@ import <Utilities/String.sl>;
 public 
     Val, Numb, // types
     card, ab, // norm
+    setMem, sbset, unn, nrsec, diff, cross, // set
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
@@ -107,6 +109,30 @@ greaterEqNumb(numb1, numb2) :=
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* set operations (value) */
+
+setMem: Val * Val -> Val;
+setMem(v1, v2) :=
+    stdValSetToTrth(setMemSet, v1, v2);
+    
+sbset: Val * Val -> Val;
+sbset(v1, v2) :=
+    stdSetSetToTrth(sbsetSet, v1, v2);
+
+unn: Val * Val -> Val;
+unn(v1, v2) :=
+    stdSetSetToSet(unnSet, v1, v2);
+    
+nrsec: Val * Val -> Val;
+nrsec(v1, v2) :=
+    stdSetSetToSet(nrsecSet, v1, v2);
+    
+diff: Val * Val -> Val;
+diff(v1, v2) :=
+    stdSetSetToSet(diffSet, v1, v2);
+    
+cross: Val * Val -> Val;
+cross(v1, v2) :=
+    stdSetSetToSet(crossSet, v1, v2);
 
 card: Val -> Val;
 card(v) :=
@@ -537,6 +563,32 @@ intNumlToNumb(iN(1)) :=
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* standardizer functions */
 
+stdValSetToTrth: (Val * Val(1) -> bool) * Val * Val -> Val;
+stdValSetToTrth(f, v, v2) :=
+    let
+        s := valToSet(v2);
+        t := f(v, s);
+    in
+        trthToVal(t);
+        
+stdSetSetToTrth: (Val(1) * Val(1) -> bool) * Val * Val -> Val;
+stdSetSetToTrth(f, v1, v2) :=
+    let
+        s1 := valToSet(v1);
+        s2 := valToSet(v2);
+        t := f(s1, s2);
+    in
+        trthToVal(t);
+        
+stdSetSetToSet: (Val(1) * Val(1) -> Val(1)) * Val * Val -> Val;
+stdSetSetToSet(f, v1, v2) :=
+    let
+        s1 := valToSet(v1);
+        s2 := valToSet(v2);
+        s := f(s1, s2);
+    in
+        setToVal(s);
+        
 stdSetToInt: (Val(1) -> int64) * Val -> Val;
 stdSetToInt(f, v) :=
     let
@@ -618,6 +670,53 @@ stdNumbIntToNumb(f, v1, v2) :=
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* set operations (non-value) */
 
+setMemSet: Val * Val(1) -> bool;
+setMemSet(v, vs(1)) :=
+    Set::elementOf(v, vs);
+
+sbsetSet: Val(1) * Val(1) -> bool;
+sbsetSet(v1(1), v2(1)) :=
+    subset(v1, v2);
+    
+unnSet: Val(1) * Val(1) -> Val(1);
+unnSet(v1(1), v2(1)) :=
+    Set::union(v1, v2);
+    
+nrsecSet: Val(1) * Val(1) -> Val(1);
+nrsecSet(v1(1), v2(1)) :=
+    Set::intersection(v1, v2);
+    
+diffSet: Val(1) * Val(1) -> Val(1);
+diffSet(v1(1), v2(1))[i] :=
+    let
+        v := v1[i];
+    in
+        v when not setMemSet(v, v2);
+        
+// crossSet: Val(1) * Val(1) -> Val(1);
+// crossSet(v1(1), v2(1))[i] :=
+    // let
+        // listOfTwoVals := Set::cartesianProduct(v1, v2);
+        // twoVal := listOfTwoVals[i];
+        // valOfTwoVal := tplToVal(twoVal);
+    // in
+        // valOfTwoVal;
+        
+crossSet: Val(1) * Val(1) -> Val(1);
+crossSet(v1(1), v2(1)) :=
+    let
+        collSet := Set::cartesianProduct(v1, v2);
+    in
+        collSetToValSet(collSet, kindSet);
+        
+collSetToValSet: Val(2) * char(1) -> Val(1);
+collSetToValSet(M(2), k(1))[i] :=
+    let
+        c := M[i];
+    in
+        tplToVal(c) when equalList(k, kindTpl) else
+        setToVal(c);
+    
 cardSet: Val(1) -> int64;
 cardSet(v(1)) :=
     size(v);

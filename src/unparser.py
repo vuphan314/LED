@@ -112,8 +112,9 @@ unparse library operations
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
 arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
+setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
-libOps = equalityOps | relationalOps | arOps | boolOps
+libOps = equalityOps | relationalOps | arOps | setOps | boolOps
 
 # unparseLibOps: tuple -> str
 def unparseLibOps(T):

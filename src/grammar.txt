@@ -59,15 +59,15 @@ tuple_indexed_term_1(tupInd T A) ::= tuple_term(T) lBracket ar_term(A) rBracket
 set_term(setT S1) ::= set_term_1(S1)
 
 set_term_1(S2) ::= set_term_2(S2)
-set_term_1(union S1 S2) ::= set_term_1(S1) U set_term_2(S2)
-set_term_1(setDiff S1 S2) ::= set_term_1(S1) backslash set_term_2(S2)
+set_term_1(unn S1 S2) ::= set_term_1(S1) U set_term_2(S2)
+set_term_1(diff S1 S2) ::= set_term_1(S1) backslash set_term_2(S2)
 
 set_term_2(S3) ::= set_term_3(S3)
 set_term_2(nrsec S2 S3) ::= set_term_2(S2) sec set_term_3(S3)
 set_term_2(cross S2 S3) ::= set_term_2(S2) star set_term_3(S3)
 
 set_term_3(S4) ::= set_term_4(S4)
-set_term_3(aggrUnion B S4) ::= U lBracket bool_term(B) rBracket set_term_4(S4)
+set_term_3(aggrUnn B S4) ::= U lBracket bool_term(B) rBracket set_term_4(S4)
 set_term_3(aggrNrsec B S4) ::= Sec lBracket bool_term(B) rBracket set_term_4(S4)
 
 set_term_4(setUT U) ::= user_term(U)
@@ -114,7 +114,7 @@ bool_term_6(Q) ::= quantified_term(Q)
 bool_term_6(E) ::= equality(E)
 
 set_bool_term(setMem T S) ::= term(T) in set_term(S)
-set_bool_term(subset S S2) ::= set_term(S) sub set_term(S2)
+set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 
 quantified_term(exist V B) ::= some var_s_in_set_term(V) dot bool_term_6(B)
 quantified_term(univ V B) ::= all var_s_in_set_term(V) dot bool_term_6(B)
