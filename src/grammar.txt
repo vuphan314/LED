@@ -72,7 +72,7 @@ set_term_3(aggrNrsec B S4) ::= Sec lBracket bool_term(B) rBracket set_term_4(S4)
 
 set_term_4(setUT U) ::= user_term(U)
 set_term_4(S) ::= lPar set_term(S) rPar
-set_term_4(powSet S) ::= pow lPar set_term(S) rPar
+set_term_4(powSet S) ::= Pow lPar set_term(S) rPar
 set_term_4(S) ::= sequence(S)
 set_term_4(B) ::= brace_set(B)
 

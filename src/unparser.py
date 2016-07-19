@@ -112,7 +112,7 @@ unparse library operations
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
 arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
-setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross'}
+setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross', 'powSet'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
 libOps = equalityOps | relationalOps | arOps | setOps | boolOps
 

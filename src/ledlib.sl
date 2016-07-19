@@ -17,7 +17,7 @@ import <Utilities/String.sl>;
 public 
     Val, Numb, // types
     card, ab, // norm
-    setMem, sbset, unn, nrsec, diff, cross, // set
+    setMem, sbset, unn, nrsec, diff, cross, powSet, // set
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
@@ -133,6 +133,10 @@ diff(v1, v2) :=
 cross: Val * Val -> Val;
 cross(v1, v2) :=
     stdSetSetToSet(crossSet, v1, v2);
+    
+powSet: Val -> Val;
+powSet(v) :=
+    stdSetToSet(powSetSet, v);
 
 card: Val -> Val;
 card(v) :=
@@ -589,6 +593,14 @@ stdSetSetToSet(f, v1, v2) :=
     in
         setToVal(s);
         
+stdSetToSet: (Val(1) -> Val(1)) * Val -> Val;
+stdSetToSet(f, v) :=
+    let
+        s := valToSet(v);
+        s2 := f(s);
+    in
+        setToVal(s2);
+        
 stdSetToInt: (Val(1) -> int64) * Val -> Val;
 stdSetToInt(f, v) :=
     let
@@ -693,19 +705,17 @@ diffSet(v1(1), v2(1))[i] :=
     in
         v when not setMemSet(v, v2);
         
-// crossSet: Val(1) * Val(1) -> Val(1);
-// crossSet(v1(1), v2(1))[i] :=
-    // let
-        // listOfTwoVals := Set::cartesianProduct(v1, v2);
-        // twoVal := listOfTwoVals[i];
-        // valOfTwoVal := tplToVal(twoVal);
-    // in
-        // valOfTwoVal;
-        
 crossSet: Val(1) * Val(1) -> Val(1);
 crossSet(v1(1), v2(1)) :=
     let
         collSet := Set::cartesianProduct(v1, v2);
+    in
+        collSetToValSet(collSet, kindTpl);
+        
+powSetSet: Val(1) -> Val(1);
+powSetSet(v(1)) :=
+    let
+        collSet := Set::powerSet(v);
     in
         collSetToValSet(collSet, kindSet);
         

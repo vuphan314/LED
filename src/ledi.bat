@@ -16,8 +16,9 @@ goto starting
         
         REM !parse! & echo:
         
-        !transl! > !sl! & type !sl! 
-        sli -l !sl! -x -c "d" > !txt! & !txt!
+        !transl! > !sl! & !sl! 
+        REM sli -l !sl! -x -c "d" 
+        REM > !txt! & !txt!
 	)
 	goto done
 	
