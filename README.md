@@ -21,13 +21,17 @@
 - open extracted folder
 - source LED file must be `tests/test.led`
 - double-click `ledi.bat`
-- after [SequenceL Interpreter][sli] loads
+- after SequenceL Interpreter loads
   - query return values of functions
     - try entering `c3`
   - exit with `:quit`
 - note: LED `0.(3..)` will be translated to SL `[1, 3]` (numerator & denominator)
 
-[LED]: https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
-[SL]: http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Language-Reference.pdf
-[sli]: http://www.texasmulticoretechnologies.com/content/SequenceL_Interpreter_Reference.pdf
-[lediZip]: https://github.com/vuphan314/LEDtoSLtranslator/blob/master/ledi.zip?raw=true
+[LED]: 
+https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
+[SL]: 
+http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Language-Reference.pdf
+[sli]: 
+http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Interpreter-Reference.pdf
+[lediZip]: 
+https://github.com/vuphan314/LEDtoSLtranslator/blob/master/ledi.zip?raw=true
