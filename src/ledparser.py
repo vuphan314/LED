@@ -48,7 +48,8 @@ def regparse_file(program_file):
 
     # get the list of program elements
     parsed_file = regparser_instance.get_parsed_elements()
-
+    
+    parsed_file = ['prog'] + parsed_file
     return parsed_file
     
 def main():

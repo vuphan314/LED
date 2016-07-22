@@ -1,0 +1,28 @@
+/$ c := 
+
+some z in {}. all x in {z..2}. all y, y2 in {1+1..2}. x + y = z
+
+$/
+
+SL
+
+c := d
+
+Sz := {}
+c_[k] :=
+    let z := Sz[k]
+    in  c'a(z)
+d := someR1(c_)
+    
+Sx(z) := {z..2}
+c'(z)[j] :=
+    let x := Sx(z)[j]
+    in  c2a(z, x)
+c'a(z) := allR1(c'(z));
+    
+Sy(z, x) := {1+1..2}
+c2(z, x)[i][j] := 
+    let y := Sy[i]
+        y2 := Sy[j]
+    in  x + y = z;
+c2a(z, x) := allR2(c2(z, x))

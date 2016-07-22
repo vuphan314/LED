@@ -116,8 +116,8 @@ bool_term_6(E) ::= equality(E)
 set_bool_term(setMem T S) ::= term(T) in set_term(S)
 set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 
-quantified_term(exist V B) ::= some var_s_in_set_term(V) dot bool_term_6(B)
-quantified_term(univ V B) ::= all var_s_in_set_term(V) dot bool_term_6(B)
+quantified_term(exist S B) ::= some symbol_s_in_set_term(S) dot bool_term_6(B)
+quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
 
 equality(R) ::= relational(R)
 equality(eq T T2) ::= term(T) equal term(T2)
@@ -162,10 +162,13 @@ norm_arg(A) ::= ar_term(A)
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 
+symbol_s(syms S) ::= symbol_(S)
+symbol_s(syms S cut_root(Ss)) ::= symbol_(S) comma symbol_s(Ss)
+
+symbol_s_in_set_term(symsInS S S2) ::= symbol_s(S) in set_term(S2)
+
 var_s(vars V) ::= var_(V)
 var_s(vars V cut_root(Vs)) ::= var_(V) comma var_s(Vs)
-
-var_s_in_set_term(varsInS V S) ::= var_s(V) in set_term(S)
 
 var_of_type(varOfT V T) ::= var_(V) colon type(T)
 
@@ -180,9 +183,10 @@ term_if_bool_term(tElse T) ::= term(T) otherwise
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
 
-user_term(userVC I) ::= id(I)
+user_term(userSVC I) ::= id(I)
 user_term(userFR I T) ::= id(I) lPar term_s(T) rPar
 
+symbol_(sName I) ::= id(I)
 var_(vName I) ::= id(I)
 const_(cName I) ::= id(I)
 fun_(fName I) ::= id(I)

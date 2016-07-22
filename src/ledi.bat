@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%set
+    set fil=%fold%quantification
 	for %%i in (%fil%.led) do (
 		set base=%fold%%%~ni
         set p=!base!.p
@@ -14,11 +14,10 @@ goto starting
         
         type %%i & echo:
         
-        REM !parse! & echo:
+        !parse! & echo:
         
-        !transl! > !sl! & !sl! 
-        REM sli -l !sl! -x -c "d" 
-        REM > !txt! & !txt!
+        !transl! > !sl! & type !sl! 
+        REM sli -l !sl! 
 	)
 	goto done
 	

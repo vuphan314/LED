@@ -1,5 +1,5 @@
 '''
-convert an LED parse-forest into a SL program
+convert an LED parse tree into a SL program
 '''
 
 ########## ########## ########## ########## ########## ########## 
@@ -8,12 +8,12 @@ from tester import *
 
 ########## ########## ########## ########## ########## ########## 
 '''
-unparse an LED parse-forest (list) into a string which represents a SL program
+unparse an LED parse tree into a string which represents a SL program
 '''
 
 # unparse: list -> str
 def unparse(L):
-    T = forestToTree(L)
+    T = listToTuple(L)
     st = unparseRecur(T)
     st = importLib + st
     st = markBeginEnd(st)
@@ -183,17 +183,7 @@ def prependLib(st):
     return st
 
 ########## ########## ########## ########## ########## ########## 
-'''
-transform a parse-forest (list) to a parse-tree (tuple)
-'''
 
-# forestToTree: list -> tuple
-def forestToTree(L):
-    L = ['prog'] + L
-    T = listToTuple(L)
-    transformed = listToTuple(T)
-    return transformed
-    
 # listToTuple: list -> tuple
 def listToTuple(L):
     if type(L) != list:
