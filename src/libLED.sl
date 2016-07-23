@@ -15,6 +15,7 @@ import <Utilities/String.sl>;
 /* exporting */
 
 public 
+    pr, // pretty print
     Val, Numb, // types
     card, ab, // norm
     setMem, sbset, unn, nrsec, diff, cross, powSet, // set
@@ -28,8 +29,7 @@ public
     iv, // interval to value
     at, // atom to value
     tr, // truth to value
-    nu, // numeral to value
-    pr; // pretty print
+    nu; // numeral to value
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* testing */

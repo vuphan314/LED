@@ -2,7 +2,7 @@
 
 import * from "../libLED.sl" as l::*;
 
-c := l::setMem(l::add(l::nu("1"), l::nu("1")), l::iv(l::div(l::nu("4"), l::nu("2")), l::nu("3")));
+c1 := l::setMem(l::add(l::nu("1"), l::nu("1")), l::iv(l::div(l::nu("4"), l::nu("2")), l::nu("3")));
 
 c2 := l::sbset(l::se([l::nu("1"), l::mult(l::nu("0.(3..)"), l::nu("3"))]), l::se([l::nu("1")]));
 

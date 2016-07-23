@@ -1,4 +1,1 @@
-/$ 
-c := 
-true & false or ~ 1 = 2 / 2 => false <=> `a /= {}
-$/
+/$ c := true & false or ~ 1 = 2 / 2 => false <=> `a /= {} $/ "true"
