@@ -29,8 +29,139 @@ public
     at, // atom to value
     tr, // truth to value
     nu, // numeral to value
-    valToNuml; // value to numeral
+    pr; // pretty print
         
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* testing */
+
+// test(x) := debugPrint(x);
+// test2(s(1), x) := debugPrint(s, x);
+
+pr(v) := prettyPrint(v);
+
+prettyPrint: Val -> char(1);
+prettyPrint(v) :=
+    let
+        a := valToAtm(v);
+        numl := valToNuml(v);
+        t := valToTrth(v);
+        c := valToColl(v);
+    in
+        a when valOfKind(v, kindAtm) else
+        numl when valOfKind(v, kindNumb) else
+        Conversion::boolToString(t) when valOfKind(v, kindTrth) else
+        prettyPrintColl(c, valToKind(v)); // collection
+
+prettyPrintColl: Val(1) * char(1) -> char(1);
+prettyPrintColl(vs(1), k(1)) :=
+    let
+        h := prettyPrint(head(vs));
+        t := prettyPrintTail(tail(vs));
+        s := h ++ join(t);
+    in
+        "{}" when size(vs) = 0 else
+        "{" ++ s ++ "}" when equalList(k, kindSet) else
+        "(" ++ s ++ ")"; // tuple
+
+prettyPrintTail: Val(1) -> char(2);
+prettyPrintTail(vs(1))[i] :=
+    let
+        v := vs[i];
+        s := prettyPrint(v);
+    in
+        ", " ++ s;
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* type: value */
+
+Val ::= 
+    (kind: char(1), 
+    atm: char(1), numb: Numb, trth: bool, coll: Val(1), 
+    lmbd: (Val(1) -> Val));
+        
+valToKind: Val -> char(1);
+valToKind(v) :=
+    v.kind;
+
+valOfKind: Val * char(1) -> bool;
+valOfKind(v, k(1)) :=
+    equalList(valToKind(v), k);
+    
+valsOfKind: Val * Val * char(1) -> bool;
+valsOfKind(v1, v2, k(1)) :=
+    valOfKind(v1, k) and valOfKind(v2, k);
+    
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* value to thing */
+
+valToTrth: Val -> bool;
+valToTrth(v) :=
+    v.trth;
+    
+valToNuml: Val -> char(1);
+valToNuml(v) :=
+    numbToNuml(valToNumb(v));
+    
+valToNumb: Val -> Numb;
+valToNumb(v) :=
+    v.numb;
+    
+valToAtm: Val -> char(1);
+valToAtm(v) :=
+    v.atm;
+    
+valToColl: Val -> Val(1);
+valToColl(v) :=
+    v.coll;  
+valToTpl: Val -> Val(1);
+valToTpl(v) :=
+    valToColl(v);
+valToSet: Val -> Val(1);
+valToSet(v) :=
+    valToColl(v);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* thing to value */
+
+numlToVal: char(1) -> Val;
+numlToVal(n(1)) :=
+    numbToVal(numlToNumb(n));
+nu: char(1) -> Val;
+nu(n(1)) :=
+    numlToVal(n);
+    
+numbToVal: Numb -> Val;
+numbToVal(n) :=
+    (kind: kindNumb, numb: n);
+    
+trthToVal: bool -> Val;
+trthToVal(t) :=
+    (kind: kindTrth, trth: t);
+tr: bool -> Val;
+tr(t) :=
+    trthToVal(t);
+    
+atmToVal: char(1) -> Val;
+atmToVal(a(1)) :=
+    (kind: kindAtm, atm: a);
+at: char(1) -> Val;
+at(a(1)) :=
+    atmToVal(a);
+
+tplToVal: Val(1) -> Val;
+tplToVal(t(1)) :=
+    (kind: kindTpl, coll: t);
+tu: Val(1) -> Val;
+tu(t(1)) :=
+    tplToVal(t);
+    
+setToVal: Val(1) -> Val;
+setToVal(s(1)) :=
+    (kind: kindSet, coll: removeDups(s));
+se: Val(1) -> Val;
+se(s(1)) :=
+    setToVal(s);
+    
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* quantification */
 
@@ -227,98 +358,6 @@ exp(v1, v2) :=
     stdNumbIntToNumb(expNumb, v1, v2);    
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
-/* type: value */
-
-Val ::= 
-    (kind: char(1), 
-    atm: char(1), numb: Numb, trth: bool, 
-    coll: Val(1), //todo
-    lmbd: (Val(1) -> Val));
-        
-valToKind: Val -> char(1);
-valToKind(v) :=
-    v.kind;
-
-valOfKind: Val * char(1) -> bool;
-valOfKind(v, k(1)) :=
-    equalList(valToKind(v), k);
-    
-valsOfKind: Val * Val * char(1) -> bool;
-valsOfKind(v1, v2, k(1)) :=
-    valOfKind(v1, k) and valOfKind(v2, k);
-    
-////////// ////////// ////////// ////////// ////////// ////////// 
-/* value to thing */
-
-valToTrth: Val -> bool;
-valToTrth(v) :=
-    v.trth;
-    
-valToNuml: Val -> char(1);
-valToNuml(v) :=
-    numbToNuml(valToNumb(v));
-    
-valToNumb: Val -> Numb;
-valToNumb(v) :=
-    v.numb;
-    
-valToAtm: Val -> char(1);
-valToAtm(v) :=
-    v.atm;
-    
-valToColl: Val -> Val(1);
-valToColl(v) :=
-    v.coll;  
-valToTpl: Val -> Val(1);
-valToTpl(v) :=
-    valToColl(v);
-valToSet: Val -> Val(1);
-valToSet(v) :=
-    valToColl(v);
-
-////////// ////////// ////////// ////////// ////////// ////////// 
-/* thing to value */
-
-numlToVal: char(1) -> Val;
-numlToVal(n(1)) :=
-    numbToVal(numlToNumb(n));
-nu: char(1) -> Val;
-nu(n(1)) :=
-    numlToVal(n);
-    
-numbToVal: Numb -> Val;
-numbToVal(n) :=
-    (kind: kindNumb, numb: n);
-    
-trthToVal: bool -> Val;
-trthToVal(t) :=
-    (kind: kindTrth, trth: t);
-tr: bool -> Val;
-tr(t) :=
-    trthToVal(t);
-    
-atmToVal: char(1) -> Val;
-atmToVal(a(1)) :=
-    (kind: kindAtm, atm: a);
-at: char(1) -> Val;
-at(a(1)) :=
-    atmToVal(a);
-
-tplToVal: Val(1) -> Val;
-tplToVal(t(1)) :=
-    (kind: kindTpl, coll: t);
-tu: Val(1) -> Val;
-tu(t(1)) :=
-    tplToVal(t);
-    
-setToVal: Val(1) -> Val;
-setToVal(s(1)) :=
-    (kind: kindSet, coll: removeDups(s));
-se: Val(1) -> Val;
-se(s(1)) :=
-    setToVal(s);
-
-////////// ////////// ////////// ////////// ////////// ////////// 
 /* interval */
 
 intervalToVal: Val * Val -> Val;
@@ -326,15 +365,15 @@ intervalToVal(v1, v2) :=
     let
         i1 := valToInt(v1); 
         i2 := valToInt(v2); 
-        s := intsToSet(i1, i2);
+        s := twoIntsToSet(i1, i2);
     in
         setToVal(s);
 iv: Val * Val -> Val;
 iv(v1, v2) :=
     intervalToVal(v1, v2);
 
-intsToSet: int64 * int64 -> Val(1);
-intsToSet(i1, i2)[ind] :=
+twoIntsToSet: int64 * int64 -> Val(1);
+twoIntsToSet(i1, i2)[ind] :=
     intToVal(ind) foreach ind within i1...i2;
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
@@ -343,9 +382,13 @@ intsToSet(i1, i2)[ind] :=
 Numb ::= 
     (Numr: int64, Denr: int64);
     
-intsToNumb: int64 * int64 -> Numb;
-intsToNumb(i1, i2) :=
+twoIntsToNumbRed: int64 * int64 -> Numb;
+twoIntsToNumbRed(i1, i2) :=
     reduce(i1, i2);
+    
+twoIntsToNumb: int64 * int64 -> Numb;
+twoIntsToNumb(i1, i2) :=
+    (Numr: i1, Denr: i2);
 
 numbToNumr: Numb -> int64;
 numbToNumr(numb) :=
@@ -364,7 +407,7 @@ numbIsInt(numb) :=
     
 intToNumb: int64 -> Numb;
 intToNumb(i) :=
-    intsToNumb(i, 1);
+    twoIntsToNumb(i, 1);
     
 numbToInt: Numb -> int64;
 numbToInt(numb) :=
@@ -436,7 +479,7 @@ numbTen :=
 
 recipr: Numb -> Numb;
 recipr(numb) :=
-    intsToNumb(numbToDenr(numb), numbToNumr(numb));
+    twoIntsToNumbRed(numbToDenr(numb), numbToNumr(numb));
 
 sgn: Numb -> int8;
 sgn(numb) :=
@@ -446,12 +489,14 @@ reduce: int64 * int64 -> Numb;
 reduce(i1, i2) :=
     let
         signOfNumb := Math::sign(i1) * Math::sign(i2);
-        absNumr := Math::abs(i1); absDenr := Math::abs(i2);
+        absNumr := Math::abs(i1); 
+        absDenr := Math::abs(i2);
         gcdNumb := gcd(absNumr, absDenr);
-        redAbsNumr := absNumr / gcdNumb; redAbsDenr := absDenr / gcdNumb;
+        redAbsNumr := absNumr / gcdNumb; 
+        redAbsDenr := absDenr / gcdNumb;
         redNumr := signOfNumb * redAbsNumr;
     in
-        (Numr: redNumr, Denr: redAbsDenr);
+        twoIntsToNumb(redNumr, redAbsDenr);
 
 gcd: int64 * int64 -> int64;
 gcd(i1, i2) :=
@@ -797,7 +842,7 @@ addNumb(numb1, numb2) :=
             numbToDenr(numb1) * numbToNumr(numb2);
         denr := numbToDenr(numb1) * numbToDenr(numb2);
     in
-        intsToNumb(numr, denr);
+        twoIntsToNumbRed(numr, denr);
         
 bMnsNumb: Numb * Numb -> Numb;
 bMnsNumb(numb1, numb2) :=
@@ -805,7 +850,7 @@ bMnsNumb(numb1, numb2) :=
     
 uMnsNumb: Numb -> Numb;
 uMnsNumb(numb) :=    
-    intsToNumb(-numbToNumr(numb), numbToDenr(numb));
+    twoIntsToNumbRed(-numbToNumr(numb), numbToDenr(numb));
     
 multNumb: Numb * Numb -> Numb;
 multNumb(numb1, numb2) :=
@@ -813,7 +858,7 @@ multNumb(numb1, numb2) :=
         numr := numbToNumr(numb1) * numbToNumr(numb2);
         denr := numbToDenr(numb1) * numbToDenr(numb2);
     in
-        intsToNumb(numr, denr);
+        twoIntsToNumbRed(numr, denr);
         
 divNumb: Numb * Numb -> Numb;
 divNumb(numb1, numb2) := 
@@ -835,14 +880,25 @@ clngNumb(numb) :=
     
 abNumb: Numb -> Numb;
 abNumb(numb) :=
-    intsToNumb(Math::abs(numbToNumr(numb)), numbToDenr(numb));
+    twoIntsToNumbRed(Math::abs(numbToNumr(numb)), numbToDenr(numb));
     
 mdNumb: int64 * int64 -> int64;
 mdNumb(i1, i2) :=
     i1 mod i2;
     
 expNumb: Numb * int64 -> Numb;
-expNumb(numb, i) :=
-    numbOne when i = 0 else
-    multNumb(numb, expNumb(numb, i - 1)) when i > 0 else
-    expNumb(recipr(numb), -i);
+expNumb(numb, p) :=
+    let
+        numr := numbToNumr(numb); 
+        denr := numbToDenr(numb);
+    in
+        expTwoInts(numr, denr, p);
+        
+expTwoInts: int64 * int64 * int64 -> Numb;
+expTwoInts(numr, denr, p) :=
+    let
+        numr2 := Math::integerPower(numr, p);
+        denr2 := Math::integerPower(denr, p);
+    in
+        twoIntsToNumb(numr2, denr2) when p >= 0 else
+        expTwoInts(denr, numr, -p);        

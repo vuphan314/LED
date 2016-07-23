@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=%fold%quantification
+    set fil=%fold%set
 	for %%i in (%fil%.led) do (
 		set base=%fold%%%~ni
         set p=!base!.p
@@ -12,12 +12,12 @@ goto starting
         set parse=py ledparser.py %%i
         set transl=py translator.py %%i
         
-        REM type %%i & echo:
+        type %%i & echo:
         
-        !parse! & echo:
+        REM !parse! & echo:
         
-        REM !transl! > !sl! & type !sl! 
-        REM sli -l !sl! 
+        !transl! > !sl! & type !sl! 
+        sli -l !sl! 
 	)
 	goto done
 	
