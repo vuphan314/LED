@@ -39,16 +39,62 @@ def unparseRecur(T):
         func = 'tuIn'
         st = applyNaryRecur(func, T[1:])
         return st
+    if T[0] in parseQuantifiers:
+        return unparseQuantification(T)
     if T[0] in libOps:
         return unparseLibOps(T)
     if T[0] == 'cDef':
-        st1 = unparseRecur(T[1])
-        st2 = unparseRecur(T[2])
-        st = st1 + ' := ' + st2 + ';\n\n'
+        func = unparseRecur(T[1])
+        args = ()
+        expr = unparseRecur(T[2])
+        st = defineFunction(func, args, expr)
         return st
     else:
         return recurStr(unparseRecur, T[1:])
         
+########## ########## ########## ########## ########## ########## 
+'''
+quantification
+'''
+
+parseQuantifiers = {'univ', 'exist'}
+libMaxSymbolsInSet = 2
+
+class QuantInfo:
+    isExistential = True # or universal
+    independentSymbols = () # ('i1', 'i2')
+    dependentSymbols = () # ('d1', 'd2')
+    quantSet = '' # '{}'
+    quanPred = () # sub-tree, like: equal(i1, d2)
+    auxNum = 1
+    
+    # writeMain: str
+    def writeMain(self):
+        xx
+    
+    # funcMain: (bool ->) str
+    def funcMain(self, next = False):
+        st = self.appendAux('A', next)
+        return st
+        
+    # funcPred: str
+    def funcPred(self):
+        st = self.appendAux('B')
+        return st
+        
+    # funcSet: str
+    def funcSet(self):
+        st = self.appendAux('C')
+        return st
+        
+    # appendAux: str (* bool) -> str
+    def appendAux(self, extraAppend, next = False):
+        num = self.auxNum
+        if next:
+            num += 1
+        st = 'AUX_' + str(num) + '_' + extraAppend + '_'
+        return st
+    
 ########## ########## ########## ########## ########## ########## 
 '''
 misc functions
@@ -76,7 +122,8 @@ def unparseLexemes(T):
     arg = T[1]
     if lex in lexemesDoublyQuoted:
         arg = addDoubleQuotes(arg)
-    st = applyUnary(func, arg)
+    args = arg,
+    st = applyNary(func, args, True)
     return st
 
 ########## ########## ########## ########## ########## ########## 
@@ -97,7 +144,8 @@ def unparseSet(T):
     st = ''
     if len(T) == 1: # empty set
         arg = '[]'
-        st += applyUnary(func, arg)
+        args = arg,
+        st += applyNary(func, args, True)
     else:
         terms = T[1]
         args = terms[1:]
@@ -135,24 +183,41 @@ def unparseNorm(T):
 helper functions
 '''
 
-# applyUnary: str * str -> str
-def applyUnary(func, arg):
-    func = prependLib(func)
-    st = func + '(' + arg + ')'
+# defineFunction: str * list(str) * str -> str;
+def defineFunction(func, args, expr):
+    st = applyNary(func, args, False) + ' := ' + expr + ';\n\n'
     return st
 
-# applyNaryRecur: str * tuple -> str
+# applyNary: str * list(str) * bool -> str
+def applyNary(func, args, addLib):
+    if addLib:
+        func = prependLib(func)
+    st = func
+    if args != ():
+        st += '(' + args[0]
+        for arg in args[1:]
+            st += ', ' + arg
+        st += ')'
+    return st
+
+# applyNaryRecur: str * tuple(tuple) (* bool) -> str
 def applyNaryRecur(func, args, listSL = False):
-    func = prependLib(func)
-    st = func + '('
-    if listSL:
-        st += '['
-    st += unparseRecur(args[0])
-    for arg in args[1:]:
-        st += ', ' + unparseRecur(arg)
-    if listSL:
-        st += ']'
-    st += ')'
+    st = prependLib(func)
+    if args != ():
+        st += '('
+        if listSL:
+            st += '['
+        st += unparseRecur(args[0])
+        for arg in args[1:]:
+            st += ', ' + unparseRecur(arg)
+        if listSL:
+            st += ']'
+        st += ')'
+    return st
+    
+# addDoubleQuotes: str -> str
+def addDoubleQuotes(st):
+    st = '"' + st + '"'
     return st
     
 # recurStr: function * tuple -> str
@@ -160,11 +225,6 @@ def recurStr(func, tupl):
     st = ''
     for t in tupl:
         st += func(t)
-    return st
-    
-# addDoubleQuotes: str -> str
-def addDoubleQuotes(st):
-    st = '"' + st + '"'
     return st
     
 ########## ########## ########## ########## ########## ########## 

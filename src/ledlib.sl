@@ -32,6 +32,24 @@ public
     valToNuml; // value to numeral
         
 ////////// ////////// ////////// ////////// ////////// ////////// 
+/* quantification */
+
+allSet: Val(1) -> Val;
+allSet(v(1)) :=
+    let
+        n := size(v);
+        vHead := head(v);
+        vTail := tail(v);
+    in
+        valTrue when n = 0 else
+        vHead when n = 1 else
+        conj(vHead, allSet(vTail));
+        
+allSet2: Val(2) -> Val;
+allSet2(v(2)) :=
+    allSet(allSet(v));
+
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple indexing */
 
 tuIn: Val * Val -> Val;
@@ -385,6 +403,14 @@ kindSet :=
     
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* some values */
+
+valTrue: Val;
+valTrue :=
+    trthToVal(true);
+    
+valFalse: Val;
+valFalse :=
+    trthToVal(false);
 
 valOne: Val;
 valOne :=
