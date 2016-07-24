@@ -7,6 +7,8 @@ aux1b[k] := // predicate
     in  aux2a(z)
 aux1c := {} // set
 
+someSetN(vs(N)) := someSet(..someSet(vs));
+
 aux2a(z) := allR1(aux2b(z));
 aux2b(z)[j] :=
     let x := aux2c(z)[j]

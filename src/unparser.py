@@ -54,49 +54,6 @@ def unparseRecur(T):
         
 ########## ########## ########## ########## ########## ########## 
 '''
-quantification
-'''
-
-quantLabels = {'univ', 'exist'}
-libMaxSymbolsInSet = 2
-
-# # # class QuantInfo:
-    # # # isExistential = True # or universal
-    # # # independentSymbols = () # ('i1', 'i2')
-    # # # dependentSymbols = () # ('d1', 'd2')
-    # # # quantSet = '' # '{}'
-    # # # quanPred = () # sub-tree, like: equal(i1, d2)
-    # # # auxNum = 1
-    
-    # # # # writeMain: str
-    # # # def writeMain(self):
-        # # # xx
-    
-    # # # # funcMain: (bool ->) str
-    # # # def funcMain(self, next = False):
-        # # # st = self.appendAux('A', next)
-        # # # return st
-        
-    # # # # funcPred: str
-    # # # def funcPred(self):
-        # # # st = self.appendAux('B')
-        # # # return st
-        
-    # # # # funcSet: str
-    # # # def funcSet(self):
-        # # # st = self.appendAux('C')
-        # # # return st
-        
-    # # # # appendAux: str (* bool) -> str
-    # # # def appendAux(self, extraAppend, next = False):
-        # # # num = self.auxNum
-        # # # if next:
-            # # # num += 1
-        # # # st = 'AUX_' + str(num) + '_' + extraAppend + '_'
-        # # # return st
-    
-########## ########## ########## ########## ########## ########## 
-'''
 misc functions
 '''
 
@@ -223,6 +180,110 @@ def listToTree(L):
             T += listToTree(l),
         return T
         
+########## ########## ########## ########## ########## ########## 
+'''
+quantification
+'''
+
+quantLabels = {'univ', 'exist'}
+libMaxSymbolsInSet = 1
+defedFuncsQuantDeeper = set() # {2, 4,...}
+
+class QuantInfo:
+    isExist = True # or universal
+    indepSymbols = () # ('i1', 'i2')
+    depSymbols = () # ('d1', 'd2')
+    qSet = '' # '{}'
+    qPred = () # sub-tree, like: equal(i1, d2)
+    auxNum = 1
+    
+    # numSymbolsInSet: int
+    def numSymbolsInSet(self):
+        n = len(self.depSymbols)
+        return n
+    
+    # defFuncMain: str
+    def defFuncMain(self):
+        func = self.nameFuncMain()
+        args = ()
+        
+        func2 = self.nameFuncQuant()
+        args2 = self.nameFuncPred(),
+        expr = applyRecur(func2, args2)
+        
+        st = defFuncRecur(func, args, expr)
+        
+        n = self.numSymbolsInSet()
+        if n > libMaxSymbolsInSet and not self.isDefedFuncQuantDeeper():
+            st = self.defFuncQuantDeeper() + st
+        
+        return st
+        
+    # isDefedFuncQuantDeeper: bool
+    def isDefedFuncQuantDeeper(self):
+        n = self.numSymbolsInSet()
+        b = n in defedFuncsQuantDeeper
+        return b
+            
+    # nameFuncQuant: str
+    def nameFuncQuant(self, isDeeper = True):
+        if self.isExist:
+            func = 'someSet'
+        else: # universal
+            func = 'allSet'
+        if isDeeper:
+            n = self.numSymbolsInSet()
+            func += '_' + str(n) + '_'
+        return func
+        
+    # defFuncQuantDeeper: str
+    def defFuncQuantDeeper(self):
+        n = self.numSymbolsInSet()
+        global defedFuncsQuantDeeper
+        defedFuncsQuantDeeper |= {n}
+        
+        func = self.nameFuncQuant()
+        arg = 'vs'
+        args = arg + '(' + str(n) + ')',
+        
+        func2 = self.nameFuncQuant(isDeeper = False)
+        args2 = arg,
+        for i in range(n):
+            args2 = applyRecur(func2, args2),
+        expr = args2[0]
+        
+        st = defFuncRecur(func, args, expr)
+        return st
+    
+    # nameFuncMain: str
+    def nameFuncMain(self, isOfNext = False):
+        st = self.appendAux('MAIN', isOfNext)
+        return st
+        
+    # nameFuncPred: str
+    def nameFuncPred(self):
+        st = self.appendAux('PRED')
+        return st
+        
+    # nameFuncSet: str
+    def nameFuncSet(self):
+        st = self.appendAux('SET')
+        return st
+        
+    # appendAux: str -> str
+    def appendAux(self, extraAppend, isOfNext = False):
+        num = self.auxNum
+        if isOfNext:
+            num += 1
+        st = 'AUX_' + str(num) + '_' + extraAppend + '_'
+        return st
+    
+# test
+q = QuantInfo()
+q.depSymbols = {'d1', 'd2', 'd3', 'd4', 'd5'}
+t = q.defFuncMain()
+test(t)
+
 ########## ########## ########## ########## ########## ########## 
 '''
 importing and using LED library

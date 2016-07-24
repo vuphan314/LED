@@ -165,20 +165,35 @@ se(s(1)) :=
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* quantification */
 
-allSet: Val(1) -> Val;
-allSet(v(1)) :=
+someSet1: Val(1) -> Val;
+someSet1(vs(1)) :=
     let
-        n := size(v);
-        vHead := head(v);
-        vTail := tail(v);
+        n := size(vs);
+        h := head(vs);
+        t := tail(vs);
+    in
+        valFalse when n = 0 else
+        h when n = 1 else
+        disj(h, someSet1(t));
+
+allSet1: Val(1) -> Val;
+allSet1(vs(1)) :=
+    let
+        n := size(vs);
+        h := head(vs);
+        t := tail(vs);
     in
         valTrue when n = 0 else
-        vHead when n = 1 else
-        conj(vHead, allSet(vTail));
+        h when n = 1 else
+        conj(h, allSet1(t));
         
-allSet2: Val(2) -> Val;
-allSet2(v(2)) :=
-    allSet(allSet(v));
+// someSet2: Val(2) -> Val;
+// someSet2(vs(2)) :=
+    // someSet1(someSet1(vs));
+
+// allSet2: Val(2) -> Val;
+// allSet2(vs(2)) :=
+    // allSet1(allSet1(vs));
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple indexing */
