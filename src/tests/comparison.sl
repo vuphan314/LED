@@ -1,27 +1,43 @@
 ////////// ////////// ////////// ////////// ////////// //////////
 
-import * from "../libLED.sl" as l::*;
+import * from "../libLED.sl" as *;
 
-c0 := l::uneq(l::nu("3"), l::nu("5"));
+c0 := uneq(nu("3"), nu("5"));
 
-c1 := l::greaterEq(l::uMns(l::nu("2.(6..)")), l::mult(l::uMns(l::nu("2")), l::nu("1.(3..)")));
+c1 := greaterEq(uMns(nu("2.(6..)")), mult(uMns(nu("2")), nu("1.(3..)")));
 
-c2 := l::eq(l::at("`a"), l::at("`a"));
+c2 := eq(at("`a"), at("`a"));
 
-c3 := l::eq(l::at("`a"), l::at("`b"));
+c3 := eq(at("`a"), at("`b"));
 
-c4 := l::eq(l::tr(true), l::tr(false));
+c4 := eq(tr(true), tr(false));
 
-c5 := l::eq(l::tr(true), l::tr(true));
+c5 := eq(tr(true), tr(true));
 
-c6 := l::eq(l::tu([l::nu("1"), l::nu("2")]), l::tu([l::nu("1"), l::nu("2"), l::nu("4")]));
+c6 := eq(tu([nu("1"), nu("2")]), tu([nu("1"), nu("2"), nu("4")]));
 
-c7 := l::eq(l::tu([l::nu("1"), l::nu("2")]), l::tu([l::nu("1"), l::mult(l::nu("2"), l::nu("1"))]));
+c7 := eq(tu([nu("1"), nu("2")]), tu([nu("1"), mult(nu("2"), nu("1"))]));
 
-c8 := l::eq(l::se([l::nu("1")]), l::se([l::se([l::nu("1"), l::nu("3")]), l::nu("5")]));
+c8 := eq(se([nu("1")]), se([se([nu("1"), nu("3")]), nu("5")]));
 
-c9 := l::eq(l::se([l::se([])]), l::se([l::se([]), l::se([])]));
+c9 := eq(se([se([])]), se([se([]), se([])]));
 
-c10 := l::uneq(l::tr(true), l::se([]));
+c10 := uneq(tr(true), se([]));
 
 ////////// ////////// ////////// ////////// ////////// //////////
+
+/* Copy/paste the block below into SequenceL interpreter to test:
+
+pp(c0)
+pp(c1)
+pp(c2)
+pp(c3)
+pp(c4)
+pp(c5)
+pp(c6)
+pp(c7)
+pp(c8)
+pp(c9)
+pp(c10)
+
+(pp means PrettyPrint) */

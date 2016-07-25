@@ -15,7 +15,7 @@ import <Utilities/String.sl>;
 /* exporting */
 
 public 
-    pr, // pretty print
+    pp, // pretty print
     Val, Numb, // types
     card, ab, // norm
     setMem, sbset, unn, nrsec, diff, cross, powSet, // set
@@ -34,10 +34,7 @@ public
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* testing */
 
-// test(x) := debugPrint(x);
-// test2(s(1), x) := debugPrint(s, x);
-
-pr(v) := prettyPrint(v);
+pp(v) := prettyPrint(v);
 
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
@@ -70,6 +67,9 @@ prettyPrintTail(vs(1))[i] :=
         s := prettyPrint(v);
     in
         ", " ++ s;
+
+// test(x) := debugPrint(x);
+// test2(s(1), x) := debugPrint(s, x);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: value */

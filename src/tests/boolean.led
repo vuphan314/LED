@@ -1,1 +1,6 @@
-/$ c := true & false or ~ 1 = 2 / 2 => false <=> `a /= {} $/ "true"
+/$ c := true & false or ~ 1 = 2 / 2 => false <=> `a /= {} $/
+
+test:
+
+cmd:>pp(c)
+"true"

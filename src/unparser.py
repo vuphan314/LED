@@ -11,6 +11,28 @@ from tester import *
 
 ########## ########## ########## ########## ########## ########## 
 '''
+testing
+'''
+
+# printTest: str
+def printTest():
+    st = '\n\n/* Copy/paste the block below into SequenceL interpreter to test:\n\n'
+    for func in testConsts:
+        func = applyRecur('pp', (func,), isInLib = True)
+        st += func + '\n'
+    st += '\n(pp means PrettyPrint) */'
+    return st
+
+########## ########## ########## ########## ########## ########## 
+'''
+python global variables
+'''
+
+testConsts = () # ('c1', 'c2',...)
+defedFuncsQuantDeeper = set() # {2, 4,...}
+
+########## ########## ########## ########## ########## ########## 
+'''
 unparse an LED parsetree into a string which represents a SL program
 
 note: tree := tuple/str
@@ -22,6 +44,7 @@ def unparse(L):
     st = unparseRecur(T)
     st = importLib + st
     st = markBeginEnd(st)
+    st += printTest()
     return st
 
 # unparseRecur: tree -> str
@@ -47,7 +70,10 @@ def unparseRecur(T):
     if T[0] in libOps:
         return unparseLibOps(T)
     if T[0] == 'cDef':
-        st = defFuncRecur(T[1], (), T[2])
+        func = unparseRecur(T[1])
+        global testConsts
+        testConsts += func,
+        st = defFuncRecur(func, (), T[2])
         return st
     else:
         return recurStr(unparseRecur, T[1:])
@@ -187,7 +213,6 @@ quantification
 
 quantLabels = {'univ', 'exist'}
 libMaxSymbolsInSet = 1
-defedFuncsQuantDeeper = set() # {2, 4,...}
 
 class QuantInfo:
     isExist = True # or universal
@@ -278,12 +303,6 @@ class QuantInfo:
         st = 'AUX_' + str(num) + '_' + extraAppend + '_'
         return st
     
-# test
-q = QuantInfo()
-q.depSymbols = {'d1', 'd2', 'd3', 'd4', 'd5'}
-t = q.defFuncMain()
-test(t)
-
 ########## ########## ########## ########## ########## ########## 
 '''
 importing and using LED library
@@ -291,7 +310,7 @@ importing and using LED library
 
 libLoc = '../'
 libName = 'libLED'
-libAs = 'l::'
+libAs = ''
 importLib = 'import * from "' + libLoc + libName + '.sl" as ' + libAs + '*;\n\n'
 
 # str -> str
