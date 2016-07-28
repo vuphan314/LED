@@ -1,23 +1,22 @@
 /$ e := all x in {}. x = 0 or all x in {}. x = 0
 d := some z in {}. all x in {z..2}. all y, y2 in {1+1..2}. x + y = z $/
 
-aux1a := someR1(aux1b) // main
-aux1b[k] := // predicate
+aux3a(z, x) := allR2(aux3b(z, x)); // main
+aux3b(z, x)[i][j] := // predicate
+    let 
+        y := aux3c[i];
+        y2 := aux3c[j];
+    in  eq(add(x, y), z);
+aux3c(z, x) := {1+1..2}; // set
+
+aux1a := someR1(aux1b) 
+aux1b[k] :=
     let z := aux1c[k]
     in  aux2a(z)
-aux1c := {} // set
-
-someSetN(vs(N)) := someSet(..someSet(vs));
+aux1c := {}
 
 aux2a(z) := allR1(aux2b(z));
 aux2b(z)[j] :=
     let x := aux2c(z)[j]
     in  aux3a(z, x)
 aux2c(z) := {z..2}
-    
-aux3a(z, x) := allR2(aux3b(z, x))
-aux3b(z, x)[i][j] := 
-    let y := aux3c[i]
-        y2 := aux3c[j]
-    in  eq(add(x, y), z)
-aux3c(z, x) := {1+1..2}

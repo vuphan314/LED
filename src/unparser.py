@@ -30,7 +30,8 @@ python global variables
 
 testConsts = () # ('c1', 'c2',...)
 defedFuncsQuantDeeper = set() # {2, 4,...}
-
+auxFuncNum = 1
+    
 ########## ########## ########## ########## ########## ########## 
 '''
 unparse an LED parsetree into a string which represents a SL program
@@ -73,7 +74,7 @@ def unparseRecur(T):
         func = unparseRecur(T[1])
         global testConsts
         testConsts += func,
-        st = defFuncRecur(func, (), T[2])
+        st = defFuncRecur(func, (), T[2], moreSpace = True)
         return st
     else:
         return recurStr(unparseRecur, T[1:])
@@ -118,7 +119,7 @@ unparse collections
 def unparseTuple(T):
     func = 'tu'
     terms = T[1]
-    st = applyRecur(func, terms[1:], isInLib = True, isList = True)
+    st = applyRecur(func, terms[1:], isInLib = True, argsAreBracketed = True)
     return st
     
 # unparseSet: tree -> str
@@ -129,7 +130,7 @@ def unparseSet(T):
     else:
         terms = T[1]
         args = terms[1:]
-    st = applyRecur(func, args, isInLib = True, isList = True)
+    st = applyRecur(func, args, isInLib = True, argsAreBracketed = True)
     return st
 
 ########## ########## ########## ########## ########## ########## 
@@ -164,13 +165,15 @@ helper functions
 '''
 
 # defFuncRecur: tree * tuple(tree) * tree -> str
-def defFuncRecur(func, args, expr):
+def defFuncRecur(func, args, expr, inds = (), moreSpace = False):
     expr = unparseRecur(expr)
-    st = applyRecur(func, args) + ' := ' + expr + ';\n\n'
+    st = applyRecur(func, args, inds = inds) + ' := ' + expr + ';\n'
+    if moreSpace:
+        st += '\n'
     return st
 
 # applyRecur: tree * tuple(tree) -> str
-def applyRecur(func, args, isInLib = False, isList = False):
+def applyRecur(func, args, isInLib = False, argsAreBracketed = False, inds = ()):
     func = unparseRecur(func)
     if isInLib:
         func = prependLib(func)
@@ -179,9 +182,33 @@ def applyRecur(func, args, isInLib = False, isList = False):
         st2 = unparseRecur(args[0])
         for arg in args[1:]:
             st2 += ', ' + unparseRecur(arg)
-        if isList:
-            st2 = '[' + st2 + ']'
+        if argsAreBracketed:
+            st2 = addBrackets(st)
         st += '(' + st2 + ')'
+    st = appendInds(st, inds)
+    return st
+
+# writeLetClauses: tuple(str) -> str
+def writeLetClauses(T):
+    st = '\n\tlet\n'
+    for t in T:
+        st += '\t\t' + t
+    return st
+    
+# writeInClause: str -> str
+def writeInClause(st):
+    st = '\tin\n\t\t' + st;
+    return st
+    
+# appendInds: str * tuple(str) -> str
+def appendInds(st, T):
+    for t in T:
+        st += addBrackets(t)
+    return st
+    
+# addBrackets: str -> str
+def addBrackets(st):
+    st = '[' + st + ']'
     return st
     
 # addDoubleQuotes: str -> str
@@ -212,97 +239,161 @@ quantification
 '''
 
 quantLabels = {'univ', 'exist'}
-libMaxSymbolsInSet = 1
+libMaxSymbsInSet = 1
 
 class QuantInfo:
     isExist = True # or universal
-    indepSymbols = () # ('i1', 'i2')
-    depSymbols = () # ('d1', 'd2')
-    qSet = '' # '{}'
-    qPred = () # sub-tree, like: equal(i1, d2)
-    auxNum = 1
+    indepSymbs = () # ('x', 'y',...)
+    depSymbs = () # ('a', 'b',...)
+    qSet = '' # '{1, 2,...}'
+    qPred = () # sub-tree, like: equal(x, b)
     
-    # numSymbolsInSet: int
-    def numSymbolsInSet(self):
-        n = len(self.depSymbols)
+    # getNumSymbsInSet: int
+    def getNumSymbsInSet(self):
+        n = len(self.depSymbs)
         return n
+        
+    # defFuncs: str
+    def defFuncs(self):
+        st = self.defFuncMain() + self.defFuncPred() + self.defFuncSet()
+        return st
     
     # defFuncMain: str
     def defFuncMain(self):
-        func = self.nameFuncMain()
-        args = ()
+        S = self.indepSymbs
         
-        func2 = self.nameFuncQuant()
-        args2 = self.nameFuncPred(),
-        expr = applyRecur(func2, args2)
+        funcPred = self.getNameFuncPred()
+        argsQuant = applyRecur(funcPred, S),
         
-        st = defFuncRecur(func, args, expr)
+        funcQuant = self.getNameFuncQuant()
+        expr = applyRecur(funcQuant, argsQuant)
         
-        n = self.numSymbolsInSet()
-        if n > libMaxSymbolsInSet and not self.isDefedFuncQuantDeeper():
+        funcMain = self.getNameFuncMain()        
+        st = defFuncRecur(funcMain, S, expr, moreSpace = True)
+    
+        n = self.getNumSymbsInSet()
+        if n > libMaxSymbsInSet and not self.testIfDefedFuncQuantDeeper():
             st = self.defFuncQuantDeeper() + st
         
         return st
         
-    # isDefedFuncQuantDeeper: bool
-    def isDefedFuncQuantDeeper(self):
-        n = self.numSymbolsInSet()
+    # defFuncPred: str
+    def defFuncPred(self):
+        func = self.getNameFuncPred()
+        args = self.indepSymbs
+        
+        letCls = self.getPredLetClauses()
+        letCls = writeLetClauses(letCls)        
+        inCl = self.qPred
+        inCl = writeInClause(inCl)
+        expr = letCls + inCl
+        
+        st = defFuncRecur(func, args, expr, inds = self.getPredInds(), moreSpace = True)
+        return st
+    
+    # getPredLetClauses: tuple(str) # ('a := S[i1];', 'b := S[i2];',...)
+    def getPredLetClauses(self):
+        T = ()
+        symbs = self.depSymbs
+        inds = self.getPredInds()
+        for i in range(len(symbs)):
+            symb = symbs[i]
+            ind = inds[i],
+            expr = appendInds(self.getNameFuncSet(), ind)
+            T += defFuncRecur(symb, (), expr),
+        return T
+    
+    # getPredInds: tuple(str) # ('i1', 'i2',...)
+    def getPredInds(self):
+        t = ()
+        for i in range(self.getNumSymbsInSet()):
+            ind = 'i' + str(i + 1)
+            t += ind,
+        return t
+        
+    # defFuncSet: str
+    def defFuncSet(self):
+        func = self.getNameFuncSet()
+        args = self.indepSymbs
+        expr = self.qSet
+        st = defFuncRecur(func, args, expr, moreSpace = True)
+        global auxFuncNum
+        auxFuncNum += 1
+        return st
+        
+    # testIfDefedFuncQuantDeeper: bool
+    def testIfDefedFuncQuantDeeper(self):
+        n = self.getNumSymbsInSet()
         b = n in defedFuncsQuantDeeper
         return b
             
-    # nameFuncQuant: str
-    def nameFuncQuant(self, isDeeper = True):
+    # getNameFuncQuant: str
+    def getNameFuncQuant(self, isDeeper = True):
         if self.isExist:
             func = 'someSet'
         else: # universal
             func = 'allSet'
         if isDeeper:
-            n = self.numSymbolsInSet()
+            n = self.getNumSymbsInSet()
             func += '_' + str(n) + '_'
         return func
         
     # defFuncQuantDeeper: str
     def defFuncQuantDeeper(self):
-        n = self.numSymbolsInSet()
+        n = self.getNumSymbsInSet()
         global defedFuncsQuantDeeper
         defedFuncsQuantDeeper |= {n}
         
-        func = self.nameFuncQuant()
+        func = self.getNameFuncQuant()
         arg = 'vs'
         args = arg + '(' + str(n) + ')',
         
-        func2 = self.nameFuncQuant(isDeeper = False)
+        func2 = self.getNameFuncQuant(isDeeper = False)
         args2 = arg,
         for i in range(n):
             args2 = applyRecur(func2, args2),
         expr = args2[0]
         
-        st = defFuncRecur(func, args, expr)
+        st = defFuncRecur(func, args, expr, moreSpace = True)
         return st
     
-    # nameFuncMain: str
-    def nameFuncMain(self, isOfNext = False):
+    # getNameFuncMain: str
+    def getNameFuncMain(self, isOfNext = False):
         st = self.appendAux('MAIN', isOfNext)
         return st
         
-    # nameFuncPred: str
-    def nameFuncPred(self):
+    # getNameFuncPred: str
+    def getNameFuncPred(self):
         st = self.appendAux('PRED')
         return st
         
-    # nameFuncSet: str
-    def nameFuncSet(self):
+    # getNameFuncSet: str
+    def getNameFuncSet(self):
         st = self.appendAux('SET')
         return st
         
     # appendAux: str -> str
     def appendAux(self, extraAppend, isOfNext = False):
-        num = self.auxNum
+        num = auxFuncNum
         if isOfNext:
             num += 1
         st = 'AUX_' + str(num) + '_' + extraAppend + '_'
         return st
     
+########## ########## ########## ########## ########## ########## 
+''' 
+testing
+'''
+
+q = QuantInfo()
+q.isExist = False
+q.indepSymbs = ('z', 'x')
+q.depSymbs = ('y', 'y2')
+q.qSet = 'se([])'
+q.qPred = 'z = y2'
+
+# test(q.defFuncs())
+
 ########## ########## ########## ########## ########## ########## 
 '''
 importing and using LED library

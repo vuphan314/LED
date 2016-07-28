@@ -4,7 +4,7 @@ goto starting
     set fold=tests\
     set fil=quantification
     set fils=boolean, comparison, set
-	for %%i in (%fils%) do (
+	for %%i in (%fil%) do (
 		set base=%fold%%%~ni
         set led=!base!.led
         set p=!base!.p
@@ -13,13 +13,15 @@ goto starting
         set parse=py ledparser.py !led!
         set transl=py translator.py !led!
         
-        !led!
+        py -i unparser.py
+        
+        REM !led!
         
         REM !parse! & echo:
         
-        !transl! > !sl!
-        type !sl!
-        sli -l !sl!
+        REM !transl! > !sl!
+        REM type !sl!
+        REM sli -l !sl!
 	)
 	goto done
 	
