@@ -15,7 +15,7 @@ import unparser
 def translate():
     led = sys.argv[1]
     parsed = ledparser.regparse_file(led)
-    sl = unparser.unparse(parsed)
+    sl = unparser.unparseTop(parsed)
     print(sl)
 
 if __name__ == '__main__':

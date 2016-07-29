@@ -17,6 +17,7 @@ import <Utilities/String.sl>;
 public 
     pp, // pretty print
     Val, Numb, // types
+    someSet, allSet, valToSet, // quantification
     card, ab, // norm
     setMem, sbset, unn, nrsec, diff, cross, powSet, // set
     equiv, impl, disj, conj, neg, // boolean
@@ -165,8 +166,8 @@ se(s(1)) :=
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* quantification */
 
-someSet1: Val(1) -> Val;
-someSet1(vs(1)) :=
+someSet: Val(1) -> Val;
+someSet(vs(1)) :=
     let
         n := size(vs);
         h := head(vs);
@@ -174,10 +175,10 @@ someSet1(vs(1)) :=
     in
         valFalse when n = 0 else
         h when n = 1 else
-        disj(h, someSet1(t));
+        disj(h, someSet(t));
 
-allSet1: Val(1) -> Val;
-allSet1(vs(1)) :=
+allSet: Val(1) -> Val;
+allSet(vs(1)) :=
     let
         n := size(vs);
         h := head(vs);
@@ -185,15 +186,15 @@ allSet1(vs(1)) :=
     in
         valTrue when n = 0 else
         h when n = 1 else
-        conj(h, allSet1(t));
+        conj(h, allSet(t));
         
 // someSet2: Val(2) -> Val;
 // someSet2(vs(2)) :=
-    // someSet1(someSet1(vs));
+    // someSet(someSet(vs));
 
 // allSet2: Val(2) -> Val;
 // allSet2(vs(2)) :=
-    // allSet1(allSet1(vs));
+    // allSet(allSet(vs));
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple indexing */
