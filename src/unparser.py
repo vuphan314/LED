@@ -45,12 +45,23 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L):
     T = listToTree(L)
+    T = transformTree(T)
     st = unparseRecur(T)
     st = importLib + st
     st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncs
     st = markBeginEnd(st)
     st += printTest()
     return st
+    
+# transformTree: tree -> tree
+def transformTree(T):
+    if type(T) == str:
+        return T
+    if T[0] in quantLabels:
+        T2 = expandSymbolsInSet(T)
+        return T2
+    else:
+        return recurTuple(T, transformTree)
 
 # unparseRecur: tree -> str
 def unparseRecur(T, quantIndepSymbs = ()):
@@ -266,13 +277,37 @@ def unparseQuant(T, quantIndepSymbs = ()):
     st = q.getFuncMain()
     return st
     
+# ['exist', 
+    # ['symsInS', 
+        # ['syms', 
+            # ['sName', ('id', 'x')], 
+            # ['sName', ('id', 'y')], 
+            # ['sName', ('id', 'z')]], 
+        # ['setT', ['nrval', ['arT', ('numl', '1')], ['arT', ('numl', '1')]]]], 
+    # ['eq', ['userSVC', ('id', 'x')], ['userSVC', ('id', 'y')]]]
+# [exist
+    # [symbInS...],
+    # [exist
+        # [symbInS...],
+        # expr]]
 # expandSymbolsInSet: tree -> tree
-# def expandSymbolsInSet(T):
-    # T2 = 'symInS',
-    # syms = T[1]
-    # S = T[2]
-    # for sym in syms[1:]:
-        
+def expandSymbolsInSet(T):
+    quantifier = T[0]
+    pred = T[2]
+    
+    symsInS = T[1]
+    syms = symsInS[1][1:][::-1]
+    S = symsInS[2]
+    symb = syms[0]
+    symb = 'symbs', symb
+    symbInS = 'symbInS', symb, S
+    T2 = quantifier, symbInS, pred
+    for sym in syms[1:]:
+        symb = sym
+        symb = 'symbs', symb
+        symbInS = 'symbInS', symb, S
+        T2 = quantifier, symbInS, T2
+    return T2
     
 # getDepSymbs: tree -> tuple(str)
 def getDepSymbs(T):
