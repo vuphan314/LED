@@ -71,7 +71,7 @@ def unparseRecur(T, quantIndepSymbs = ()):
         st = applyRecur('tuIn', T[1:], isInLib = True)
         return st
     if T[0] in quantLabels:
-        return unparseQuant(T)
+        return unparseQuant(T, quantIndepSymbs = quantIndepSymbs)
     if T[0] in libOps:
         return unparseLibOps(T)
     if T[0] == 'cDef':
@@ -82,37 +82,6 @@ def unparseRecur(T, quantIndepSymbs = ()):
         return st
     else:
         return recurStr(unparseRecur, T[1:])
-        
-########## ########## ########## ########## ########## ########## 
-'''
-misc functions
-'''
-
-# unionDicts: tuple(dict) -> dict
-def unionDicts(ds):
-    D = {}
-    for d in ds:
-        D.update(d)
-    return D
-    
-########## ########## ########## ########## ########## ########## 
-'''
-unparse lexemes
-'''
-
-lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
-lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
-
-# unparseLexemes: tree -> str
-def unparseLexemes(T):
-    lex = T[0]
-    func = lexemes[lex]
-    arg = T[1]
-    if lex in lexemesDoublyQuoted:
-        arg = addDoubleQuotes(arg)
-    args = arg,
-    st = applyRecur(func, args, isInLib = True)
-    return st
 
 ########## ########## ########## ########## ########## ########## 
 '''
@@ -192,6 +161,27 @@ def applyRecur(func, args, isInLib = False, argsAreBracketed = False, inds = ())
     st = appendInds(st, inds)
     return st
 
+# recurStr: function * tuple(tree) -> str
+def recurStr(func, args):
+    st = ''
+    for arg in args:
+        st += func(arg)
+    return st
+    
+# recurTuple: tree * function -> tree
+def recurTuple(T, func):
+    T2 = T[:1]
+    for t in T[1:]:
+        T2 += func(t),
+    return T2
+    
+# unionDicts: tuple(dict) -> dict
+def unionDicts(ds):
+    D = {}
+    for d in ds:
+        D.update(d)
+    return D
+    
 # writeLetClauses: tuple(str) -> str
 def writeLetClauses(T):
     st = '\n\tlet\n'
@@ -229,19 +219,10 @@ def addBlockComment(st):
     st = '/** ' + st + ' */'
     return st
     
-# recurStr: function * tuple(tree) -> str
-def recurStr(func, args):
-    st = ''
-    for arg in args:
-        st += func(arg)
-    return st
-    
-# recurTuple: tree * function -> tree
-def recurTuple(T, func):
-    T2 = T[:1]
-    for t in T[1:]:
-        T2 += func(t),
-    return T2
+# testIfFuncAux: str -> bool
+def testIfFuncAux(st):
+    b = st[-1] == '_'
+    return b
     
 # listToTree: list -> tree
 def listToTree(L):
@@ -273,17 +254,16 @@ def unparseQuant(T, quantIndepSymbs = ()):
     symsInS = T[1]
     currentDepSymbs = getDepSymbs(symsInS[1])
     q.depSymbs = currentDepSymbs
-    q.qSet = unparseRecur(symsInS[2], currentIndepSymbs)
+    q.qSet = unparseRecur(symsInS[2], quantIndepSymbs = currentIndepSymbs)
     
     nextIndepSymbs = currentIndepSymbs + currentDepSymbs
-    q.qPred = unparseRecur(T[2], nextIndepSymbs)    
-    
+    q.qPred = unparseRecur(T[2], quantIndepSymbs = nextIndepSymbs)
     
     global auxFuncs
     qFuncs = q.defFuncs()
-    auxFuncs += qFuncs
+    auxFuncs = qFuncs + auxFuncs
     
-    st = q.getNameFuncMain()
+    st = q.getFuncMain()
     return st
     
 # expandSymbolsInSet: tree -> tree
@@ -330,13 +310,13 @@ class QuantInfo:
         
         S = self.indepSymbs
         
-        funcPred = self.getNameFuncPred()
+        funcPred = self.getFuncPred()
         argsQuant = applyRecur(funcPred, S),
         
-        funcQuant = self.getNameFuncQuant()
+        funcQuant = self.getFuncQuant()
         expr = applyRecur(funcQuant, argsQuant)
         
-        funcMain = self.getNameFuncMain() 
+        funcMain = self.getFuncMain() 
         st += defFuncRecur(funcMain, S, expr, moreSpace = True)
         if self.testIfFuncQuantDeeper() and not self.testIfDefedFuncQuantDeeper():
             global auxFuncs
@@ -346,27 +326,36 @@ class QuantInfo:
         
     # defFuncPred: str
     def defFuncPred(self):
-        func = self.getNameFuncPred()
+        func = self.getFuncPred()
         args = self.indepSymbs
         
         letCls = self.getPredLetClauses()
-        letCls = writeLetClauses(letCls)        
-        inCl = self.qPred
-        inCl = writeInClause(inCl)
+        letCls = writeLetClauses(letCls)
+        
+        func2 = self.qPred
+        args2 = self.getIndepSymbsNext()
+        if testIfFuncAux(func2):
+            func2 = applyRecur(func2, args2)
+        inCl = writeInClause(func2)
         expr = letCls + inCl
         
         st = defFuncRecur(func, args, expr, inds = self.getPredInds(), moreSpace = True)
         return st
     
-    # getPredLetClauses: tuple(str) # ('a := S[i1];', 'b := S[i2];',...)
+    # getPredLetClauses: tuple(str) # ('a := S(x)[i1];', 'b := S(x)[i2];',...)
     def getPredLetClauses(self):
         T = ()
         symbs = self.depSymbs
         inds = self.getPredInds()
         for i in range(len(symbs)):
             symb = symbs[i]
+            
+            func = self.getFuncSet()
+            args = self.indepSymbs
+            func = applyRecur(func, args)            
             ind = inds[i],
-            expr = appendInds(self.getNameFuncSet(), ind)
+            expr = appendInds(func, ind)
+            
             T += defFuncRecur(symb, (), expr),
         return T
     
@@ -380,7 +369,7 @@ class QuantInfo:
         
     # defFuncSet: str
     def defFuncSet(self):
-        func = self.getNameFuncSet()
+        func = self.getFuncSet()
         args = self.indepSymbs
         expr = applyRecur('valToSet', (self.qSet,))
         st = defFuncRecur(func, args, expr, moreSpace = True)
@@ -401,8 +390,8 @@ class QuantInfo:
         b = n in defedFuncsQuantDeeper
         return b
             
-    # getNameFuncQuant: str
-    def getNameFuncQuant(self, baseOverride = False):
+    # getFuncQuant: str
+    def getFuncQuant(self, baseOverride = False):
         if self.isExist:
             func = 'someSet'
         else: # universal
@@ -418,11 +407,11 @@ class QuantInfo:
         global defedFuncsQuantDeeper
         defedFuncsQuantDeeper |= {n}
         
-        func = self.getNameFuncQuant()
+        func = self.getFuncQuant()
         arg = 'vs'
         args = arg + '(' + str(n) + ')',
         
-        func2 = self.getNameFuncQuant(baseOverride = True)
+        func2 = self.getFuncQuant(baseOverride = True)
         args2 = arg,
         for i in range(n):
             args2 = applyRecur(func2, args2),
@@ -431,18 +420,18 @@ class QuantInfo:
         st = defFuncRecur(func, args, expr, moreSpace = True)
         return st
     
-    # getNameFuncMain: str
-    def getNameFuncMain(self, isOfNext = False):
-        st = self.appendAux('A', isOfNext)
+    # getFuncMain: str
+    def getFuncMain(self, isOfNext = False):
+        st = self.appendAux('A', isOfNext = isOfNext)
         return st
         
-    # getNameFuncPred: str
-    def getNameFuncPred(self):
+    # getFuncPred: str
+    def getFuncPred(self):
         st = self.appendAux('B')
         return st
         
-    # getNameFuncSet: str
-    def getNameFuncSet(self):
+    # getFuncSet: str
+    def getFuncSet(self):
         st = self.appendAux('C')
         return st
         
@@ -452,7 +441,31 @@ class QuantInfo:
         if isOfNext:
             num += 1
         st = 'AUX_' + str(num) + '_' + extraAppend + '_'
-        return st    
+        return st
+        
+    # getIndepSymbsNext: tuple(str)
+    def getIndepSymbsNext(self):
+        T = self.indepSymbs + self.depSymbs
+        return T
+
+########## ########## ########## ########## ########## ########## 
+'''
+unparse lexemes
+'''
+
+lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
+lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
+
+# unparseLexemes: tree -> str
+def unparseLexemes(T):
+    lex = T[0]
+    func = lexemes[lex]
+    arg = T[1]
+    if lex in lexemesDoublyQuoted:
+        arg = addDoubleQuotes(arg)
+    args = arg,
+    st = applyRecur(func, args, isInLib = True)
+    return st
 
 ########## ########## ########## ########## ########## ########## 
 '''

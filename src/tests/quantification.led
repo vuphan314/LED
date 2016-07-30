@@ -1,20 +1,10 @@
-/$ c := some x in {1}. some y in {x, 1}. x = y $/
-$ d := some z in {}. all x in {z..2}. (all y, y2 in {1+1..2}. x + y = z) $/
-['exist', 
-    ['symsInS', 
-        ['syms', 
-            ['sName', ('id', 'z')], 
-            ['sName', ('id', 'z2')]], 
-        ['setT', ['set']]], 
-    ('truth', 'true')]
-['exist', 
-    ['symsInS', 
-        ['syms', 
-            ['sName', ('id', 'z')], 
-            ['sName', ('id', 'z2')]], 
-        ['setT', ['set']]], 
-    ('truth', 'true')]
+$ c := some x in {1..2}. x > 1 $/
 
+$ c := some x in {1..2}. all y in {x..x * 2}. y / x > 1 $/
+
+/$ c := some x in {1..2}. all y in {x..x * 2}. some z in {x..y}. y / x + z > 1 $/
+
+$ d := some z in {}. all x in {z..2}. all y, y2 in {1+1..2}. x + y = z $/
 
 aux3a(z, x) := allR2(aux3b(z, x)); // main
 aux3b(z, x)[i][j] := // predicate
@@ -24,14 +14,14 @@ aux3b(z, x)[i][j] := // predicate
     in  eq(add(x, y), z);
 aux3c(z, x) := {1+1..2}; // set
 
-aux1a := someR1(aux1b) 
-aux1b[k] :=
-    let z := aux1c[k]
-    in  aux2a(z)
-aux1c := {}
-
 aux2a(z) := allR1(aux2b(z));
 aux2b(z)[j] :=
     let x := aux2c(z)[j]
     in  aux3a(z, x)
 aux2c(z) := {z..2}
+
+aux1a := someR1(aux1b) 
+aux1b[k] :=
+    let z := aux1c[k]
+    in  aux2a(z)
+aux1c := {}
