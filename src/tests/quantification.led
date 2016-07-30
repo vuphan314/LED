@@ -1,3 +1,12 @@
-/$ c := 
-some x, y in {1..1}. x = y
-$/
+/$ c1 := some v in {1, 2, 3} . v in {2, 4, 6} $/
+/$ c2:= all v in {1, 3} . (v in {-5..5} & v mod 2 = 1) $/
+/$ c3 := some x in {1..2}. some y in {some z in {}. true}. (x < 1.5 & y) $/
+
+test:
+
+cmd:>pp(c1)
+"false"
+cmd:>pp(c2)
+"true"
+cmd:>pp(c3)
+"false"

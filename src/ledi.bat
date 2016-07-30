@@ -15,13 +15,13 @@ goto starting
         
         REM py -i unparser.py
         
-        REM type !led!
+        type !led!
         
         REM !parse!
         
         !transl! > !sl!
-        !sl!
-        sli -l !sl!
+        type !sl!
+        REM sli -l !sl!
 	)
 	goto done
 	

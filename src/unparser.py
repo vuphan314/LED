@@ -145,7 +145,26 @@ def unparseNorm(T):
     
 ########## ########## ########## ########## ########## ########## 
 '''
-helper functions
+recursion
+'''
+
+# recurStr: function * tuple(tree) -> str
+def recurStr(func, args):
+    st = ''
+    for arg in args:
+        st += func(arg)
+    return st
+    
+# recurTuple: tree * function -> tree
+def recurTuple(T, func):
+    T2 = T[:1]
+    for t in T[1:]:
+        T2 += func(t),
+    return T2
+    
+########## ########## ########## ########## ########## ########## 
+'''
+writing SequenceL functions
 '''
 
 # defFuncRecur: tree * tuple(tree) * tree -> str
@@ -172,26 +191,10 @@ def applyRecur(func, args, isInLib = False, argsAreBracketed = False, inds = ())
     st = appendInds(st, inds)
     return st
 
-# recurStr: function * tuple(tree) -> str
-def recurStr(func, args):
-    st = ''
-    for arg in args:
-        st += func(arg)
-    return st
-    
-# recurTuple: tree * function -> tree
-def recurTuple(T, func):
-    T2 = T[:1]
-    for t in T[1:]:
-        T2 += func(t),
-    return T2
-    
-# unionDicts: tuple(dict) -> dict
-def unionDicts(ds):
-    D = {}
-    for d in ds:
-        D.update(d)
-    return D
+########## ########## ########## ########## ########## ########## 
+'''
+SequenceL helpers
+'''
     
 # writeLetClauses: tuple(str) -> str
 def writeLetClauses(T):
@@ -235,6 +238,18 @@ def testIfFuncAux(st):
     b = st[-1] == '_'
     return b
     
+########## ########## ########## ########## ########## ########## 
+'''
+miscellaneous
+'''
+    
+# unionDicts: tuple(dict) -> dict
+def unionDicts(ds):
+    D = {}
+    for d in ds:
+        D.update(d)
+    return D
+    
 # listToTree: list -> tree
 def listToTree(L):
     if type(L) == str:
@@ -277,19 +292,6 @@ def unparseQuant(T, quantIndepSymbs = ()):
     st = q.getFuncMain()
     return st
     
-# ['exist', 
-    # ['symsInS', 
-        # ['syms', 
-            # ['sName', ('id', 'x')], 
-            # ['sName', ('id', 'y')], 
-            # ['sName', ('id', 'z')]], 
-        # ['setT', ['nrval', ['arT', ('numl', '1')], ['arT', ('numl', '1')]]]], 
-    # ['eq', ['userSVC', ('id', 'x')], ['userSVC', ('id', 'y')]]]
-# [exist
-    # [symbInS...],
-    # [exist
-        # [symbInS...],
-        # expr]]
 # expandSymbolsInSet: tree -> tree
 def expandSymbolsInSet(T):
     quantifier = T[0]
@@ -339,7 +341,7 @@ class QuantInfo:
     def defFuncMain(self):
         global auxFuncNum
         auxFuncNum += 1
-        st = 'auxiliary function family: quantification ' + str(auxFuncNum)
+        st = 'quantification ' + str(auxFuncNum)
         st = addBlockComment(st)
         st += '\n\n'
         
@@ -408,9 +410,6 @@ class QuantInfo:
         args = self.indepSymbs
         expr = applyRecur('valToSet', (self.qSet,))
         st = defFuncRecur(func, args, expr, moreSpace = True)
-        
-        
-        
         return st
         
     # testIfFuncQuantDeeper: bool
