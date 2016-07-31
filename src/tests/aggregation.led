@@ -1,0 +1,12 @@
+/$ c :=
+p in Player & p = 1
+$/
+
+$ Move := 
+{(p, c) | p in Player & c in Cell & p < c}
+$/
+
+$ 
+movesMade(I, S) := 
+{(currentPlayer(S), c) | c in cells & moveMadeIn(c, I, S)} 
+$/

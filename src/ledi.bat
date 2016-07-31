@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=quantification
+    set fil=aggregation
     set fils=boolean, comparison, set
 	for %%i in (%fil%) do (
 		set base=%fold%%%~ni
@@ -15,12 +15,12 @@ goto starting
         
         REM py -i unparser.py
         
-        type !led!
+        REM type !led!
         
-        REM !parse!
+        !parse!
         
-        !transl! > !sl!
-        type !sl!
+        REM !transl! > !sl!
+        REM type !sl!
         REM sli -l !sl!
 	)
 	goto done

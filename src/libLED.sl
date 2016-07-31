@@ -1,3 +1,15 @@
+// S1 := {1..1}
+// S2 := {1..0}
+// d := {x + y | (x, y, z) in S1 * S1 * S2 . x > y}
+S1 := twoIntsToSet(1, 2);
+S2 := twoIntsToSet(11, 12);
+S := Set::naryCartesianProduct([S1, S1, S2]);
+d[i] :=
+    let s := S[i];
+        x := s[1]; y := s[2]; z := s[3];
+        c := greater(x, y);
+    in add(x, y) when valToTrth(c);
+
 /* 
 LED library written in SequenceL
 */
