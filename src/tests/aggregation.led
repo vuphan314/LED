@@ -1,3 +1,5 @@
+tic tac toe
+
 /$ c :=
 p in Player & p = 1
 $/
@@ -10,3 +12,23 @@ $
 movesMade(I, S) := 
 {(currentPlayer(S), c) | c in cells & moveMadeIn(c, I, S)} 
 $/
+
+meet
+
+c := {3*z | x: {-1..1}, y: {x..2*x}, z := x + y. x <= y & z > 0}
+
+c := {3*z | x in {-1..1} & y in {x..2*x} & x <= y & z = x + y & z > 0}
+
+S_x := -1...1;
+S_y(x) := x...2*x;
+c2(x)[i] :=
+    let y := S_y(x)[i];
+        z := x + y;
+        cond := x <=y and z > 0;
+    in  3*z when cond;
+c1[i] :=
+    let x := S_x[i];
+    in  c2(x);
+c := join(c1);
+
+e := {x + y | (x, y) = (1, 2, 3)}
