@@ -10,41 +10,17 @@ c3 := AUX_5_A_;
 
 /** AUXILIARY FUNCTIONS */
 
-/** quantification 5 */
+/** quantification 1 */
 
-AUX_5_A_ := someSet(AUX_5_B_);
+AUX_1_A_ := someSet(AUX_1_B_);
 
-AUX_5_B_[i1] := 
+AUX_1_B_[i1] := 
 	let
-		x := AUX_5_C_[i1];
+		v := AUX_1_C_[i1];
 	in
-		AUX_4_A_(x);
+		v;
 
-AUX_5_C_ := valToSet(iv(nu("1"), nu("2")));
-
-/** quantification 4 */
-
-AUX_4_A_(x) := someSet(AUX_4_B_(x));
-
-AUX_4_B_(x)[i1] := 
-	let
-		y := AUX_4_C_(x)[i1];
-	in
-		conj(less(x, nu("1.5")), y);
-
-AUX_4_C_(x) := valToSet(se([AUX_3_A_]));
-
-/** quantification 3 */
-
-AUX_3_A_ := someSet(AUX_3_B_);
-
-AUX_3_B_[i1] := 
-	let
-		z := AUX_3_C_[i1];
-	in
-		tr(true);
-
-AUX_3_C_ := valToSet(se([]));
+AUX_1_C_ := valToSet(se([nu("1"), nu("2"), nu("3")]));
 
 /** quantification 2 */
 
@@ -58,17 +34,41 @@ AUX_2_B_[i1] :=
 
 AUX_2_C_ := valToSet(se([nu("1"), nu("3")]));
 
-/** quantification 1 */
+/** quantification 3 */
 
-AUX_1_A_ := someSet(AUX_1_B_);
+AUX_3_A_ := someSet(AUX_3_B_);
 
-AUX_1_B_[i1] := 
+AUX_3_B_[i1] := 
 	let
-		v := AUX_1_C_[i1];
+		z := AUX_3_C_[i1];
 	in
-		v;
+		tr(true);
 
-AUX_1_C_ := valToSet(se([nu("1"), nu("2"), nu("3")]));
+AUX_3_C_ := valToSet(se([]));
+
+/** quantification 4 */
+
+AUX_4_A_(x) := someSet(AUX_4_B_(x));
+
+AUX_4_B_(x)[i1] := 
+	let
+		y := AUX_4_C_(x)[i1];
+	in
+		conj(less(x, nu("1.5")), y);
+
+AUX_4_C_(x) := valToSet(se([AUX_3_A_]));
+
+/** quantification 5 */
+
+AUX_5_A_ := someSet(AUX_5_B_);
+
+AUX_5_B_[i1] := 
+	let
+		x := AUX_5_C_[i1];
+	in
+		AUX_4_A_(x);
+
+AUX_5_C_ := valToSet(iv(nu("1"), nu("2")));
 
 ////////// ////////// ////////// ////////// ////////// //////////
 

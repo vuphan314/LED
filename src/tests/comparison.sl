@@ -26,7 +26,7 @@ c10 := uneq(tr(true), se([]));
 
 ////////// ////////// ////////// ////////// ////////// //////////
 
-/* Copy/paste the block below into SequenceL interpreter to test:
+/** Copy/paste the block below into SequenceL interpreter to test:
 
 pp(c0)
 pp(c1)

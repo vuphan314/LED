@@ -18,7 +18,7 @@ c7 := powSet(se([nu("1"), nu("2")]));
 
 ////////// ////////// ////////// ////////// ////////// //////////
 
-/* Copy/paste the block below into SequenceL interpreter to test:
+/** Copy/paste the block below into SequenceL interpreter to test:
 
 pp(c1)
 pp(c2)

@@ -48,7 +48,8 @@ def unparseTop(L):
     T = transformTree(T)
     st = unparseRecur(T)
     st = importLib + st
-    st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncs
+    if auxFuncs != '':
+        st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncs
     st = markBeginEnd(st)
     st += printTest()
     return st
@@ -287,7 +288,7 @@ def unparseQuant(T, quantIndepSymbs = ()):
     
     global auxFuncs
     qFuncs = q.defFuncs()
-    auxFuncs = qFuncs + auxFuncs
+    auxFuncs += qFuncs
     
     st = q.getFuncMain()
     return st

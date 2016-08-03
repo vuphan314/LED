@@ -2,9 +2,10 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=aggregation
+    set fil=quantification
+    REM aggregation
     set fils=boolean, comparison, set
-	for %%i in (%fil%) do (
+	for %%i in (%fils) do (
 		set base=%fold%%%~ni
         set led=!base!.led
         set p=!base!.p
@@ -20,7 +21,7 @@ goto starting
         !parse!
         
         REM !transl! > !sl!
-        REM type !sl!
+        REM !sl!
         REM sli -l !sl!
 	)
 	goto done

@@ -6,7 +6,7 @@ c := equiv(impl(disj(conj(tr(true), tr(false)), neg(eq(nu("1"), div(nu("2"), nu(
 
 ////////// ////////// ////////// ////////// ////////// //////////
 
-/* Copy/paste the block below into SequenceL interpreter to test:
+/** Copy/paste the block below into SequenceL interpreter to test:
 
 pp(c)
 
