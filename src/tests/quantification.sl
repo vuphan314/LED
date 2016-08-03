@@ -2,7 +2,7 @@
 
 import * from "../libLED.sl" as *;
 
-c1 := setMem(AUX_1_A_, se([nu("2"), nu("4"), nu("6")]));
+c1 := AUX_1_A_;
 
 c2 := AUX_2_A_;
 
@@ -18,7 +18,7 @@ AUX_1_B_[i1] :=
 	let
 		v := AUX_1_C_[i1];
 	in
-		v;
+		setMem(v, se([nu("2"), nu("4"), nu("6")]));
 
 AUX_1_C_ := valToSet(se([nu("1"), nu("2"), nu("3")]));
 

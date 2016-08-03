@@ -109,15 +109,15 @@ bool_term_5(neg B6) ::= tilde bool_term_6(B6)
 bool_term_6(boolUT U) ::= user_term(U)
 bool_term_6(B) ::= lPar bool_term(B) rPar
 bool_term_6(T) ::= truth(T)
-bool_term_6(S) ::= set_bool_term(S)
 bool_term_6(Q) ::= quantified_term(Q)
+bool_term_6(S) ::= set_bool_term(S)
 bool_term_6(E) ::= equality(E)
-
-set_bool_term(setMem T S) ::= term(T) in set_term(S)
-set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 
 quantified_term(exist S B) ::= some symbol_s_in_set_term(S) dot bool_term_6(B)
 quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
+
+set_bool_term(setMem T S) ::= term(T) in set_term(S)
+set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 
 equality(R) ::= relational(R)
 equality(eq T T2) ::= term(T) equal term(T2)

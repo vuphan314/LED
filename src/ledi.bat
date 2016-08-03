@@ -5,7 +5,7 @@ goto starting
     set fil=quantification
     REM aggregation
     set fils=boolean, comparison, set
-	for %%i in (%fils) do (
+	for %%i in (%fil%) do (
 		set base=%fold%%%~ni
         set led=!base!.led
         set p=!base!.p
@@ -14,12 +14,11 @@ goto starting
         set parse=py ledparser.py !led!
         set transl=py translator.py !led!
         
-        REM py -i unparser.py
+        REM py -i unparser.py        
         
-        REM type !led!
+        REM !parse!
         
-        !parse!
-        
+        type !led!
         REM !transl! > !sl!
         REM !sl!
         REM sli -l !sl!

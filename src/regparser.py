@@ -34,6 +34,8 @@ import os
 from genparser.src.astgen.parsing.lexer import *
 from genparser.src.astgen.parsing.parser import *
 
+from tester import *
+
 ########## ########## ########## ########## ########## ########## 
 
 class RegionParser:
@@ -94,6 +96,13 @@ class RegionParser:
     def get_elements_from_region(self, region, line_number):
         # obtain lexing sequence from the region starting at line_number
         lexing_sequence = self.lexer.get_lexing_sequence(region)
+        
+        # test lexer
+        # L = []
+        # for lex in lexing_sequence:
+            # if lex[0] != 'spaces':
+                # L += [lex]
+        # test(L)
         
         # obtain parse tree
         ast = self.parser.get_ast(lexing_sequence)

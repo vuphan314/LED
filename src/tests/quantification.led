@@ -5,7 +5,7 @@
 test:
 
 cmd:>pp(c1)
-"false"
+"true"
 cmd:>pp(c2)
 "true"
 cmd:>pp(c3)
