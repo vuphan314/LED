@@ -30,12 +30,12 @@ public
     pp, // pretty print
     Val, Numb, // types
     someSet, allSet, valToSet, // quantification
-    card, ab, // norm
-    setMem, sbset, unn, nrsec, diff, cross, powSet, // set
+    pip, // pipe
+    setMem, sbset, unn, nrsec, diff, cross, powSet, card, // set
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
-    add, bMns, uMns, mult, div, flr, clng, md, exp, // arithmetic
+    add, bMns, uMns, mult, div, flr, clng, md, exp, ab, // arithmetic
     tuIn, // tuple indexing
     tu, // tuple to value
     se, // set to value
@@ -283,6 +283,14 @@ greaterEq(v1, v2) :=
 greaterEqNumb: Numb * Numb -> bool;
 greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
+/* pipe operation */
+
+pip: Val -> Val;
+pip(v) :=
+    card(v) when valOfKind(v, kindSet) else
+    ab(v);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* set operations (value) */

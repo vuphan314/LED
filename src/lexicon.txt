@@ -32,12 +32,12 @@ id = [a-zA-Z][a-zA-Z\d]*
 
 comma = ,
 dot = \.
-twoDot = \.\.
+twoDots = \.\.
 plus = \+
 minus = -
 star = \*
 slash = /
-bar = \|
+pipe = \|
 hat = \^
 equal = =
 unequal = /=

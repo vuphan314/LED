@@ -70,8 +70,6 @@ def unparseRecur(T, quantIndepSymbs = ()):
         return T
     if T[0] in lexemes:
         return unparseLexemes(T)
-    if T[0] == 'normT':
-        return unparseNorm(T[1])
     if T[0] == 'set':
         return unparseSet(T)
     if T[0] == 'nrval':
@@ -127,21 +125,13 @@ equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
 arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross', 'powSet'}
+pipeOp = {'pip'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
-libOps = equalityOps | relationalOps | arOps | setOps | boolOps
+libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps
 
 # unparseLibOps: tree -> str
 def unparseLibOps(T):
     st = applyRecur(T[0], T[1:], isInLib = True)
-    return st
-    
-# unparseNorm: tree -> str
-def unparseNorm(T):
-    if T[0] == 'setT':
-        func = 'card'
-    else: # 'arT'
-        func = 'ab'
-    st = applyRecur(func, T[1:], isInLib = True)
     return st
     
 ########## ########## ########## ########## ########## ########## 
@@ -397,11 +387,11 @@ class QuantInfo:
             T += defFuncRecur(symb, (), expr),
         return T
     
-    # getPredInds: tuple(str) # ('i1', 'i2',...)
+    # getPredInds: tuple(str) # ('i1_', 'i2_',...)
     def getPredInds(self):
         t = ()
         for i in range(self.getNumSymbsInSet()):
-            ind = 'i' + str(i + 1)
+            ind = 'i' + str(i + 1) + '_'
             t += ind,
         return t
         

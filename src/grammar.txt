@@ -81,8 +81,8 @@ sequence(seq T) ::= lArrow term_s(T) rArrow
 
 brace_set(set) ::= lBrace rBrace
 brace_set(set T) ::= lBrace term_s(T) rBrace
-brace_set(nrval A A2) ::= lBrace ar_term(A) twoDot ar_term(A2) rBrace
-brace_set(setCompr T B) ::= lBrace term(T) bar bool_term(B) rBrace
+brace_set(nrval A A2) ::= lBrace ar_term(A) twoDots ar_term(A2) rBrace
+brace_set(setCompr T B) ::= lBrace term(T) pipe bool_term(B) rBrace
 
 lambda_term(lmbdT L1) ::= lambda_term_1(L1)
 
@@ -153,11 +153,11 @@ ar_term_5(A) ::= lPar ar_term(A) rPar
 ar_term_5(flr A) ::= floor lPar ar_term(A) rPar
 ar_term_5(clng A) ::= ceil lPar ar_term(A) rPar
 ar_term_5(N) ::= numl(N)
-ar_term_5(normT B) ::= bar norm_arg(B) bar
+ar_term_5(pip P) ::= pipe pipe_arg(P) pipe
 
-norm_arg(normUT U) ::= user_term(U)
-norm_arg(S) ::= set_term(S)
-norm_arg(A) ::= ar_term(A)
+pipe_arg(pipeUT U) ::= user_term(U)
+pipe_arg(S) ::= set_term(S)
+pipe_arg(A) ::= ar_term(A)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
