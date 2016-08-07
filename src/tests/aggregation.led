@@ -1,39 +1,4 @@
-/$ x := {}
-
-c := |x|
- $/
-VU
-
-c := {0 | true}
-
-c[i] :=
-    0 when true;
-    
-c := {x^2 | x in {1..3} or x = 0}
-
-S_x = {1..3}
-
-c[i] := 
-    let x := S_x[i];
-        expr := x^2;
-    in  expr
-
-tic tac toe
-
-$ c :=
-p in Player & p = 1
-$/
-
-$ Move := 
-{(p, c) | p in Player & c in Cell & p < c}
-$/
-
-$ 
-movesMade(I, S) := 
-{(currentPlayer(S), c) | c in cells & moveMadeIn(c, I, S)} 
-$/
-
-meet
+/$ c := all x in {}. (some y in {x}. x & x) $/
 
 c := {3*z | x in {-1..1} & y in {x..2*x} & x <= y & z = x + y & z > 0}
 
@@ -48,5 +13,3 @@ c1[i] :=
     let x := S_x[i];
     in  c2(x);
 c := join(c1);
-
-e := {x + y | (x, y) = (1, 2, 3)}

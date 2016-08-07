@@ -2,31 +2,31 @@ prog_el_s(progEls P) ::= prog_el(P)
 prog_el_s(progEls P cut_root(Ps)) ::= prog_el(P) prog_el_s(Ps)
 
 prog_el(V) ::= var_decl(V)
-prog_el(D) ::= definition(D)
+prog_el(D) ::= def_(D)
 
 var_decl(varDecl V) ::= var var_of_type(V)
 var_decl(varDecl V) ::= vars var_s_of_type_s(V)
 
 type(typ S) ::= set_term(S)
 
-definition(C) ::= c_def(C)
-definition(F) ::= f_def(F)
-definition(R) ::= r_def(R)
+def_(C) ::= const_def(C)
+def_(F) ::= fun_def(F)
+def_(R) ::= rel_def(R)
 
-c_def(cDef C D) ::= const_(C) colonEq def_body(D)
-c_def(cDef C D B) ::= const_(C) colonEq def_body(D) where bool_term(B)
+const_def(constDef C D) ::= const_(C) colonEq def_body(D)
+const_def(constDef C D B) ::= const_(C) colonEq def_body(D) where bool_term(B)
 
-f_def(fDef F D) ::= function(F) colonEq def_body(D)
-f_def(fDef F D B) ::= function(F) colonEq def_body(D) where bool_term(B)
+fun_def(funDef F D) ::= fun_term(F) colonEq def_body(D)
+fun_def(funDef F D B) ::= fun_term(F) colonEq def_body(D) where bool_term(B)
+
+rel_def(relDef R B) ::= rel_term(R) iff bool_term(B)
+rel_def(relDef R B B2) ::= rel_term(R) iff bool_term(B) where bool_term(B2)
 
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
 
-r_def(rDef R B) ::= relation(R) iff bool_term(B)
-r_def(rDef R B B2) ::= relation(R) iff bool_term(B) where bool_term(B2)
-
 term(U) ::= user_term(U)
-term(T) ::= lPar term(T) rPar
+term(T) ::= lParenth term(T) rParenth
 term(A) ::= atom_term(A)
 term(S) ::= string_term(S)
 term(T) ::= tuple_term(T)
@@ -49,7 +49,7 @@ string_term_1(S) ::= string(S)
 tuple_term(tupT T1) ::= tuple_term_1(T1)
 
 tuple_term_1(tupUT U) ::= user_term(U)
-tuple_term_1(tup T) ::= lPar term_s(T) rPar
+tuple_term_1(tup T) ::= lParenth term_s(T) rParenth
 
 tuple_indexed_term(tupIndT T1) ::= tuple_indexed_term_1(T1)
 
@@ -71,8 +71,8 @@ set_term_3(aggrUnn B S4) ::= U lBracket bool_term(B) rBracket set_term_4(S4)
 set_term_3(aggrNrsec B S4) ::= Sec lBracket bool_term(B) rBracket set_term_4(S4)
 
 set_term_4(setUT U) ::= user_term(U)
-set_term_4(S) ::= lPar set_term(S) rPar
-set_term_4(powSet S) ::= Pow lPar set_term(S) rPar
+set_term_4(S) ::= lParenth set_term(S) rParenth
+set_term_4(powSet S) ::= Pow lParenth set_term(S) rParenth
 set_term_4(S) ::= sequence(S)
 set_term_4(B) ::= brace_set(B)
 
@@ -87,7 +87,7 @@ brace_set(setCompr T B) ::= lBrace term(T) pipe bool_term(B) rBrace
 lambda_term(lmbdT L1) ::= lambda_term_1(L1)
 
 lambda_term_1(lmbdUT U) ::= user_term(U)
-lambda_term_1(lmbd V T) ::= lam var_s(V) dot term(T)
+lambda_term_1(lmbd S T) ::= lam symbol_s(S) dot term(T)
 
 bool_term(boolT B1) ::= bool_term_1(B1)
 
@@ -107,7 +107,7 @@ bool_term_5(B6) ::= bool_term_6(B6)
 bool_term_5(neg B6) ::= tilde bool_term_6(B6)
 
 bool_term_6(boolUT U) ::= user_term(U)
-bool_term_6(B) ::= lPar bool_term(B) rPar
+bool_term_6(B) ::= lParenth bool_term(B) rParenth
 bool_term_6(T) ::= truth(T)
 bool_term_6(Q) ::= quantified_term(Q)
 bool_term_6(S) ::= set_bool_term(S)
@@ -149,9 +149,9 @@ ar_term_4(A5) ::= ar_term_5(A5)
 ar_term_4(exp A5 A4) ::= ar_term_5(A5) hat ar_term_4(A4)
 
 ar_term_5(arUT U) ::= user_term(U)
-ar_term_5(A) ::= lPar ar_term(A) rPar
-ar_term_5(flr A) ::= floor lPar ar_term(A) rPar
-ar_term_5(clng A) ::= ceil lPar ar_term(A) rPar
+ar_term_5(A) ::= lParenth ar_term(A) rParenth
+ar_term_5(flr A) ::= floor lParenth ar_term(A) rParenth
+ar_term_5(clng A) ::= ceil lParenth ar_term(A) rParenth
 ar_term_5(N) ::= numl(N)
 ar_term_5(pip P) ::= pipe pipe_arg(P) pipe
 
@@ -183,14 +183,16 @@ term_if_bool_term(tElse T) ::= term(T) otherwise
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
 
+fun_term(funT F V) ::= fun_(F) lParenth symbol_s(V) rParenth
+rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth
+
+symbol_(symN I) ::= id(I)
+
+var_(varN I) ::= id(I)
+const_(constN I) ::= id(I)
+
+fun_(funN I) ::= id(I)
+rel_(relN I) ::= id(I)
+
 user_term(userSVC I) ::= id(I)
-user_term(userFR I T) ::= id(I) lPar term_s(T) rPar
-
-symbol_(sName I) ::= id(I)
-var_(vName I) ::= id(I)
-const_(cName I) ::= id(I)
-fun_(fName I) ::= id(I)
-rel_(rName I) ::= id(I)
-
-function(fun F V) ::= fun_(F) lPar var_s(V) rPar
-relation(rel R V) ::= rel_(R) lPar var_s(V) rPar
+user_term(userFR I T) ::= id(I) lParenth term_s(T) rParenth

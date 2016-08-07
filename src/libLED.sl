@@ -1,15 +1,30 @@
-// S1 := {1..1}
-// S2 := {1..0}
-// d := {x + y | (x, y, z) in S1 * S1 * S2 . x > y}
-S1 := twoIntsToSet(1, 2);
-S2 := twoIntsToSet(11, 12);
-S := Set::naryCartesianProduct([S1, S1, S2]);
-d[i] :=
-    let s := S[i];
-        x := s[1]; y := s[2]; z := s[3];
-        c := greater(x, y);
-    in add(x, y) when valToTrth(c);
+c := AUX_2_A_;
 
+/** AUXILIARY FUNCTIONS */
+
+/** quantification 1 */
+
+AUX_1_A_(x) := someSet(AUX_1_B_(x));
+
+AUX_1_B_(x)[i1_] := 
+	let
+		y := AUX_1_C_(x)[i1_];
+	in
+		x;
+
+AUX_1_C_(x) := valToSet(se([x]));
+
+/** quantification 2 */
+
+AUX_2_A_ := allSet(AUX_2_B_);
+
+AUX_2_B_[i1_] := 
+	let
+		x := AUX_2_C_[i1_];
+	in
+		conj(AUX_1_A_(x), x);
+
+AUX_2_C_ := valToSet(se([]));
 /* 
 LED library written in SequenceL
 */
@@ -630,20 +645,20 @@ numlToNumb(numl(1)) :=
 frToNumb: char(1) -> Numb;
 frToNumb(f(1)) :=
     let 
-        lPar := Sequence::firstIndexOf(f, '(');
+        lParenth := Sequence::firstIndexOf(f, '(');
     in  
-        frNRepToNumb(f) when lPar = 0 else
+        frNRepToNumb(f) when lParenth = 0 else
         frRepToNumb(f);
     
 frRepToNumb: char(1) -> Numb;
 frRepToNumb(fR(1)) :=
     let 
-        lPar := Sequence::firstIndexOf(fR, '(');
-        fNR := Sequence::take(fR, lPar - 1);
+        lParenth := Sequence::firstIndexOf(fR, '(');
+        fNR := Sequence::take(fR, lParenth - 1);
         numbFNR := frNRepToNumb(fNR);
         shift := size(fNR) - 1;
         factor := expNumb(numbTen, -shift);
-        rB := Sequence::drop(fR, lPar - 1);
+        rB := Sequence::drop(fR, lParenth - 1);
         numbRB := multNumb(factor, repBlToNumb(rB));
     in  
         addNumb(numbFNR, numbRB);

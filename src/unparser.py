@@ -17,7 +17,7 @@ testing
 # printTest: str
 def printTest():
     st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
-    for func in testConsts:
+    for func in defedConsts:
         func = applyRecur('pp', (func,), isInLib = True)
         st += func + '\n'
     st += '\n(pp means PrettyPrint)'
@@ -30,7 +30,7 @@ def printTest():
 python global variables
 '''
 
-testConsts = () # ('c1', 'c2',...)
+defedConsts = () # ('c1', 'c2',...)
 defedFuncsQuantDeeper = set() # {2, 4,...}
 auxFuncNum = 0
 auxFuncs = '' # 'aux1 := 1; aux2 := 2;...'
@@ -65,7 +65,8 @@ def transformTree(T):
         return recurTuple(T, transformTree)
 
 # unparseRecur: tree -> str
-def unparseRecur(T, quantIndepSymbs = ()):
+def unparseRecur(T, indepSymbs = ()):
+    symbs = indepSymbs
     if type(T) == str:
         return T
     if T[0] in lexemes:
@@ -81,13 +82,13 @@ def unparseRecur(T, quantIndepSymbs = ()):
         st = applyRecur('tuIn', T[1:], isInLib = True)
         return st
     if T[0] in quantLabels:
-        return unparseQuant(T, quantIndepSymbs = quantIndepSymbs)
+        return unparseQuant(T, indepSymbs = symbs)
     if T[0] in libOps:
         return unparseLibOps(T)
-    if T[0] == 'cDef':
+    if T[0] == 'constDef':
         func = unparseRecur(T[1])
-        global testConsts
-        testConsts += func,
+        global defedConsts
+        defedConsts += func,
         st = defFuncRecur(func, (), T[2], moreSpace = True)
         return st
     else:
@@ -260,21 +261,21 @@ quantLabels = {'exist', 'univ'}
 libMaxSymbsInSet = 1
 
 # unparseQuant: tree -> str
-def unparseQuant(T, quantIndepSymbs = ()):
+def unparseQuant(T, indepSymbs = ()):
     q = QuantInfo()
     if T[0] == 'univ':
         q.isExist = False
         
-    currentIndepSymbs = quantIndepSymbs
+    currentIndepSymbs = indepSymbs
     q.indepSymbs = currentIndepSymbs
     
     symsInS = T[1]
     currentDepSymbs = getDepSymbs(symsInS[1])
     q.depSymbs = currentDepSymbs
-    q.qSet = unparseRecur(symsInS[2], quantIndepSymbs = currentIndepSymbs)
+    q.qSet = unparseRecur(symsInS[2], indepSymbs = currentIndepSymbs)
     
     nextIndepSymbs = currentIndepSymbs + currentDepSymbs
-    q.qPred = unparseRecur(T[2], quantIndepSymbs = nextIndepSymbs)
+    q.qPred = unparseRecur(T[2], indepSymbs = nextIndepSymbs)
     
     global auxFuncs
     qFuncs = q.defFuncs()

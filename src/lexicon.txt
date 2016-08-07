@@ -55,8 +55,8 @@ partialMap = ~>
 
 lArrow = <
 rArrow = >
-lPar = \(
-rPar = \)
+lParenth = \(
+rParenth = \)
 lBracket = \[
 rBracket = \]
 lBrace = \{
