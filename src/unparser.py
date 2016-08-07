@@ -30,10 +30,17 @@ def printTest():
 python global variables
 '''
 
+defedVars = () # ('v1',...)
 defedConsts = () # ('c1', 'c2',...)
-defedFuncsQuantDeeper = set() # {2, 4,...}
+
+# defedVarsConsts: tuple(str)
+def defedVarsConsts():
+    return defedConsts + defedVars
+
 auxFuncNum = 0
-auxFuncs = '' # 'aux1 := 1; aux2 := 2;...'
+auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
+
+defedFuncsQuantDeeper = set() # {2, 4,...}
     
 ########## ########## ########## ########## ########## ########## 
 '''
@@ -48,8 +55,8 @@ def unparseTop(L):
     T = transformTree(T)
     st = unparseRecur(T)
     st = importLib + st
-    if auxFuncs != '':
-        st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncs
+    if auxFuncDefs != '':
+        st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
     st = markBeginEnd(st)
     st += printTest()
     return st
@@ -63,6 +70,21 @@ def transformTree(T):
         return T2
     else:
         return recurTuple(T, transformTree)
+
+########## ########## ########## ########## ########## ########## 
+'''
+tree information
+'''
+
+class TreeInfo:
+    indepSymbs = None # ('x',...)
+    
+tr = TreeInfo()
+
+########## ########## ########## ########## ########## ########## 
+'''
+recursion iterators
+'''
 
 # unparseRecur: tree -> str
 def unparseRecur(T, indepSymbs = ()):
@@ -89,11 +111,54 @@ def unparseRecur(T, indepSymbs = ()):
         func = unparseRecur(T[1])
         global defedConsts
         defedConsts += func,
-        st = defFuncRecur(func, (), T[2], moreSpace = True)
+        st = defRecur(func, (), T[2], moreSpace = True)
         return st
     else:
         return recurStr(unparseRecur, T[1:])
 
+# defRecur: tree * tuple(tree) * tree -> str
+def defRecur(func, args, expr, inds = (), moreSpace = False):
+    expr = unparseRecur(expr)
+    st = applyRecur(func, args, inds = inds) + ' := ' + expr + ';\n'
+    if moreSpace:
+        st += '\n'
+    return st
+
+# applyRecur: tree * tuple(tree) -> str
+def applyRecur(func, args, isInLib = False, argsAreBracketed = False, inds = ()):
+    func = unparseRecur(func)
+    if isInLib:
+        func = prependLib(func)
+    st = func
+    if args != ():
+        st2 = unparseRecur(args[0])
+        for arg in args[1:]:
+            st2 += ', ' + unparseRecur(arg)
+        if argsAreBracketed:
+            st2 = addBrackets(st2)
+        st += '(' + st2 + ')'
+    st = appendInds(st, inds)
+    return st
+
+########## ########## ########## ########## ########## ########## 
+'''
+recursion helpers
+'''
+
+# recurStr: function * tuple(tree) -> str
+def recurStr(func, args):
+    st = ''
+    for arg in args:
+        st += func(arg)
+    return st
+    
+# recurTuple: tree * function -> tree
+def recurTuple(T, func):
+    T2 = T[:1]
+    for t in T[1:]:
+        T2 += func(t),
+    return T2
+    
 ########## ########## ########## ########## ########## ########## 
 '''
 unparse collections
@@ -135,54 +200,6 @@ def unparseLibOps(T):
     st = applyRecur(T[0], T[1:], isInLib = True)
     return st
     
-########## ########## ########## ########## ########## ########## 
-'''
-recursion
-'''
-
-# recurStr: function * tuple(tree) -> str
-def recurStr(func, args):
-    st = ''
-    for arg in args:
-        st += func(arg)
-    return st
-    
-# recurTuple: tree * function -> tree
-def recurTuple(T, func):
-    T2 = T[:1]
-    for t in T[1:]:
-        T2 += func(t),
-    return T2
-    
-########## ########## ########## ########## ########## ########## 
-'''
-writing SequenceL functions
-'''
-
-# defFuncRecur: tree * tuple(tree) * tree -> str
-def defFuncRecur(func, args, expr, inds = (), moreSpace = False):
-    expr = unparseRecur(expr)
-    st = applyRecur(func, args, inds = inds) + ' := ' + expr + ';\n'
-    if moreSpace:
-        st += '\n'
-    return st
-
-# applyRecur: tree * tuple(tree) -> str
-def applyRecur(func, args, isInLib = False, argsAreBracketed = False, inds = ()):
-    func = unparseRecur(func)
-    if isInLib:
-        func = prependLib(func)
-    st = func
-    if args != ():
-        st2 = unparseRecur(args[0])
-        for arg in args[1:]:
-            st2 += ', ' + unparseRecur(arg)
-        if argsAreBracketed:
-            st2 = addBrackets(st2)
-        st += '(' + st2 + ')'
-    st = appendInds(st, inds)
-    return st
-
 ########## ########## ########## ########## ########## ########## 
 '''
 SequenceL helpers
@@ -277,9 +294,9 @@ def unparseQuant(T, indepSymbs = ()):
     nextIndepSymbs = currentIndepSymbs + currentDepSymbs
     q.qPred = unparseRecur(T[2], indepSymbs = nextIndepSymbs)
     
-    global auxFuncs
+    global auxFuncDefs
     qFuncs = q.defFuncs()
-    auxFuncs += qFuncs
+    auxFuncDefs += qFuncs
     
     st = q.getFuncMain()
     return st
@@ -346,10 +363,10 @@ class QuantInfo:
         expr = applyRecur(funcQuant, argsQuant)
         
         funcMain = self.getFuncMain() 
-        st += defFuncRecur(funcMain, S, expr, moreSpace = True)
+        st += defRecur(funcMain, S, expr, moreSpace = True)
         if self.testIfFuncQuantDeeper() and not self.testIfDefedFuncQuantDeeper():
-            global auxFuncs
-            auxFuncs += self.defFuncQuantDeeper()
+            global auxFuncDefs
+            auxFuncDefs += self.defFuncQuantDeeper()
         
         return st
         
@@ -368,7 +385,7 @@ class QuantInfo:
         inCl = writeInClause(func2)
         expr = letCls + inCl
         
-        st = defFuncRecur(func, args, expr, inds = self.getPredInds(), moreSpace = True)
+        st = defRecur(func, args, expr, inds = self.getPredInds(), moreSpace = True)
         return st
     
     # getPredLetClauses: tuple(str) # ('a := S(x)[i1];', 'b := S(x)[i2];',...)
@@ -385,7 +402,7 @@ class QuantInfo:
             ind = inds[i],
             expr = appendInds(func, ind)
             
-            T += defFuncRecur(symb, (), expr),
+            T += defRecur(symb, (), expr),
         return T
     
     # getPredInds: tuple(str) # ('i1_', 'i2_',...)
@@ -401,7 +418,7 @@ class QuantInfo:
         func = self.getFuncSet()
         args = self.indepSymbs
         expr = applyRecur('valToSet', (self.qSet,))
-        st = defFuncRecur(func, args, expr, moreSpace = True)
+        st = defRecur(func, args, expr, moreSpace = True)
         return st
         
     # testIfFuncQuantDeeper: bool
@@ -443,7 +460,7 @@ class QuantInfo:
             args2 = applyRecur(func2, args2),
         expr = args2[0]
         
-        st = defFuncRecur(func, args, expr, moreSpace = True)
+        st = defRecur(func, args, expr, moreSpace = True)
         return st
     
     # getFuncMain: str
