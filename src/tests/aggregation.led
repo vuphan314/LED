@@ -1,4 +1,1 @@
-/$ f(x) := -x $/
-['prog', ['funDef', 
-    ['funT', ['funN', ('id', 'f')], ['syms', ['symN', ('id', 'x')]]], 
-    ['arT', ['uMns', ['arUT', ['userSVC', ('id', 'x')]]]]]]
+/$ c := all v1, v2 in {}. some x1, x2 in {}. true $/
