@@ -18,7 +18,7 @@ testing
 def printTest():
     st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
     for func in defedConsts:
-        func = applyRecur('pp', (func,), isInLib = True)
+        func = applyRecur(None, 'pp', (func,), isInLib = True)
         st += func + '\n'
     st += '\n(pp means PrettyPrint)'
     st = addBlockComment(st)
@@ -69,7 +69,7 @@ def transformTree(T):
     if type(T) == str:
         return T
     if T[0] in quantLabels:
-        T2 = expandSymbolsInSet(T)
+        T2 = expandSymsInS(T)
         return T2
     else:
         return recurTuple(transformTree, T)
@@ -84,21 +84,21 @@ def unparseRecur(u, T):
     if type(T) == str:
         return T
     if T[0] in lexemes:
-        return unparseLexemes(T)
+        return unparseLexemes(u, T)
     if T[0] == 'set':
-        return unparseSet(T)
+        return unparseSet(u, T)
     if T[0] == 'nrval':
-        st = applyRecur('iv', T[1:], isInLib = True)
+        st = applyRecur(u, 'iv', T[1:], isInLib = True)
         return st
     if T[0] == 'tup':
-        return unparseTuple(T)
+        return unparseTuple(u, T)
     if T[0] == 'tupInd':
-        st = applyRecur('tuIn', T[1:], isInLib = True)
+        st = applyRecur(u, 'tuIn', T[1:], isInLib = True)
         return st
     if T[0] in quantLabels:
-        return unparseQuant(T, u)
+        return unparseQuant(u, T)
     if T[0] in libOps:
-        return unparseLibOps(T)
+        return unparseLibOps(u, T)
     if T[0] == 'constDef':
         func = unparseRecur(u, T[1])
         global defedConsts
@@ -106,12 +106,12 @@ def unparseRecur(u, T):
         st = defRecur(u, func, (), T[2], moreSpace = True)
         return st
     else:
-        return recurStr(unparseRecur, T)
+        return recurStr(unparseRecur, u, T)
 
 # defRecur: UnpInfo * tree * tuple(tree) * tree -> str
 def defRecur(u, func, args, expr, inds = (), moreSpace = False):
     expr = unparseRecur(u, expr)
-    st = applyRecur(func, args, inds = inds) + ' := ' + expr + ';\n'
+    st = applyRecur(u, func, args, inds = inds) + ' := ' + expr + ';\n'
     if moreSpace:
         st += '\n'
     return st
@@ -153,13 +153,13 @@ def recurTuple(F, T):
     
 ########## ########## ########## ########## ########## ########## 
 '''
-classes
+information for unparsing
 '''
 
 class UnpInfo:
     indepSymbs = () # ('i1',...)
     depSymbs = () # ('d1',...)  
-        
+    
     # getNumDepSymbs: int
     def getNumDepSymbs(self):
         n = len(self.depSymbs)
@@ -170,17 +170,14 @@ class UnpInfo:
         T = self.indepSymbs + self.depSymbs
         return T
         
-    # getNextInst: UnpInfo
-    def getNextInst(self):
+    # getAnotherInst: UnpInfo
+    def getAnotherInst(self, isOfNext = False):
+        symbs = self.indepSymbs
+        if isOfNext:
+            symbs = self.getNextIndepSymbs()
         u = UnpInfo()
-        u.indepSymbs = self.getNextIndepSymbs()
+        u.indepSymbs = symbs
         return u
-        
-    # getNextInstQuant: QuantInfo
-    def getNextInstQuant(self):
-        q = QuantInfo()
-        q.indepSymbs = self.getNextIndepSymbs()
-        return q
         
     # appendAux: str -> str
     def appendAux(self, extraAppend, isOfNext = False):
@@ -190,18 +187,21 @@ class UnpInfo:
         st = 'AUX_' + str(num) + '_' + extraAppend + '_'
         return st
 
-class QuantInfo(UnpInfo):
-    isExist = True # or universal
-    qSet = '' # '{1, 2,...}'
-    qPred = () # subtree, like: equal(x, b)
+    '''
+    set fields specific to quantification
+    '''
+    def makeQuant(self):
+        self.isExist = True # or universal
+        self.qSet = '' # '{1, 2,...}'
+        self.qPred = () # subtree, like: equal(x, b)
     
-    # defFuncs: str
-    def defFuncs(self):
-        st = self.defFuncMain() + self.defFuncPred() + self.defFuncSet()
+    # qDefFuncs: str
+    def qDefFuncs(self):
+        st = self.qDefFuncMain() + self.qDefFuncPred() + self.qDefFuncSet()
         return st
     
-    # defFuncMain: str
-    def defFuncMain(self):
+    # qDefFuncMain: str
+    def qDefFuncMain(self):
         global auxFuncNum
         auxFuncNum += 1
         st = 'quantification ' + str(auxFuncNum)
@@ -210,125 +210,126 @@ class QuantInfo(UnpInfo):
         
         S = self.indepSymbs
         
-        funcPred = self.getFuncPred()
-        argsQuant = applyRecur(funcPred, S),
+        funcPred = self.qGetFuncPred()
+        argsQuant = applyRecur(self, funcPred, S),
         
-        funcQuant = self.getFuncQuant()
-        expr = applyRecur(funcQuant, argsQuant)
+        funcQuant = self.qGetFuncQuant()
+        expr = applyRecur(self, funcQuant, argsQuant)
         
-        funcMain = self.getFuncMain() 
+        funcMain = self.qGetFuncMain() 
         st += defRecur(self, funcMain, S, expr, moreSpace = True)
-        if self.testIfFuncQuantDeeper() and not self.testIfFuncQuantDeeperDefed():
+        if self.qTestIfFuncQuantDeeper() and not self.qTestIfFuncQuantDeeperDefed():
             global auxFuncDefs
-            auxFuncDefs += self.defFuncQuantDeeper()
+            auxFuncDefs += self.qDefFuncQuantDeeper()
         
         return st
         
-    # defFuncPred: str
-    def defFuncPred(self):
-        func = self.getFuncPred()
+    # qDefFuncPred: str
+    def qDefFuncPred(self):
+        func = self.qGetFuncPred()
         args = self.indepSymbs
         
-        letCls = self.getPredLetClauses()
+        letCls = self.qGetPredLetClauses()
         letCls = writeLetClauses(letCls)
         
         func2 = self.qPred
         args2 = self.getNextIndepSymbs()
         if testIfFuncAux(func2):
-            func2 = applyRecur(func2, args2)
+            func2 = applyRecur(self, func2, args2)
         inCl = writeInClause(func2)
         expr = letCls + inCl
         
-        st = defRecur(self, func, args, expr, inds = self.getPredInds(), moreSpace = True)
+        inds = self.qGetPredInds()
+        st = defRecur(self, func, args, expr, inds = inds, moreSpace = True)
         return st
     
-    # getPredLetClauses: tuple(str) # ('a := S(x)[i1];', 'b := S(x)[i2];',...)
-    def getPredLetClauses(self):
+    # qGetPredLetClauses: tuple(str) # ('a := S(x)[i1_];', 'b := S(x)[i2_];',...)
+    def qGetPredLetClauses(self):
         T = ()
         symbs = self.depSymbs
-        inds = self.getPredInds()
+        inds = self.qGetPredInds()
         for i in range(len(symbs)):
             symb = symbs[i]
             
-            func = self.getFuncSet()
+            func = self.qGetFuncSet()
             args = self.indepSymbs
-            func = applyRecur(func, args)            
+            func = applyRecur(self, func, args)            
             ind = inds[i],
             expr = appendInds(func, ind)
             
             T += defRecur(self, symb, (), expr),
         return T
     
-    # getPredInds: tuple(str) # ('i1_', 'i2_',...)
-    def getPredInds(self):
+    # qGetPredInds: tuple(str) # ('i1_', 'i2_',...)
+    def qGetPredInds(self):
         t = ()
         for i in range(self.getNumDepSymbs()):
             ind = 'i' + str(i + 1) + '_'
             t += ind,
         return t
         
-    # defFuncSet: str
-    def defFuncSet(self):
-        func = self.getFuncSet()
+    # qDefFuncSet: str
+    def qDefFuncSet(self):
+        func = self.qGetFuncSet()
         args = self.indepSymbs
-        expr = applyRecur('valToSet', (self.qSet,))
+        expr = applyRecur(self, 'valToSet', (self.qSet,))
         st = defRecur(self, func, args, expr, moreSpace = True)
         return st
         
-    # testIfFuncQuantDeeper: bool
-    def testIfFuncQuantDeeper(self):
+    # qTestIfFuncQuantDeeper: bool
+    def qTestIfFuncQuantDeeper(self):
         n = self.getNumDepSymbs()
         b = n > libMaxSymbsInSet
         return b
         
-    # testIfFuncQuantDeeperDefed: bool
-    def testIfFuncQuantDeeperDefed(self):
+    # qTestIfFuncQuantDeeperDefed: bool
+    def qTestIfFuncQuantDeeperDefed(self):
         n = self.getNumDepSymbs()
         b = n in defedFuncsQuantDeeper
         return b
             
-    # getFuncQuant: str
-    def getFuncQuant(self, baseOverride = False):
+    # qGetFuncQuant: str
+    def qGetFuncQuant(self, baseOverride = False):
         if self.isExist:
             func = 'someSet'
         else: # universal
             func = 'allSet'
-        if self.testIfFuncQuantDeeper() and not baseOverride:
+        if self.qTestIfFuncQuantDeeper() and not baseOverride:
             n = self.getNumDepSymbs()
             func += '_' + str(n) + '_'
         return func
         
-    # defFuncQuantDeeper: str
-    def defFuncQuantDeeper(self):
+    # qDefFuncQuantDeeper: str
+    def qDefFuncQuantDeeper(self):
         n = self.getNumDepSymbs()
         global defedFuncsQuantDeeper
         defedFuncsQuantDeeper |= {n}
         
-        func = self.getFuncQuant()
+        func = self.qGetFuncQuant()
         arg = 'vs'
         args = arg + '(' + str(n) + ')',
         
-        func2 = self.getFuncQuant(baseOverride = True)
+        func2 = self.qGetFuncQuant(baseOverride = True)
         args2 = arg,
         for i in range(n):
-            args2 = applyRecur(func2, args2),
+            args2 = applyRecur(self, func2, args2),
         expr = args2[0]
         
         st = defRecur(self, func, args, expr, moreSpace = True)
         return st
     
-    # getFuncMain: str
-    def getFuncMain(self, isOfNext = False):
+    # qGetFuncMain: str
+    def qGetFuncMain(self, isOfNext = False):
         st = self.appendAux('A', isOfNext = isOfNext)
         return st
         
-    # getFuncPred: str
-    def getFuncPred(self):
+    # qGetFuncPred: str
+    def qGetFuncPred(self):
         st = self.appendAux('B')
         return st
         
-    # getFuncSet: str
-    def getFuncSet(self):
+    # qGetFuncSet: str
+    def qGetFuncSet(self):
         st = self.appendAux('C')
         return st
     
@@ -337,22 +338,22 @@ class QuantInfo(UnpInfo):
 unparse collections
 '''
 
-# unparseTuple: tree -> str
-def unparseTuple(T):
+# unparseTuple: UnpInfo * tree -> str
+def unparseTuple(u, T):
     func = 'tu'
     terms = T[1]
-    st = applyRecur(func, terms[1:], isInLib = True, argsAreBracketed = True)
+    st = applyRecur(u, func, terms[1:], isInLib = True, argsAreBracketed = True)
     return st
     
-# unparseSet: tree -> str
-def unparseSet(T):
+# unparseSet: UnpInfo * tree -> str
+def unparseSet(u, T):
     func = 'se'
     if len(T) == 1: # empty set
         args = '',
     else:
         terms = T[1]
         args = terms[1:]
-    st = applyRecur(func, args, isInLib = True, argsAreBracketed = True)
+    st = applyRecur(u, func, args, isInLib = True, argsAreBracketed = True)
     return st
 
 ########## ########## ########## ########## ########## ########## 
@@ -368,9 +369,9 @@ pipeOp = {'pip'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
 libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps
 
-# unparseLibOps: tree -> str
-def unparseLibOps(T):
-    st = applyRecur(T[0], T[1:], isInLib = True)
+# unparseLibOps: UnpInfo * tree -> str
+def unparseLibOps(u, T):
+    st = applyRecur(u, T[0], T[1:], isInLib = True)
     return st
     
 ########## ########## ########## ########## ########## ########## 
@@ -450,32 +451,33 @@ quantification
 quantLabels = {'exist', 'univ'}
 libMaxSymbsInSet = 1
 
-# unparseQuant: tree * UnpInfo -> str
-def unparseQuant(T, u):
-    q = QuantInfo()
+# unparseQuant: UnpInfo * tree -> str
+def unparseQuant(u, T):
+    u.makeQuant()
     if T[0] == 'univ':
-        q.isExist = False
+        u.isExist = False
         
-    currentIndepSymbs = indepSymbs
-    q.indepSymbs = currentIndepSymbs
-    
     symsInS = T[1]
-    currentDepSymbs = getDepSymbs(symsInS[1])
-    q.depSymbs = currentDepSymbs
-    q.qSet = unparseRecur(u, symsInS[2], indepSymbs = currentIndepSymbs)
+    u.depSymbs = getSymbolsFromSyms(symsInS[1])
     
-    nextIndepSymbs = currentIndepSymbs + currentDepSymbs
-    q.qPred = unparseRecur(u, T[2], indepSymbs = nextIndepSymbs)
+    u2 = u.getAnotherInst()
+    u.qSet = unparseRecur(u2, symsInS[2])
+    
+    u3 = u.getAnotherInst(isOfNext = True)
+    u.qPred = unparseRecur(u3, T[2])
     
     global auxFuncDefs
-    qFuncs = q.defFuncs()
+    qFuncs = u.qDefFuncs()
     auxFuncDefs += qFuncs
     
-    st = q.getFuncMain()
+    func = u.qGetFuncMain()
+    args = u.indepSymbs
+    st = applyRecur(u, func, args)
+    
     return st
     
-# expandSymbolsInSet: tree -> tree
-def expandSymbolsInSet(T):
+# expandSymsInS: tree -> tree
+def expandSymsInS(T):
     quantifier = T[0]
     pred = T[2]
     
@@ -494,8 +496,8 @@ def expandSymbolsInSet(T):
     T2 = recurTuple(transformTree, T2)
     return T2
     
-# getDepSymbs: tree -> tuple(str)
-def getDepSymbs(T):
+# getSymbolsFromSyms: tree -> tuple(str)
+def getSymbolsFromSyms(T):
     syms = T[1:]
     symbs = ()
     for sym in syms:
@@ -511,15 +513,15 @@ unparse lexemes
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
 
-# unparseLexemes: tree -> str
-def unparseLexemes(T):
+# unparseLexemes: UnpInfo * tree -> str
+def unparseLexemes(u, T):
     lex = T[0]
     func = lexemes[lex]
     arg = T[1]
     if lex in lexemesDoublyQuoted:
         arg = addDoubleQuotes(arg)
     args = arg,
-    st = applyRecur(func, args, isInLib = True)
+    st = applyRecur(u, func, args, isInLib = True)
     return st
 
 ########## ########## ########## ########## ########## ########## 

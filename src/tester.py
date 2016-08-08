@@ -5,7 +5,7 @@ print test string
 # test: object -> print
 def test(o):
     st = str(o)
-    st = markerComment + '\nTEST\n\n' + st + '\n\n' + markerComment + '\n'
+    st = markerComment + '\nTEST\n' + st + '\n' + markerComment + '\n'
     print(st)
     
 ########## ########## ########## ########## ########## ########## 
