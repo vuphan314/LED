@@ -159,6 +159,7 @@ ar_term_5(pip P) ::= pipe pipe_arg(P) pipe
 pipe_arg(pipeUT U) ::= user_term(U)
 pipe_arg(S) ::= set_term(S)
 pipe_arg(A) ::= ar_term(A)
+pipe_arg(T) ::= tuple_term(T)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)

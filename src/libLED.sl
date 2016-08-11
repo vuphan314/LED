@@ -1,30 +1,3 @@
-c := AUX_2_A_;
-
-/** AUXILIARY FUNCTIONS */
-
-/** quantification 1 */
-
-AUX_1_A_(x) := someSet(AUX_1_B_(x));
-
-AUX_1_B_(x)[i1_] := 
-	let
-		y := AUX_1_C_(x)[i1_];
-	in
-		x;
-
-AUX_1_C_(x) := valToSet(se([x]));
-
-/** quantification 2 */
-
-AUX_2_A_ := allSet(AUX_2_B_);
-
-AUX_2_B_[i1_] := 
-	let
-		x := AUX_2_C_[i1_];
-	in
-		conj(AUX_1_A_(x), x);
-
-AUX_2_C_ := valToSet(se([]));
 /* 
 LED library written in SequenceL
 */
@@ -224,7 +197,7 @@ allSet(vs(1)) :=
     // allSet(allSet(vs));
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
-/* tuple indexing */
+/* tuple operations */
 
 tuIn: Val * Val -> Val;
 tuIn(valT, valI) :=
@@ -234,6 +207,14 @@ tuIn(valT, valI) :=
     in
         tplT[intI];
 
+tuLen: Val -> Val;
+tuLen(v) :=
+    let
+        t := valToTpl(v);
+        n := size(t);
+    in
+        intToVal(n);
+        
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* equality operations */
 
@@ -305,7 +286,8 @@ greaterEqNumb(numb1, numb2) :=
 pip: Val -> Val;
 pip(v) :=
     card(v) when valOfKind(v, kindSet) else
-    ab(v);
+    ab(v) when valOfKind(v, kindNumb) else
+    tuLen(v); // tuple
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* set operations (value) */
