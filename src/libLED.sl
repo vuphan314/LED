@@ -24,7 +24,7 @@ public
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
     add, bMns, uMns, mult, div, flr, clng, md, exp, ab, // arithmetic
-    tuConc, tuIn, // tuple
+    tuConc, tuIn, tuSl, // tuple
     tu, // tuple to value
     se, // set to value
     iv, // interval to value
@@ -215,6 +215,16 @@ tuIn(valT, valI) :=
         intI := valToInt(valI);
     in
         tplT[intI];
+        
+tuSl: Val * Val * Val -> Val;
+tuSl(valT, valI1, valI2) :=
+    let
+        t := valToTpl(valT);
+        i1 := valToInt(valI1);
+        i2 := valToInt(valI2);
+        t2 := t[i1...i2];
+    in
+        tplToVal(t2);
 
 tuLen: Val -> Val;
 tuLen(v) :=

@@ -59,6 +59,7 @@ tuple_indexed_term(tupIndT T1) ::= tuple_indexed_term_1(T1)
 
 tuple_indexed_term_1(tupIndUT U) ::= user_term(U)
 tuple_indexed_term_1(tuIn T A) ::= tuple_term(T) lBracket ar_term(A) rBracket
+tuple_indexed_term_1(tuSl T A A2) ::= tuple_term(T) lBracket ar_term(A) twoDots ar_term(A2) rBracket
 
 set_term(setT S1) ::= set_term_1(S1)
 

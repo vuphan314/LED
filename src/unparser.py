@@ -364,7 +364,7 @@ arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross', 'powSet'}
 pipeOp = {'pip'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
-tupleOps = {'tuIn', 'tuConc'}
+tupleOps = {'tuConc', 'tuIn', 'tuSl'}
 libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps | tupleOps
 
 # unparseLibOps: UnpInfo * tree -> str
