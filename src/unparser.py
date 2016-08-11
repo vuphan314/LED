@@ -92,9 +92,6 @@ def unparseRecur(u, T):
         return st
     if T[0] == 'tup':
         return unparseTuple(u, T)
-    if T[0] == 'tupInd':
-        st = applyRecur(u, 'tuIn', T[1:], isInLib = True)
-        return st
     if T[0] in quantLabels:
         return unparseQuant(u, T)
     if T[0] in libOps:
@@ -367,7 +364,8 @@ arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross', 'powSet'}
 pipeOp = {'pip'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
-libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps
+tupleOps = {'tuIn', 'tuConc'}
+libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps | tupleOps
 
 # unparseLibOps: UnpInfo * tree -> str
 def unparseLibOps(u, T):

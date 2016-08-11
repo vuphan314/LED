@@ -24,7 +24,7 @@ public
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
     add, bMns, uMns, mult, div, flr, clng, md, exp, ab, // arithmetic
-    tuIn, // tuple indexing
+    tuConc, tuIn, // tuple
     tu, // tuple to value
     se, // set to value
     iv, // interval to value
@@ -198,6 +198,15 @@ allSet(vs(1)) :=
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple operations */
+
+tuConc: Val * Val -> Val;
+tuConc(v1, v2) :=
+    let
+        t1 := valToTpl(v1);
+        t2 := valToTpl(v2);
+        t := t1 ++ t2;
+    in
+        tplToVal(t);
 
 tuIn: Val * Val -> Val;
 tuIn(valT, valI) :=

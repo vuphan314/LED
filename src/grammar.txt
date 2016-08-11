@@ -48,14 +48,17 @@ string_term_1(S) ::= string(S)
 
 tuple_term(tupT T1) ::= tuple_term_1(T1)
 
-tuple_term_1(tupUT U) ::= user_term(U)
-tuple_term_1(tup T) ::= lParenth term_s(T) rParenth
-tuple_term_1(T) ::= tuple_indexed_term(T)
+tuple_term_1(T2) ::= tuple_term_2(T2)
+tuple_term_1(tuConc T1 T2) ::= tuple_term_1(T1) plus tuple_term_2(T2)
+
+tuple_term_2(tupUT U) ::= user_term(U)
+tuple_term_2(tup T) ::= lParenth term_s(T) rParenth
+tuple_term_2(T) ::= tuple_indexed_term(T)
 
 tuple_indexed_term(tupIndT T1) ::= tuple_indexed_term_1(T1)
 
 tuple_indexed_term_1(tupIndUT U) ::= user_term(U)
-tuple_indexed_term_1(tupInd T A) ::= tuple_term(T) lBracket ar_term(A) rBracket
+tuple_indexed_term_1(tuIn T A) ::= tuple_term(T) lBracket ar_term(A) rBracket
 
 set_term(setT S1) ::= set_term_1(S1)
 

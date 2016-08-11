@@ -19,8 +19,7 @@ goto starting
         REM !parse! >> !led!
         REM !led!
         
-        REM !transl!
-        
+        !transl!
         type !led!
         !transl! > !sl!
         !sl!
