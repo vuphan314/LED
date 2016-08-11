@@ -50,6 +50,7 @@ tuple_term(tupT T1) ::= tuple_term_1(T1)
 
 tuple_term_1(tupUT U) ::= user_term(U)
 tuple_term_1(tup T) ::= lParenth term_s(T) rParenth
+tuple_term_1(T) ::= tuple_indexed_term(T)
 
 tuple_indexed_term(tupIndT T1) ::= tuple_indexed_term_1(T1)
 
