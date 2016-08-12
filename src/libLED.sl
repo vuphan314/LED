@@ -1,3 +1,28 @@
+/* c := {[-x, -y, -z] | x in {1..2} & y in {10 * x, 100 * x}} & z in {-x, -y} */
+
+S_p3(x, y) := [-x, -y];
+
+S_p2(x) := [10 * x, 100 * x];
+
+S_p1 := 1...2;
+
+Sd[i1, i2, i3] :=
+    let x := S_p1[i1];
+        y := S_p2(x)[i2];
+        z := S_p3(x, y)[i3];
+    in [x, y, z];
+       
+S := join(join(Sd));
+
+t(x, y, z) := [-x, -y, -z];
+
+c[i] :=
+    let b   := S[i];
+        x   := b[1];
+        y   := b[2];
+        z   := b[3];
+    in t(x, y, z);
+    
 /* 
 LED library written in SequenceL
 */
