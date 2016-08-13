@@ -190,7 +190,7 @@ class UnpInfo:
     def makeQuant(self):
         self.isExist = True # or universal
         self.qSet = '' # '{1, 2,...}'
-        self.qPred = () # subtree, like: equal(x, b)
+        self.qPred = () # subtree, like: parse('all y in S. y > x')
     
     # qDefFuncs: str
     def qDefFuncs(self):
@@ -231,7 +231,7 @@ class UnpInfo:
         
         func2 = self.qPred
         args2 = self.getNextIndepSymbs()
-        if testIfFuncAux(func2):
+        if checkIfFuncIsAux(func2):
             func2 = applyRecur(self, func2, args2)
         inCl = writeInClause(func2)
         expr = letCls + inCl
@@ -330,6 +330,16 @@ class UnpInfo:
         st = self.appendAux('C')
         return st
     
+    '''
+    set fields specific to aggregation
+    '''
+    def makeAggr(self):
+        self.isGround = False
+        self.aSet = '' # '{1, 2,...}'
+        self.qPred = () # subtree, like: equal(x, b)
+        self.aFuncsCondGround = () # ('x', 'y')
+    
+    
 ########## ########## ########## ########## ########## ########## 
 '''
 unparse collections
@@ -414,8 +424,8 @@ def addBlockComment(st):
     st = '/** ' + st + ' */'
     return st
     
-# testIfFuncAux: str -> bool
-def testIfFuncAux(st):
+# checkIfFuncIsAux: str -> bool
+def checkIfFuncIsAux(st):
     b = st[-1] == '_'
     return b
     
@@ -443,6 +453,30 @@ def listToTree(L):
         
 ########## ########## ########## ########## ########## ########## 
 '''
+aggregation
+'''
+
+# checkIfGround: UnpInfo * tree -> bool
+def checkIfGround(u, T):
+    return not depSymbFound(u, T)
+
+# depSymbFound: UnpInfo * tree -> bool
+def depSymbFound(u, T):
+    if type(T) == str:
+        return False
+    if T[0] == 'userSVC':
+        id = T[1][1]
+        if id not in u.indepSymbs + defedVarsConsts():
+            return True
+        return False
+    else:
+        for t in T[1:]:
+            if depSymbFound(u, t):
+                return True
+        return False
+
+########## ########## ########## ########## ########## ########## 
+'''
 quantification
 '''
 
@@ -456,7 +490,7 @@ def unparseQuant(u, T):
         u.isExist = False
         
     symsInS = T[1]
-    u.depSymbs = getSymbolsFromSyms(symsInS[1])
+    u.depSymbs = getDepSymbsFromSyms(symsInS[1])
     
     u2 = u.getAnotherInst()
     u.qSet = unparseRecur(u2, symsInS[2])
@@ -494,8 +528,8 @@ def expandSymsInS(T):
     T2 = recurTuple(transformTree, T2)
     return T2
     
-# getSymbolsFromSyms: tree -> tuple(str)
-def getSymbolsFromSyms(T):
+# getDepSymbsFromSyms: tree -> tuple(str)
+def getDepSymbsFromSyms(T):
     syms = T[1:]
     symbs = ()
     for sym in syms:
