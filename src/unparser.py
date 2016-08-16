@@ -30,13 +30,7 @@ def printTest():
 python global variables
 '''
 
-defedVars = () # ('v1',...)
 defedConsts = () # ('c1', 'c2',...)
-
-# defedVarsConsts: tuple(str)
-def defedVarsConsts():
-    return defedConsts + defedVars
-
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
@@ -186,11 +180,13 @@ class UnpInfo:
 
     '''
     set fields specific to quantification
+    
+    makeQuant: bool -> void
     '''
-    def makeQuant(self):
-        self.isExist = True # or universal
+    def makeQuant(self, ifUniv):
+        self.isUniv = ifUniv
         self.qSet = '' # '{1, 2,...}'
-        self.qPred = () # subtree, like: parse('all y in S. y > x')
+        self.qPred = '' # 'all y in S. y > x'
     
     # qDefFuncs: str
     def qDefFuncs(self):
@@ -287,7 +283,7 @@ class UnpInfo:
             
     # qGetFuncQuant: str
     def qGetFuncQuant(self, baseOverride = False):
-        if self.isExist:
+        if self.isUniv:
             func = 'someSet'
         else: # universal
             func = 'allSet'
@@ -332,13 +328,33 @@ class UnpInfo:
     
     '''
     set fields specific to aggregation
+    
+    makeAggr: 
     '''
     def makeAggr(self):
-        self.isGround = False
-        self.aSet = '' # '{1, 2,...}'
-        self.qPred = () # subtree, like: equal(x, b)
-        self.aFuncsCondGround = () # ('x', 'y')
-    
+        self.aSet = '' # '{x..2*x}'
+        
+    # aDefFuncSetMem: str
+    def aDefFuncSetMem(self):
+        global auxFuncNum
+        auxFuncNum += 1
+        func = self.appendAux('AGGR')
+        
+        args = self.indepSymbs
+        
+        ind = 'i_'
+        expr = addParentheses(self.aSet) + addBrackets(ind)
+        expr = addBrackets(expr)
+        
+        st = defRecur(self, func, args, expr, inds = (ind,))
+        return st
+        
+def t():
+    u = UnpInfo()
+    u.makeAggr()
+    u.indepSymbs = 'x', 'y'
+    u.aSet = 'x...y'
+    u.aDefFuncSetMem()
     
 ########## ########## ########## ########## ########## ########## 
 '''
@@ -419,6 +435,11 @@ def addDoubleQuotes(st):
     st = '"' + st + '"'
     return st
     
+# addParentheses: str -> str
+def addParentheses(st):
+    st = '(' + st + ')'
+    return st
+    
 # addBlockComment: str -> str
 def addBlockComment(st):
     st = '/** ' + st + ' */'
@@ -466,7 +487,7 @@ def depSymbFound(u, T):
         return False
     if T[0] == 'userSVC':
         id = T[1][1]
-        if id not in u.indepSymbs + defedVarsConsts():
+        if id not in u.indepSymbs + defedConsts:
             return True
         return False
     else:
@@ -485,9 +506,7 @@ libMaxSymbsInSet = 1
 
 # unparseQuant: UnpInfo * tree -> str
 def unparseQuant(u, T):
-    u.makeQuant()
-    if T[0] == 'univ':
-        u.isExist = False
+    u.makeQuant(T[0] == 'univ')
         
     symsInS = T[1]
     u.depSymbs = getDepSymbsFromSyms(symsInS[1])

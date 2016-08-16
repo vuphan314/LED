@@ -1,55 +1,37 @@
-/* c := {[-x, -y, -z] | x in {1..2} & y in {10 * x, 100 * x} & x in y & z in {-x, -y} & z < x * y or x in {} & y in {} & z in {}} */
+// {[x, y] | x in {1..3} & (y in {x} or y in {-x}) & x = y}
 
-S_p1 := 1...2; // not ground
-S_p2(x) := [10 * x, 100 * x]; // not ground
-cond1(x, y) := x in y; // ground
-S_p3(x, y) := [-x, -y]; // not ground
-cond2(x, y, z) := z < x * y; // ground
+// y in x...x*2
 
-Sd[i1, i2, i3] :=
-    let x := S_p1[i1];
-        y := S_p2(x)[i2];
-        z := S_p3(x, y)[i3];
-        cond := cond1(x, y) and cond2(x, y, z);
-    in [x, y, z] when cond;
-S := join(join(Sd));
+aux1(x)[i] :=
+    [(x...x*2)[i]];
 
-S_p3b(x, y) := [];
-S_p2b(x) := [];
-S_p1b := [];
-Sdb[i1, i2, i3] :=
-    let x := S_p1b[i1];
-        y := S_p2b(x)[i2];
-        z := S_p3b(x, y)[i3];
-    in [x, y, z];
-Sb := join(join(Sdb));
-
-S_all := union(S, Sb);
-
-t(x, y, z) := [-x, -y, -z];
-
-c[i] :=
-    let b   := S_all[i];
-        x   := b[1];
-        y   := b[2];
-        z   := b[3];
-    in t(x, y, z);
-    
-{1 | 0 = 0 & (false or x in {})}
-{1 | 0 = 0} U {1 | x in {}}
-cond1 := 0 = 0;
-t := 1;
-c[i] :=
-    t when cond;
-    
-cond2 := false;
-{1 | x in {1..2}}
-S_p = 1...2;
-ch[i] :=
-    let x := S_p[i];
-    in t(x);
-c := removeDups(ch);
-
+sp3(x, y) := [[]] when x = y else [];
+Sx := 1...0;
+sp1[i] :=
+    [Sx[i]];   
+sp2ax(x) := [[x]];
+sp2bx(x) := [[-x]];
+sp2x(x) := removeDups(sp2ax(x) ++ sp2bx(x));
+sp12d[i1, i2] :=
+    let b1 := sp1[i1];
+        x := b1[1];
+        b2 := sp2x(x)[i2];
+    in b1 ++ b2;
+sp12 := join(sp12d);
+sp123d[i1, i2] :=
+    let b1 := sp12[i1];
+        x := b1[1];
+        y := b1[2];
+        b2 := sp3(x, y)[i2];
+    in b1 ++ b2;
+sp123 := join(sp123d);
+t(x, y) := [x, y];
+s[i] :=
+    let b := sp123[i];
+        x := b[1];
+        y := b[2];
+    in t(x, y);
+   
 /* 
 LED library written in SequenceL
 */
