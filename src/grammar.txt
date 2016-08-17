@@ -86,7 +86,7 @@ sequence(seq T) ::= lArrow term_s(T) rArrow
 
 brace_set(set) ::= lBrace rBrace
 brace_set(set T) ::= lBrace term_s(T) rBrace
-brace_set(nrval A A2) ::= lBrace ar_term(A) twoDots ar_term(A2) rBrace
+brace_set(iv A A2) ::= lBrace ar_term(A) twoDots ar_term(A2) rBrace
 brace_set(setCompr T B) ::= lBrace term(T) pipe bool_term(B) rBrace
 
 lambda_term(lmbdT L1) ::= lambda_term_1(L1)
