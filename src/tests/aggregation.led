@@ -1,10 +1,1 @@
-/$ c := a & b &c $/
-
-//
-
-p1a = a in {1..2}
-S_p1a = [[['a', 1]], [['a', 2]]]
-
-p1b(a) = a in {0..1}
-S_p1b(a) = [[]] when p1b(a) else []
-S_p1bMain =     
+/$ c := {0 | x in {} & x < 0} $/

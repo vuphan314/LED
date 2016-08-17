@@ -1,23 +1,18 @@
 // {[x, y] | x in {1..3} & (y in {x} or y in {-x}) & x = y}
-
-// y in x...x*2
-
-aux1(x)[i] :=
-    [(x...x*2)[i]];
-
 sp3(x, y) := [[]] when x = y else [];
-Sx := 1...0;
-sp1[i] :=
-    [Sx[i]];   
+sp1[i] := [(1...3)[i]];
 sp2ax(x) := [[x]];
 sp2bx(x) := [[-x]];
+
 sp2x(x) := removeDups(sp2ax(x) ++ sp2bx(x));
-sp12d[i1, i2] :=
-    let b1 := sp1[i1];
+
+sp12() := join(sp12d);
+sp12d()[i1, i2] :=
+    let b1 := sp1()[i1];
         x := b1[1];
         b2 := sp2x(x)[i2];
     in b1 ++ b2;
-sp12 := join(sp12d);
+
 sp123d[i1, i2] :=
     let b1 := sp12[i1];
         x := b1[1];
@@ -25,12 +20,12 @@ sp123d[i1, i2] :=
         b2 := sp3(x, y)[i2];
     in b1 ++ b2;
 sp123 := join(sp123d);
-t(x, y) := [x, y];
+
 s[i] :=
     let b := sp123[i];
         x := b[1];
         y := b[2];
-    in t(x, y);
+    in x + y;
    
 /* 
 LED library written in SequenceL
