@@ -46,7 +46,8 @@ import <Utilities/String.sl>;
 public 
     pp, // pretty print
     Val, Numb, // types
-    someSet, allSet, valToSet, // quantification
+    someSet, allSet, // quantification
+    valToTrth, valToSet, setCompr, // aggregation
     pip, // pipe
     setMem, sbset, unn, nrsec, diff, cross, powSet, card, // set
     equiv, impl, disj, conj, neg, // boolean
@@ -97,9 +98,6 @@ prettyPrintTail(vs(1))[i] :=
         s := prettyPrint(v);
     in
         ", " ++ s;
-
-// test(x) := debugPrint(x);
-// test2(s(1), x) := debugPrint(s, x);
 
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* type: value */
@@ -193,6 +191,13 @@ se(s(1)) :=
     setToVal(s);
     
 ////////// ////////// ////////// ////////// ////////// ////////// 
+/* aggregation */
+// todo more ops
+setCompr: Val(1) -> Val;
+setCompr(vs(1)) :=
+    setToVal(vs);
+
+////////// ////////// ////////// ////////// ////////// ////////// 
 /* quantification */
 
 someSet: Val(1) -> Val;
@@ -217,14 +222,6 @@ allSet(vs(1)) :=
         h when n = 1 else
         conj(h, allSet(t));
         
-// someSet2: Val(2) -> Val;
-// someSet2(vs(2)) :=
-    // someSet(someSet(vs));
-
-// allSet2: Val(2) -> Val;
-// allSet2(vs(2)) :=
-    // allSet(allSet(vs));
-
 ////////// ////////// ////////// ////////// ////////// ////////// 
 /* tuple operations */
 
