@@ -56,16 +56,6 @@ def unparseTop(L):
     st += printTest()
     return st
 
-# transformTree: tree -> tree
-def transformTree(T):
-    if type(T) == str:
-        return T
-    if T[0] in quantOps:
-        T2 = expandSymsInS(T)
-        return T2
-    else:
-        return recurTuple(transformTree, T)
-
 ########## ########## ########## ########## ########## ##########
 '''
 recursion iterators
@@ -150,6 +140,11 @@ class UnpInfo:
     indepSymbs = () # ('i1',...)
     depSymbs = () # ('d1',...)
 
+    # getNumIndepSymbs: int
+    def getNumIndepSymbs(self):
+        n = len(self.indepSymbs)
+        return n
+
     # getNumDepSymbs: int
     def getNumDepSymbs(self):
         n = len(self.depSymbs)
@@ -197,8 +192,12 @@ class UnpInfo:
     # must assign later by calling function aDefFunc
     aFunc = None # 'AUX_3_(x, y)'
 
-    aPred = '' # 'x < y'
-    aSet = '' # 'x...2*x'
+    aVal = ''
+    '''
+    pred:   'x < y'
+    eq:     'x + 1'
+    set:    'x...2*x'
+    '''
 
     # conj/disj
     subInst1 = None # UnpInfo
@@ -210,7 +209,7 @@ class UnpInfo:
 
     # aCheckCateg: void
     def aCheckCateg(self):
-        if self.aCateg not in {'isPred', 'isSet', 'isConj', 'isDisj', 'isTerm'}:
+        if self.aCateg not in aggregateCategories:
             err('invalid aggregate category')
 
     # aDefFunc: str
@@ -225,6 +224,8 @@ class UnpInfo:
         self.aCheckCateg()
         if self.aCateg == 'isPred':
             self.aDefFuncPred()
+        if self.aCateg == 'isEq':
+            self.aDefFuncEq()
         elif self.aCateg == 'isSet':
             self.aDefFuncSet()
         elif self.aCateg == 'isConj':
@@ -237,30 +238,38 @@ class UnpInfo:
 
     # aDefFuncPred: void
     def aDefFuncPred(self):
-        whenCond = applyRecur(self, 'valToTrth', (self.aPred,))
+        whenCond = applyRecur(self, 'valToTrth', (self.aVal,))
         expr = '[[]] when ' + whenCond + ' else []'
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
         global auxFuncDefs
         auxFuncDefs += st
 
+    # aDefFuncEq: void
+    def aDefFuncEq(self):
+        expr = addBrackets(self.aVal)
+        expr = addBrackets(expr)
+        st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
+        global auxFuncDefs
+        auxFuncDefs += st        
+
     # aDefFuncSet: void
     def aDefFuncSet(self):
         ind = 'i_'
         inds = ind,
-        
+
         func = 'valToSet'
-        args = self.aSet,
+        args = self.aVal,
         expr = applyRecur(self, func, args, inds = inds)
         expr = addBrackets(expr)
-        
+
         st = defRecur(self, self.aFunc, (), expr, inds = inds, moreSpace = True)
         global auxFuncDefs
         auxFuncDefs += st
 
     # aDefFuncDisj: void
     def aDefFuncDisj(self):
-        func = 'removeDups'
-        args = self.subInst1.aFunc + ' ++ ' + self.subInst2.aFunc,
+        func = 'disjSols'
+        args = self.subInst1.aFunc, self.subInst2.aFunc
         expr = applyRecur(self, func, args)
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
         global auxFuncDefs
@@ -272,9 +281,9 @@ class UnpInfo:
         args = self.aGetFuncConjDeep(),
         expr = applyRecur(self, func, args)
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
+        self.aDefFuncConjDeep()
         global auxFuncDefs
         auxFuncDefs += st
-        self.aDefFuncConjDeep()
 
     # aDefFuncConjDeep: void
     def aDefFuncConjDeep(self):
@@ -284,7 +293,7 @@ class UnpInfo:
         letCls = self.aGetConjLetClauses(bindings, inds)
         expr = writeLetClauses(letCls)
 
-        inCl = bindings[0] + ' ++ ' + bindings[1]
+        inCl = applyRecur(self, 'unnBinds', bindings)
         expr += writeInClause(inCl)
 
         func = self.aGetFuncConjDeep()
@@ -304,7 +313,7 @@ class UnpInfo:
             letCls += defRecur(self, binding, (), expr),
 
         sts = ()
-        for i in range(self.subInst2.getNumDepSymbs()):
+        for i in range(self.subInst2.getNumIndepSymbs()):
             func = bindings[0]
             num = str(i + 1)
             expr = applyRecur(self, func, (), inds = (num,))
@@ -553,19 +562,64 @@ def listToTree(L):
 
 ########## ########## ########## ########## ########## ##########
 '''
+transform complicated parsetree to simple parsetree
+'''
+
+aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
+quantOps = {'exist', 'univ'}
+
+# transformTree: tree -> tree
+def transformTree(T):
+    if type(T) == str:
+        return T
+    if T[0] in quantOps:
+        T2 = symsInSetToSymbInSet(T)
+        return T2
+    else:
+        return recurTuple(transformTree, T)
+
+# symsInSetToSymbInSet: tree -> tree
+def symsInSetToSymbInSet(T):
+    quantifier = T[0]
+    pred = T[2]
+
+    symsInSet = T[1]
+    syms = symsInSet[1][1:][::-1]
+    theSet = symsInSet[2]
+    symb = syms[0]
+    symb = 'symb', symb
+    symbInS = 'symbInS', symb, theSet
+    T2 = quantifier, symbInS, pred
+    for sym in syms[1:]:
+        symb = sym
+        symb = 'symb', symb
+        symbInS = 'symbInSet', symb, theSet
+        T2 = quantifier, symbInS, T2
+    T2 = recurTuple(transformTree, T2)
+    return T2
+
+########## ########## ########## ########## ########## ##########
+'''
 aggregation
 '''
 
-aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'sum', 'prod'}
+aggregateCategories = {'isPred', 'isEq', 'isSet', 'isConj', 'isDisj', 'isTerm'}
 
 # unparseAggr: UnpInfo * tree -> str
 def unparseAggr(u, T):
     if T[0] in aggrOps:
         u.aCateg = 'isTerm'
-        u.aTerm = unparseRecur(u, T[1])
+        if T[0] == 'setCompr':
+            term = T[1]
+            condition = T[2]
+        else:
+            term = T[2]
+            condition = T[1]
+
+        u.aTerm = unparseRecur(u, term)
 
         u2 = u.getOtherInst()
-        unparseAggr(u2, T[2])
+        unparseAggr(u2, condition)
         u.condInst = u2
         u.assignDepSymbsFromSubInst(u2)
 
@@ -574,13 +628,16 @@ def unparseAggr(u, T):
         return st
     if isGround(u, T):
         u.aCateg = 'isPred'
-        u.aPred = unparseRecur(u, T)
+        u.aVal = unparseRecur(u, T)
         st = u.aDefFunc()
         return st
-    if T[0] == 'setMem':
-        u.aCateg = 'isSet'
+    if T[0] in {'eq', 'setMem'}:
+        if T[0] == 'eq':
+            u.aCateg = 'isEq'
+        else:
+            u.aCateg = 'isSet'
         u.depSymbs = unparseRecur(u, T[1]),
-        u.aSet = unparseRecur(u, T[2])
+        u.aVal = unparseRecur(u, T[2])
         st = u.aDefFunc()
         return st
     if T[0] == 'conj':
@@ -641,17 +698,15 @@ def isDepSymb(u, id):
 quantification
 '''
 
-quantOps = {'exist', 'univ'}
-
 # unparseQuant: UnpInfo * tree -> str
 def unparseQuant(u, T):
     u.isUniv = T[0] == 'univ'
 
-    symsInS = T[1]
-    u.depSymbs = getDepSymbsFromSyms(symsInS[1])
+    symsInSet = T[1]
+    u.depSymbs = getDepSymbsFromSyms(symsInSet[1])
 
     u2 = u.getOtherInst()
-    u.qSet = unparseRecur(u2, symsInS[2])
+    u.qSet = unparseRecur(u2, symsInSet[2])
 
     u3 = u.getOtherInst(isNext = True)
     u.qPred = unparseRecur(u3, T[2])
@@ -665,26 +720,6 @@ def unparseQuant(u, T):
     st = applyRecur(u, func, args)
 
     return st
-
-# expandSymsInS: tree -> tree
-def expandSymsInS(T):
-    quantifier = T[0]
-    pred = T[2]
-
-    symsInS = T[1]
-    syms = symsInS[1][1:][::-1]
-    S = symsInS[2]
-    symb = syms[0]
-    symb = 'symbs', symb
-    symbInS = 'symbInS', symb, S
-    T2 = quantifier, symbInS, pred
-    for sym in syms[1:]:
-        symb = sym
-        symb = 'symbs', symb
-        symbInS = 'symbInS', symb, S
-        T2 = quantifier, symbInS, T2
-    T2 = recurTuple(transformTree, T2)
-    return T2
 
 # getDepSymbsFromSyms: tree -> tuple(str)
 def getDepSymbsFromSyms(T):

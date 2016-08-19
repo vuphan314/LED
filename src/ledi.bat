@@ -12,13 +12,12 @@ goto starting
         set parse=py ledparser.py !led!
         set transl=py translator.py !led!
 
+        REM py -i unparser.py
+
         echo !base!
         REM type !led!
 
-        REM py -i unparser.py
-
         REM !parse!
-
         REM !transl!
         !transl! > !sl!
         !sl!
