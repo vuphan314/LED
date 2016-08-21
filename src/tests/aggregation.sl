@@ -2,27 +2,32 @@
 
 import * from "../libLED.sl" as *;
 
-myTuple := tu([nu("1"), nu("2")]);
+mySet := iv(nu("1"), nu("2"));
 
-myTerm := setCompr(AUX_2_AGGR_);
+mySet2 := iv(uMns(nu("2")), uMns(nu("1")));
+
+aggrTerm(y) := setCompr(AUX_4_AGGR_(y));
 
 /** AUXILIARY FUNCTIONS */
 
-AUX_1_AGGR_ := solEqSymbs(myTuple);
+AUX_1_AGGR_(y) := solSet(mySet);
 
-AUX_2_AGGR_[i_] := 
+AUX_2_AGGR_(y) := solSet(mySet2);
+
+AUX_3_AGGR_(y) := solDisj(AUX_1_AGGR_(y), AUX_2_AGGR_(y));
+
+AUX_4_AGGR_(y)[i_] := 
 	let
-		b_ := AUX_1_AGGR_[i_];
+		b_ := AUX_3_AGGR_(y)[i_];
 		x := b_[1];
-		y := b_[2];
 	in
-		add(x, y);
+		cross(x, y);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 
 /** Copy/paste the block below into SequenceL interpreter to test:
 
-pp(myTuple)
-pp(myTerm)
+pp(mySet)
+pp(mySet2)
 
-(pp means PrettyPrint) */
+(pp: pretty-print) */

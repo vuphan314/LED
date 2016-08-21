@@ -1,3 +1,5 @@
-/$ myTuple := (1, 2) $/
-s := {(x, y) | x = tu[1] & y = tu[2]}
-/$ myTerm := {x + y | (x, y) = myTuple} $/
+condFalse := 1 < 0
+relOnX(x) iff x > 0
+/$ mySet := {1..2} $/
+/$ mySet2 := {-2..-1} $/
+/$ aggrTerm(y) := {x * y | x in mySet or x in mySet2} $/

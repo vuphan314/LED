@@ -20,7 +20,7 @@ def printTest():
     for const in defedConsts:
         func = applyRecur(None, 'pp', (const,))
         st += func + '\n'
-    st += '\n(pp means PrettyPrint)'
+    st += '\n(pp: pretty-print)'
     st = addBlockComment(st)
     st = '\n\n' + st
     return st
@@ -67,6 +67,9 @@ def unparseRecur(u, T):
         return T
     if T[0] in lexemes:
         return unparseLexemes(u, T)
+    if T[0] == 'userFR':
+        st = applyRecur(u, T[1], T[2][1:])
+        return st
     if T[0] == 'tup':
         return unparseTuple(u, T)
     if T[0] == 'set':
@@ -84,6 +87,12 @@ def unparseRecur(u, T):
         defedConsts += func,
 
         st = defRecur(u, func, (), T[2], moreSpace = True)
+        return st
+    if T[0] in {'funDef', 'relDef'}:
+        func = unparseRecur(u, T[1][1])
+        args = getSymbsFromSyms(T[1][2])
+        u.indepSymbs = args
+        st = defRecur(u, func, args, T[2], moreSpace = True)
         return st
     else:
         return recurStr(unparseRecur, u, T)
@@ -201,18 +210,27 @@ class UnpInfo:
 
     aVal = ''
     '''
-    pred:   'x < y'
+    ground: 'x < y'
     eq:     'x + 1'
     set:    'x...2*x'
     '''
+
+    # term
+    aTerm = None # 'x + y'
+    condInst = None # UnpInfo
 
     # conj/disj
     subInst1 = None # UnpInfo
     subInst2 = None # UnpInfo
 
-    # term
-    aTerm = None # 'x + y'
-    condInst = None # UnpInfo
+    # aGetArgsLib: tuple(str)
+    def aGetArgsLib(self):
+        if self.aCateg == 'solDisj':
+            return self.subInst1.aFunc, self.subInst2.aFunc
+        if self.aCateg in aCategsLib:
+            return self.aVal,
+        else:
+            err('not in library')
 
     # aCheckCateg: void
     def aCheckCateg(self):
@@ -229,63 +247,44 @@ class UnpInfo:
         self.aFunc = applyRecur(self, func, args)
 
         self.aCheckCateg()
-        if self.aCateg == 'isPred':
-            st = self.aDefFuncPred()
-        elif self.aCateg == 'isEqSymb':
-            st = self.aDefFuncEqSymb()
-        elif self.aCateg == 'isEqSymbs':
-            st = self.aDefFuncEqSymbs()
-        elif self.aCateg == 'isSet':
-            st = self.aDefFuncSet()
-        elif self.aCateg == 'isConj':
-            st = self.aDefFuncConj()
-        elif self.aCateg == 'isDisj':
-            st = self.aDefFuncDisj()
-        else:
+        if self.aCateg == 'isTerm':
             st = self.aDefFuncTerm()
+        elif self.aCateg in aCategsLib:
+            st = self.aDefFuncLib()
+        else: # 'solConj'
+            st = self.aDefFuncConj()
         global auxFuncDefs
         auxFuncDefs += st
 
         return self.aFunc
 
-    # aDefFuncPred: str
-    def aDefFuncPred(self):
-        whenCond = applyRecur(self, 'valToTrth', (self.aVal,))
-        expr = '[[]] when ' + whenCond + ' else []'
-        st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        return st
-
-    # aDefFuncEqSymb: str
-    def aDefFuncEqSymb(self):
-        expr = addBrackets(self.aVal)
-        expr = addBrackets(expr)
-        st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        return st
-
-    # aDefFuncEqSymbs: str
-    def aDefFuncEqSymbs(self):
-        expr = applyRecur(self, 'solEqSymbs', (self.aVal,))
-        st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        return st
-
-    # aDefFuncSet: str
-    def aDefFuncSet(self):
+    # aDefFuncTerm: str
+    def aDefFuncTerm(self):
         ind = 'i_'
-        inds = ind,
 
-        func = 'valToSet'
-        args = self.aVal,
-        expr = applyRecur(self, func, args, inds = inds)
-        expr = addBrackets(expr)
+        letCls = self.aGetTermLetClauses(ind)
+        expr = writeLetClauses(letCls)
 
-        st = defRecur(self, self.aFunc, (), expr, inds = inds, moreSpace = True)
+        inCl = self.aTerm
+        expr += writeInClause(inCl)
+
+        st = defRecur(self, self.aFunc, (), expr, inds = (ind,), moreSpace = True)
         return st
 
-    # aDefFuncDisj: str
-    def aDefFuncDisj(self):
-        func = 'disjSols'
-        args = self.subInst1.aFunc, self.subInst2.aFunc
-        expr = applyRecur(self, func, args)
+    # aGetTermLetClauses: str -> str
+    def aGetTermLetClauses(self, ind):
+        binding = 'b_'
+        expr = applyRecur(self, self.condInst.aFunc, (), inds = (ind,))
+        letCls = defRecur(self, binding, (), expr),
+        for i in range(self.condInst.getNumDepSymbs()):
+            num = str(i + 1)
+            expr = applyRecur(self, binding, (), inds = (num,))
+            letCls += defRecur(self, self.condInst.depSymbs[i], (), expr),
+        return letCls
+
+    # aDefFuncLib: str
+    def aDefFuncLib(self):
+        expr = applyRecur(self, self.aCateg, self.aGetArgsLib())
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
         return st
 
@@ -341,30 +340,6 @@ class UnpInfo:
         args = self.indepSymbs
         st = applyRecur(self, func, args)
         return st
-
-    # aDefFuncTerm: str
-    def aDefFuncTerm(self):
-        ind = 'i_'
-
-        letCls = self.aGetTermLetClauses(ind)
-        expr = writeLetClauses(letCls)
-
-        inCl = self.aTerm
-        expr += writeInClause(inCl)
-
-        st = defRecur(self, self.aFunc, (), expr, inds = (ind,), moreSpace = True)
-        return st
-
-    # aGetTermLetClauses: str -> str
-    def aGetTermLetClauses(self, ind):
-        binding = 'b_'
-        expr = applyRecur(self, self.condInst.aFunc, (), inds = (ind,))
-        letCls = defRecur(self, binding, (), expr),
-        for i in range(self.condInst.getNumDepSymbs()):
-            num = str(i + 1)
-            expr = applyRecur(self, binding, (), inds = (num,))
-            letCls += defRecur(self, self.condInst.depSymbs[i], (), expr),
-        return letCls
 
     '''
     fields specific to quantification
@@ -484,13 +459,13 @@ unparse library operations
 
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
-arOps = {'add', 'bMns', 'uMns', 'mult', 'div', 'flr', 'clng', 'md', 'exp'}
-setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'cross', 'powSet', 'iv'}
-pipeOp = {'pip'}
 boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
-tupleOps = {'tuConc', 'tuIn', 'tuSl'}
+overloadedOps = {'pipesOp', 'plusOp', 'starOp'}
+arOps = {'bMns', 'uMns', 'div', 'flr', 'clng', 'md', 'exp'}
+setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
+tupleOps = {'tuIn', 'tuSl'}
 
-libOps = equalityOps | relationalOps | arOps | setOps | pipeOp | boolOps | tupleOps
+libOps = overloadedOps | equalityOps | relationalOps | arOps | setOps | boolOps | tupleOps
 
 # unparseLibOps: UnpInfo * tree -> str
 def unparseLibOps(u, T):
@@ -614,7 +589,8 @@ def symsInSetToSymbInSet(T):
 aggregation
 '''
 
-aCategs = {'isPred', 'isEqSymb', 'isEqSymbs', 'isSet', 'isConj', 'isDisj', 'isTerm'}
+aCategsLib = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
+aCategs = aCategsLib | {'isTerm', 'solConj'}
 
 # unparseAggr: UnpInfo * tree -> str
 def unparseAggr(u, T):
@@ -637,38 +613,24 @@ def unparseAggr(u, T):
         st = applyRecur(u, T[0], args)
         return st
     if isGround(u, T):
-        u.aCateg = 'isPred'
+        u.aCateg = 'solGround'
         u.aVal = unparseRecur(u, T)
         st = u.aDefFunc()
         return st
     if T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == 'userSVC':
-                u.aCateg = 'isEqSymb'
+                u.aCateg = 'solEq'
             else: # tupT
-                u.aCateg = 'isEqSymbs'
+                u.aCateg = 'solEqs'
         else: # setMem
-            u.aCateg = 'isSet'
+            u.aCateg = 'solSet'
         u.depSymbs = getDepSymbsRecur(u, T[1])
         u.aVal = unparseRecur(u, T[2])
         st = u.aDefFunc()
         return st
-    if T[0] == 'conj':
-        u.aCateg = 'isConj'
-
-        u1 = u.getOtherInst()
-        unparseAggr(u1, T[1])
-        u.subInst1 = u1
-
-        u2 = u1.getOtherInst(isNext = True)
-        unparseAggr(u2, T[2])
-        u.subInst2 = u2
-        u.assignDepSymbsFromSubInst(u2)
-
-        st = u.aDefFunc()
-        return st
     if T[0] == 'disj':
-        u.aCateg = 'isDisj'
+        u.aCateg = 'solDisj'
 
         u1 = u.getOtherInst()
         unparseAggr(u1, T[1])
@@ -678,6 +640,20 @@ def unparseAggr(u, T):
         u2 = u.getOtherInst()
         unparseAggr(u2, T[2])
         u.subInst2 = u2
+
+        st = u.aDefFunc()
+        return st
+    if T[0] == 'conj':
+        u.aCateg = 'solConj'
+
+        u1 = u.getOtherInst()
+        unparseAggr(u1, T[1])
+        u.subInst1 = u1
+
+        u2 = u1.getOtherInst(isNext = True)
+        unparseAggr(u2, T[2])
+        u.subInst2 = u2
+        u.assignDepSymbsFromSubInst(u2)
 
         st = u.aDefFunc()
         return st
@@ -729,7 +705,7 @@ def unparseQuant(u, T):
     u.isUniv = T[0] == 'univ'
 
     symsInSet = T[1]
-    u.depSymbs = getDepSymbsFromSyms(symsInSet[1])
+    u.depSymbs = getSymbsFromSyms(symsInSet[1])
 
     u2 = u.getOtherInst()
     u.qSet = unparseRecur(u2, symsInSet[2])
@@ -747,8 +723,8 @@ def unparseQuant(u, T):
 
     return st
 
-# getDepSymbsFromSyms: tree -> tuple(str)
-def getDepSymbsFromSyms(T):
+# getSymbsFromSyms: tree -> tuple(str)
+def getSymbsFromSyms(T):
     syms = T[1:]
     symbs = ()
     for sym in syms:

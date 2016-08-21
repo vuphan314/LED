@@ -18,16 +18,15 @@ public
     pp, // pretty print
     Val, Numb, // types
     someSet, allSet, // quantification
-    valToTrth, valToSet, setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
-    solEqSymbs,
-    disjSols, unnBinds, // solution set
-    pip, // pipe
-    setMem, sbset, unn, nrsec, diff, cross, powSet, card, // set
+    setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
+    solGround, solSet, solEqs, solDisj, unnBinds, // solution set
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
-    add, bMns, uMns, mult, div, flr, clng, md, exp, ab, // arithmetic
-    tuConc, tuIn, tuSl, // tuple
+    pipesOp, plusOp, starOp, // overloaded
+    setMem, sbset, unn, nrsec, diff, powSet, // set
+    bMns, uMns, div, flr, clng, md, exp, // arithmetic
+    tuIn, tuSl, // tuple
     tu, // tuple to value
     se, // set to value
     iv, // interval to value
@@ -189,17 +188,35 @@ aggrProd(vs(1)) :=
 ////////// ////////// ////////// ////////// ////////// //////////
 /* solution set */
 
-solEqSymbs: Val -> Val(2);
-solEqSymbs(v) :=
+solGround: Val -> Val(2);
+solGround(v) :=
+    let
+        isTrue := valToTrth(v);
+    in
+        [[]] when isTrue else [];
+
+solEq: Val -> Val(2);
+solEq(v) :=
+    [[v]];
+
+solEqs: Val -> Val(2);
+solEqs(v) :=
     [valToTpl(v)];
+
+solSet: Val -> Val(2);
+solSet(v)[i] :=
+    let
+        vs := valToSet(v);
+    in
+        [vs[i]];
+
+solDisj: Val(2) * Val(2) -> Val(2);
+solDisj(s1(2), s2(2)) :=
+    removeDups(s1 ++ s2);
 
 unnBinds: Val(1) * Val(1) -> Val(1);
 unnBinds(b1(1), b2(1)) :=
     b1 ++ b2;
-
-disjSols: Val(2) * Val(2) -> Val(2);
-disjSols(s1(2), s2(2)) :=
-    removeDups(s1 ++ s2);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* quantification */
@@ -330,13 +347,23 @@ greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* pipe operation */
+/* overloaded operations */
 
-pip: Val -> Val;
-pip(v) :=
-    card(v) when valOfKind(v, kindSet) else
+plusOp: Val * Val -> Val;
+plusOp(v1, v2) :=
+    add(v1, v2) when valsOfKind(v1, v2, kindNumb) else
+    tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl);
+
+starOp: Val * Val -> Val;
+starOp(v1, v2) :=
+    mult(v1, v2) when valsOfKind(v1, v2, kindNumb) else
+    cross(v1, v2) when valsOfKind(v1, v2, kindSet);
+
+pipesOp: Val -> Val;
+pipesOp(v) :=
     ab(v) when valOfKind(v, kindNumb) else
-    tuLen(v); // tuple
+    card(v) when valOfKind(v, kindSet) else
+    tuLen(v) when valOfKind(v, kindTpl);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* set operations (value) */

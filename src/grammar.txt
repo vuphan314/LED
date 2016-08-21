@@ -25,8 +25,7 @@ rel_def(relDef R B B2) ::= rel_term(R) iff bool_term(B) where bool_term(B2)
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
 
-term(U) ::= user_term(U)
-term(T) ::= lParenth term(T) rParenth
+term(T) ::= term_user_parenth(T)
 
 term(S) ::= set_term(S)
 term(B) ::= bool_term(B)
@@ -36,8 +35,8 @@ term(A) ::= atom_term(A)
 term(S) ::= string_term(S)
 term(T) ::= tuple_term(T)
 term(T) ::= tuple_indexed_term(T)
-
 term(L) ::= lambda_term(L)
+
 atom_term(atomT A1) ::= atom_term_1(A1)
 
 atom_term_1(atomUT U) ::= user_term(U)
@@ -50,7 +49,7 @@ string_term_1(S) ::= string(S)
 
 tuple_term(tupT T1) ::= tuple_term_1(T1)
 
-tuple_term_1(tuConc T1 T2) ::= tuple_term_1(T1) plus tuple_term_2(T2)
+tuple_term_1(plusOp T1 T2) ::= tuple_term_1(T1) plus tuple_term_2(T2)
 tuple_term_1(T2) ::= tuple_term_2(T2)
 
 tuple_term_2(tupUT U) ::= user_term(U)
@@ -70,7 +69,7 @@ set_term_1(diff S1 S2) ::= set_term_1(S1) backslash set_term_2(S2)
 set_term_1(S2) ::= set_term_2(S2)
 
 set_term_2(nrsec S2 S3) ::= set_term_2(S2) sec set_term_3(S3)
-set_term_2(cross S2 S3) ::= set_term_2(S2) star set_term_3(S3)
+set_term_2(starOp S2 S3) ::= set_term_2(S2) star set_term_3(S3)
 set_term_2(S3) ::= set_term_3(S3)
 
 set_term_3(aggrUnn B S4) ::= U lBracket bool_term(B) rBracket set_term_4(S4)
@@ -126,8 +125,7 @@ quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
 set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 set_bool_term(setMem A S) ::= set_mem_arg(A) in set_term(S)
 
-set_mem_arg(U) ::= user_term(U)
-set_mem_arg(T) ::= lParenth term(T) rParenth
+set_mem_arg(T) ::= term_user_parenth(T)
 
 equality(eq T T2) ::= term(T) equal term(T2)
 equality(uneq T T2) ::= term(T) unequal term(T2)
@@ -140,11 +138,11 @@ relational(greaterEq A A2) ::= ar_term(A) greaterOrEq ar_term(A2)
 
 ar_term(arT A1) ::= ar_term_1(A1)
 
-ar_term_1(add A1 A2) ::= ar_term_1(A1) plus ar_term_2(A2)
+ar_term_1(plusOp A1 A2) ::= ar_term_1(A1) plus ar_term_2(A2)
 ar_term_1(bMns A1 A2) ::= ar_term_1(A1) minus ar_term_2(A2)
 ar_term_1(A2) ::= ar_term_2(A2)
 
-ar_term_2(mult A2 A3) ::= ar_term_2(A2) star ar_term_3(A3)
+ar_term_2(starOp A2 A3) ::= ar_term_2(A2) star ar_term_3(A3)
 ar_term_2(div A2 A3) ::= ar_term_2(A2) slash ar_term_3(A3)
 ar_term_2(md A2 A3) ::= ar_term_2(A2) mod ar_term_3(A3)
 ar_term_2(A3) ::= ar_term_3(A3)
@@ -163,12 +161,11 @@ ar_term_5(A) ::= lParenth ar_term(A) rParenth
 ar_term_5(flr A) ::= floor lParenth ar_term(A) rParenth
 ar_term_5(clng A) ::= ceil lParenth ar_term(A) rParenth
 ar_term_5(N) ::= numl(N)
-ar_term_5(pip A) ::= pipe pipe_arg(A) pipe
+ar_term_5(pipesOp A) ::= pipe pipes_arg(A) pipe
 
-pipe_arg(pipeUT U) ::= user_term(U)
-pipe_arg(S) ::= set_term(S)
-pipe_arg(A) ::= ar_term(A)
-pipe_arg(T) ::= tuple_term(T)
+pipes_arg(A) ::= ar_term(A)
+pipes_arg(S) ::= set_term(S)
+pipes_arg(T) ::= tuple_term(T)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
@@ -193,6 +190,9 @@ term_if_bool_term(tElse T) ::= term(T) otherwise
 
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
+
+term_user_parenth(U) ::= user_term(U)
+term_user_parenth(T) ::= lParenth term(T) rParenth
 
 fun_term(funT F V) ::= fun_(F) lParenth symbol_s(V) rParenth
 rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth
