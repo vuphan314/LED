@@ -1,32 +1,3 @@
-// {[x, y] | x in {1..3} & (y in {x} or y in {-x}) & x = y}
-sp3(x, y) := [[]] when x = y else [];
-sp1[i] := [(1...3)[i]];
-sp2ax(x) := [[x]];
-sp2bx(x) := [[-x]];
-
-sp2x(x) := removeDups(sp2ax(x) ++ sp2bx(x));
-
-sp12() := join(sp12d);
-sp12d()[i1, i2] :=
-    let b1 := sp1()[i1];
-        x := b1[1];
-        b2 := sp2x(x)[i2];
-    in b1 ++ b2;
-
-sp123d[i1, i2] :=
-    let b1 := sp12[i1];
-        x := b1[1];
-        y := b1[2];
-        b2 := sp3(x, y)[i2];
-    in b1 ++ b2;
-sp123 := join(sp123d);
-
-s[i] :=
-    let b := sp123[i];
-        x := b[1];
-        y := b[2];
-    in x + y;
-
 /*
 LED library written in SequenceL
 */
@@ -48,6 +19,7 @@ public
     Val, Numb, // types
     someSet, allSet, // quantification
     valToTrth, valToSet, setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
+    solEqSymbs,
     disjSols, unnBinds, // solution set
     pip, // pipe
     setMem, sbset, unn, nrsec, diff, cross, powSet, card, // set
@@ -217,13 +189,17 @@ aggrProd(vs(1)) :=
 ////////// ////////// ////////// ////////// ////////// //////////
 /* solution set */
 
-disjSols: Val(2) * Val(2) -> Val(2);
-disjSols(s1(2), s2(2)) :=
-    removeDups(s1 ++ s2);
+solEqSymbs: Val -> Val(2);
+solEqSymbs(v) :=
+    [valToTpl(v)];
 
 unnBinds: Val(1) * Val(1) -> Val(1);
 unnBinds(b1(1), b2(1)) :=
     b1 ++ b2;
+
+disjSols: Val(2) * Val(2) -> Val(2);
+disjSols(s1(2), s2(2)) :=
+    removeDups(s1 ++ s2);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* quantification */

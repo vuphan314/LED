@@ -117,14 +117,21 @@ def applyRecur(u, func, args, isInLib = False, argsAreBracketed = False, inds = 
 recursion helpers
 '''
 
-# recurStr: function * UnpInfo * tree -> str
+# recurStr: (UnpInfo * tree -> str) * UnpInfo * tree -> str
 def recurStr(F, u, T):
     st = ''
     for t in T[1:]:
         st += F(u, t)
     return st
 
-# recurTuple: function * tree -> tree
+# recurTupleOfStrings: (UnpInfo * tree -> tuple(str)) * UnpInfo * tree -> tuple(str)
+def recurTupleOfStrings(F, u, T):
+    tu = ()
+    for t in T[1:]:
+        tu += F(u, t)
+    return tu
+
+# recurTuple: (tree -> tree) * tree -> tree
 def recurTuple(F, T):
     T2 = T[:1]
     for t in T[1:]:
@@ -209,7 +216,7 @@ class UnpInfo:
 
     # aCheckCateg: void
     def aCheckCateg(self):
-        if self.aCateg not in aggregateCategories:
+        if self.aCateg not in aCategs:
             err('invalid aggregate category')
 
     # aDefFunc: str
@@ -223,36 +230,45 @@ class UnpInfo:
 
         self.aCheckCateg()
         if self.aCateg == 'isPred':
-            self.aDefFuncPred()
-        if self.aCateg == 'isEq':
-            self.aDefFuncEq()
+            st = self.aDefFuncPred()
+        elif self.aCateg == 'isEqSymb':
+            st = self.aDefFuncEqSymb()
+        elif self.aCateg == 'isEqSymbs':
+            st = self.aDefFuncEqSymbs()
         elif self.aCateg == 'isSet':
-            self.aDefFuncSet()
+            st = self.aDefFuncSet()
         elif self.aCateg == 'isConj':
-            self.aDefFuncConj()
+            st = self.aDefFuncConj()
         elif self.aCateg == 'isDisj':
-            self.aDefFuncDisj()
+            st = self.aDefFuncDisj()
         else:
-            self.aDefFuncTerm()
+            st = self.aDefFuncTerm()
+        global auxFuncDefs
+        auxFuncDefs += st
+
         return self.aFunc
 
-    # aDefFuncPred: void
+    # aDefFuncPred: str
     def aDefFuncPred(self):
         whenCond = applyRecur(self, 'valToTrth', (self.aVal,))
         expr = '[[]] when ' + whenCond + ' else []'
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st
+        return st
 
-    # aDefFuncEq: void
-    def aDefFuncEq(self):
+    # aDefFuncEqSymb: str
+    def aDefFuncEqSymb(self):
         expr = addBrackets(self.aVal)
         expr = addBrackets(expr)
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st        
+        return st
 
-    # aDefFuncSet: void
+    # aDefFuncEqSymbs: str
+    def aDefFuncEqSymbs(self):
+        expr = applyRecur(self, 'solEqSymbs', (self.aVal,))
+        st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
+        return st
+
+    # aDefFuncSet: str
     def aDefFuncSet(self):
         ind = 'i_'
         inds = ind,
@@ -263,29 +279,26 @@ class UnpInfo:
         expr = addBrackets(expr)
 
         st = defRecur(self, self.aFunc, (), expr, inds = inds, moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st
+        return st
 
-    # aDefFuncDisj: void
+    # aDefFuncDisj: str
     def aDefFuncDisj(self):
         func = 'disjSols'
         args = self.subInst1.aFunc, self.subInst2.aFunc
         expr = applyRecur(self, func, args)
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st
+        return st
 
-    # aDefFuncConj: void
+    # aDefFuncConj: str
     def aDefFuncConj(self):
         func = 'join'
         args = self.aGetFuncConjDeep(),
         expr = applyRecur(self, func, args)
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
-        self.aDefFuncConjDeep()
-        global auxFuncDefs
-        auxFuncDefs += st
+        st = self.aDefFuncConjDeep() + st
+        return st
 
-    # aDefFuncConjDeep: void
+    # aDefFuncConjDeep: str
     def aDefFuncConjDeep(self):
         bindings = 'b1_', 'b2_'
         inds = 'i1_', 'i2_'
@@ -298,8 +311,7 @@ class UnpInfo:
 
         func = self.aGetFuncConjDeep()
         st = defRecur(self, func, (), expr, inds = inds, moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st
+        return st
 
     # aGetConjLetClauses: tuple(str) * tuple(str) -> tuple(str)
     def aGetConjLetClauses(self, bindings, inds):
@@ -330,7 +342,7 @@ class UnpInfo:
         st = applyRecur(self, func, args)
         return st
 
-    # aDefFuncTerm: void
+    # aDefFuncTerm: str
     def aDefFuncTerm(self):
         ind = 'i_'
 
@@ -341,8 +353,7 @@ class UnpInfo:
         expr += writeInClause(inCl)
 
         st = defRecur(self, self.aFunc, (), expr, inds = (ind,), moreSpace = True)
-        global auxFuncDefs
-        auxFuncDefs += st
+        return st
 
     # aGetTermLetClauses: str -> str
     def aGetTermLetClauses(self, ind):
@@ -603,7 +614,7 @@ def symsInSetToSymbInSet(T):
 aggregation
 '''
 
-aggregateCategories = {'isPred', 'isEq', 'isSet', 'isConj', 'isDisj', 'isTerm'}
+aCategs = {'isPred', 'isEqSymb', 'isEqSymbs', 'isSet', 'isConj', 'isDisj', 'isTerm'}
 
 # unparseAggr: UnpInfo * tree -> str
 def unparseAggr(u, T):
@@ -622,7 +633,6 @@ def unparseAggr(u, T):
         unparseAggr(u2, condition)
         u.condInst = u2
         u.assignDepSymbsFromSubInst(u2)
-
         args = u.aDefFunc(),
         st = applyRecur(u, T[0], args)
         return st
@@ -633,10 +643,13 @@ def unparseAggr(u, T):
         return st
     if T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
-            u.aCateg = 'isEq'
-        else:
+            if T[1][0] == 'userSVC':
+                u.aCateg = 'isEqSymb'
+            else: # tupT
+                u.aCateg = 'isEqSymbs'
+        else: # setMem
             u.aCateg = 'isSet'
-        u.depSymbs = unparseRecur(u, T[1]),
+        u.depSymbs = getDepSymbsRecur(u, T[1])
         u.aVal = unparseRecur(u, T[2])
         st = u.aDefFunc()
         return st
@@ -671,6 +684,19 @@ def unparseAggr(u, T):
     else:
         return recurStr(unparseAggr, u, T)
 
+# getDepSymbsRecur: UnpInfo * tree -> tuple(str)
+def getDepSymbsRecur(u, T):
+    if type(T) == str:
+        return ()
+    if T[0] == 'userSVC':
+        st = T[1][1]
+        if symbIsDep(u, st):
+            return st,
+        else:
+            return ()
+    else:
+        return recurTupleOfStrings(getDepSymbsRecur, u, T)
+
 # isGround: UnpInfo * tree -> bool
 def isGround(u, T):
     return not depSymbFound(u, T)
@@ -680,7 +706,7 @@ def depSymbFound(u, T):
     if type(T) == str:
         return False
     if T[0] == 'userSVC':
-        if isDepSymb(u, T[1][1]):
+        if symbIsDep(u, T[1][1]):
             return True
         return False
     else:
@@ -689,8 +715,8 @@ def depSymbFound(u, T):
                 return True
         return False
 
-# isDepSymb: UnpInfo * str -> bool
-def isDepSymb(u, id):
+# symbIsDep: UnpInfo * str -> bool
+def symbIsDep(u, id):
     return id not in u.indepSymbs + defedConsts
 
 ########## ########## ########## ########## ########## ##########

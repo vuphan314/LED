@@ -27,15 +27,17 @@ def_body(T) ::= term_if_bool_term_s(T)
 
 term(U) ::= user_term(U)
 term(T) ::= lParenth term(T) rParenth
-term(A) ::= atom_term(A)
-term(S) ::= string_term(S)
-term(T) ::= tuple_term(T)
-term(T) ::= tuple_indexed_term(T)
-term(L) ::= lambda_term(L)
+
 term(S) ::= set_term(S)
 term(B) ::= bool_term(B)
 term(A) ::= ar_term(A)
 
+term(A) ::= atom_term(A)
+term(S) ::= string_term(S)
+term(T) ::= tuple_term(T)
+term(T) ::= tuple_indexed_term(T)
+
+term(L) ::= lambda_term(L)
 atom_term(atomT A1) ::= atom_term_1(A1)
 
 atom_term_1(atomUT U) ::= user_term(U)

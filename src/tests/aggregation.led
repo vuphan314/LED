@@ -1,1 +1,3 @@
-/$ c := {(x, y) | x = 4 & y in {x..x+1}} $/
+/$ myTuple := (1, 2) $/
+s := {(x, y) | x = tu[1] & y = tu[2]}
+/$ myTerm := {x + y | (x, y) = myTuple} $/

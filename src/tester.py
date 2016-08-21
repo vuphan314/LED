@@ -6,8 +6,8 @@ print test string
 def err(mess = 'error message'):
     raise NameError(mess)
 
-# test: object -> print
-def test(o = 'test string'):
+# tst: object -> print
+def tst(o = 'test string'):
     st = str(o)
     st = markerComment + '\nTEST\n' + st + '\n' + markerComment + '\n'
     print(st)
