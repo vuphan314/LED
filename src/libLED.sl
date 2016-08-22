@@ -15,11 +15,11 @@ import <Utilities/String.sl>;
 /* exporting */
 
 public
-    pp, // pretty print
     Val, Numb, // types
+    pp, // pretty print
     someSet, allSet, // quantification
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
-    solGround, solSet, solEqs, solDisj, unnBinds, // solution set
+    solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
@@ -35,10 +35,16 @@ public
     nu; // numeral to value
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* testing */
+/* debug */
+
+deb := debugPrint("ERROR, RETURNING A NULL VALUE: ", valNull);
+valNull := (kind: kindNull);
+kindNull := "nil";
+
+////////// ////////// ////////// ////////// ////////// //////////
+/* pretty print */
 
 pp(v) := prettyPrint(v);
-
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
     let
@@ -171,18 +177,22 @@ setCompr(vs(1)) :=
 
 aggrUnn: Val(1) -> Val;
 aggrUnn(vs(1)) :=
+    valEmptySet when size(vs) = 0 else
     Sequence::fold(vs, unn);
 
 aggrNrsec: Val(1) -> Val;
 aggrNrsec(vs(1)) :=
+    valEmptySet when size(vs) = 0 else
     Sequence::fold(vs, nrsec);
 
 aggrSum: Val(1) -> Val;
 aggrSum(vs(1)) :=
+    valZero when size(vs) = 0 else
     Sequence::fold(vs, add);
 
 aggrProd: Val(1) -> Val;
 aggrProd(vs(1)) :=
+    valOne when size(vs) = 0 else
     Sequence::fold(vs, mult);
 
 ////////// ////////// ////////// ////////// ////////// //////////
@@ -352,18 +362,21 @@ greaterEqNumb(numb1, numb2) :=
 plusOp: Val * Val -> Val;
 plusOp(v1, v2) :=
     add(v1, v2) when valsOfKind(v1, v2, kindNumb) else
-    tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl);
+    tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl) else
+    deb;
 
 starOp: Val * Val -> Val;
 starOp(v1, v2) :=
     mult(v1, v2) when valsOfKind(v1, v2, kindNumb) else
-    cross(v1, v2) when valsOfKind(v1, v2, kindSet);
+    cross(v1, v2) when valsOfKind(v1, v2, kindSet) else
+    deb;
 
 pipesOp: Val -> Val;
 pipesOp(v) :=
     ab(v) when valOfKind(v, kindNumb) else
     card(v) when valOfKind(v, kindSet) else
-    tuLen(v) when valOfKind(v, kindTpl);
+    tuLen(v) when valOfKind(v, kindTpl) else
+    deb;
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* set operations (value) */
@@ -531,7 +544,7 @@ valToInt(v) :=
     numbToInt(valToNumb(v));
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* kinds */
+/* kinds of value */
 
 kindNumb: char(1);
 kindNumb :=
@@ -556,32 +569,21 @@ kindSet :=
 ////////// ////////// ////////// ////////// ////////// //////////
 /* some values */
 
-valTrue: Val;
-valTrue :=
-    trthToVal(true);
+valEmptySet := setToVal([]);
 
-valFalse: Val;
-valFalse :=
-    trthToVal(false);
+valTrue := trthToVal(true);
+valFalse := trthToVal(false);
 
-valOne: Val;
-valOne :=
-    numbToVal(numbOne);
-
-valTen: Val;
-valTen :=
-    numbToVal(numbTen);
+valZero := numbToVal(numbZero);
+valOne := numbToVal(numbOne);
+valTen := numbToVal(numbTen);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* some numbers */
 
-numbOne: Numb;
-numbOne :=
-    intToNumb(1);
-
-numbTen: Numb;
-numbTen :=
-    intToNumb(10);
+numbZero := intToNumb(0);
+numbOne := intToNumb(1);
+numbTen := intToNumb(10);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* arithmetic helper functions */

@@ -91,8 +91,9 @@ def unparseRecur(u, T):
     if T[0] in {'funDef', 'relDef'}:
         func = unparseRecur(u, T[1][1])
         args = getSymbsFromSyms(T[1][2])
-        u.indepSymbs = args
-        st = defRecur(u, func, args, T[2], moreSpace = True)
+        u2 = u.getAnotherInst()
+        u2.indepSymbs = args
+        st = defRecur(u2, func, args, T[2], moreSpace = True)
         return st
     else:
         return recurStr(unparseRecur, u, T)
@@ -133,12 +134,10 @@ def recurStr(F, u, T):
         st += F(u, t)
     return st
 
-# recurTupleOfStrings: (UnpInfo * tree -> tuple(str)) * UnpInfo * tree -> tuple(str)
-def recurTupleOfStrings(F, u, T):
-    tu = ()
+# recurVoid: (UnpInfo * tree -> void) * UnpInfo * tree -> void
+def recurVoid(F, u, T):
     for t in T[1:]:
-        tu += F(u, t)
-    return tu
+        F(u, t)
 
 # recurTuple: (tree -> tree) * tree -> tree
 def recurTuple(F, T):
@@ -171,14 +170,8 @@ class UnpInfo:
         T = self.indepSymbs + self.depSymbs
         return T
 
-    # assignDepSymbsFromSubInst: UnpInfo -> void
-    def assignDepSymbsFromSubInst(self, u):
-        for s in u.getSymbs():
-            if s not in self.indepSymbs:
-                self.depSymbs += s,
-
-    # getOtherInst: UnpInfo
-    def getOtherInst(self, isNext = False):
+    # getAnotherInst: UnpInfo
+    def getAnotherInst(self, isNext = False):
         if isNext:
             symbs = self.getNextIndepSymbs()
         else:
@@ -223,19 +216,10 @@ class UnpInfo:
     subInst1 = None # UnpInfo
     subInst2 = None # UnpInfo
 
-    # aGetArgsLib: tuple(str)
-    def aGetArgsLib(self):
-        if self.aCateg == 'solDisj':
-            return self.subInst1.aFunc, self.subInst2.aFunc
-        if self.aCateg in aCategsLib:
-            return self.aVal,
-        else:
-            err('not in library')
-
     # aCheckCateg: void
     def aCheckCateg(self):
         if self.aCateg not in aCategs:
-            err('invalid aggregate category')
+            err('INVALID AGGREGATE CATEGORY')
 
     # aDefFunc: str
     def aDefFunc(self):
@@ -247,8 +231,8 @@ class UnpInfo:
         self.aFunc = applyRecur(self, func, args)
 
         self.aCheckCateg()
-        if self.aCateg == 'isTerm':
-            st = self.aDefFuncTerm()
+        if self.aCateg == 'isAggr':
+            st = self.aDefFuncAggr()
         elif self.aCateg in aCategsLib:
             st = self.aDefFuncLib()
         else: # 'solConj'
@@ -258,11 +242,11 @@ class UnpInfo:
 
         return self.aFunc
 
-    # aDefFuncTerm: str
-    def aDefFuncTerm(self):
+    # aDefFuncAggr: str
+    def aDefFuncAggr(self):
         ind = 'i_'
 
-        letCls = self.aGetTermLetClauses(ind)
+        letCls = self.aGetAggrLetClauses(ind)
         expr = writeLetClauses(letCls)
 
         inCl = self.aTerm
@@ -271,15 +255,15 @@ class UnpInfo:
         st = defRecur(self, self.aFunc, (), expr, inds = (ind,), moreSpace = True)
         return st
 
-    # aGetTermLetClauses: str -> str
-    def aGetTermLetClauses(self, ind):
+    # aGetAggrLetClauses: str -> str
+    def aGetAggrLetClauses(self, ind):
         binding = 'b_'
         expr = applyRecur(self, self.condInst.aFunc, (), inds = (ind,))
         letCls = defRecur(self, binding, (), expr),
-        for i in range(self.condInst.getNumDepSymbs()):
+        for i in range(self.getNumDepSymbs()):
             num = str(i + 1)
             expr = applyRecur(self, binding, (), inds = (num,))
-            letCls += defRecur(self, self.condInst.depSymbs[i], (), expr),
+            letCls += defRecur(self, self.depSymbs[i], (), expr),
         return letCls
 
     # aDefFuncLib: str
@@ -287,6 +271,15 @@ class UnpInfo:
         expr = applyRecur(self, self.aCateg, self.aGetArgsLib())
         st = defRecur(self, self.aFunc, (), expr, moreSpace = True)
         return st
+
+    # aGetArgsLib: tuple(str)
+    def aGetArgsLib(self):
+        if self.aCateg == 'solDisj':
+            return self.subInst1.aFunc, self.subInst2.aFunc
+        if self.aCateg in aCategsLib:
+            return self.aVal,
+        else:
+            err('NOT IN LIBRARY')
 
     # aDefFuncConj: str
     def aDefFuncConj(self):
@@ -324,11 +317,11 @@ class UnpInfo:
             letCls += defRecur(self, binding, (), expr),
 
         sts = ()
-        for i in range(self.subInst2.getNumIndepSymbs()):
+        for i in range(self.subInst1.getNumDepSymbs()):
+            symb = self.subInst1.depSymbs[i]
             func = bindings[0]
             num = str(i + 1)
             expr = applyRecur(self, func, (), inds = (num,))
-            symb = self.subInst2.indepSymbs[i]
             sts += defRecur(self, symb, (), expr),
 
         sts = letCls[:1] + sts + letCls[1:]
@@ -465,7 +458,8 @@ arOps = {'bMns', 'uMns', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
 tupleOps = {'tuIn', 'tuSl'}
 
-libOps = overloadedOps | equalityOps | relationalOps | arOps | setOps | boolOps | tupleOps
+libOps = \
+    overloadedOps | equalityOps | relationalOps | arOps | setOps | boolOps | tupleOps
 
 # unparseLibOps: UnpInfo * tree -> str
 def unparseLibOps(u, T):
@@ -590,25 +584,27 @@ aggregation
 '''
 
 aCategsLib = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
-aCategs = aCategsLib | {'isTerm', 'solConj'}
+aCategs = aCategsLib | {'isAggr', 'solConj'}
 
 # unparseAggr: UnpInfo * tree -> str
 def unparseAggr(u, T):
     if T[0] in aggrOps:
-        u.aCateg = 'isTerm'
+        u.aCateg = 'isAggr'
         if T[0] == 'setCompr':
-            term = T[1]
-            condition = T[2]
+            termTree = T[1]
+            condTree = T[2]
         else:
-            term = T[2]
-            condition = T[1]
+            termTree = T[2]
+            condTree = T[1]
 
-        u.aTerm = unparseRecur(u, term)
+        updateDepSymbsRecur(u, condTree)
+        uTerm = u.getAnotherInst(isNext = True)
+        u.aTerm = unparseRecur(uTerm, termTree)
 
-        u2 = u.getOtherInst()
-        unparseAggr(u2, condition)
-        u.condInst = u2
-        u.assignDepSymbsFromSubInst(u2)
+        uCond = u.getAnotherInst()
+        unparseAggr(uCond, condTree)
+        u.condInst = uCond
+        
         args = u.aDefFunc(),
         st = applyRecur(u, T[0], args)
         return st
@@ -621,23 +617,22 @@ def unparseAggr(u, T):
         if T[0] == 'eq':
             if T[1][0] == 'userSVC':
                 u.aCateg = 'solEq'
-            else: # tupT
+            else: # 'tupT'
                 u.aCateg = 'solEqs'
-        else: # setMem
+        else: # 'setMem'
             u.aCateg = 'solSet'
-        u.depSymbs = getDepSymbsRecur(u, T[1])
+        updateDepSymbsRecur(u, T[1])
         u.aVal = unparseRecur(u, T[2])
         st = u.aDefFunc()
         return st
     if T[0] == 'disj':
         u.aCateg = 'solDisj'
 
-        u1 = u.getOtherInst()
+        u1 = u.getAnotherInst()
         unparseAggr(u1, T[1])
         u.subInst1 = u1
-        u.assignDepSymbsFromSubInst(u1)
 
-        u2 = u.getOtherInst()
+        u2 = u.getAnotherInst()
         unparseAggr(u2, T[2])
         u.subInst2 = u2
 
@@ -646,54 +641,50 @@ def unparseAggr(u, T):
     if T[0] == 'conj':
         u.aCateg = 'solConj'
 
-        u1 = u.getOtherInst()
+        u1 = u.getAnotherInst()
         unparseAggr(u1, T[1])
         u.subInst1 = u1
 
-        u2 = u1.getOtherInst(isNext = True)
+        u2 = u1.getAnotherInst(isNext = True)
         unparseAggr(u2, T[2])
         u.subInst2 = u2
-        u.assignDepSymbsFromSubInst(u2)
 
         st = u.aDefFunc()
         return st
     else:
         return recurStr(unparseAggr, u, T)
 
-# getDepSymbsRecur: UnpInfo * tree -> tuple(str)
-def getDepSymbsRecur(u, T):
-    if type(T) == str:
-        return ()
-    if T[0] == 'userSVC':
-        st = T[1][1]
-        if symbIsDep(u, st):
-            return st,
+# updateDepSymbsRecur: UnpInfo * tree -> void
+def updateDepSymbsRecur(u, T):
+    if type(T) == tuple:
+        if T[0] == 'userSVC':
+            st = T[1][1]
+            if isNewDepSymb(u, st):
+                u.depSymbs += st,
         else:
-            return ()
-    else:
-        return recurTupleOfStrings(getDepSymbsRecur, u, T)
+            recurVoid(updateDepSymbsRecur, u, T)
 
 # isGround: UnpInfo * tree -> bool
 def isGround(u, T):
-    return not depSymbFound(u, T)
+    return not newDepSymbFound(u, T)
 
-# depSymbFound: UnpInfo * tree -> bool
-def depSymbFound(u, T):
+# newDepSymbFound: UnpInfo * tree -> bool
+def newDepSymbFound(u, T):
     if type(T) == str:
         return False
     if T[0] == 'userSVC':
-        if symbIsDep(u, T[1][1]):
+        if isNewDepSymb(u, T[1][1]):
             return True
         return False
     else:
         for t in T[1:]:
-            if depSymbFound(u, t):
+            if newDepSymbFound(u, t):
                 return True
         return False
 
-# symbIsDep: UnpInfo * str -> bool
-def symbIsDep(u, id):
-    return id not in u.indepSymbs + defedConsts
+# isNewDepSymb: UnpInfo * str -> bool
+def isNewDepSymb(u, id):
+    return id not in u.getSymbs() + defedConsts
 
 ########## ########## ########## ########## ########## ##########
 '''
@@ -707,10 +698,10 @@ def unparseQuant(u, T):
     symsInSet = T[1]
     u.depSymbs = getSymbsFromSyms(symsInSet[1])
 
-    u2 = u.getOtherInst()
+    u2 = u.getAnotherInst()
     u.qSet = unparseRecur(u2, symsInSet[2])
 
-    u3 = u.getOtherInst(isNext = True)
+    u3 = u.getAnotherInst(isNext = True)
     u.qPred = unparseRecur(u3, T[2])
 
     global auxFuncDefs

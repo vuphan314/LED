@@ -1,5 +1,24 @@
-condFalse := 1 < 0
-relOnX(x) iff x > 0
-/$ mySet := {1..2} $/
-/$ mySet2 := {-2..-1} $/
-/$ aggrTerm(y) := {x * y | x in mySet or x in mySet2} $/
+/$ f(t) := {(x, y, z) | x in {t..2*t} & (y, z) = (x^2, x^3)} $/
+/$ c1 := f(1) $/
+
+/$ c2 := Sum[x in {1..2}] Sum[y in {x^2}] (x*y) $/
+
+/$ c3 := Prod[x in {1..-1}] x^x $/
+
+/$ c4 := U[x in {-2..2} & x mod 2 = 1] {|x|} $/
+
+/$ r(s, t) iff Sec[x = s or x = t] {x^2} = {1} $/
+/$ c5 := r(-1, 1) $/
+
+test:
+
+cmd:>pp(c1)
+"{(1, 1, 1), (2, 4, 8)}"
+cmd:>pp(c2)
+"9"
+cmd:>pp(c3)
+"1"
+cmd:>pp(c4)
+"{1}"
+cmd:>pp(c5)
+"true"
