@@ -25,17 +25,17 @@ rel_def(relDef R B B2) ::= rel_term(R) iff bool_term(B) where bool_term(B2)
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
 
-term(T) ::= term_user_parenth(T)
-
-term(S) ::= set_term(S)
+term(U) ::= unlikely_bool_term(U)
 term(B) ::= bool_term(B)
-term(A) ::= ar_term(A)
 
-term(A) ::= atom_term(A)
-term(S) ::= string_term(S)
-term(T) ::= tuple_term(T)
-term(T) ::= tuple_indexed_term(T)
-term(L) ::= lambda_term(L)
+unlikely_bool_term(U) ::= user_or_parenth_term(U)
+unlikely_bool_term(S) ::= set_term(S)
+unlikely_bool_term(A) ::= ar_term(A)
+unlikely_bool_term(A) ::= atom_term(A)
+unlikely_bool_term(S) ::= string_term(S)
+unlikely_bool_term(T) ::= tuple_term(T)
+unlikely_bool_term(T) ::= tuple_indexed_term(T)
+unlikely_bool_term(L) ::= lambda_term(L)
 
 atom_term(atomT A1) ::= atom_term_1(A1)
 
@@ -125,11 +125,13 @@ quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
 set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
 set_bool_term(setMem A S) ::= set_mem_arg(A) in set_term(S)
 
-set_mem_arg(T) ::= term_user_parenth(T)
+set_mem_arg(U) ::= unlikely_bool_term(U)
 
-equality(eq T T2) ::= term(T) equal term(T2)
-equality(uneq T T2) ::= term(T) unequal term(T2)
+equality(eq A A2) ::= equality_arg(A) equal equality_arg(A2)
+equality(uneq A A2) ::= equality_arg(A) unequal equality_arg(A2)
 equality(R) ::= relational(R)
+
+equality_arg(U) ::= unlikely_bool_term(U)
 
 relational(less A A2) ::= ar_term(A) lArrow ar_term(A2)
 relational(greater A A2) ::= ar_term(A) rArrow ar_term(A2)
@@ -191,8 +193,8 @@ term_if_bool_term(tElse T) ::= term(T) otherwise
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
 
-term_user_parenth(U) ::= user_term(U)
-term_user_parenth(T) ::= lParenth term(T) rParenth
+user_or_parenth_term(U) ::= user_term(U)
+user_or_parenth_term(T) ::= lParenth term(T) rParenth
 
 fun_term(funT F V) ::= fun_(F) lParenth symbol_s(V) rParenth
 rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth

@@ -2,12 +2,11 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=aggregation
-    set fils=boolean, comparison, quantification, set
+    set fil=test
+    set fils=aggregation, boolean, comparison, quantification, set
 	for %%i in (%fil%) do (
 		set base=%fold%%%~ni
         set led=!base!.led
-        set p=!base!.p
         set sl=!base!.sl
         set parse=py ledparser.py !led!
         set transl=py translator.py !led!
@@ -18,10 +17,13 @@ goto starting
         REM type !led!
 
         REM !parse!
+        !parse! >> !led!
+        !led!
+
         REM !transl!
-        !transl! > !sl!
-        !sl!
-        sli -l !sl!
+        REM !transl! > !sl!
+        REM !sl!
+        REM sli -l !sl!
 	)
 	goto done
 

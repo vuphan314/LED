@@ -61,6 +61,8 @@ def unparseTop(L):
 recursion iterators
 '''
 
+defLabels = {'constDef', 'funDef', 'relDef'}
+
 # unparseRecur: UnpInfo * tree -> str
 def unparseRecur(u, T):
     if type(T) == str:
@@ -80,20 +82,15 @@ def unparseRecur(u, T):
         return unparseQuant(u, T)
     if T[0] in libOps:
         return unparseLibOps(u, T)
-    if T[0] == 'constDef':
-        func = unparseRecur(u, T[1])
-
-        global defedConsts
-        defedConsts += func,
-
-        st = defRecur(u, func, (), T[2], moreSpace = True)
-        return st
-    if T[0] in {'funDef', 'relDef'}:
+    if T[0] in defLabels:
         func = unparseRecur(u, T[1][1])
-        args = getSymbsFromSyms(T[1][2])
-        u2 = u.getAnotherInst()
-        u2.indepSymbs = args
-        st = defRecur(u2, func, args, T[2], moreSpace = True)
+        if T[0] == 'constDef':
+            global defedConsts
+            defedConsts += func,
+        else: # in {'funDef', 'relDef'}
+            u.depSymbs = getSymbsFromSyms(T[1][2])
+        u2 = u.getAnotherInst(isNext = True)
+        st = defRecur(u2, func, u.depSymbs, T[2], moreSpace = True)
         return st
     else:
         return recurStr(unparseRecur, u, T)
@@ -604,7 +601,7 @@ def unparseAggr(u, T):
         uCond = u.getAnotherInst()
         unparseAggr(uCond, condTree)
         u.condInst = uCond
-        
+
         args = u.aDefFunc(),
         st = applyRecur(u, T[0], args)
         return st
