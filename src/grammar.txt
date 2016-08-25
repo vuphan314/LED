@@ -24,11 +24,13 @@ rel_def(relDef R B B2) ::= rel_term(R) iff bool_term(B) where bool_term(B2)
 
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
+def_body(T) ::= term_if_bool_term_s_other(T)
 
 term(U) ::= unlikely_bool_term(U)
 term(B) ::= bool_term(B)
 
-unlikely_bool_term(U) ::= user_or_parenth_term(U)
+unlikely_bool_term(U) ::= user_term(U)
+unlikely_bool_term(T) ::= lParenth term(T) rParenth
 unlikely_bool_term(S) ::= set_term(S)
 unlikely_bool_term(A) ::= ar_term(A)
 unlikely_bool_term(A) ::= atom_term(A)
@@ -36,6 +38,7 @@ unlikely_bool_term(S) ::= string_term(S)
 unlikely_bool_term(T) ::= tuple_term(T)
 unlikely_bool_term(T) ::= tuple_indexed_term(T)
 unlikely_bool_term(L) ::= lambda_term(L)
+unlikely_bool_term(I) ::= inner_bool_term(I)
 
 atom_term(atomT A1) ::= atom_term_1(A1)
 
@@ -109,15 +112,17 @@ bool_term_3(B4) ::= bool_term_4(B4)
 bool_term_4(conj B4 B5) ::= bool_term_4(B4) amperstand bool_term_5(B5)
 bool_term_4(B5) ::= bool_term_5(B5)
 
-bool_term_5(neg B6) ::= tilde bool_term_6(B6)
+bool_term_5(neg B5) ::= tilde bool_term_5(B5)
 bool_term_5(B6) ::= bool_term_6(B6)
 
-bool_term_6(boolUT U) ::= user_term(U)
-bool_term_6(B) ::= lParenth bool_term(B) rParenth
-bool_term_6(T) ::= truth(T)
 bool_term_6(Q) ::= quantified_term(Q)
 bool_term_6(S) ::= set_bool_term(S)
 bool_term_6(E) ::= equality(E)
+bool_term_6(I) ::= inner_bool_term(I)
+
+inner_bool_term(B) ::= lParenth bool_term(B) rParenth
+inner_bool_term(boolUT U) ::= user_term(U)
+inner_bool_term(T) ::= truth(T)
 
 quantified_term(exist S B) ::= some symbol_s_in_set_term(S) dot bool_term_6(B)
 quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
@@ -151,8 +156,8 @@ ar_term_2(A3) ::= ar_term_3(A3)
 
 ar_term_3(aggrSum B A3) ::= Sum lBracket bool_term(B) rBracket ar_term_3(A3)
 ar_term_3(aggrProd B A3) ::= Prod lBracket bool_term(B) rBracket ar_term_3(A3)
-ar_term_3(uMns A4) ::= minus ar_term_4(A4)
-ar_term_3(A4) ::= plus ar_term_4(A4)
+ar_term_3(uMns A3) ::= minus ar_term_3(A3)
+ar_term_3(A3) ::= plus ar_term_3(A3)
 ar_term_3(A4) ::= ar_term_4(A4)
 
 ar_term_4(exp A5 A4) ::= ar_term_5(A5) hat ar_term_4(A4)
@@ -188,13 +193,13 @@ var_s_of_type_s(varsOfTs V) ::= var_s_of_type(V)
 var_s_of_type_s(varsOfTs V cut_root(Vs)) ::= var_s_of_type(V) comma var_s_of_type_s(Vs)
 
 term_if_bool_term(tIfBT T B) ::= term(T) if bool_term(B)
-term_if_bool_term(tElse T) ::= term(T) otherwise
 
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
 
-user_or_parenth_term(U) ::= user_term(U)
-user_or_parenth_term(T) ::= lParenth term(T) rParenth
+term_other(tOther T) ::= term(T) otherwise
+
+term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
 
 fun_term(funT F V) ::= fun_(F) lParenth symbol_s(V) rParenth
 rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth

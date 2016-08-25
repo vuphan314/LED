@@ -1,3 +1,0 @@
-/$ c := z where x = 3 & y = x & z = y $/
-f(x) := x + y where y = x/2
-r(x) iff y where y = ~x

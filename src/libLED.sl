@@ -17,9 +17,10 @@ import <Utilities/String.sl>;
 public
     Val, Numb, // types
     pp, // pretty print
-    someSet, allSet, // quantification
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
+    someSet, allSet, valToSet, // quantification
+    valToTrth, // if clauses
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
