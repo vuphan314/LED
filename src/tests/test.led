@@ -1,0 +1,5 @@
+
+/$  currentPlayerDisplay :=
+        {text("x's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `x;
+         {text("o's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `o
+$/

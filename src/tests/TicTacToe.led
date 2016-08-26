@@ -54,7 +54,7 @@ $/
 
 Player p *occupies* cell c if the move (p,c) is a member of Gamma. Cell c is *occupied* if it is occupied by `x or by `o.
 
-/$        occupies(p,c) iff (p,c) in [a]Gamma
+/$        occupies(p,c) iff (p,c) in Gamma
 
         occupied(c) iff occupies(`x,c) or occupies(`o,c)
 $/
@@ -81,12 +81,12 @@ $/
 
 *boardFull* if and only if all cells are occupied.
 
-/$        boardFull iff |Gamma| = 9
+/$        boardFull := |Gamma| = 9
 $/
 
 *gameOver* if either the board is full, or one of the players three in a row.
 
-/$        gameOver iff boardFull or threeInRow(`x) or threeInRow(`o)
+/$        gameOver := boardFull or threeInRow(`x) or threeInRow(`o)
 $/
 
 *playerToMove* is `x if an even number of moves have been made, and `o otherwise.
@@ -135,7 +135,7 @@ This section defines the *display* function, specifying the images to display on
 where
          L1 = segment(point(200,700),point(200,400),BLACK) &
          L2 = segment(point(300,700),point(300,400),BLACK) &
-         L3 = segment(point100,600),point(400,600),BLACK) &
+         L3 = segment(point(100,600),point(400,600),BLACK) &
  L4 = segment(point(100,500),point(400,500),BLACK)
 $/
 
@@ -151,7 +151,7 @@ $/
 $/
 
 
-*cellDisplay(c)* is a display of a text character “x” or an “o” in cell c, or the empty display, respectively in case cell c is occupied by `x, occupied by `o, or not occupied in the current game state.
+*cellDisplay(c)* is a display of a text character "x" or an "o" in cell c, or the empty display, respectively in case cell c is occupied by `x, occupied by `o, or not occupied in the current game state.
 
 /$        xImage(c) := text("x", point(centerX(c), centerO(c)), fontSize, BLUE)
 
@@ -178,7 +178,7 @@ If the game is not over, *currentPlayerDisplay* is a text in the upper left hand
 
 /$  currentPlayerDisplay :=
         {text("x's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `x;
-         {text("o's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `o;
+         {text("o's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `o
 $/
 
 The *restart button* consists of a rectangle around a "restart" text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
@@ -238,13 +238,13 @@ cellClicked(c) means that cell c has been clicked.
 
 /$        cellClicked(c) iff
                   ~click[1]=`nil &
-                  (xCoord(click)>xMin(c)) &[b] (xCoord(click)< xMax(c)) &
+                  (xCoord(click)>xMin(c)) & (xCoord(click)< xMax(c)) &
                  (yCoord(click)>yMin(c)) & (yCoord(click)< yMax(c))
 $/
 
 *restartClicked* means that the most recent mouse click is inside the region of the play again button.
 
-/$ restartClicked iff
+/$ restartClicked :=
      xCoord(click)>400 & xCoord(click)<500 &
      yCoord(click)>725 & yCoord(click)<775
 $/
@@ -266,26 +266,4 @@ $/
 /$  newState :=
      initialState  if restartClicked;
      Gamma U movesMade  otherwise
-$/
-
-[a]Instead of being an uninterpreted constant *Gamma*, the current game state should be passed as a parameter S:
-
-
-occupies(p,c,S) iff (p,c) in S
-[b]Instead of an uninterpreted constant *click*, should use Easel parameter I of type Input:
-
-
-/$
-
-
-cellClicked(c, I) iff
-
-
- click.clicked &
- (xCoord(click.clPoint)>xMin(c)) & ...
-
-
- where click = I.iClick
-
-
 $/
