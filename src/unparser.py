@@ -49,7 +49,7 @@ def unparseTop(L):
     u = UnparserInfo()
     st = unparseRecur(u, T)
 
-    st = importLib + st
+    st = importLib() + st
     if auxFuncDefs != '':
         st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
     st = markBeginEnd(st)
@@ -150,6 +150,31 @@ def recurTree(F, T):
     for t in T[1:]:
         T2 += F(t),
     return T2
+
+########## ########## ########## ########## ########## ##########
+'''
+Easel
+'''
+
+paramInput = 'I'
+paramState = 'S'
+
+# addParams: tree -> tree
+def addParams(T):
+    if type(T) == str:
+        return T
+    #todo if T[0] in 
+    else:
+        return recurTree(addParams, T)
+
+# getIds: str * tuple(str) -> tuple(str)
+def getIds(label, ids):
+    tu = ()
+    for id in ids:
+        st = 'id', id
+        st = label, st
+        tu += st,
+    return tu
 
 ########## ########## ########## ########## ########## ##########
 '''
@@ -817,10 +842,16 @@ def unparseLexemes(u, T):
 importing and using LED library
 '''
 
-libLoc = '../'
-libName = 'libLED'
+libPath = '../lib.sl'
 libAs = ''
-importLib = 'import * from "' + libLoc + libName + '.sl" as ' + libAs + '*;\n\n'
+
+# importLib: st
+def importLib():
+    st = 'import * from ' + addDoubleQuotes(libPath) + ' as '
+    if libAs != '':
+        st += libAs + '::'
+    st += '*;\n\n'
+    return st
 
 # str -> str
 def prependLib(st):

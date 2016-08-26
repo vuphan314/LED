@@ -1,5 +1,10 @@
-
-/$  currentPlayerDisplay :=
-        {text("x's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `x;
-         {text("o's turn",point(100,750),fontSize,BLACK)} if currentPlayer = `o
-$/
+/$ c := c $/
+/$ r(x) iff r(x) $/
+['prog', 
+    ['constDef', 
+        ['constN', ('id', 'c')], 
+        ['userSVC', ('id', 'c')]], 
+    ['relDef', 
+        ['relT', ('id', 'r'), ['syms', ['symN', ('id', 'x')]]], 
+        ['boolT', ['boolUT', 
+        ['userFR', ('id', 'r'), ['terms', ['userSVC', ('id', 'x')]]]]]]]

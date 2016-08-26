@@ -55,6 +55,7 @@ State ::= (time: int); //Fill in this struct with the game state members.
 
 initialState := (time: 0);
 
+newState: Input * State -> State;
 newState(I, S) := (time: S.time + 1);
 
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
