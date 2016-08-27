@@ -140,15 +140,18 @@ dWhite := color(255, 255, 255);
 
 /* Easel test */
 
+initialState_: Val;
 initialState_ := nu("0");
-newState_(I, S) := plusOp(stateToVal(S), nu("1"));
-images_(S) := [text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)];
 
-State ::= (num: int);
-state(i) := (num: i);
+newState_: Input
+newState_(I, S) := plusOp(S, nu("1"));
 
-stateToVal: State -> Val;
-stateToVal(S) := intToVal(S.num);
+images_(S) := se([text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)]);
+
+State ::= (val: Val);
+
+state: Val -> State;
+state(v) := (val: v);
 
 point_: Val * Val -> Point;
 point_(v1, v2) :=
@@ -162,10 +165,16 @@ text_(mess(1), p, v, c) :=
     let i := valToInt(v);
     in text(mess, p, i, c);
 
-initialState := state(valToInt(initialState_));
+initialState: State;
+initialState := state(initialState_);
+
+newState: Input * State -> State;
 newState(I, S) := state(valToInt(newState_(I, S)));
+
+images: State -> Image(1);
 images(S) := images_(S);
 
+sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 /* Easel template */
@@ -179,10 +188,9 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 ////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
-Val ::=
-    (kindLED: char(1),
-    atm: char(1), numb: Numb, trth: bool, coll: Val(1),
-    lmbd: (Val(1) -> Val));
+Val ::= (   kindLED: char(1),
+            atm: char(1), numb: Numb, trth: bool, coll: Val(1), lmbd: (Val(1) -> Val), 
+            eImage: Image);
 
 valToKind: Val -> char(1);
 valToKind(v) :=

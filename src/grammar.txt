@@ -207,10 +207,10 @@ rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth
 symbol_(symN I) ::= id(I)
 
 var_(varN I) ::= id(I)
-const_(constN I) ::= id(I)
+const_(constT I) ::= id(I)
 
 fun_(I) ::= id(I)
 rel_(I) ::= id(I)
 
-user_term(userSVC I) ::= id(I)
+user_term(userSC I) ::= id(I)
 user_term(userFR I T) ::= id(I) lParenth term_s(T) rParenth

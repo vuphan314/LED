@@ -2,17 +2,24 @@
 print test string
 '''
 
-# err: raise
-def err(mess = 'error message'):
-    raise NameError(mess)
-
 # tst: object -> print
-def tst(o = 'test string'):
+def tst(o = 'DEFAULT TEST STRING'):
     st = str(o)
     st = markerComment + '\nTEST\n' + st + '\n' + markerComment + '\n'
     print(st)
-    
-########## ########## ########## ########## ########## ########## 
+
+########## ########## ########## ########## ########## ##########
+'''
+raise error
+'''
+
+# raiseError: raise
+def raiseError(o = 'DEFAULT ERROR MESSAGE'):
+    st = str(o)
+    raise NameError(st)
+err = raiseError
+
+########## ########## ########## ########## ########## ##########
 '''
 mark begin and end of wanted string
 '''

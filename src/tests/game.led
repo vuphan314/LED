@@ -1,7 +1,10 @@
 State ::= Int
 
-/$ initialState := 0 $/
+initialState := 0
 
-/$ newState := Gamma + 1 $/
+newState := Gamma + 1
 
-/$ images := {text("hi", point(500, 500), 50, dBlue)} $/
+images := {text("hi", point(500, 500), 50, dBlue)}
+/$ c := 0 $/
+/$ f(x, y) := all z in y. z > x + y + S + c $/
+

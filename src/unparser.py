@@ -44,6 +44,12 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L):
     T = listToTree(L)
+    updateDefedConsts(T)
+
+    # for Easel
+    T = addEaselParams(T)
+
+    # for quantification
     T = transformTree(T)
 
     u = UnparserInfo()
@@ -88,19 +94,17 @@ def unparseRecur(u, T):
         return recurStr(unparseRecur, u, T)
 
 # defRecur: UnparserInfo * tree * tuple(tree) * tree -> str
-def defRecur(u, func, args, expr, moreSpace = False, inds = (), letCls = ()):
+def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
     head = applyRecur(u, func, args, inds = inds)
     expr = unparseRecur(u, expr)
     if letCls != ():
         letCls = writeLetClauses(letCls)
         inCl = writeInClause(expr)
         expr = letCls + inCl
+        moreSpace = True
     body = expr + ';\n'
     if moreSpace:
-        body = '\t' + body
-        if letCls == ():
-            body = '\t' + body
-        body = '\n' + body + '\n'
+        body = '\n\t' + body + '\n'
     st = head + ' := ' + body
     return st
 
@@ -153,49 +157,83 @@ def recurTree(F, T):
 
 ########## ########## ########## ########## ########## ##########
 '''
+update user-defined constants
+'''
+
+# updateDefedConsts: tree -> void
+def updateDefedConsts(prog):
+    global defedConsts
+    for definition in prog:
+        if definition[0] == 'constDef':
+            st = unparseRecur(None, definition[1])
+            defedConsts += st,
+
+########## ########## ########## ########## ########## ##########
+'''
 Easel
 '''
-# todo
-conversionToNonNullary = {'userSVC': 'userFR', 'constN': 'funT'}
 
-# addParams: tree -> tree
-def addParams(T):
+# addEaselParams: tree -> tree
+def addEaselParams(T):
     if type(T) == str:
         return T
-    if T[0] in conversionToNonNullary:
+    if T[0] == 'constT':
         id = T[1]
-        if T[0] == 'userSVC':
-            T2 = getParamsTree('terms', 'userSVC')
-        else: # 'constN':
-            T2 = getParamsTree('syms', 'symN')
-        root = conversionToNonNullary(T[0])
-        T2 = root, id, T2
-        return T2
+        syms = getEaselParamsTree('syms', 'symN')
+        funT = 'funT', id, syms
+        return funT
     if T[0] in {'funT', 'relT'}:
         syms = T[2]
-        syms += getParams('symN')
-        T2 = T[:2] + syms,
+        syms += getEaselParamsTuple('symN')
+        T2 = T[:2] + (syms,)
         return T2
+    if T[0] == 'userSC':
+        if userTermNeedsEaselParams(T):
+            id = T[1]
+            terms = getEaselParamsTree('terms', 'userSC')
+            T = 'userFR', id, terms
+        return T
+    if T[0] == 'userFR':
+        if userTermNeedsEaselParams(T):
+            terms = T[2]
+            terms += getEaselParamsTuple('userSC')
+            T = T[:2] + (terms,)
+        return recurTree(addEaselParams, T)
     if T[0] == 'constDef':
-        T2 = 'funDef', + T[1:]
-        return recurTree(addParams, T2)
+        T2 = ('funDef',) + T[1:]
+        return recurTree(addEaselParams, T2)
     else:
-        return recurTree(addParams, T)
+        return recurTree(addEaselParams, T)
 
-paramInput = 'I'
-paramState = 'S'
+easelFunctions = {  'point', 'color', 'click', 'input', 'segment', 'circle', 'text',
+                    'disc', 'fTri', 'graphic'}
 
-paramsToAdd = paramInput, paramState
+# userTermNeedsEaselParams: tree -> bool
+def userTermNeedsEaselParams(T):
+    st = T[1][1]
+    if T[0] == 'userSC':
+        b = st in defedConsts
+        return b
+    if T[0] == 'userFR':
+        b = st not in easelFunctions
+        return b
+    else:
+        raiseError('INVALID USER-TERM')
 
-# getParamsTree: str * str -> tree
-def getParamsTree(label1, label2):
-    tu = getParams(label2)
-    tu = label1, + tu
+easelParamInput = 'I'
+easelParamState = 'S'
+
+easelParams = easelParamInput, easelParamState
+
+# getEaselParamsTree: str * str -> tree
+def getEaselParamsTree(label1, label2):
+    tu = getEaselParamsTuple(label2)
+    tu = (label1,) + tu
     return tu
 
-# getParams: str -> tuple(str)
-def getParams(label):
-    tu = getIds(label, paramsToAdd)
+# getEaselParamsTuple: str -> tuple(str)
+def getEaselParamsTuple(label):
+    tu = getIds(label, easelParams)
     return tu
 
 # getIds: str * tuple(str) -> tuple(str)
@@ -219,14 +257,11 @@ def unparseDef(u, T):
     func = unparseRecur(u, T[1][1])
     u2 = u.getAnotherInst()
 
-    if T[0] == 'constDef':
-        global defedConsts
-        defedConsts += func,
-    else: # in {'funDef', 'relDef'}
+    if T[0] in {'funDef', 'relDef'}:
         u2.indepSymbs = getSymbsFromSyms(T[1][2])
 
     letCls = ()
-    if len(T) > 3: # where clauses
+    if len(T) > 3: # where-clauses
         letCls = unparseWhereClauses(u2, T[3][1])
 
     st = defRecur(u2, func, u2.indepSymbs, T[2], moreSpace = True, letCls = letCls)
@@ -255,7 +290,7 @@ def unparseIfClauses(u, T):
     if T[0] == 'tIfBTsO':
         return recurStr(unparseIfClauses, u, T)
     else:
-        err('INVALID IF CLAUSES')
+        raiseError('INVALID IF CLAUSES')
 
 # unparseWhereClauses: UnparserInfo * tree -> tuple(str)
 def unparseWhereClauses(u, T):
@@ -265,7 +300,7 @@ def unparseWhereClauses(u, T):
     if T[0] == 'conj':
         return recurTuple(unparseWhereClauses, u, T)
     else:
-        err('INVALID WHERE CLAUSES')
+        raiseError('INVALID WHERE CLAUSES')
 
 ########## ########## ########## ########## ########## ##########
 '''
@@ -340,7 +375,7 @@ class UnparserInfo:
     # aCheckCateg: void
     def aCheckCateg(self):
         if self.aCateg not in aCategs:
-            err('INVALID AGGREGATE CATEGORY')
+            raiseError('INVALID AGGREGATE CATEGORY')
 
     # aDefFunc: str
     def aDefFunc(self):
@@ -400,7 +435,7 @@ class UnparserInfo:
         if self.aCateg in aCategsLib:
             return self.aVal,
         else:
-            err('NOT IN LIBRARY')
+            raiseError('NOT IN LIBRARY')
 
     # aDefFuncConj: str
     def aDefFuncConj(self):
@@ -471,9 +506,6 @@ class UnparserInfo:
     def qDefFuncMain(self):
         global auxFuncNum
         auxFuncNum += 1
-        st = 'quantification ' + str(auxFuncNum)
-        st = addBlockComment(st)
-        st += '\n\n'
 
         S = self.indepSymbs
 
@@ -484,7 +516,7 @@ class UnparserInfo:
         expr = applyRecur(self, funcQuant, argsQuant)
 
         funcMain = self.qGetFuncMain()
-        st += defRecur(self, funcMain, S, expr, moreSpace = True)
+        st = defRecur(self, funcMain, S, expr, moreSpace = True)
         return st
 
     # qDefFuncPred: str
@@ -492,18 +524,17 @@ class UnparserInfo:
         ind = 'i_'
 
         letCls = self.qGetPredLetClause(ind),
-        letCls = writeLetClauses(letCls)
 
         func = self.qPred
         if funcIsAux(func):
             args = self.getNextIndepSymbs()
             func = applyRecur(self, func, args)
-        inCl = writeInClause(func)
-        expr = letCls + inCl
+        expr = func
 
         func2 = self.qGetFuncPred()
         args2 = self.indepSymbs
-        st = defRecur(self, func2, args2, expr, inds = (ind,), moreSpace = True)
+
+        st = defRecur(self, func2, args2, expr, inds = (ind,), letCls = letCls)
         return st
 
     # qGetPredLetClause: str -> str # 'y := S(x)[i_];'
@@ -741,7 +772,7 @@ def unparseAggr(u, T):
         return st
     if T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
-            if T[1][0] == 'userSVC':
+            if T[1][0] == 'userSC':
                 u.aCateg = 'solEq'
             else: # 'tupT'
                 u.aCateg = 'solEqs'
@@ -783,7 +814,7 @@ def unparseAggr(u, T):
 # updateDepSymbsRecur: UnparserInfo * tree -> void
 def updateDepSymbsRecur(u, T):
     if type(T) == tuple:
-        if T[0] == 'userSVC':
+        if T[0] == 'userSC':
             st = T[1][1]
             if isNewDepSymb(u, st):
                 u.depSymbs += st,
@@ -798,7 +829,7 @@ def isGround(u, T):
 def newDepSymbFound(u, T):
     if type(T) == str:
         return False
-    if T[0] == 'userSVC':
+    if T[0] == 'userSC':
         if isNewDepSymb(u, T[1][1]):
             return True
         return False
