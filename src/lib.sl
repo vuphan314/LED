@@ -150,8 +150,8 @@ images_(S) := se([text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)]);
 
 State ::= (val: Val);
 
-state: Val -> State;
-state(v) := (val: v);
+valToState: Val -> State;
+valToState(v) := (val: v);
 
 point_: Val * Val -> Point;
 point_(v1, v2) :=
@@ -166,10 +166,10 @@ text_(mess(1), p, v, c) :=
     in text(mess, p, i, c);
 
 initialState: State;
-initialState := state(initialState_);
+initialState := valToState(initialState_);
 
 newState: Input * State -> State;
-newState(I, S) := state(valToInt(newState_(I, S)));
+newState(I, S) := valToState(valToInt(newState_(I, S)));
 
 images: State -> Image(1);
 images(S) := images_(S);

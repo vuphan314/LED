@@ -46,8 +46,15 @@ def unparseTop(L):
     T = listToTree(L)
     updateDefedConsts(T)
 
+    # default
+    useEasel = False
+    tests = printTest()
+
     # for Easel
-    T = addEaselParams(T)
+    useEasel = True
+    if useEasel:
+        T = addEaselParams(T)
+        tests = ''
 
     # for quantification
     T = transformTree(T)
@@ -59,7 +66,7 @@ def unparseTop(L):
     if auxFuncDefs != '':
         st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
     st = markBeginEnd(st)
-    st += printTest()
+    st += tests
     return st
 
 ########## ########## ########## ########## ########## ##########
@@ -172,6 +179,9 @@ def updateDefedConsts(prog):
 '''
 Easel
 '''
+# images(S) := images_(S);
+
+funcsEaselParamState = {'images'}
 
 # addEaselParams: tree -> tree
 def addEaselParams(T):
@@ -179,7 +189,10 @@ def addEaselParams(T):
         return T
     if T[0] == 'constT':
         id = T[1]
-        syms = getEaselParamsTree('syms', 'symN')
+        onlyState = False
+        if id[1] in funcsEaselParamState:
+            onlyState = True
+        syms = getEaselParamsTree('syms', 'symN', onlyState = onlyState)
         funT = 'funT', id, syms
         return funT
     if T[0] in {'funT', 'relT'}:
@@ -190,7 +203,10 @@ def addEaselParams(T):
     if T[0] == 'userSC':
         if userTermNeedsEaselParams(T):
             id = T[1]
-            terms = getEaselParamsTree('terms', 'userSC')
+            onlyState = False
+            if id[1] in funcsEaselParamState:
+                onlyState = True
+            terms = getEaselParamsTree('terms', 'userSC', onlyState = onlyState)
             T = 'userFR', id, terms
         return T
     if T[0] == 'userFR':
@@ -205,8 +221,8 @@ def addEaselParams(T):
     else:
         return recurTree(addEaselParams, T)
 
-easelFunctions = {  'point', 'color', 'click', 'input', 'segment', 'circle', 'text',
-                    'disc', 'fTri', 'graphic'}
+funcsNoEaselParam = {   'point', 'color', 'click', 'input', 'segment', 'circle', 'text',
+                        'disc', 'fTri', 'graphic'}
 
 # userTermNeedsEaselParams: tree -> bool
 def userTermNeedsEaselParams(T):
@@ -215,7 +231,7 @@ def userTermNeedsEaselParams(T):
         b = st in defedConsts
         return b
     if T[0] == 'userFR':
-        b = st not in easelFunctions
+        b = st not in funcsNoEaselParam
         return b
     else:
         raiseError('INVALID USER-TERM')
@@ -226,14 +242,18 @@ easelParamState = 'S'
 easelParams = easelParamInput, easelParamState
 
 # getEaselParamsTree: str * str -> tree
-def getEaselParamsTree(label1, label2):
-    tu = getEaselParamsTuple(label2)
+def getEaselParamsTree(label1, label2, onlyState = False):
+    tu = getEaselParamsTuple(label2, onlyState = onlyState)
     tu = (label1,) + tu
     return tu
 
 # getEaselParamsTuple: str -> tuple(str)
-def getEaselParamsTuple(label):
-    tu = getIds(label, easelParams)
+def getEaselParamsTuple(label, onlyState = False):
+    if onlyState:
+        params = easelParamState,
+    else:
+        params = easelParams
+    tu = getIds(label, params)
     return tu
 
 # getIds: str * tuple(str) -> tuple(str)

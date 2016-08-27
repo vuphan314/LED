@@ -21,9 +21,9 @@ goto starting
         REM !parse! > !p!
         REM type !p!
 
-        !transl!
-        REM !transl! > !sl!
-        REM !sl!
+        REM !transl!
+        !transl! > !sl!
+        !sl!
         REM sli -l !sl!
 	)
 	goto done
