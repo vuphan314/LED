@@ -17,13 +17,12 @@ goto starting
         echo !base!
         REM type !led!
 
-        !parse!
+        REM !parse!
         REM !parse! > !p!
         REM type !p!
 
-        REM !transl!
-        REM !transl! > !sl!
-        REM !sl!
+        !transl! > !sl!
+        !sl!
         REM sli -l !sl!
 	)
 	goto done

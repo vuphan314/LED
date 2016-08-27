@@ -1,14 +1,22 @@
 ////////// ////////// ////////// ////////// ////////// //////////
 
-import * from "../libLED.sl" as *;
+import * from "../lib.sl" as *;
 
-c := 
-		nu("0") when tr(true) else nu("0") when tr(true);
+initialState := 
+		nu("0");
+
+newState := 
+		plusOp(Gamma, nu("1"));
+
+images := 
+		se([text("hi", point(nu("500"), nu("500")), nu("50"), dBlue)]);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 
 /** Copy/paste the block below into SequenceL interpreter to test:
 
-pp(c)
+pp(initialState)
+pp(newState)
+pp(images)
 
 (pp: pretty-print) */

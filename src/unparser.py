@@ -155,17 +155,48 @@ def recurTree(F, T):
 '''
 Easel
 '''
-
-paramInput = 'I'
-paramState = 'S'
+# todo
+conversionToNonNullary = {'userSVC': 'userFR', 'constN': 'funT'}
 
 # addParams: tree -> tree
 def addParams(T):
     if type(T) == str:
         return T
-    #todo if T[0] in 
+    if T[0] in conversionToNonNullary:
+        id = T[1]
+        if T[0] == 'userSVC':
+            T2 = getParamsTree('terms', 'userSVC')
+        else: # 'constN':
+            T2 = getParamsTree('syms', 'symN')
+        root = conversionToNonNullary(T[0])
+        T2 = root, id, T2
+        return T2
+    if T[0] in {'funT', 'relT'}:
+        syms = T[2]
+        syms += getParams('symN')
+        T2 = T[:2] + syms,
+        return T2
+    if T[0] == 'constDef':
+        T2 = 'funDef', + T[1:]
+        return recurTree(addParams, T2)
     else:
         return recurTree(addParams, T)
+
+paramInput = 'I'
+paramState = 'S'
+
+paramsToAdd = paramInput, paramState
+
+# getParamsTree: str * str -> tree
+def getParamsTree(label1, label2):
+    tu = getParams(label2)
+    tu = label1, + tu
+    return tu
+
+# getParams: str -> tuple(str)
+def getParams(label):
+    tu = getIds(label, paramsToAdd)
+    return tu
 
 # getIds: str * tuple(str) -> tuple(str)
 def getIds(label, ids):

@@ -39,7 +39,7 @@ public
 /* debug */
 
 deb := debugPrint("ERROR, RETURNING A NULL VALUE: ", valNull);
-valNull := (kind: kindNull);
+valNull := (kindLED: kindNull);
 kindNull := "nil";
 
 ////////// ////////// ////////// ////////// ////////// //////////
@@ -79,16 +79,114 @@ prettyPrintTail(vs(1))[i] :=
         ", " ++ s;
 
 ////////// ////////// ////////// ////////// ////////// //////////
+/* Easel */
+
+/* Easel types */
+Point ::= (x: int, y: int);
+Color ::= (red: int, green: int, blue: int);
+Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Point,
+            center: Point, radius: int, height: int, width: int, message: char(1),
+            source: char(1));
+Click ::= (clicked: bool, clPoint: Point);
+Input ::= (iClick: Click, keys: char(1));
+
+/* Easel constructors */
+
+point: int * int -> Point;
+point(a, b) := (x: a, y: b);
+
+color: int * int * int -> Color;
+color(r, g, b) := (red: r, green: g, blue: b);
+
+click: bool * Point -> Click;
+click(cl, p) := (clicked: cl, clPoint: p);
+
+input: Click * char(1) -> Input;
+input(cl, k(1)) := (iClick: cl, keys: k);
+
+segment: Point * Point * Color -> Image;
+segment(e1, e2, c) := (kind: "segment", vert1: e1, vert2: e2, iColor: c);
+
+circle: Point * int * Color -> Image;
+circle(ce, rad, c) := (kind: "circle", center: ce, radius: rad, iColor: c);
+
+text: char(1) * Point * int * Color -> Image;
+text(mes(1), cen, he, c) :=
+    (kind: "text", center: cen, height: he, iColor: c, message: mes);
+
+disc: Point * int * Color -> Image;
+disc(ce, rad, c) := (kind: "disc", center: ce, radius: rad, iColor: c);
+
+fTri: Point * Point * Point * Color -> Image;
+fTri(v1, v2, v3, c) := (kind: "triangle", vert1: v1, vert2: v2, vert3: v3, iColor: c);
+
+graphic: char(1) * Point * int * int -> Image;
+graphic(graphicFile(1), c, w, h) :=
+    (kind: "graphic", source: graphicFile, radius: 0, height: h, width: w, center: c);
+
+/* Easel origin */
+originPoint := point(0,0);
+
+/* Easel colors */
+dBlack := color(0, 0, 0);
+dRed := color(255, 0, 0);
+dOrange := color(255, 128, 0);
+dYellow := color(255, 255, 0);
+dGreen := color(0, 255, 0);
+dBlue := color(0, 0, 255);
+dIndigo := color(70, 0, 130);
+dViolet := color(148, 0, 211);
+dWhite := color(255, 255, 255);
+
+/* Easel test */
+
+initialState_ := nu("0");
+newState_(I, S) := plusOp(stateToVal(S), nu("1"));
+images_(S) := [text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)];
+
+State ::= (num: int);
+state(i) := (num: i);
+
+stateToVal: State -> Val;
+stateToVal(S) := intToVal(S.num);
+
+point_: Val * Val -> Point;
+point_(v1, v2) :=
+    let
+        i1 := valToInt(v1);
+        i2 := valToInt(v2);
+    in point(i1, i2);
+
+text_: char(1) * Point * Val * Color -> Image;
+text_(mess(1), p, v, c) :=
+    let i := valToInt(v);
+    in text(mess, p, i, c);
+
+initialState := state(valToInt(initialState_));
+newState(I, S) := state(valToInt(newState_(I, S)));
+images(S) := images_(S);
+
+sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+
+/* Easel template */
+// State ::= (time: int);
+// initialState := (time: 0);
+// newState(I, S) := (time: S.time + 1);
+// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+// images(S) := [  text("Time: " ++ Conversion::intToString(S.time / 30),
+                // point(500, 400), 30, dBlue)];
+
+////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
 Val ::=
-    (kind: char(1),
+    (kindLED: char(1),
     atm: char(1), numb: Numb, trth: bool, coll: Val(1),
     lmbd: (Val(1) -> Val));
 
 valToKind: Val -> char(1);
 valToKind(v) :=
-    v.kind;
+    v.kindLED;
 
 valOfKind: Val * char(1) -> bool;
 valOfKind(v, k(1)) :=
@@ -139,32 +237,32 @@ nu(n(1)) :=
 
 numbToVal: Numb -> Val;
 numbToVal(n) :=
-    (kind: kindNumb, numb: n);
+    (kindLED: kindNumb, numb: n);
 
 trthToVal: bool -> Val;
 trthToVal(t) :=
-    (kind: kindTrth, trth: t);
+    (kindLED: kindTrth, trth: t);
 tr: bool -> Val;
 tr(t) :=
     trthToVal(t);
 
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
-    (kind: kindAtm, atm: a);
+    (kindLED: kindAtm, atm: a);
 at: char(1) -> Val;
 at(a(1)) :=
     atmToVal(a);
 
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
-    (kind: kindTpl, coll: t);
+    (kindLED: kindTpl, coll: t);
 tu: Val(1) -> Val;
 tu(t(1)) :=
     tplToVal(t);
 
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
-    (kind: kindSet, coll: removeDups(s));
+    (kindLED: kindSet, coll: removeDups(s));
 se: Val(1) -> Val;
 se(s(1)) :=
     setToVal(s);
@@ -495,7 +593,7 @@ iv: Val * Val -> Val;
 iv(v1, v2) :=
     intervalToVal(v1, v2);
 
-twoIntsToSet: int64 * int64 -> Val(1);
+twoIntsToSet: int32 * int32 -> Val(1);
 twoIntsToSet(i1, i2)[ind] :=
     intToVal(ind) foreach ind within i1...i2;
 
@@ -503,21 +601,21 @@ twoIntsToSet(i1, i2)[ind] :=
 /* type: number */
 
 Numb ::=
-    (Numr: int64, Denr: int64);
+    (Numr: int32, Denr: int32);
 
-twoIntsToNumbRed: int64 * int64 -> Numb;
+twoIntsToNumbRed: int32 * int32 -> Numb;
 twoIntsToNumbRed(i1, i2) :=
     reduce(i1, i2);
 
-twoIntsToNumb: int64 * int64 -> Numb;
+twoIntsToNumb: int32 * int32 -> Numb;
 twoIntsToNumb(i1, i2) :=
     (Numr: i1, Denr: i2);
 
-numbToNumr: Numb -> int64;
+numbToNumr: Numb -> int32;
 numbToNumr(numb) :=
     numb.Numr;
 
-numbToDenr: Numb -> int64;
+numbToDenr: Numb -> int32;
 numbToDenr(numb) :=
     numb.Denr;
 
@@ -528,19 +626,19 @@ numbIsInt: Numb -> bool;
 numbIsInt(numb) :=
     numbToDenr(numb) = 1;
 
-intToNumb: int64 -> Numb;
+intToNumb: int32 -> Numb;
 intToNumb(i) :=
     twoIntsToNumb(i, 1);
 
-numbToInt: Numb -> int64;
+numbToInt: Numb -> int32;
 numbToInt(numb) :=
     numbToNumr(numb);
 
-intToVal: int64 -> Val;
+intToVal: int32 -> Val;
 intToVal(i) :=
     numbToVal(intToNumb(i));
 
-valToInt: Val -> int64;
+valToInt: Val -> int32;
 valToInt(v) :=
     numbToInt(valToNumb(v));
 
@@ -597,7 +695,7 @@ sgn: Numb -> int8;
 sgn(numb) :=
     Math::sign(numbToNumr(numb));
 
-reduce: int64 * int64 -> Numb;
+reduce: int32 * int32 -> Numb;
 reduce(i1, i2) :=
     let
         signOfNumb := Math::sign(i1) * Math::sign(i2);
@@ -610,7 +708,7 @@ reduce(i1, i2) :=
     in
         twoIntsToNumb(redNumr, redAbsDenr);
 
-gcd: int64 * int64 -> int64;
+gcd: int32 * int32 -> int32;
 gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
@@ -628,7 +726,7 @@ numbToNuml(numb) :=
         "-" ++ getAbsNuml(absNumr, denr) when negative else
         getAbsNuml(absNumr, denr);
 
-getAbsNuml: int64 * int64 -> char(1);
+getAbsNuml: int32 * int32 -> char(1);
 getAbsNuml(absNumr, denr) :=
     let
         integralPart := Conversion::intToString(absNumr / denr);
@@ -637,7 +735,7 @@ getAbsNuml(absNumr, denr) :=
         integralPart when minAbsNumr = 0 else
         integralPart ++ getFr(minAbsNumr, denr);
 
-getFr: int64 * int64 -> char(1);
+getFr: int32 * int32 -> char(1);
 getFr(minAbsNumr, denr) :=
     let
         remsQuots := getRemsQuots(denr, [minAbsNumr], []);
@@ -650,7 +748,7 @@ getFr(minAbsNumr, denr) :=
         getFrRep(repRemPos, quots) when rep else
         getFrNRep(quots);
 
-getFrRep: int64 * int64(1) -> char(1);
+getFrRep: int32 * int32(1) -> char(1);
 getFrRep(repRemPos, quots(1)) :=
     let
         nRepQuots := Sequence::take(quots, repRemPos - 1);
@@ -658,19 +756,19 @@ getFrRep(repRemPos, quots(1)) :=
     in
         getFrNRep(nRepQuots) ++ getRepBl(repQuots);
 
-getRepBl: int64(1) -> char(1);
+getRepBl: int32(1) -> char(1);
 getRepBl(repQuots(1)) :=
     "(" ++ getIntNuml(repQuots) ++ "..)";
 
-getFrNRep: int64(1) -> char(1);
+getFrNRep: int32(1) -> char(1);
 getFrNRep(quots(1)) :=
     "." ++ getIntNuml(quots);
 
-getIntNuml: int64(1) -> char(1);
+getIntNuml: int32(1) -> char(1);
 getIntNuml(quots(1)) :=
     join(Conversion::intToString(quots));
 
-getRemsQuots: int64 * int64(1) * int64(1) -> TwoIntLists;
+getRemsQuots: int32 * int32(1) * int32(1) -> TwoIntLists;
 getRemsQuots(divisor, rems(1), quots(1)) :=
     let
         dividend := Sequence::last(rems) * 10;
@@ -685,7 +783,7 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
         getRemsQuots(divisor, rems2, quots2);
 
 TwoIntLists ::=
-    (l1: int64(1), l2: int64(1));
+    (l1: int32(1), l2: int32(1));
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* numeral to number */
@@ -784,7 +882,7 @@ stdSetToSet(f, v) :=
     in
         setToVal(s2);
 
-stdSetToInt: (Val(1) -> int64) * Val -> Val;
+stdSetToInt: (Val(1) -> int32) * Val -> Val;
 stdSetToInt(f, v) :=
     let
         s := valToSet(v);
@@ -835,7 +933,7 @@ stdNumbToNumb(f, v) :=
     in
         numbToVal(n2);
 
-stdNumbToInt: (Numb -> int64) * Val -> Val;
+stdNumbToInt: (Numb -> int32) * Val -> Val;
 stdNumbToInt(f, v) :=
     let
         n := valToNumb(v);
@@ -844,7 +942,7 @@ stdNumbToInt(f, v) :=
     in
         numbToVal(n2);
 
-stdIntIntToInt: (int64 * int64 -> int64) * Val * Val -> Val;
+stdIntIntToInt: (int32 * int32 -> int32) * Val * Val -> Val;
 stdIntIntToInt(f, v1, v2) :=
     let
         i1 := valToInt(v1);
@@ -853,7 +951,7 @@ stdIntIntToInt(f, v1, v2) :=
     in
         intToVal(i);
 
-stdNumbIntToNumb: (Numb * int64 -> Numb) * Val * Val -> Val;
+stdNumbIntToNumb: (Numb * int32 -> Numb) * Val * Val -> Val;
 stdNumbIntToNumb(f, v1, v2) :=
     let
         n := valToNumb(v1);
@@ -910,7 +1008,7 @@ collSetToValSet(M(2), k(1))[i] :=
         tplToVal(c) when equalList(k, kindTpl) else
         setToVal(c);
 
-cardSet: Val(1) -> int64;
+cardSet: Val(1) -> int32;
 cardSet(v(1)) :=
     size(v);
 
@@ -976,7 +1074,7 @@ divNumb: Numb * Numb -> Numb;
 divNumb(numb1, numb2) :=
     multNumb(numb1, recipr(numb2));
 
-flrNumb: Numb -> int64;
+flrNumb: Numb -> int32;
 flrNumb(numb) :=
     let
         quot := numbToNumr(numb) / numbToDenr(numb);
@@ -985,7 +1083,7 @@ flrNumb(numb) :=
         quot - 1 when badCase else
         quot;
 
-clngNumb: Numb -> int64;
+clngNumb: Numb -> int32;
 clngNumb(numb) :=
     numbToInt(numb) when numbIsInt(numb) else
     flrNumb(numb) + 1;
@@ -994,11 +1092,11 @@ abNumb: Numb -> Numb;
 abNumb(numb) :=
     twoIntsToNumbRed(Math::abs(numbToNumr(numb)), numbToDenr(numb));
 
-mdNumb: int64 * int64 -> int64;
+mdNumb: int32 * int32 -> int32;
 mdNumb(i1, i2) :=
     i1 mod i2;
 
-expNumb: Numb * int64 -> Numb;
+expNumb: Numb * int32 -> Numb;
 expNumb(numb, p) :=
     let
         numr := numbToNumr(numb);
@@ -1006,7 +1104,7 @@ expNumb(numb, p) :=
     in
         expTwoInts(numr, denr, p);
 
-expTwoInts: int64 * int64 * int64 -> Numb;
+expTwoInts: int32 * int32 * int32 -> Numb;
 expTwoInts(numr, denr, p) :=
     let
         numr2 := Math::integerPower(numr, p);
