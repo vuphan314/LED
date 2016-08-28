@@ -17,7 +17,7 @@ SL testing
 # printTest: str
 def printTest():
     st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
-    for const in defedConsts:
+    for const in nonEaselConsts:
         func = applyRecur(None, 'pp', (const,))
         st += func + '\n'
     st += '\n(pp: pretty-print)'
@@ -30,7 +30,7 @@ def printTest():
 python global variables
 '''
 
-defedConsts = () # ('c1', 'c2',...)
+nonEaselConsts = () # ('c1', 'c2',...)
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
@@ -44,14 +44,14 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L):
     T = listToTree(L)
-    updateDefedConsts(T)
+    updateNonEaselConsts(T)
 
     # default
     useEasel = False
     tests = printTest()
 
     # for Easel
-    useEasel = True
+    # useEasel = True
     if useEasel:
         T = addEaselParams(T)
         tests = ''
@@ -77,25 +77,25 @@ recursion iterators
 # unparseRecur: UnparserInfo * tree -> str
 def unparseRecur(u, T):
     if type(T) == str:
-        return T
-    if T[0] in lexemes:
+        return getAltIfEaselFunc(T)
+    elif T[0] in lexemes:
         return unparseLexemes(u, T)
-    if T[0] == 'userFR':
+    elif T[0] == 'userFR':
         st = applyRecur(u, T[1], T[2][1:])
         return st
-    if T[0] == 'tup':
+    elif T[0] == 'tup':
         return unparseTuple(u, T)
-    if T[0] == 'set':
+    elif T[0] == 'set':
         return unparseSet(u, T)
-    if T[0] in aggrOps:
+    elif T[0] in aggrOps:
         return unparseAggr(u, T)
-    if T[0] in quantOps:
+    elif T[0] in quantOps:
         return unparseQuant(u, T)
-    if T[0] in libOps:
+    elif T[0] in libOps:
         return unparseLibOps(u, T)
-    if T[0] in ifLabels:
+    elif T[0] in ifLabels:
         return unparseIfClauses(u, T)
-    if T[0] in defLabels:
+    elif T[0] in defLabels:
         return unparseDef(u, T)
     else:
         return recurStr(unparseRecur, u, T)
@@ -167,97 +167,96 @@ def recurTree(F, T):
 update user-defined constants
 '''
 
-# updateDefedConsts: tree -> void
-def updateDefedConsts(prog):
-    global defedConsts
+# updateNonEaselConsts: tree -> void
+def updateNonEaselConsts(prog):
+    global nonEaselConsts
     for definition in prog:
         if definition[0] == 'constDef':
             st = unparseRecur(None, definition[1])
-            defedConsts += st,
+            if st not in easelFuncs:
+                nonEaselConsts += st,
 
 ########## ########## ########## ########## ########## ##########
 '''
 Easel
 '''
-# images(S) := images_(S);
 
-funcsEaselParamState = {'images'}
+# getAltIfEaselFunc: str -> str
+def getAltIfEaselFunc(st):
+    if st in easelFuncs:
+        st += '_'
+    return st
 
 # addEaselParams: tree -> tree
 def addEaselParams(T):
     if type(T) == str:
         return T
-    if T[0] == 'constT':
+    elif T[0] == 'constT':
         id = T[1]
-        onlyState = False
-        if id[1] in funcsEaselParamState:
-            onlyState = True
-        syms = getEaselParamsTree('syms', 'symN', onlyState = onlyState)
+        params = getParamsFromLexeme(id)
+        syms = getIdsTree('syms', 'symN', params)
         funT = 'funT', id, syms
         return funT
-    if T[0] in {'funT', 'relT'}:
+    elif T[0] in {'funT', 'relT'}:
+        params = getParamsFromLexeme(T[1])
         syms = T[2]
-        syms += getEaselParamsTuple('symN')
+        syms += getIdsTuple('symN', params)
         T2 = T[:2] + (syms,)
         return T2
-    if T[0] == 'userSC':
-        if userTermNeedsEaselParams(T):
-            id = T[1]
-            onlyState = False
-            if id[1] in funcsEaselParamState:
-                onlyState = True
-            terms = getEaselParamsTree('terms', 'userSC', onlyState = onlyState)
+    elif T[0] == 'userSC':
+        id = T[1]
+        if id[1] in easelFuncsAddSomething | set(nonEaselConsts):
+            params = getParamsFromLexeme(id)
+            terms = getIdsTree('terms', 'userSC', params)
             T = 'userFR', id, terms
         return T
-    if T[0] == 'userFR':
-        if userTermNeedsEaselParams(T):
-            terms = T[2]
-            terms += getEaselParamsTuple('userSC')
-            T = T[:2] + (terms,)
+    elif T[0] == 'userFR':
+        params = getParamsFromLexeme(T[1])
+        terms = T[2]
+        terms += getIdsTuple('userSC', params)
+        T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
-    if T[0] == 'constDef':
+    elif T[0] == 'constDef':
         T2 = ('funDef',) + T[1:]
         return recurTree(addEaselParams, T2)
     else:
         return recurTree(addEaselParams, T)
 
-funcsNoEaselParam = {   'point', 'color', 'click', 'input', 'segment', 'circle', 'text',
-                        'disc', 'fTri', 'graphic'}
+easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
+                            'text', 'disc', 'fTri', 'graphic'}
+easelFuncsAddNothing = easelFuncsConstructor | {'initialState', 'CURRENT_STATE'}
 
-# userTermNeedsEaselParams: tree -> bool
-def userTermNeedsEaselParams(T):
-    st = T[1][1]
-    if T[0] == 'userSC':
-        b = st in defedConsts
-        return b
-    if T[0] == 'userFR':
-        b = st not in funcsNoEaselParam
-        return b
+easelFuncsAddState = {'images'}
+easelFuncsAddBoth = {'newState'}
+easelFuncsAddSomething = easelFuncsAddState | easelFuncsAddBoth
+
+easelFuncs = easelFuncsAddNothing | easelFuncsAddSomething
+
+easelParamsInput = 'I',
+easelParamsState = 'S',
+easelParams = easelParamsInput + easelParamsState
+
+# getParamsFromLexeme: tree -> tuple(str)
+def getParamsFromLexeme(id):
+    st = id[1]
+    if type(st) != str:
+        raiseError('MUST BE STRING')
+
+    if st in easelFuncsAddNothing:
+        return ()
+    elif st in easelFuncsAddState:
+        return easelParamsState
     else:
-        raiseError('INVALID USER-TERM')
+        return easelParams
 
-easelParamInput = 'I'
-easelParamState = 'S'
-
-easelParams = easelParamInput, easelParamState
-
-# getEaselParamsTree: str * str -> tree
-def getEaselParamsTree(label1, label2, onlyState = False):
-    tu = getEaselParamsTuple(label2, onlyState = onlyState)
+# getIdsTree: str * str * tuple(str) -> tree
+def getIdsTree(label1, label2, ids):
+    tu = getIdsTuple(label2, ids)
     tu = (label1,) + tu
     return tu
 
-# getEaselParamsTuple: str -> tuple(str)
-def getEaselParamsTuple(label, onlyState = False):
-    if onlyState:
-        params = easelParamState,
-    else:
-        params = easelParams
-    tu = getIds(label, params)
-    return tu
-
-# getIds: str * tuple(str) -> tuple(str)
-def getIds(label, ids):
+# getIdsTuple: str * tuple(str) -> tuple(str)
+def getIdsTuple(label, ids):
     tu = ()
     for id in ids:
         st = 'id', id
@@ -295,19 +294,19 @@ def unparseIfClauses(u, T):
         st = unparseRecur(u, T[1])
         st = writeElseClause(st)
         return st
-    if T[0] == 'tIfBT':
+    elif T[0] == 'tIfBT':
         st1 = unparseRecur(u, T[1])
         st2 = unparseRecur(u, T[2])
         st2 = applyRecur(u, 'valToTrth', (st2,))
         st = st1 + ' when ' + st2
         return st
-    if T[0] == 'tIfBTs':
+    elif T[0] == 'tIfBTs':
         st = unparseIfClauses(u, T[1])
         for t in T[2:]:
             st2 = unparseIfClauses(u, t)
             st += writeElseClause(st2)
         return st
-    if T[0] == 'tIfBTsO':
+    elif T[0] == 'tIfBTsO':
         return recurStr(unparseIfClauses, u, T)
     else:
         raiseError('INVALID IF CLAUSES')
@@ -317,7 +316,7 @@ def unparseWhereClauses(u, T):
     if T[0] == 'eq':
         st = defRecur(u, T[1], (), T[2])
         return st,
-    if T[0] == 'conj':
+    elif T[0] == 'conj':
         return recurTuple(unparseWhereClauses, u, T)
     else:
         raiseError('INVALID WHERE CLAUSES')
@@ -452,7 +451,7 @@ class UnparserInfo:
     def aGetArgsLib(self):
         if self.aCateg == 'solDisj':
             return self.subInst1.aFunc, self.subInst2.aFunc
-        if self.aCateg in aCategsLib:
+        elif self.aCateg in aCategsLib:
             return self.aVal,
         else:
             raiseError('NOT IN LIBRARY')
@@ -729,7 +728,7 @@ quantOps = {'exist', 'univ'}
 def transformTree(T):
     if type(T) == str:
         return T
-    if T[0] in quantOps:
+    elif T[0] in quantOps:
         T2 = symsInSetToSymbInSet(T)
         return T2
     else:
@@ -785,12 +784,12 @@ def unparseAggr(u, T):
         args = u.aDefFunc(),
         st = applyRecur(u, T[0], args)
         return st
-    if isGround(u, T):
+    elif isGround(u, T):
         u.aCateg = 'solGround'
         u.aVal = unparseRecur(u, T)
         st = u.aDefFunc()
         return st
-    if T[0] in {'eq', 'setMem'}:
+    elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == 'userSC':
                 u.aCateg = 'solEq'
@@ -802,7 +801,7 @@ def unparseAggr(u, T):
         u.aVal = unparseRecur(u, T[2])
         st = u.aDefFunc()
         return st
-    if T[0] == 'disj':
+    elif T[0] == 'disj':
         u.aCateg = 'solDisj'
 
         u1 = u.getAnotherInst()
@@ -815,7 +814,7 @@ def unparseAggr(u, T):
 
         st = u.aDefFunc()
         return st
-    if T[0] == 'conj':
+    elif T[0] == 'conj':
         u.aCateg = 'solConj'
 
         u1 = u.getAnotherInst()
@@ -849,10 +848,11 @@ def isGround(u, T):
 def newDepSymbFound(u, T):
     if type(T) == str:
         return False
-    if T[0] == 'userSC':
+    elif T[0] == 'userSC':
         if isNewDepSymb(u, T[1][1]):
             return True
-        return False
+        else:
+            return False
     else:
         for t in T[1:]:
             if newDepSymbFound(u, t):
@@ -861,7 +861,7 @@ def newDepSymbFound(u, T):
 
 # isNewDepSymb: UnparserInfo * str -> bool
 def isNewDepSymb(u, id):
-    return id not in u.getSymbs() + defedConsts
+    return id not in u.getSymbs() + nonEaselConsts
 
 ########## ########## ########## ########## ########## ##########
 '''
@@ -906,7 +906,7 @@ unparse lexemes
 '''
 
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
-lexemes = unionDicts((lexemesDoublyQuoted, {'truth': 'tr'}))
+lexemes = unionDicts((lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}))
 
 # unparseLexemes: UnparserInfo * tree -> str
 def unparseLexemes(u, T):

@@ -2,10 +2,17 @@
 
 import * from "../lib.sl" as *;
 
-images(S) := 
-	se([]);
+c0 := 
+	st("");
 
-c(I, S) := 
-	images(S);
+c1 := 
+	st("`");
 
 ////////// ////////// ////////// ////////// ////////// //////////
+
+/** Copy/paste the block below into SequenceL interpreter to test:
+
+pp(c0)
+pp(c1)
+
+(pp: pretty-print) */

@@ -1,10 +1,9 @@
 State ::= Int
 
+/$ c0 := "" $/
+/$ c1 := "`" $/
 initialState := 0
 
-newState := Gamma + 1
+newState := CURRENT_STATE + 1
 
-images := {text("hi", point(500, 500), 50, dBlue)}
-
-/$ images := {} $/
-/$ c := images $/
+images := {text("hi", point(500, 500), 50, color(0, 0, 255))}

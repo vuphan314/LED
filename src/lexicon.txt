@@ -28,7 +28,7 @@ some = some
 all = all
 otherwise = otherwise
 
-id = [a-zA-Z][a-zA-Z\d]*
+id = [a-zA-Z][_a-zA-Z\d]*
 
 comma = ,
 dot = \.

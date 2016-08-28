@@ -31,6 +31,7 @@ public
     tu, // tuple to value
     se, // set to value
     iv, // interval to value
+    st, // string to value
     at, // atom to value
     tr, // truth to value
     nu; // numeral to value
@@ -49,11 +50,13 @@ pp(v) := prettyPrint(v);
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
     let
+        s := valToStrg(v);
         a := valToAtm(v);
         numl := valToNuml(v);
         t := valToTrth(v);
         c := valToColl(v);
     in
+        s when valOfKind(v, kindStrg) else
         a when valOfKind(v, kindAtm) else
         numl when valOfKind(v, kindNumb) else
         Conversion::boolToString(t) when valOfKind(v, kindTrth) else
@@ -62,13 +65,17 @@ prettyPrint(v) :=
 prettyPrintColl: Val(1) * char(1) -> char(1);
 prettyPrintColl(vs(1), k(1)) :=
     let
+        len := size(vs);
+        isSet := equalList(k, kindSet);
         h := prettyPrint(head(vs));
         t := prettyPrintTail(tail(vs));
         s := h ++ join(t);
     in
-        "{}" when size(vs) = 0 else
-        "{" ++ s ++ "}" when equalList(k, kindSet) else
-        "(" ++ s ++ ")"; // tuple
+        "{}" when isSet and len = 0 else
+        "{" ++ s ++ "}" when isSet else
+        "()" when len = 0 else
+        "(" ++ s ++ ",)" when len = 1 else
+        "(" ++ s ++ ")";
 
 prettyPrintTail: Val(1) -> char(2);
 prettyPrintTail(vs(1))[i] :=
@@ -140,56 +147,57 @@ dWhite := color(255, 255, 255);
 
 /* Easel test */
 
-initialState_: Val;
-initialState_ := nu("0");
+// initialState_: Val;
+// initialState_ := nu("0");
 
-newState_: Input
-newState_(I, S) := plusOp(S, nu("1"));
+// newState_: Input;
+// newState_(I, S) := plusOp(S, nu("1"));
 
-images_(S) := se([text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)]);
+// images_(S) := se([text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)]);
 
-State ::= (val: Val);
+// State ::= (val: Val);
 
-valToState: Val -> State;
-valToState(v) := (val: v);
+// valToState: Val -> State;
+// valToState(v) := (val: v);
 
-point_: Val * Val -> Point;
-point_(v1, v2) :=
-    let
-        i1 := valToInt(v1);
-        i2 := valToInt(v2);
-    in point(i1, i2);
+// point_: Val * Val -> Point;
+// point_(v1, v2) :=
+    // let
+        // i1 := valToInt(v1);
+        // i2 := valToInt(v2);
+    // in point(i1, i2);
 
-text_: char(1) * Point * Val * Color -> Image;
-text_(mess(1), p, v, c) :=
-    let i := valToInt(v);
-    in text(mess, p, i, c);
+// text_: char(1) * Point * Val * Color -> Image;
+// text_(mess(1), p, v, c) :=
+    // let i := valToInt(v);
+    // in text(mess, p, i, c);
 
-initialState: State;
-initialState := valToState(initialState_);
+// initialState: State;
+// initialState := valToState(initialState_);
 
-newState: Input * State -> State;
-newState(I, S) := valToState(valToInt(newState_(I, S)));
+// newState: Input * State -> State;
+// newState(I, S) := valToState(valToInt(newState_(I, S)));
 
-images: State -> Image(1);
-images(S) := images_(S);
+// images: State -> Image(1);
+// images(S) := images_(S);
 
-sounds: Input * State -> char(2);
-sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+// sounds: Input * State -> char(2);
+// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 /* Easel template */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);
-// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 // images(S) := [  text("Time: " ++ Conversion::intToString(S.time / 30),
                 // point(500, 400), 30, dBlue)];
+// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
 Val ::= (   kindLED: char(1),
-            atm: char(1), numb: Numb, trth: bool, coll: Val(1), lmbd: (Val(1) -> Val), 
+            strg: char(1), atm: char(1), numb: Numb, trth: bool, coll: Val(1),
+            lmbd: (Val(1) -> Val),
             eImage: Image);
 
 valToKind: Val -> char(1);
@@ -219,6 +227,10 @@ valToNumb: Val -> Numb;
 valToNumb(v) :=
     v.numb;
 
+valToStrg: Val -> char(1);
+valToStrg(v) :=
+    v.strg;
+
 valToAtm: Val -> char(1);
 valToAtm(v) :=
     v.atm;
@@ -226,12 +238,8 @@ valToAtm(v) :=
 valToColl: Val -> Val(1);
 valToColl(v) :=
     v.coll;
-valToTpl: Val -> Val(1);
-valToTpl(v) :=
-    valToColl(v);
-valToSet: Val -> Val(1);
-valToSet(v) :=
-    valToColl(v);
+valToTpl(v) := valToColl(v);
+valToSet(v) := valToColl(v);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* thing to value */
@@ -239,9 +247,7 @@ valToSet(v) :=
 numlToVal: char(1) -> Val;
 numlToVal(n(1)) :=
     numbToVal(numlToNumb(n));
-nu: char(1) -> Val;
-nu(n(1)) :=
-    numlToVal(n);
+nu(n(1)) := numlToVal(n);
 
 numbToVal: Numb -> Val;
 numbToVal(n) :=
@@ -250,30 +256,27 @@ numbToVal(n) :=
 trthToVal: bool -> Val;
 trthToVal(t) :=
     (kindLED: kindTrth, trth: t);
-tr: bool -> Val;
-tr(t) :=
-    trthToVal(t);
+tr(t) := trthToVal(t);
+
+strgToVal: char(1) -> Val;
+strgToVal(s(1)) :=
+    (kindLED: kindStrg, strg: s);
+st(s(1)) := strgToVal(s);
 
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
     (kindLED: kindAtm, atm: a);
-at: char(1) -> Val;
-at(a(1)) :=
-    atmToVal(a);
+at(a(1)) := atmToVal(a);
 
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
     (kindLED: kindTpl, coll: t);
-tu: Val(1) -> Val;
-tu(t(1)) :=
-    tplToVal(t);
+tu(t(1)) := tplToVal(t);
 
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
     (kindLED: kindSet, coll: removeDups(s));
-se: Val(1) -> Val;
-se(s(1)) :=
-    setToVal(s);
+se(s(1)) := setToVal(s);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* aggregation */
@@ -651,30 +654,17 @@ valToInt(v) :=
     numbToInt(valToNumb(v));
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* kinds of value */
+/* kinds of value: char(1) */
 
-kindNumb: char(1);
-kindNumb :=
-    "numb";
-
-kindTrth: char(1);
-kindTrth :=
-    "trth";
-
-kindAtm: char(1);
-kindAtm :=
-    "atm";
-
-kindTpl: char(1);
-kindTpl :=
-    "tpl";
-
-kindSet: char(1);
-kindSet :=
-    "set";
+kindNumb := "numb";
+kindTrth := "trth";
+kindStrg := "strg";
+kindAtm := "atm";
+kindTpl := "tpl";
+kindSet := "set";
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* some values */
+/* some values: Val */
 
 valEmptySet := setToVal([]);
 
@@ -686,7 +676,7 @@ valOne := numbToVal(numbOne);
 valTen := numbToVal(numbTen);
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* some numbers */
+/* some numbers: Numb */
 
 numbZero := intToNumb(0);
 numbOne := intToNumb(1);
