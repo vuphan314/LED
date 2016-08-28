@@ -21,13 +21,20 @@ err = raiseError
 
 ########## ########## ########## ########## ########## ##########
 '''
-mark begin and end of wanted string
+mark start and end of wanted string
 '''
 
-markerComment = \
-'////////// ////////// ////////// ////////// ////////// //////////'
-
-# markBeginEnd: str -> str
-def markBeginEnd(st):
-    st = markerComment + '\n\n' + st + markerComment
+# markStartEnd: str -> str
+def markStartEnd(st):
+    st = startComment + st + endComment
     return st
+
+# blockComment: str -> str
+def blockComment(st):
+    return '/* ' + st + ' */'
+
+markerComment = \
+    blockComment('********** ********** ********** ********** ********** **********')
+
+startComment = markerComment + '\n' + blockComment('SECTION START')
+endComment = blockComment('SECTION END') + '\n' + markerComment

@@ -20,7 +20,7 @@ public
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification
-    valToTrth, // if clauses
+    valToTrth, // when-clauses
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
@@ -44,7 +44,7 @@ valNull := (kindLED: kindNull);
 kindNull := "nil";
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* pretty print */
+/* pretty-print */
 
 pp(v) := prettyPrint(v);
 prettyPrint: Val -> char(1);
@@ -133,6 +133,16 @@ input(cl, k(1)) := (iClick: cl, keys: k);
 segment: Point * Point * Color -> Image;
 segment(e1, e2, c) := (kind: "segment", vert1: e1, vert2: e2, iColor: c);
 
+segment_: Val * Val * Val -> Val;
+segment_(v1, v2, v3) :=
+    let
+        e1 := valToPoint(v1);
+        e2 := valToPoint(v2);
+        c := valToColor(c3);
+        i := segment(e1, e2, c);
+    in
+        imageToVal(v);
+
 circle: Point * int * Color -> Image;
 circle(ce, rad, c) := (kind: "circle", center: ce, radius: rad, iColor: c);
 
@@ -161,7 +171,7 @@ graphic: char(1) * Point * int * int -> Image;
 graphic(graphicFile(1), c, w, h) :=
     (kind: "graphic", source: graphicFile, radius: 0, height: h, width: w, center: c);
 
-/* Easel origin */
+/* Easel origin-point */
 originPoint := point(0,0);
 
 /* Easel colors */
@@ -175,50 +185,42 @@ dIndigo := color(70, 0, 130);
 dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
-/* Easel test */
-
-// state
+/* Easel game-state */
 State ::= (val: Val);
 stateToVal(s) := s.val;
 valToState(v) := (val: v);
 
-// auto: ? -> Val
-initialState_ := se([]);
-newState_(I_, S_) := se([S_]); //todo change CURRENT_STATE
-images_(S_) := se([text_(st("hi"), point_(nu("500"), nu("500")), nu("50"), color_(nu("0"), nu("0"), nu("255")))]);
+/* Easel global variables: Input/State -> Val */
 
-// manual
-initialState: State;
-initialState := valToState(initialState_);
+CURRENT_STATE_: State -> Val;
+CURRENT_STATE_(S) :=
+    stateToVal(S);
 
-newState: Input * State -> State;
-newState(I, S) :=
+CLICKED_: Input -> Val;
+CLICKED_(I) :=
     let
-        I_ := I;
-        S_ := stateToVal(S);
-        v := newState_(I_, S_);
+        c := I.iClick;
+        t := c.clicked;
     in
-        valToState(v);
+        trthToVal(t);
 
-images: State -> Image(1);
-images(S) :=
+CLICK_X_: Input -> Val;
+CLICK_X_(I) :=
     let
-        S_ := stateToVal(S);
-        v := images_(S_);
+        c := I.iClick;
+        p := c.clPoint;
+        i := p.x;
     in
-        valToImages(v);
+        intToVal(i);
 
-// done
-sounds: Input * State -> char(2);
-sounds(I, S) := ["ding"] when I.iClick.clicked else [];
-
-/* Easel template */
-// State ::= (time: int);
-// initialState := (time: 0);
-// newState(I, S) := (time: S.time + 1);
-// images(S) := [  text("Time: " ++ Conversion::intToString(S.time / 30),
-                // point(500, 400), 30, dBlue)];
-// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+CLICK_Y_: Input -> Val;
+CLICK_Y_(I) :=
+    let
+        c := I.iClick;
+        p := c.clPoint;
+        i := p.y;
+    in
+        intToVal(i);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* kinds of values: char(1) */

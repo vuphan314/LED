@@ -21,8 +21,7 @@ def printTest():
         func = applyRecur(None, 'pp', (const,))
         st += func + '\n'
     st += '\n(pp: pretty-print)'
-    st = addBlockComment(st)
-    st = '\n\n' + st
+    st = blockComment(st)
     return st
 
 ########## ########## ########## ########## ########## ##########
@@ -42,19 +41,16 @@ note: tree := tuple/str
 '''
 
 # unparseTop: list -> str
-def unparseTop(L):
+def unparseTop(L, useEasel = False):
     T = listToTree(L)
     updateNonEaselConsts(T)
 
-    # default
-    useEasel = False
+    imports = importLib()
     tests = printTest()
-
-    # for Easel: toggle
-    useEasel = True
     if useEasel:
-        T = addEaselParams(T)
+        imports = ''
         tests = ''
+        T = addEaselParams(T)
 
     # for quantification
     T = transformTree(T)
@@ -62,11 +58,10 @@ def unparseTop(L):
     u = UnparserInfo()
     st = unparseRecur(u, T)
 
-    st = importLib() + st
     if auxFuncDefs != '':
-        st += addBlockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
-    st = markBeginEnd(st)
-    st += tests
+        st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
+        
+    st = imports + st + tests
     return st
 
 ########## ########## ########## ########## ########## ##########
@@ -111,7 +106,10 @@ def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
         moreSpace = True
     body = expr + ';\n'
     if moreSpace:
-        body = '\n\t' + body + '\n'
+        indent = '\n'
+        if letCls == ():
+            indent += '\t\t'
+        body = indent + body + '\n'
     st = head + ' := ' + body
     return st
 
@@ -164,7 +162,7 @@ def recurTree(F, T):
 
 ########## ########## ########## ########## ########## ##########
 '''
-update user-defined constants
+update non-Easel constants
 '''
 
 # updateNonEaselConsts: tree -> void
@@ -180,6 +178,17 @@ def updateNonEaselConsts(prog):
 '''
 Easel
 '''
+
+easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
+                            'text', 'disc', 'fTri', 'graphic'}
+easelFuncsAddNothing = easelFuncsConstructor | {'initialState'}
+
+easelFuncsAddInput = {'CLICKED', 'CLICK_X', 'CLICK_Y'}
+easelFuncsAddState = {'CURRENT_STATE', 'images'}
+easelFuncsAddBoth = {'newState'}
+easelFuncsAddSomething = easelFuncsAddInput | easelFuncsAddState | easelFuncsAddBoth
+
+easelFuncs = easelFuncsAddNothing | easelFuncsAddSomething
 
 # getAltIfEaselFunc: str -> str
 def getAltIfEaselFunc(st):
@@ -222,16 +231,6 @@ def addEaselParams(T):
     else:
         return recurTree(addEaselParams, T)
 
-easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
-                            'text', 'disc', 'fTri', 'graphic'}
-easelFuncsAddNothing = easelFuncsConstructor | {'initialState', 'CURRENT_STATE'}
-
-easelFuncsAddState = {'images'}
-easelFuncsAddBoth = {'newState'}
-easelFuncsAddSomething = easelFuncsAddState | easelFuncsAddBoth
-
-easelFuncs = easelFuncsAddNothing | easelFuncsAddSomething
-
 easelParamsInput = 'I',
 easelParamsState = 'S',
 easelParams = easelParamsInput + easelParamsState
@@ -244,6 +243,8 @@ def getParamsFromLexeme(id):
 
     if st in easelFuncsAddNothing:
         return ()
+    elif st in easelFuncsAddInput:
+        return easelParamsInput
     elif st in easelFuncsAddState:
         return easelParamsState
     else:
@@ -644,7 +645,7 @@ SequenceL helpers
 
 # writeLetClauses: tuple(str) -> str
 def writeLetClauses(T):
-    st = 'let\n'
+    st = '\tlet\n'
     for t in T:
         st += '\t\t' + t
     return st
@@ -682,11 +683,6 @@ def addDoubleQuotes(st):
 # addParentheses: str -> str
 def addParentheses(st):
     st = '(' + st + ')'
-    return st
-
-# addBlockComment: str -> str
-def addBlockComment(st):
-    st = '/** ' + st + ' */'
     return st
 
 # funcIsAux: str -> bool

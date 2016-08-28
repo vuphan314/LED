@@ -1,7 +1,0 @@
-State ::= Int
-
-/$ initialState := {} $/
-
-/$ newState := {CURRENT_STATE} $/
-
-/$ images := {text("hi", point(500, 500), 50, color(0, 0, 255))} $/

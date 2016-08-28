@@ -1,0 +1,8 @@
+/$
+images :=
+    gameOverDisplay if gameOver;
+    inPlayDisplay otherwise where
+        alwaysDisplay = gridDisplay U cellDisplays U restartButton &
+        inPlayDisplay = alwaysDisplay U currentPlayerDisplay &
+        gameOverDisplay = alwaysDisplay U gameResultDisplay
+$/
