@@ -23,8 +23,8 @@ goto starting
 
         REM !transl!
         !transl! > !sl!
-        !sl!
-        sli -l !sl!
+        type !sl!
+        REM sli -l !sl!
 	)
 	goto done
 

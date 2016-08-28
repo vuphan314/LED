@@ -50,8 +50,8 @@ def unparseTop(L):
     useEasel = False
     tests = printTest()
 
-    # for Easel
-    # useEasel = True
+    # for Easel: toggle
+    useEasel = True
     if useEasel:
         T = addEaselParams(T)
         tests = ''

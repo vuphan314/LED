@@ -102,8 +102,27 @@ Input ::= (iClick: Click, keys: char(1));
 point: int * int -> Point;
 point(a, b) := (x: a, y: b);
 
+point_: Val * Val -> Val;
+point_(v1, v2) :=
+    let
+        a := valToInt(v1);
+        b := valToInt(v2);
+        p := point(a, b);
+    in
+        pointToVal(p);
+
 color: int * int * int -> Color;
 color(r, g, b) := (red: r, green: g, blue: b);
+
+color_: Val * Val * Val -> Val;
+color_(v1, v2, v3) :=
+    let
+        r := valToInt(v1);
+        g := valToInt(v2);
+        b := valToInt(v3);
+        c := color(r, g, b);
+    in
+        colorToVal(c);
 
 click: bool * Point -> Click;
 click(cl, p) := (clicked: cl, clPoint: p);
@@ -120,6 +139,17 @@ circle(ce, rad, c) := (kind: "circle", center: ce, radius: rad, iColor: c);
 text: char(1) * Point * int * Color -> Image;
 text(mes(1), cen, he, c) :=
     (kind: "text", center: cen, height: he, iColor: c, message: mes);
+
+text_: Val * Val * Val * Val -> Val;
+text_(v1, v2, v3, v4) :=
+    let
+        mes := valToStrg(v1);
+        cen := valToPoint(v2);
+        he := valToInt(v3);
+        c := valToColor(v4);
+        t := text(mes, cen, he, c);
+    in
+        imageToVal(t);
 
 disc: Point * int * Color -> Image;
 disc(ce, rad, c) := (kind: "disc", center: ce, radius: rad, iColor: c);
@@ -147,42 +177,40 @@ dWhite := color(255, 255, 255);
 
 /* Easel test */
 
-// initialState_: Val;
-// initialState_ := nu("0");
+// state
+State ::= (val: Val);
+stateToVal(s) := s.val;
+valToState(v) := (val: v);
 
-// newState_: Input;
-// newState_(I, S) := plusOp(S, nu("1"));
+// auto: ? -> Val
+initialState_ := se([]);
+newState_(I_, S_) := se([S_]); //todo change CURRENT_STATE
+images_(S_) := se([text_(st("hi"), point_(nu("500"), nu("500")), nu("50"), color_(nu("0"), nu("0"), nu("255")))]);
 
-// images_(S) := se([text_("hi", point_(nu("500"), nu("500")), nu("50"), dBlue)]);
+// manual
+initialState: State;
+initialState := valToState(initialState_);
 
-// State ::= (val: Val);
+newState: Input * State -> State;
+newState(I, S) :=
+    let
+        I_ := I;
+        S_ := stateToVal(S);
+        v := newState_(I_, S_);
+    in
+        valToState(v);
 
-// valToState: Val -> State;
-// valToState(v) := (val: v);
+images: State -> Image(1);
+images(S) :=
+    let
+        S_ := stateToVal(S);
+        v := images_(S_);
+    in
+        valToImages(v);
 
-// point_: Val * Val -> Point;
-// point_(v1, v2) :=
-    // let
-        // i1 := valToInt(v1);
-        // i2 := valToInt(v2);
-    // in point(i1, i2);
-
-// text_: char(1) * Point * Val * Color -> Image;
-// text_(mess(1), p, v, c) :=
-    // let i := valToInt(v);
-    // in text(mess, p, i, c);
-
-// initialState: State;
-// initialState := valToState(initialState_);
-
-// newState: Input * State -> State;
-// newState(I, S) := valToState(valToInt(newState_(I, S)));
-
-// images: State -> Image(1);
-// images(S) := images_(S);
-
-// sounds: Input * State -> char(2);
-// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+// done
+sounds: Input * State -> char(2);
+sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 /* Easel template */
 // State ::= (time: int);
@@ -193,12 +221,25 @@ dWhite := color(255, 255, 255);
 // sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 ////////// ////////// ////////// ////////// ////////// //////////
+/* kinds of values: char(1) */
+
+kindNumb := "numb";
+kindTrth := "trth";
+kindStrg := "strg";
+kindAtm := "atm";
+kindTpl := "tpl";
+kindSet := "set";
+kindPoint := "point";
+kindColor := "color";
+kindImage := "image";
+
+////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
 Val ::= (   kindLED: char(1),
             strg: char(1), atm: char(1), numb: Numb, trth: bool, coll: Val(1),
             lmbd: (Val(1) -> Val),
-            eImage: Image);
+            ePoint: Point, eColor: Color, eImage: Image);
 
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -241,6 +282,26 @@ valToColl(v) :=
 valToTpl(v) := valToColl(v);
 valToSet(v) := valToColl(v);
 
+valToPoint: Val -> Point;
+valToPoint(v) :=
+    v.ePoint;
+
+valToColor: Val -> Color;
+valToColor(v) :=
+    v.eColor;
+
+valToImage: Val -> Image;
+valToImage(v) :=
+    v.eImage;
+
+valToImages: Val -> Image(1);
+valToImages(v)[i] :=
+    let
+        vs := valToSet(v);
+        v2 := vs[i];
+    in
+        valToImage(v2);
+
 ////////// ////////// ////////// ////////// ////////// //////////
 /* thing to value */
 
@@ -277,6 +338,18 @@ setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
     (kindLED: kindSet, coll: removeDups(s));
 se(s(1)) := setToVal(s);
+
+pointToVal: Point -> Val;
+pointToVal(p) :=
+    (kindLED: kindPoint, ePoint: p);
+
+colorToVal: Color -> Val;
+colorToVal(c) :=
+    (kindLED: kindColor, eColor: c);
+
+imageToVal: Image -> Val;
+imageToVal(i) :=
+    (kindLED: kindImage, eImage: i);
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* aggregation */
@@ -652,16 +725,6 @@ intToVal(i) :=
 valToInt: Val -> int32;
 valToInt(v) :=
     numbToInt(valToNumb(v));
-
-////////// ////////// ////////// ////////// ////////// //////////
-/* kinds of value: char(1) */
-
-kindNumb := "numb";
-kindTrth := "trth";
-kindStrg := "strg";
-kindAtm := "atm";
-kindTpl := "tpl";
-kindSet := "set";
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* some values: Val */

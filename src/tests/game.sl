@@ -2,17 +2,13 @@
 
 import * from "../lib.sl" as *;
 
-c0 := 
-	st("");
+initialState_ := 
+	se([]);
 
-c1 := 
-	st("`");
+newState_(I, S) := 
+	se([CURRENT_STATE_]);
+
+images_(S) := 
+	se([text_(st("hi"), point_(nu("500"), nu("500")), nu("50"), color_(nu("0"), nu("0"), nu("255")))]);
 
 ////////// ////////// ////////// ////////// ////////// //////////
-
-/** Copy/paste the block below into SequenceL interpreter to test:
-
-pp(c0)
-pp(c1)
-
-(pp: pretty-print) */
