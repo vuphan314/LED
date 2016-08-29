@@ -1,3 +1,10 @@
+// todo test by Bryant
+main(args(2)) :=
+    let
+        noinput := input(click(false, point(0, 0)), "");
+    in
+        newState(noinput, initialState);
+
 /* easel required functions */
 
 initialState: State;
