@@ -1,7 +1,7 @@
 ﻿Tic Tac Toe
 by Qianji Zheng and J. Nelson Rushton, Texas Tech University
 
-This is an LED program that defines a simple tic tac toe game to run in the Easel game engine.
+This is an LED program that defines a simple tic tac toe game to run in the easel game engine.
 
 The game begins with an empty grid and it being x's turn to move. When an empty cell is clicked, the player whose turn it occupies that cell and it becomes the other player's turn, until the game is over. When the game is over a message is displayed giving the result of the  game. The player can press the 'reset' button at any time to restart the game.
 
@@ -133,6 +133,8 @@ $/
 
 *cellDisplays* is the set of all images of x's and o's on the board in the current state.
 /$
+gameBoard := {1..9}
+
 cellDisplays := U[c in gameBoard] cellDisplay(c)
 $/
 
@@ -142,7 +144,7 @@ If the game is not over, *currentPlayerDisplay* is a text in the upper left hand
 /$
 currentPlayerDisplay :=
     {text("x's turn",point(100,750),fontSize,BLACK)} if playerToMove = `x;
-    {text("o's turn",point(100,750),fontSize,BLACK)} if playerToMove = `o
+    {text("o's turn",point(100,750),fontSize,BLACK)} otherwise
 $/
 
 The *restart button* consists of a rectangle around a "restart" text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
@@ -208,7 +210,7 @@ ________________
 /$
 moveMadeIn(c) iff cellClicked(c) & legalToMoveIn(c)
 
-movesMade := {(playerToMove,c) | c in {1..9} & moveMadeIn(c)}
+movesMade := {(playerToMove,c) | c in gameBoard & moveMadeIn(c)}
 
 newState :=
     initialState if restartClicked;

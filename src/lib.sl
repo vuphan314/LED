@@ -86,9 +86,9 @@ prettyPrintTail(vs(1))[i] :=
         ", " ++ s;
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* Easel */
+/* easel */
 
-/* Easel types */
+/* easel types */
 Point ::= (x: int, y: int);
 Color ::= (red: int, green: int, blue: int);
 Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Point,
@@ -97,7 +97,7 @@ Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Poi
 Click ::= (clicked: bool, clPoint: Point);
 Input ::= (iClick: Click, keys: char(1));
 
-/* Easel constructors */
+/* easel constructors */
 
 point: int * int -> Point;
 point(a, b) := (x: a, y: b);
@@ -138,10 +138,10 @@ segment_(v1, v2, v3) :=
     let
         e1 := valToPoint(v1);
         e2 := valToPoint(v2);
-        c := valToColor(c3);
+        c := valToColor(v3);
         i := segment(e1, e2, c);
     in
-        imageToVal(v);
+        imageToVal(i);
 
 circle: Point * int * Color -> Image;
 circle(ce, rad, c) := (kind: "circle", center: ce, radius: rad, iColor: c);
@@ -171,10 +171,10 @@ graphic: char(1) * Point * int * int -> Image;
 graphic(graphicFile(1), c, w, h) :=
     (kind: "graphic", source: graphicFile, radius: 0, height: h, width: w, center: c);
 
-/* Easel origin-point */
+/* easel origin-point */
 originPoint := point(0,0);
 
-/* Easel colors */
+/* easel colors */
 dBlack := color(0, 0, 0);
 dRed := color(255, 0, 0);
 dOrange := color(255, 128, 0);
@@ -185,27 +185,27 @@ dIndigo := color(70, 0, 130);
 dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
-/* Easel game-state */
+/* easel game-state */
 State ::= (val: Val);
 stateToVal(s) := s.val;
 valToState(v) := (val: v);
 
-/* Easel global variables: Input/State -> Val */
+/* easel global variables: Input/State -> Val */
 
-CURRENT_STATE_: State -> Val;
-CURRENT_STATE_(S) :=
+CURRENT_STATE: State -> Val;
+CURRENT_STATE(S) :=
     stateToVal(S);
 
-CLICKED_: Input -> Val;
-CLICKED_(I) :=
+CLICKED: Input -> Val;
+CLICKED(I) :=
     let
         c := I.iClick;
         t := c.clicked;
     in
         trthToVal(t);
 
-CLICK_X_: Input -> Val;
-CLICK_X_(I) :=
+CLICK_X: Input -> Val;
+CLICK_X(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
@@ -213,8 +213,8 @@ CLICK_X_(I) :=
     in
         intToVal(i);
 
-CLICK_Y_: Input -> Val;
-CLICK_Y_(I) :=
+CLICK_Y: Input -> Val;
+CLICK_Y(I) :=
     let
         c := I.iClick;
         p := c.clPoint;

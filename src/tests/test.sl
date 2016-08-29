@@ -1,209 +1,186 @@
 initialState_ := 
 		se([]);
 
-occupies(p, c, I, S) := 
-		setMem(tu([p, c]), CURRENT_STATE_(S));
+occupies(p, c, S) := 
+		setMem(tu([p, c]), CURRENT_STATE(S));
 
-occupied(c, I, S) := 
-		disj(occupies(at("`x"), c, I, S), occupies(at("`o"), c, I, S));
+occupied(c, S) := 
+		disj(occupies(at("`x"), c, S), occupies(at("`o"), c, S));
 
-rows(I, S) := 
-	let
-		hRows := se([se([nu("1"), nu("2"), nu("3")]), se([nu("4"), nu("5"), nu("6")]), se([nu("7"), nu("8"), nu("9")])]);
-		vRows := se([se([nu("1"), nu("4"), nu("7")]), se([nu("2"), nu("5"), nu("8")]), se([nu("3"), nu("6"), nu("9")])]);
-		diagonals := se([se([nu("1"), nu("5"), nu("9")]), se([nu("3"), nu("5"), nu("7")])]);
-	in
+rows := 
 		unn(unn(hRows, vRows), diagonals);
 
-threeInRow(p, I, S) := 
-		AUX_2_A_(p, I, S);
+threeInRow(p, S) := 
+		AUX_2_A_(p, S);
 
-boardFull(I, S) := 
-		eq(pipesOp(CURRENT_STATE_(S)), nu("9"));
+boardFull(S) := 
+		eq(pipesOp(CURRENT_STATE(S)), nu("9"));
 
-gameOver(I, S) := 
-		disj(disj(boardFull(I, S), threeInRow(at("`x"), I, S)), threeInRow(at("`o"), I, S));
+gameOver(S) := 
+		disj(disj(boardFull(S), threeInRow(at("`x"), S)), threeInRow(at("`o"), S));
 
-playerToMove(I, S) := 
-		at("`x") when valToTrth(even(pipesOp(CURRENT_STATE_(S)), I, S)) else
+playerToMove(S) := 
+		at("`x") when valToTrth(even(pipesOp(CURRENT_STATE(S)))) else
 		at("`o");
 
-even(n, I, S) := 
+even(n) := 
 		eq(md(n, nu("2")), nu("0"));
 
-legalToMoveIn(c, I, S) := 
-		conj(neg(occupied(c, I, S)), neg(gameOver(I, S)));
+legalToMoveIn(c, S) := 
+		conj(neg(occupied(c, S)), neg(gameOver(S)));
 
-BLACK(I, S) := 
+BLACK := 
 		color_(nu("0"), nu("0"), nu("0"));
 
-WHITE(I, S) := 
+WHITE := 
 		color_(nu("255"), nu("255"), nu("255"));
 
-BLUE(I, S) := 
+BLUE := 
 		color_(nu("0"), nu("0"), nu("255"));
 
-GREEN(I, S) := 
+GREEN := 
 		color_(nu("0"), nu("255"), nu("0"));
 
-RED(I, S) := 
+RED := 
 		color_(nu("255"), nu("0"), nu("0"));
 
-gridDisplay(I, S) := 
-	let
-		L1 := segment_(point_(nu("200"), nu("700")), point_(nu("200"), nu("400")), BLACK(I, S));
-		L2 := segment_(point_(nu("300"), nu("700")), point_(nu("300"), nu("400")), BLACK(I, S));
-		L3 := segment_(point_(nu("100"), nu("600")), point_(nu("400"), nu("600")), BLACK(I, S));
-		L4 := segment_(point_(nu("100"), nu("500")), point_(nu("400"), nu("500")), BLACK(I, S));
-	in
+gridDisplay := 
 		se([L1, L2, L3, L4]);
 
-fontSize(I, S) := 
+fontSize := 
 		nu("36");
 
-centerX(c, I, S) := 
+centerX(c) := 
 		plusOp(nu("150"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-centerO(c, I, S) := 
+centerO(c) := 
 		bMns(nu("650"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-xImage(c, I, S) := 
-		text_(st("x"), point_(centerX(c, I, S), centerO(c, I, S)), fontSize(I, S), BLUE(I, S));
+xImage(c) := 
+		text_(st("x"), point_(centerX(c), centerO(c)), fontSize, BLUE);
 
-oImage(c, I, S) := 
-		text_(st("o"), point_(centerX(c, I, S), centerO(c, I, S)), fontSize(I, S), GREEN(I, S));
+oImage(c) := 
+		text_(st("o"), point_(centerX(c), centerO(c)), fontSize, GREEN);
 
-cellDisplay(c, I, S) := 
-		se([xImage(c, I, S)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE_(S))) else
-		se([oImage(c, I, S)]) when valToTrth(setMem(tu([at("`o"), c]), CURRENT_STATE_(S))) else
+cellDisplay(c, S) := 
+		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE(S))) else
+		se([oImage(c)]) when valToTrth(setMem(tu([at("`o"), c]), CURRENT_STATE(S))) else
 		se([]);
 
-cellDisplays(I, S) := 
-		aggrUnn(AUX_4_AGGR_(I, S));
+cellDisplays(S) := 
+		aggrUnn(AUX_4_AGGR_(S));
 
-currentPlayerDisplay(I, S) := 
-		se([text_(st("x's turn"), point_(nu("100"), nu("750")), fontSize(I, S), BLACK(I, S))]) when valToTrth(eq(playerToMove(I, S), at("`x"))) else
-		se([text_(st("o's turn"), point_(nu("100"), nu("750")), fontSize(I, S), BLACK(I, S))]) when valToTrth(eq(playerToMove(I, S), at("`o")));
+currentPlayerDisplay(S) := 
+		se([text_(st("x's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]) when valToTrth(eq(playerToMove(S), at("`x"))) else
+		se([text_(st("o's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]) when valToTrth(eq(playerToMove(S), at("`o")));
 
-restartButton(I, S) := 
-	let
-		A1 := segment_(point_(nu("400"), nu("725")), point_(nu("500"), nu("725")), BLACK(I, S));
-		A2 := segment_(point_(nu("400"), nu("775")), point_(nu("500"), nu("775")), BLACK(I, S));
-		A3 := segment_(point_(nu("400"), nu("725")), point_(nu("400"), nu("775")), BLACK(I, S));
-		A4 := segment_(point_(nu("500"), nu("725")), point_(nu("500"), nu("775")), BLACK(I, S));
-		txt := text_(st("restart"), point_(nu("450"), nu("750")), fontSize(I, S), BLACK(I, S));
-	in
+restartButton := 
 		se([A1, A2, A3, A4, txt]);
 
-gameResultDisplay(I, S) := 
-		se([text_(st("x won"), point_(nu("100"), nu("750")), fontSize(I, S), BLUE(I, S))]) when valToTrth(threeInRow(at("`x"), I, S)) else
-		se([text_(st("o won"), point_(nu("100"), nu("750")), fontSize(I, S), GREEN(I, S))]) when valToTrth(threeInRow(at("`o"), I, S)) else
-		se([text_(st("cat got it"), point_(nu("100"), nu("750")), fontSize(I, S), RED(I, S))]);
+gameResultDisplay(S) := 
+		se([text_(st("x won"), point_(nu("100"), nu("750")), fontSize, BLUE)]) when valToTrth(threeInRow(at("`x"), S)) else
+		se([text_(st("o won"), point_(nu("100"), nu("750")), fontSize, GREEN)]) when valToTrth(threeInRow(at("`o"), S)) else
+		se([text_(st("cat got it"), point_(nu("100"), nu("750")), fontSize, RED)]);
 
 images_(S) := 
-	let
-		alwaysDisplay := unn(unn(gridDisplay(I, S), cellDisplays(I, S)), restartButton(I, S));
-		inPlayDisplay := unn(alwaysDisplay, currentPlayerDisplay(I, S));
-		gameOverDisplay := unn(alwaysDisplay, gameResultDisplay(I, S));
-	in
-		gameOverDisplay when valToTrth(gameOver(I, S)) else
+		gameOverDisplay when valToTrth(gameOver(S)) else
 		inPlayDisplay;
 
-xMin(c, I, S) := 
+xMin(c) := 
 		plusOp(nu("100"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-xMax(c, I, S) := 
+xMax(c) := 
 		plusOp(nu("200"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-yMin(c, I, S) := 
+yMin(c) := 
 		bMns(nu("600"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-yMax(c, I, S) := 
+yMax(c) := 
 		bMns(nu("700"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-cellClicked(c, I, S) := 
-		conj(conj(conj(conj(CLICKED_(I), greater(CLICK_X_(I), xMin(c, I, S))), less(CLICK_X_(I), xMax(c, I, S))), greater(CLICK_Y_(I), yMin(c, I, S))), less(CLICK_Y_(I), yMax(c, I, S)));
+cellClicked(c, I) := 
+		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), xMin(c))), less(CLICK_X(I), xMax(c))), greater(CLICK_Y(I), yMin(c))), less(CLICK_Y(I), yMax(c)));
 
-restartClicked(I, S) := 
-		conj(conj(conj(greater(CLICK_X_(I), nu("400")), less(CLICK_X_(I), nu("500"))), greater(CLICK_Y_(I), nu("725"))), less(CLICK_Y_(I), nu("775")));
+restartClicked(I) := 
+		conj(conj(conj(greater(CLICK_X(I), nu("400")), less(CLICK_X(I), nu("500"))), greater(CLICK_Y(I), nu("725"))), less(CLICK_Y(I), nu("775")));
 
-moveMadeIn(c, I, S) := 
-		conj(cellClicked(c, I, S), legalToMoveIn(c, I, S));
+moveMadeIn(c, I) := 
+		conj(cellClicked(c, I), legalToMoveIn(c, S));
 
-movesMade(I, S) := 
-		setCompr(AUX_8_AGGR_(I, S));
+movesMade(I) := 
+		setCompr(AUX_8_AGGR_(I));
 
 newState_(I, S) := 
-		initialState_ when valToTrth(restartClicked(I, S)) else
-		unn(CURRENT_STATE_(S), movesMade(I, S));
+		initialState_ when valToTrth(restartClicked(I)) else
+		unn(CURRENT_STATE(S), movesMade(I));
 
 /* AUXILIARY FUNCTIONS */
 
-AUX_1_A_(p, I, S, R) := 
-		allSet(AUX_1_B_(p, I, S, R));
+AUX_1_A_(p, S, R) := 
+		allSet(AUX_1_B_(p, S, R));
 
-AUX_1_B_(p, I, S, R)[i_] := 
+AUX_1_B_(p, S, R)[i_] := 
 	let
-		c := AUX_1_C_(p, I, S, R)[i_];
+		c := AUX_1_C_(p, S, R)[i_];
 	in
-		occupies(p, c, I, S);
+		occupies(p, c, S);
 
-AUX_1_C_(p, I, S, R) := 
+AUX_1_C_(p, S, R) := 
 		valToSet(R);
 
-AUX_2_A_(p, I, S) := 
-		someSet(AUX_2_B_(p, I, S));
+AUX_2_A_(p, S) := 
+		someSet(AUX_2_B_(p, S));
 
-AUX_2_B_(p, I, S)[i_] := 
+AUX_2_B_(p, S)[i_] := 
 	let
-		R := AUX_2_C_(p, I, S)[i_];
+		R := AUX_2_C_(p, S)[i_];
 	in
-		AUX_1_A_(p, I, S, R);
+		AUX_1_A_(p, S, R);
 
-AUX_2_C_(p, I, S) := 
-		valToSet(rows(I, S));
+AUX_2_C_(p, S) := 
+		valToSet(rows);
 
-AUX_3_AGGR_(I, S) := 
+AUX_3_AGGR_(S) := 
 		solSet(gameBoard);
 
-AUX_4_AGGR_(I, S)[i_] := 
+AUX_4_AGGR_(S)[i_] := 
 			let
-		b_ := AUX_3_AGGR_(I, S)[i_];
+		b_ := AUX_3_AGGR_(S)[i_];
 		c := b_[1];
 		gameBoard := b_[2];
 	in
-		cellDisplay(c, I, S);
+		cellDisplay(c, S);
 
-AUX_5_AGGR_(I, S) := 
+AUX_5_AGGR_(I) := 
 		solSet(iv(nu("1"), nu("9")));
 
-AUX_6_AGGR_(I, S, c) := 
-		solGround(moveMadeIn(c, I, S));
+AUX_6_AGGR_(I, c) := 
+		solGround(moveMadeIn(c, I));
 
-AUX_7_DEEP_(I, S)[i1_, i2_] := 
+AUX_7_DEEP_(I)[i1_, i2_] := 
 			let
-		b1_ := AUX_5_AGGR_(I, S)[i1_];
+		b1_ := AUX_5_AGGR_(I)[i1_];
 		c := b1_[1];
-		b2_ := AUX_6_AGGR_(I, S, c)[i2_];
+		b2_ := AUX_6_AGGR_(I, c)[i2_];
 	in
 		unnBinds(b1_, b2_);
 
-AUX_7_AGGR_(I, S) := 
-		join(AUX_7_DEEP_(I, S));
+AUX_7_AGGR_(I) := 
+		join(AUX_7_DEEP_(I));
 
-AUX_8_AGGR_(I, S)[i_] := 
+AUX_8_AGGR_(I)[i_] := 
 			let
-		b_ := AUX_7_AGGR_(I, S)[i_];
+		b_ := AUX_7_AGGR_(I)[i_];
 		c := b_[1];
 	in
-		tu([playerToMove(I, S), c]);
+		tu([playerToMove(S), c]);
 
 /* ********** ********** ********** ********** ********** ********** */
 /* SECTION START */
 
 /* BELOW IS A COPY OF lib2.sl */
 
-/* Easel required functions */
+/* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
@@ -226,7 +203,7 @@ images(S) :=
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* Easel template */
+/* easel template */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);
@@ -330,9 +307,9 @@ prettyPrintTail(vs(1))[i] :=
         ", " ++ s;
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* Easel */
+/* easel */
 
-/* Easel types */
+/* easel types */
 Point ::= (x: int, y: int);
 Color ::= (red: int, green: int, blue: int);
 Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Point,
@@ -341,7 +318,7 @@ Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Poi
 Click ::= (clicked: bool, clPoint: Point);
 Input ::= (iClick: Click, keys: char(1));
 
-/* Easel constructors */
+/* easel constructors */
 
 point: int * int -> Point;
 point(a, b) := (x: a, y: b);
@@ -415,10 +392,10 @@ graphic: char(1) * Point * int * int -> Image;
 graphic(graphicFile(1), c, w, h) :=
     (kind: "graphic", source: graphicFile, radius: 0, height: h, width: w, center: c);
 
-/* Easel origin-point */
+/* easel origin-point */
 originPoint := point(0,0);
 
-/* Easel colors */
+/* easel colors */
 dBlack := color(0, 0, 0);
 dRed := color(255, 0, 0);
 dOrange := color(255, 128, 0);
@@ -429,27 +406,27 @@ dIndigo := color(70, 0, 130);
 dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
-/* Easel game-state */
+/* easel game-state */
 State ::= (val: Val);
 stateToVal(s) := s.val;
 valToState(v) := (val: v);
 
-/* Easel global variables: Input/State -> Val */
+/* easel global variables: Input/State -> Val */
 
-CURRENT_STATE_: State -> Val;
-CURRENT_STATE_(S) :=
+CURRENT_STATE: State -> Val;
+CURRENT_STATE(S) :=
     stateToVal(S);
 
-CLICKED_: Input -> Val;
-CLICKED_(I) :=
+CLICKED: Input -> Val;
+CLICKED(I) :=
     let
         c := I.iClick;
         t := c.clicked;
     in
         trthToVal(t);
 
-CLICK_X_: Input -> Val;
-CLICK_X_(I) :=
+CLICK_X: Input -> Val;
+CLICK_X(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
@@ -457,8 +434,8 @@ CLICK_X_(I) :=
     in
         intToVal(i);
 
-CLICK_Y_: Input -> Val;
-CLICK_Y_(I) :=
+CLICK_Y: Input -> Val;
+CLICK_Y(I) :=
     let
         c := I.iClick;
         p := c.clPoint;

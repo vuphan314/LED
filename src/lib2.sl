@@ -1,4 +1,4 @@
-/* Easel required functions */
+/* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
@@ -21,7 +21,7 @@ images(S) :=
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* Easel template */
+/* easel template */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);

@@ -17,7 +17,7 @@ SL testing
 # printTest: str
 def printTest():
     st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
-    for const in nonEaselConsts:
+    for const in defedConsts:
         func = applyRecur(None, 'pp', (const,))
         st += func + '\n'
     st += '\n(pp: pretty-print)'
@@ -29,7 +29,9 @@ def printTest():
 python global variables
 '''
 
-nonEaselConsts = () # ('c1', 'c2',...)
+defedFuncs = ()
+defedConsts = () # ('c1', 'c2',...)
+
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
@@ -43,14 +45,16 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L, useEasel = False):
     T = listToTree(L)
-    updateNonEaselConsts(T)
+    updateDefedFuncs(T)
 
-    imports = importLib()
-    tests = printTest()
     if useEasel:
+        updateFuncsAddParams(T)
+        T = addEaselParams(T)
         imports = ''
         tests = ''
-        T = addEaselParams(T)
+    else:
+        imports = importLib()
+        tests = printTest()
 
     # for quantification
     T = transformTree(T)
@@ -60,7 +64,7 @@ def unparseTop(L, useEasel = False):
 
     if auxFuncDefs != '':
         st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
-        
+
     st = imports + st + tests
     return st
 
@@ -72,7 +76,7 @@ recursion iterators
 # unparseRecur: UnparserInfo * tree -> str
 def unparseRecur(u, T):
     if type(T) == str:
-        return getAltIfEaselFunc(T)
+        return appendUnderscore(T)
     elif T[0] in lexemes:
         return unparseLexemes(u, T)
     elif T[0] == 'userFR':
@@ -162,93 +166,67 @@ def recurTree(F, T):
 
 ########## ########## ########## ########## ########## ##########
 '''
-update non-Easel constants
+update defined functions
 '''
 
-# updateNonEaselConsts: tree -> void
-def updateNonEaselConsts(prog):
-    global nonEaselConsts
-    for definition in prog:
+# updateDefedFuncs: tree -> void
+def updateDefedFuncs(prog):
+    global defedFuncs
+    global defedConsts
+    for definition in prog[1:]:
+        st = definition[1][1][1]
+        defedFuncs += st,
         if definition[0] == 'constDef':
-            st = unparseRecur(None, definition[1])
-            if st not in easelFuncs:
-                nonEaselConsts += st,
+            defedConsts += st,
 
 ########## ########## ########## ########## ########## ##########
 '''
-Easel
+easel
 '''
-
-easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
-                            'text', 'disc', 'fTri', 'graphic'}
-easelFuncsAddNothing = easelFuncsConstructor | {'initialState'}
-
-easelFuncsAddInput = {'CLICKED', 'CLICK_X', 'CLICK_Y'}
-easelFuncsAddState = {'CURRENT_STATE', 'images'}
-easelFuncsAddBoth = {'newState'}
-easelFuncsAddSomething = easelFuncsAddInput | easelFuncsAddState | easelFuncsAddBoth
-
-easelFuncs = easelFuncsAddNothing | easelFuncsAddSomething
-
-# getAltIfEaselFunc: str -> str
-def getAltIfEaselFunc(st):
-    if st in easelFuncs:
-        st += '_'
-    return st
 
 # addEaselParams: tree -> tree
 def addEaselParams(T):
     if type(T) == str:
         return T
-    elif T[0] == 'constT':
-        id = T[1]
-        params = getParamsFromLexeme(id)
-        syms = getIdsTree('syms', 'symN', params)
-        funT = 'funT', id, syms
-        return funT
-    elif T[0] in {'funT', 'relT'}:
-        params = getParamsFromLexeme(T[1])
-        syms = T[2]
-        syms += getIdsTuple('symN', params)
-        T2 = T[:2] + (syms,)
-        return T2
     elif T[0] == 'userSC':
         id = T[1]
-        if id[1] in easelFuncsAddSomething | set(nonEaselConsts):
-            params = getParamsFromLexeme(id)
+        params = getParamsFromLexeme(id)
+        if params != ():
             terms = getIdsTree('terms', 'userSC', params)
             T = 'userFR', id, terms
         return T
+    elif T[0] == 'constT':
+        id = T[1]
+        params = getParamsFromLexeme(id)
+        if params != ():
+            syms = getIdsTree('syms', 'symN', params)
+            T = 'funT', id, syms
+        return T
+    elif T[0] == 'constDef':
+        root = T[0]
+        head = addEaselParams(T[1])
+        if head[0] == 'funT':
+            root = 'funDef'
+        expr = addEaselParams(T[2])
+        T2 = root, head, expr
+        if len(T) > 3:
+            whereCl = addEaselParams(T[3])
+            T2 += whereCl,
+        return T2
     elif T[0] == 'userFR':
         params = getParamsFromLexeme(T[1])
         terms = T[2]
         terms += getIdsTuple('userSC', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
-    elif T[0] == 'constDef':
-        T2 = ('funDef',) + T[1:]
-        return recurTree(addEaselParams, T2)
+    elif T[0] in {'funT', 'relT'}:
+        params = getParamsFromLexeme(T[1])
+        syms = T[2]
+        syms += getIdsTuple('symN', params)
+        T = T[:2] + (syms,)
+        return T
     else:
         return recurTree(addEaselParams, T)
-
-easelParamsInput = 'I',
-easelParamsState = 'S',
-easelParams = easelParamsInput + easelParamsState
-
-# getParamsFromLexeme: tree -> tuple(str)
-def getParamsFromLexeme(id):
-    st = id[1]
-    if type(st) != str:
-        raiseError('MUST BE STRING')
-
-    if st in easelFuncsAddNothing:
-        return ()
-    elif st in easelFuncsAddInput:
-        return easelParamsInput
-    elif st in easelFuncsAddState:
-        return easelParamsState
-    else:
-        return easelParams
 
 # getIdsTree: str * str * tuple(str) -> tree
 def getIdsTree(label1, label2, ids):
@@ -264,6 +242,113 @@ def getIdsTuple(label, ids):
         st = label, st
         tu += st,
     return tu
+
+easelInput = 'I'
+easelState = 'S'
+
+easelParamsInput = easelInput,
+easelParamsState = easelState,
+
+easelParams = easelParamsInput + easelParamsState
+
+# getParamsFromLexeme: tree -> tuple(str)
+def getParamsFromLexeme(id):
+    st = id[1]
+    if type(st) != str:
+        raiseError('MUST BE STRING')
+
+    if not (st in defedFuncs or st in easelFuncs): # symbol
+        return ()
+    elif st in funcsAddParams['addNeither']:
+        return ()
+    elif st in funcsAddParams['addInput']:
+        return easelParamsInput
+    elif st in funcsAddParams['addState']:
+        return easelParamsState
+    else:
+        return easelParams
+
+# appendUnderscore: str -> str
+def appendUnderscore(st):
+    if st in easelFuncs and st not in easelFuncsGlobal:
+        st += '_'
+    return st
+
+easelFuncsClick = {'CLICKED', 'CLICK_X', 'CLICK_Y'}
+easelFuncsCurrentState = {'CURRENT_STATE'}
+easelFuncsGlobal = easelFuncsClick | easelFuncsCurrentState
+
+easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
+                            'text', 'disc', 'fTri', 'graphic'}
+easelFuncsAddNeither = easelFuncsConstructor | {'initialState'}
+
+easelFuncsAddInput = easelFuncsClick
+
+easelFuncsAddState = easelFuncsCurrentState | {'images'}
+
+easelFuncsAddBoth = {'newState'}
+
+easelFuncs =    easelFuncsAddNeither | easelFuncsAddInput | easelFuncsAddState | \
+                easelFuncsAddBoth
+
+funcsAddParams = {  'addNeither': easelFuncsAddNeither,
+                    'addInput': easelFuncsAddInput,
+                    'addState': easelFuncsAddState,
+                    'addBoth': easelFuncsAddBoth}
+
+# updateFuncsAddParams: tree -> void
+def updateFuncsAddParams(prog):
+    for definition in prog[1:]:
+        head = definition[1][1][1]
+        if head not in easelFuncs:
+            body = definition[2]
+            if needBoth(body):
+                key = 'addBoth'
+            elif needInput(body):
+                key = 'addInput'
+            elif needState(body):
+                key = 'addState'
+            else:
+                key = 'addNeither'
+            global funcsAddParams
+            funcsAddParams[key] |= {head}
+
+# needBoth: tree -> bool
+def needBoth(body):
+    return \
+        someStringFound(body, funcsAddParams['addBoth']) or \
+        eachStringFound(body, easelParams) or \
+        needInput(body) and needState(body)
+
+# needInput: tree * bool
+def needInput(body): # provided: not someStringFound(body, funcsAddParams['addBoth'])
+    return \
+        someStringFound(body, funcsAddParams['addInput']) or \
+        someStringFound(body, easelParamsInput)
+
+# needState: tree * bool
+def needState(body): # provided: not someStringFound(body, funcsAddParams['addBoth'])
+    return \
+        someStringFound(body, funcsAddParams['addState']) or \
+        someStringFound(body, easelParamsState)
+
+# eachStringFound: tree * strs -> bool
+def eachStringFound(T, sts):
+    for st in sts:
+        sts2 = {st}
+        if not someStringFound(T, sts2):
+            return False
+    return True
+
+# someStringFound: tree * strs -> bool
+def someStringFound(T, sts):
+    if type(T) == str:
+        return T in sts
+    else:
+        for t in T[1:]:
+            if someStringFound(t, sts):
+                return True
+        return False
 
 ########## ########## ########## ########## ########## ##########
 '''
@@ -857,7 +942,7 @@ def newDepSymbFound(u, T):
 
 # isNewDepSymb: UnparserInfo * str -> bool
 def isNewDepSymb(u, id):
-    return id not in u.getSymbs() + nonEaselConsts
+    return id not in u.getSymbs() + defedConsts
 
 ########## ########## ########## ########## ########## ##########
 '''
