@@ -64,14 +64,14 @@ fontSize :=
 centerX(c) := 
 		plusOp(nu("150"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-centerO(c) := 
+centerY(c) := 
 		bMns(nu("650"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
 xImage(c) := 
-		text_(st("x"), point_(centerX(c), centerO(c)), fontSize, BLUE);
+		text_(st("x"), point_(centerX(c), centerY(c)), fontSize, BLUE);
 
 oImage(c) := 
-		text_(st("o"), point_(centerX(c), centerO(c)), fontSize, GREEN);
+		text_(st("o"), point_(centerX(c), centerY(c)), fontSize, GREEN);
 
 cellDisplay(c, S) := 
 		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE(S))) else
@@ -205,21 +205,43 @@ AUX_8_AGGR_(I, S)[i_] :=
 
 /* BELOW IS A COPY OF lib2.sl */
 
-/* todo test by Bryant */
+/* todo test newState() manually */
 
-noinput := input(click(false, point(0, 0)), "");
-ni := noinput;
+pointCell: int -> Point;
+pointCell(c) :=
+    let
+        v := intToVal(c);
+        x := centerX(v);
+        y := centerY(v);
+        x2 := valToInt(x);
+        y2 := valToInt(y);
+    in
+        point(x2, y2);
 
-main(args(2)) :=
-    newState(noinput, initialState);
+inputCell: int -> Input;
+inputCell(c) :=
+    let
+        p := pointCell(c);
+        cl := click(true, p);
+    in
+        input(cl, "");
 
+ic(c) := inputCell(c);
 
+is := initialState;
+
+ns(I, S) := newState(I, S);
+
+x1 := ns(ic(1), is);
+o4 := ns(ic(4), x1);
+x2 := ns(ic(2), o4);
+o5 := ns(ic(5), x2);
+x3 := ns(ic(3), o5);
 
 /* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
-is := initialState;
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -227,7 +249,6 @@ newState(I, S) :=
         v := newState_(I, S);
     in
         valToState(v);
-ns(I, S) := newState(I, S);
 
 images: State -> Image(1);
 images(S) :=
@@ -256,9 +277,6 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 /* BELOW IS A COPY OF lib.sl */
 
-f(x) := x;
-c := f;
-
 /*
 LED library written in SequenceL
 */
@@ -277,7 +295,9 @@ import <Utilities/Set.sl>;
 public
     printNull, // debug-print
     pp, // pretty-print
-    Val, Numb, // types
+    Input, State, // Easel paramters
+    Image, Point, // Easel types
+    Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification
@@ -315,7 +335,6 @@ nul := printNull;
 ////////// ////////// ////////// ////////// ////////// //////////
 /* pretty-print */
 
-pp(v) := prettyPrint(v);
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
     let
@@ -331,6 +350,7 @@ prettyPrint(v) :=
         numl when valOfKind(v, kindNumb) else
         Conversion::boolToString(t) when valOfKind(v, kindTrth) else
         prettyPrintColl(c, valToKind(v)); // collection
+pp(v) := prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
 prettyPrintColl(vs(1), k(1)) :=
@@ -459,6 +479,7 @@ dWhite := color(255, 255, 255);
 State ::= (val: Val);
 stateToVal(s) := s.val;
 valToState(v) := (val: v);
+pps(S) := pp(S.val);
 
 /* easel global variables: Input/State -> Val */
 

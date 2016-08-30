@@ -12,21 +12,37 @@ images_(S) :=
 
 /* BELOW IS A COPY OF lib2.sl */
 
-/* todo test by Bryant */
+/* todo test newState() manually */
 
-// noinput := input(click(false, point(0, 0)), "");
-// ni := noinput;
+pointCell: int -> Point;
+pointCell(c) :=
+    let
+        v := intToVal(c);
+        x := centerX(v);
+        y := centerY(v);
+        x2 := valToInt(x);
+        y2 := valToInt(y);
+    in
+        point(x2, y2);
 
-// main(args(2)) :=
-    // newState(noinput, initialState);
+inputCell: int -> Input;
+inputCell(c) :=
+    let
+        p := pointCell(c);
+        cl := click(true, p);
+    in
+        input(cl, "");
 
-// pointCell(c) := point(centerX(c), centerY(c));
+ic(c) := inputCell(c);
+
+is := initialState;
+
+ns(I, S) := newState(I, S);
 
 /* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
-is := initialState;
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -34,7 +50,6 @@ newState(I, S) :=
         v := newState_(I, S);
     in
         valToState(v);
-ns(I, S) := newState(I, S);
 
 images: State -> Image(1);
 images(S) :=

@@ -56,7 +56,6 @@ nul := printNull;
 ////////// ////////// ////////// ////////// ////////// //////////
 /* pretty-print */
 
-pp(v) := prettyPrint(v);
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
     let
@@ -72,6 +71,7 @@ prettyPrint(v) :=
         numl when valOfKind(v, kindNumb) else
         Conversion::boolToString(t) when valOfKind(v, kindTrth) else
         prettyPrintColl(c, valToKind(v)); // collection
+pp(v) := prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
 prettyPrintColl(vs(1), k(1)) :=
@@ -200,6 +200,7 @@ dWhite := color(255, 255, 255);
 State ::= (val: Val);
 stateToVal(s) := s.val;
 valToState(v) := (val: v);
+pps(S) := pp(S.val);
 
 /* easel global variables: Input/State -> Val */
 
