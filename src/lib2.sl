@@ -1,14 +1,18 @@
-// todo test by Bryant
-main(args(2)) :=
-    let
-        noinput := input(click(false, point(0, 0)), "");
-    in
-        newState(noinput, initialState);
+/* todo test by Bryant */
+
+// noinput := input(click(false, point(0, 0)), "");
+// ni := noinput;
+
+// main(args(2)) :=
+    // newState(noinput, initialState);
+
+// pointCell(c) := point(centerX(c), centerY(c));
 
 /* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
+is := initialState;
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -16,6 +20,7 @@ newState(I, S) :=
         v := newState_(I, S);
     in
         valToState(v);
+ns(I, S) := newState(I, S);
 
 images: State -> Image(1);
 images(S) :=
