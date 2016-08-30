@@ -66,7 +66,7 @@ if __name__ == '__main__':
     preparsed = False
     useEasel = False
 
-    preparsed = True
+    # preparsed = True
     useEasel = True
 
     translate(preparsed = preparsed, useEasel = useEasel)

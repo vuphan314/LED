@@ -12,17 +12,21 @@ images_(S) :=
 
 /* BELOW IS A COPY OF lib2.sl */
 
-// todo test by Bryant
-main(args(2)) :=
-    let
-        noinput := input(click(false, point(0, 0)), "");
-    in
-        newState(noinput, initialState);
+/* todo test by Bryant */
+
+// noinput := input(click(false, point(0, 0)), "");
+// ni := noinput;
+
+// main(args(2)) :=
+    // newState(noinput, initialState);
+
+// pointCell(c) := point(centerX(c), centerY(c));
 
 /* easel required functions */
 
 initialState: State;
 initialState := valToState(initialState_);
+is := initialState;
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -30,6 +34,7 @@ newState(I, S) :=
         v := newState_(I, S);
     in
         valToState(v);
+ns(I, S) := newState(I, S);
 
 images: State -> Image(1);
 images(S) :=
@@ -58,9 +63,6 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 /* BELOW IS A COPY OF lib.sl */
 
-f(x) := x;
-c := f;
-
 /*
 LED library written in SequenceL
 */
@@ -79,7 +81,9 @@ import <Utilities/Set.sl>;
 public
     printNull, // debug-print
     pp, // pretty-print
-    Val, Numb, // types
+    Input, State, // Easel paramters
+    Image, Point, // Easel types
+    Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification

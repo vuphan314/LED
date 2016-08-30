@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=tests\
-    set fil=tictactoe
+    set fil=game
     set fils=aggregation, boolean, comparison, definition, quantification, set, tictactoe
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
@@ -28,7 +28,7 @@ goto starting
         REM !transl!
         !transl! > !sl!
         REM !sl!
-        sli -l !sl!
+        REM sli -l !sl!
     )
     goto done
 

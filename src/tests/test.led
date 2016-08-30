@@ -1,3 +1,0 @@
-/$ initialState := 0 $/
-/$ newState := CURRENT_STATE + 1 $/
-/$ images := {text(st(pp(CURRENT_STATE)), point(500, 400), 50, color(0, 0, 255))} $/

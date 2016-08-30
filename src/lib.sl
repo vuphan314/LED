@@ -1,6 +1,3 @@
-f(x) := x;
-c := f;
-
 /*
 LED library written in SequenceL
 */
@@ -19,7 +16,9 @@ import <Utilities/Set.sl>;
 public
     printNull, // debug-print
     pp, // pretty-print
-    Val, Numb, // types
+    Input, State, // Easel paramters
+    Image, Point, // Easel types
+    Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification
