@@ -203,7 +203,7 @@ AUX_8_AGGR_(I, S)[i_] :=
 /* ********** ********** ********** ********** ********** ********** */
 /* SECTION START */
 
-/* BELOW IS A COPY OF lib2.sl */
+/* BELOW IS A COPY OF lib3.sl */
 
 /* todo test newState() manually */
 
@@ -237,6 +237,14 @@ o4 := ns(ic(4), x1);
 x2 := ns(ic(2), o4);
 o5 := ns(ic(5), x2);
 x3 := ns(ic(3), o5);
+
+/* SECTION END */
+/* ********** ********** ********** ********** ********** ********** */
+
+/* ********** ********** ********** ********** ********** ********** */
+/* SECTION START */
+
+/* BELOW IS A COPY OF lib2.sl */
 
 /* easel required functions */
 

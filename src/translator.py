@@ -25,7 +25,9 @@ def translate(preparsed = False, useEasel = False):
         parsed = ledparser.regparse_file(led)
     sl = unparser.unparseTop(parsed, useEasel = useEasel)
     if useEasel:
-        sl += getLibs()
+        n = 2
+        n = 3
+        sl += getLibsStr(n)
     print(sl)
 
 ########## ########## ########## ########## ########## ##########
@@ -35,12 +37,17 @@ copy libraries to easel output file
 
 lib = 'lib.sl'
 lib2 = 'lib2.sl'
-libs = lib2, lib
+lib3 = 'lib3.sl'
+libs = lib, lib2, lib3
 
-# getLibs: str
-def getLibs():
+# getLibsTuple: int -> tuple(str)
+def getLibsTuple(n):
+    return libs[:n][::-1]
+
+# getLibsStr: int -> str
+def getLibsStr(n):
     st = ''
-    for l in libs:
+    for l in getLibsTuple(n):
         with open(l) as myLib:
             stLib = myLib.read()
             mess = '\n\n' + blockComment('BELOW IS A COPY OF ' + l) + '\n\n'
