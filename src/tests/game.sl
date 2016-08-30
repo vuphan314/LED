@@ -1,3 +1,63 @@
+initialState_ := 
+		nu("0");
+
+newState_(I, S) := 
+		plusOp(CURRENT_STATE(S), nu("1"));
+
+images_(S) := 
+		se([text_(st(pp(CURRENT_STATE(S))), point_(nu("500"), nu("400")), nu("100"), color_(nu("0"), nu("0"), nu("255")))]);
+
+/* ********** ********** ********** ********** ********** ********** */
+/* SECTION START */
+
+/* BELOW IS A COPY OF lib2.sl */
+
+// todo test by Bryant
+main(args(2)) :=
+    let
+        noinput := input(click(false, point(0, 0)), "");
+    in
+        newState(noinput, initialState);
+
+/* easel required functions */
+
+initialState: State;
+initialState := valToState(initialState_);
+
+newState: Input * State -> State;
+newState(I, S) :=
+    let
+        v := newState_(I, S);
+    in
+        valToState(v);
+
+images: State -> Image(1);
+images(S) :=
+    let
+        v := images_(S);
+    in
+        valToImages(v);
+
+/* default sound */
+sounds: Input * State -> char(2);
+sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+
+/* easel template */
+// State ::= (time: int);
+// initialState := (time: 0);
+// newState(I, S) := (time: S.time + 1);
+// images(S) := [  text("Time: " ++ Conversion::intToString(S.time / 30),
+                // point(500, 400), 30, dBlue)];
+// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+
+/* SECTION END */
+/* ********** ********** ********** ********** ********** ********** */
+
+/* ********** ********** ********** ********** ********** ********** */
+/* SECTION START */
+
+/* BELOW IS A COPY OF lib.sl */
+
 f(x) := x;
 c := f;
 
@@ -1187,3 +1247,8 @@ expTwoInts(numr, denr, p) :=
     in
         twoIntsToNumb(numr2, denr2) when p >= 0 else
         expTwoInts(denr, numr, -p);
+
+/* SECTION END */
+/* ********** ********** ********** ********** ********** ********** */
+
+
