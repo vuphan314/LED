@@ -15,8 +15,9 @@ import <Utilities/String.sl>;
 /* exporting */
 
 public
+    printNull, // debug-print
+    pp, // pretty-print
     Val, Numb, // types
-    pp, // pretty print
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification
@@ -37,11 +38,19 @@ public
     nu; // numeral to value
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* debug */
+/* null-value */
 
-deb := debugPrint("ERROR, RETURNING A NULL VALUE: ", valNull);
+kindNull := "null";
 valNull := (kindLED: kindNull);
-kindNull := "nil";
+
+printNull: Val;
+printNull :=
+    let
+        v := valNull;
+        st := pp(v) ++ "!!! ";
+    in
+        debugPrint(st, v);
+nul := printNull;
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* pretty-print */
@@ -56,6 +65,7 @@ prettyPrint(v) :=
         t := valToTrth(v);
         c := valToColl(v);
     in
+        "ERRONEOUS NULL VALUE" when valOfKind(v, kindNull) else
         s when valOfKind(v, kindStrg) else
         a when valOfKind(v, kindAtm) else
         numl when valOfKind(v, kindNumb) else
@@ -548,20 +558,20 @@ plusOp: Val * Val -> Val;
 plusOp(v1, v2) :=
     add(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl) else
-    deb;
+    printNull;
 
 starOp: Val * Val -> Val;
 starOp(v1, v2) :=
     mult(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     cross(v1, v2) when valsOfKind(v1, v2, kindSet) else
-    deb;
+    printNull;
 
 pipesOp: Val -> Val;
 pipesOp(v) :=
     ab(v) when valOfKind(v, kindNumb) else
     card(v) when valOfKind(v, kindSet) else
     tuLen(v) when valOfKind(v, kindTpl) else
-    deb;
+    printNull;
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* set operations (value) */

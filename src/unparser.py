@@ -45,6 +45,8 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L, useEasel = False):
     T = listToTree(L)
+    
+    T = addOtherwiseClause(T)
     updateDefedFuncs(T)
 
     if useEasel:
@@ -57,7 +59,7 @@ def unparseTop(L, useEasel = False):
         tests = printTest()
 
     # for quantification
-    T = transformTree(T)
+    T = expandSymsInS(T)
 
     u = UnparserInfo()
     st = unparseRecur(u, T)
@@ -799,21 +801,45 @@ def listToTree(L):
 
 ########## ########## ########## ########## ########## ##########
 '''
-transform complicated parsetree to simple parsetree
+add otherwise-clase
 '''
 
-aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
+# addOtherwiseClause: tree -> tree
+def addOtherwiseClause(T):
+    if type(T) == str:
+        return T
+    elif T[0] == 'tIfBTs':
+        return tIfBTsToTIfBTsO(T)
+    elif T[0] == 'tIfBTsO':
+        return T
+    else:
+        return recurTree(addOtherwiseClause, T)
+
+# tIfBTsToTIfBTsO: tree -> tree
+def tIfBTsToTIfBTsO(tIfBTs):
+    t = 'printNull'
+    t = 'id', t
+    t = 'userSC', t
+    t = 'tOther', t
+    T = 'tIfBTsO', tIfBTs, t
+    return T
+
+########## ########## ########## ########## ########## ##########
+'''
+expand quantifying symbols
+'''
+
 quantOps = {'exist', 'univ'}
 
-# transformTree: tree -> tree
-def transformTree(T):
+# expandSymsInS: tree -> tree
+def expandSymsInS(T):
     if type(T) == str:
         return T
     elif T[0] in quantOps:
         T2 = symsInSetToSymbInSet(T)
         return T2
     else:
-        return recurTree(transformTree, T)
+        return recurTree(expandSymsInS, T)
 
 # symsInSetToSymbInSet: tree -> tree
 def symsInSetToSymbInSet(T):
@@ -832,13 +858,15 @@ def symsInSetToSymbInSet(T):
         symb = 'symb', symb
         symbInS = 'symbInSet', symb, theSet
         T2 = quantifier, symbInS, T2
-    T2 = recurTree(transformTree, T2)
+    T2 = recurTree(expandSymsInS, T2)
     return T2
 
 ########## ########## ########## ########## ########## ##########
 '''
 aggregation
 '''
+
+aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 aCategsLib = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 aCategs = aCategsLib | {'isAggr', 'solConj'}

@@ -1,8 +1,2 @@
-/$ c := CLICKED where y = 2 $/
-/$ f(x) := CLICKED where y = 2 $/
-('funDef', ('funT', ('id', 'c'), ('syms', ('symN', ('id', 'I')))), ('userFR', ('id', 'CLICKED'), ('terms', ('userSC', ('id', 'I')))))
-/* ********** ********** ********** ********** ********** ********** */
-
-/* ********** ********** ********** ********** ********** ********** */
-TEST
-('funDef', ('funT', ('id', 'f'), ('syms', ('symN', ('id', 'x')), ('symN', ('id', 'I')))), ('userFR', ('id', 'CLICKED'), ('terms', ('userSC', ('id', 'I')))), ('boolT', ('eq', ('userSC', ('id', 'y')), ('arT', ('numl', '2')))))
+/$ c := 0 if false $/
+/$ d := 0 if false; 1 otherwise $/
