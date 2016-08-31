@@ -1,13 +1,13 @@
-initialState_ := 
+initialState_ :=
 		se([]);
 
-occupies(p, c, S) := 
+occupies(p, c, S) :=
 		setMem(tu([p, c]), CURRENT_STATE(S));
 
-occupied(c, S) := 
+occupied(c, S) :=
 		disj(occupies(at("`x"), c, S), occupies(at("`o"), c, S));
 
-rows := 
+rows :=
 	let
 		hRows := se([se([nu("1"), nu("2"), nu("3")]), se([nu("4"), nu("5"), nu("6")]), se([nu("7"), nu("8"), nu("9")])]);
 		vRows := se([se([nu("1"), nu("4"), nu("7")]), se([nu("2"), nu("5"), nu("8")]), se([nu("3"), nu("6"), nu("9")])]);
@@ -15,41 +15,41 @@ rows :=
 	in
 		unn(unn(hRows, vRows), diagonals);
 
-threeInRow(p, S) := 
+threeInRow(p, S) :=
 		AUX_2_A_(p, S);
 
-boardFull(S) := 
+boardFull(S) :=
 		eq(pipesOp(CURRENT_STATE(S)), nu("9"));
 
-gameOver(S) := 
+gameOver(S) :=
 		disj(disj(boardFull(S), threeInRow(at("`x"), S)), threeInRow(at("`o"), S));
 
-playerToMove(S) := 
+playerToMove(S) :=
 		at("`x") when valToTrth(even(pipesOp(CURRENT_STATE(S)))) else
 		at("`o");
 
-even(n) := 
+even(n) :=
 		eq(md(n, nu("2")), nu("0"));
 
-legalToMoveIn(c, S) := 
+legalToMoveIn(c, S) :=
 		conj(neg(occupied(c, S)), neg(gameOver(S)));
 
-BLACK := 
+BLACK :=
 		color_(nu("0"), nu("0"), nu("0"));
 
-WHITE := 
+WHITE :=
 		color_(nu("255"), nu("255"), nu("255"));
 
-BLUE := 
+BLUE :=
 		color_(nu("0"), nu("0"), nu("255"));
 
-GREEN := 
+GREEN :=
 		color_(nu("0"), nu("255"), nu("0"));
 
-RED := 
+RED :=
 		color_(nu("255"), nu("0"), nu("0"));
 
-gridDisplay := 
+gridDisplay :=
 	let
 		L1 := segment_(point_(nu("200"), nu("700")), point_(nu("200"), nu("400")), BLACK);
 		L2 := segment_(point_(nu("300"), nu("700")), point_(nu("300"), nu("400")), BLACK);
@@ -58,37 +58,37 @@ gridDisplay :=
 	in
 		se([L1, L2, L3, L4]);
 
-fontSize := 
+fontSize :=
 		nu("36");
 
-centerX(c) := 
+centerX(c) :=
 		plusOp(nu("150"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-centerY(c) := 
+centerY(c) :=
 		bMns(nu("650"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-xImage(c) := 
+xImage(c) :=
 		text_(st("x"), point_(centerX(c), centerY(c)), fontSize, BLUE);
 
-oImage(c) := 
+oImage(c) :=
 		text_(st("o"), point_(centerX(c), centerY(c)), fontSize, GREEN);
 
-cellDisplay(c, S) := 
+cellDisplay(c, S) :=
 		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE(S))) else
 		se([oImage(c)]) when valToTrth(setMem(tu([at("`o"), c]), CURRENT_STATE(S))) else
 		se([]);
 
-gameBoard := 
+gameBoard :=
 		iv(nu("1"), nu("9"));
 
-cellDisplays(S) := 
+cellDisplays(S) :=
 		aggrUnn(AUX_4_AGGR_(S));
 
-currentPlayerDisplay(S) := 
+currentPlayerDisplay(S) :=
 		se([text_(st("x's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]) when valToTrth(eq(playerToMove(S), at("`x"))) else
 		se([text_(st("o's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]);
 
-restartButton := 
+restartButton :=
 	let
 		A1 := segment_(point_(nu("400"), nu("725")), point_(nu("500"), nu("725")), BLACK);
 		A2 := segment_(point_(nu("400"), nu("775")), point_(nu("500"), nu("775")), BLACK);
@@ -98,12 +98,12 @@ restartButton :=
 	in
 		se([A1, A2, A3, A4, txt]);
 
-gameResultDisplay(S) := 
+gameResultDisplay(S) :=
 		se([text_(st("x won"), point_(nu("100"), nu("750")), fontSize, BLUE)]) when valToTrth(threeInRow(at("`x"), S)) else
 		se([text_(st("o won"), point_(nu("100"), nu("750")), fontSize, GREEN)]) when valToTrth(threeInRow(at("`o"), S)) else
 		se([text_(st("cat got it"), point_(nu("100"), nu("750")), fontSize, RED)]);
 
-images_(S) := 
+images_(S) :=
 	let
 		alwaysDisplay := unn(unn(gridDisplay, cellDisplays(S)), restartButton);
 		inPlayDisplay := unn(alwaysDisplay, currentPlayerDisplay(S));
@@ -112,77 +112,77 @@ images_(S) :=
 		gameOverDisplay when valToTrth(gameOver(S)) else
 		inPlayDisplay;
 
-xMin(c) := 
+xMin(c) :=
 		plusOp(nu("100"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-xMax(c) := 
+xMax(c) :=
 		plusOp(nu("200"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-yMin(c) := 
+yMin(c) :=
 		bMns(nu("600"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-yMax(c) := 
+yMax(c) :=
 		bMns(nu("700"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-cellClicked(c, I) := 
+cellClicked(c, I) :=
 		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), xMin(c))), less(CLICK_X(I), xMax(c))), greater(CLICK_Y(I), yMin(c))), less(CLICK_Y(I), yMax(c)));
 
-restartClicked(I) := 
+restartClicked(I) :=
 		conj(conj(conj(greater(CLICK_X(I), nu("400")), less(CLICK_X(I), nu("500"))), greater(CLICK_Y(I), nu("725"))), less(CLICK_Y(I), nu("775")));
 
-moveMadeIn(c, I, S) := 
+moveMadeIn(c, I, S) :=
 		conj(cellClicked(c, I), legalToMoveIn(c, S));
 
-movesMade(I, S) := 
+movesMade(I, S) :=
 		setCompr(AUX_8_AGGR_(I, S));
 
-newState_(I, S) := 
+newState_(I, S) :=
 		initialState_ when valToTrth(restartClicked(I)) else
 		unn(CURRENT_STATE(S), movesMade(I, S));
 
 /* AUXILIARY FUNCTIONS */
 
-AUX_1_A_(p, S, R) := 
+AUX_1_A_(p, S, R) :=
 		allSet(AUX_1_B_(p, S, R));
 
-AUX_1_B_(p, S, R)[i_] := 
+AUX_1_B_(p, S, R)[i_] :=
 	let
 		c := AUX_1_C_(p, S, R)[i_];
 	in
 		occupies(p, c, S);
 
-AUX_1_C_(p, S, R) := 
+AUX_1_C_(p, S, R) :=
 		valToSet(R);
 
-AUX_2_A_(p, S) := 
+AUX_2_A_(p, S) :=
 		someSet(AUX_2_B_(p, S));
 
-AUX_2_B_(p, S)[i_] := 
+AUX_2_B_(p, S)[i_] :=
 	let
 		R := AUX_2_C_(p, S)[i_];
 	in
 		AUX_1_A_(p, S, R);
 
-AUX_2_C_(p, S) := 
+AUX_2_C_(p, S) :=
 		valToSet(rows);
 
-AUX_3_AGGR_(S) := 
+AUX_3_AGGR_(S) :=
 		solSet(gameBoard);
 
-AUX_4_AGGR_(S)[i_] := 
+AUX_4_AGGR_(S)[i_] :=
 			let
 		b_ := AUX_3_AGGR_(S)[i_];
 		c := b_[1];
 	in
 		cellDisplay(c, S);
 
-AUX_5_AGGR_(I, S) := 
+AUX_5_AGGR_(I, S) :=
 		solSet(gameBoard);
 
-AUX_6_AGGR_(I, S, c) := 
+AUX_6_AGGR_(I, S, c) :=
 		solGround(moveMadeIn(c, I, S));
 
-AUX_7_DEEP_(I, S)[i1_, i2_] := 
+AUX_7_DEEP_(I, S)[i1_, i2_] :=
 			let
 		b1_ := AUX_5_AGGR_(I, S)[i1_];
 		c := b1_[1];
@@ -190,10 +190,10 @@ AUX_7_DEEP_(I, S)[i1_, i2_] :=
 	in
 		unnBinds(b1_, b2_);
 
-AUX_7_AGGR_(I, S) := 
+AUX_7_AGGR_(I, S) :=
 		join(AUX_7_DEEP_(I, S));
 
-AUX_8_AGGR_(I, S)[i_] := 
+AUX_8_AGGR_(I, S)[i_] :=
 			let
 		b_ := AUX_7_AGGR_(I, S)[i_];
 		c := b_[1];
