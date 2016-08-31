@@ -45,7 +45,7 @@ note: tree := tuple/str
 # unparseTop: list -> str
 def unparseTop(L, useEasel = False):
     T = listToTree(L)
-    
+
     T = addOtherwiseClause(T)
     updateDefedFuncs(T)
 
@@ -509,13 +509,12 @@ class UnparserInfo:
     def aDefFuncAggr(self):
         ind = 'i_'
 
+        func = self.aFunc
         letCls = self.aGetAggrLetClauses(ind)
-        expr = writeLetClauses(letCls)
-
         inCl = self.aTerm
-        expr += writeInClause(inCl)
-
-        st = defRecur(self, self.aFunc, (), expr, inds = (ind,), moreSpace = True)
+        
+        st = defRecur(  self, func, (), inCl, letCls = letCls, \
+                        inds = (ind,), moreSpace = True)
         return st
 
     # aGetAggrLetClauses: str -> str

@@ -149,20 +149,30 @@ $/
 
 The *restart button* consists of a rectangle around a "restart" text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
 /$
+restartLeft := 350
+restartRight := 550
+restartLow := 725
+restartHigh := 775
+
+mid(a, b) := (a + b) / 2
+
+restartMidX := mid(restartLeft, restartRight)
+restartMidY := mid(restartLow, restartHigh)
+
 restartButton := {A1,A2,A3,A4,txt} where
-    A1 = segment(point(400,725),point(500,725),BLACK) &
-    A2 = segment(point(400,775),point(500,775),BLACK) &
-    A3 = segment(point(400,725),point(400,775),BLACK) &
-    A4 = segment(point(500,725),point(500,775),BLACK) &
-    txt = text("restart",point(450,750),fontSize,BLACK)
+    A1 = segment(point(restartLeft,restartLow),point(restartRight,restartLow),BLACK) &
+    A2 = segment(point(restartLeft,restartHigh),point(restartRight,restartHigh),BLACK) &
+    A3 = segment(point(restartLeft,restartLow),point(restartLeft,restartHigh),BLACK) &
+    A4 = segment(point(restartRight,restartLow),point(restartRight,restartHigh),BLACK) &
+    txt = text("restart",point(restartMidX,restartMidY),fontSize,BLACK)
 $/
 
 If the game is over, *gameResultDisplay* is a display in the upper left region of the screen telling the outcome of the game, either "x won", "o won", or "cat got it"
 /$
 gameResultDisplay :=
-    {text("x won",point(100,750),fontSize,BLUE)} if threeInRow(`x);
-    {text("o won",point(100,750),fontSize,GREEN)} if threeInRow(`o);
-    {text("cat got it",point(100,750),fontSize,RED)} otherwise
+    {text("x won",point(200,750),fontSize,BLUE)} if threeInRow(`x);
+    {text("o won",point(200,750),fontSize,GREEN)} if threeInRow(`o);
+    {text("cat got it",point(200,750),fontSize,RED)} otherwise
 $/
 
 The *display* is the screen display for the current game state. The grid, cell displays, and restart button are always displayed. Additionally, the display includes the game results if the game is over, and the player to move if the game is not over.
@@ -200,8 +210,9 @@ $/
 *restartClicked* means that the most recent mouse click is inside the region of the play again button.
 /$
 restartClicked :=
-    CLICK_X>400 & CLICK_X<500 &
-    CLICK_Y>725 & CLICK_Y<775
+    CLICKED &
+    CLICK_X > restartLeft & CLICK_X < restartRight &
+    CLICK_Y > restartLow & CLICK_Y < restartHigh
 $/
 
 ________________

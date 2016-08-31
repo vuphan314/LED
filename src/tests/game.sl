@@ -12,37 +12,15 @@ images_(S) :=
 
 /* BELOW IS A COPY OF lib2.sl */
 
-/* todo test newState() manually */
-
-pointCell: int -> Point;
-pointCell(c) :=
-    let
-        v := intToVal(c);
-        x := centerX(v);
-        y := centerY(v);
-        x2 := valToInt(x);
-        y2 := valToInt(y);
-    in
-        point(x2, y2);
-
-inputCell: int -> Input;
-inputCell(c) :=
-    let
-        p := pointCell(c);
-        cl := click(true, p);
-    in
-        input(cl, "");
-
-ic(c) := inputCell(c);
-
-is := initialState;
-
-ns(I, S) := newState(I, S);
+/*
+Easel library
+*/
 
 /* easel required functions */
 
 initialState: State;
-initialState := valToState(initialState_);
+initialState := 
+    valToState(initialState_);
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -58,11 +36,11 @@ images(S) :=
     in
         valToImages(v);
 
-/* default sound */
+/* easel default sound */
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* easel template */
+/* easel template by Bryant */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);
@@ -94,7 +72,7 @@ import <Utilities/Set.sl>;
 /* exporting */
 
 public
-    printNull, // debug-print
+    valNull, // erroneous value
     pp, // pretty-print
     Input, State, // Easel paramters
     Image, Point, // Easel types
@@ -124,19 +102,9 @@ public
 kindNull := "null";
 valNull := (kindLED: kindNull);
 
-printNull: Val;
-printNull :=
-    let
-        v := valNull;
-        st := pp(v) ++ "!!! ";
-    in
-        debugPrint(st, v);
-nul := printNull;
-
 ////////// ////////// ////////// ////////// ////////// //////////
 /* pretty-print */
 
-pp(v) := prettyPrint(v);
 prettyPrint: Val -> char(1);
 prettyPrint(v) :=
     let
@@ -151,7 +119,10 @@ prettyPrint(v) :=
         a when valOfKind(v, kindAtm) else
         numl when valOfKind(v, kindNumb) else
         Conversion::boolToString(t) when valOfKind(v, kindTrth) else
-        prettyPrintColl(c, valToKind(v)); // collection
+        prettyPrintColl(c, valToKind(v)) when valOfKinds(v, kindsColl) else
+        "an Easel " ++ valToKind(v) when valOfKinds(v, kindsEasel) else
+        "CANNOT PRETTY-PRINT THIS TYPE";
+pp(v) := prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
 prettyPrintColl(vs(1), k(1)) :=
@@ -277,9 +248,13 @@ dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
 /* easel game-state */
+
 State ::= (val: Val);
-stateToVal(s) := s.val;
+
 valToState(v) := (val: v);
+stateToVal(s) := s.val;
+
+pps(S) := prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
@@ -314,7 +289,7 @@ CLICK_Y(I) :=
         intToVal(i);
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* kinds of values: char(1) */
+/* value kinds: char(1) */
 
 kindNumb := "numb";
 kindTrth := "trth";
@@ -327,12 +302,18 @@ kindColor := "color";
 kindImage := "image";
 
 ////////// ////////// ////////// ////////// ////////// //////////
+/* value kind-lists: char(2) */
+
+kindsColl := [kindTpl, kindSet];
+kindsEasel := [kindPoint, kindColor, kindImage];
+
+////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
 Val ::= (   kindLED: char(1),
             strg: char(1), atm: char(1), numb: Numb, trth: bool, coll: Val(1),
             lmbd: (Val(1) -> Val),
-            ePoint: Point, eColor: Color, eImage: Image);
+            ePoint: Point, eColor: Color, eImage: Image); // Easel
 
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -341,6 +322,10 @@ valToKind(v) :=
 valOfKind: Val * char(1) -> bool;
 valOfKind(v, k(1)) :=
     equalList(valToKind(v), k);
+
+valOfKinds: Val * char(2) -> bool;
+valOfKinds(v, ks(2)) := 
+    some(valOfKind(v, ks));
 
 valsOfKind: Val * Val * char(1) -> bool;
 valsOfKind(v1, v2, k(1)) :=
@@ -639,20 +624,20 @@ plusOp: Val * Val -> Val;
 plusOp(v1, v2) :=
     add(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl) else
-    printNull;
+    valNull;
 
 starOp: Val * Val -> Val;
 starOp(v1, v2) :=
     mult(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     cross(v1, v2) when valsOfKind(v1, v2, kindSet) else
-    printNull;
+    valNull;
 
 pipesOp: Val -> Val;
 pipesOp(v) :=
     ab(v) when valOfKind(v, kindNumb) else
     card(v) when valOfKind(v, kindSet) else
     tuLen(v) when valOfKind(v, kindTpl) else
-    printNull;
+    valNull;
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* set operations (value) */

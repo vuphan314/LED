@@ -1,7 +1,12 @@
+/*
+Easel library
+*/
+
 /* easel required functions */
 
 initialState: State;
-initialState := valToState(initialState_);
+initialState := 
+    valToState(initialState_);
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -17,11 +22,11 @@ images(S) :=
     in
         valToImages(v);
 
-/* default sound */
+/* easel default sound */
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* easel template */
+/* easel template by Bryant */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);

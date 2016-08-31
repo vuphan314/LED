@@ -1,13 +1,13 @@
-initialState_ :=
+initialState_ := 
 		se([]);
 
-occupies(p, c, S) :=
+occupies(p, c, S) := 
 		setMem(tu([p, c]), CURRENT_STATE(S));
 
-occupied(c, S) :=
+occupied(c, S) := 
 		disj(occupies(at("`x"), c, S), occupies(at("`o"), c, S));
 
-rows :=
+rows := 
 	let
 		hRows := se([se([nu("1"), nu("2"), nu("3")]), se([nu("4"), nu("5"), nu("6")]), se([nu("7"), nu("8"), nu("9")])]);
 		vRows := se([se([nu("1"), nu("4"), nu("7")]), se([nu("2"), nu("5"), nu("8")]), se([nu("3"), nu("6"), nu("9")])]);
@@ -15,41 +15,41 @@ rows :=
 	in
 		unn(unn(hRows, vRows), diagonals);
 
-threeInRow(p, S) :=
+threeInRow(p, S) := 
 		AUX_2_A_(p, S);
 
-boardFull(S) :=
+boardFull(S) := 
 		eq(pipesOp(CURRENT_STATE(S)), nu("9"));
 
-gameOver(S) :=
+gameOver(S) := 
 		disj(disj(boardFull(S), threeInRow(at("`x"), S)), threeInRow(at("`o"), S));
 
-playerToMove(S) :=
+playerToMove(S) := 
 		at("`x") when valToTrth(even(pipesOp(CURRENT_STATE(S)))) else
 		at("`o");
 
-even(n) :=
+even(n) := 
 		eq(md(n, nu("2")), nu("0"));
 
-legalToMoveIn(c, S) :=
+legalToMoveIn(c, S) := 
 		conj(neg(occupied(c, S)), neg(gameOver(S)));
 
-BLACK :=
+BLACK := 
 		color_(nu("0"), nu("0"), nu("0"));
 
-WHITE :=
+WHITE := 
 		color_(nu("255"), nu("255"), nu("255"));
 
-BLUE :=
+BLUE := 
 		color_(nu("0"), nu("0"), nu("255"));
 
-GREEN :=
+GREEN := 
 		color_(nu("0"), nu("255"), nu("0"));
 
-RED :=
+RED := 
 		color_(nu("255"), nu("0"), nu("0"));
 
-gridDisplay :=
+gridDisplay := 
 	let
 		L1 := segment_(point_(nu("200"), nu("700")), point_(nu("200"), nu("400")), BLACK);
 		L2 := segment_(point_(nu("300"), nu("700")), point_(nu("300"), nu("400")), BLACK);
@@ -58,52 +58,73 @@ gridDisplay :=
 	in
 		se([L1, L2, L3, L4]);
 
-fontSize :=
+fontSize := 
 		nu("36");
 
-centerX(c) :=
+centerX(c) := 
 		plusOp(nu("150"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-centerY(c) :=
+centerY(c) := 
 		bMns(nu("650"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-xImage(c) :=
+xImage(c) := 
 		text_(st("x"), point_(centerX(c), centerY(c)), fontSize, BLUE);
 
-oImage(c) :=
+oImage(c) := 
 		text_(st("o"), point_(centerX(c), centerY(c)), fontSize, GREEN);
 
-cellDisplay(c, S) :=
+cellDisplay(c, S) := 
 		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE(S))) else
 		se([oImage(c)]) when valToTrth(setMem(tu([at("`o"), c]), CURRENT_STATE(S))) else
 		se([]);
 
-gameBoard :=
+gameBoard := 
 		iv(nu("1"), nu("9"));
 
-cellDisplays(S) :=
+cellDisplays(S) := 
 		aggrUnn(AUX_4_AGGR_(S));
 
-currentPlayerDisplay(S) :=
+currentPlayerDisplay(S) := 
 		se([text_(st("x's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]) when valToTrth(eq(playerToMove(S), at("`x"))) else
 		se([text_(st("o's turn"), point_(nu("100"), nu("750")), fontSize, BLACK)]);
 
-restartButton :=
+restartLeft := 
+		nu("350");
+
+restartRight := 
+		nu("550");
+
+restartLow := 
+		nu("725");
+
+restartHigh := 
+		nu("775");
+
+mid(a, b) := 
+		div(plusOp(a, b), nu("2"));
+
+restartMidX := 
+		mid(restartLeft, restartRight);
+
+restartMidY := 
+		mid(restartLow, restartHigh);
+
+restartButton := 
 	let
-		A1 := segment_(point_(nu("400"), nu("725")), point_(nu("500"), nu("725")), BLACK);
-		A2 := segment_(point_(nu("400"), nu("775")), point_(nu("500"), nu("775")), BLACK);
-		A3 := segment_(point_(nu("400"), nu("725")), point_(nu("400"), nu("775")), BLACK);
-		A4 := segment_(point_(nu("500"), nu("725")), point_(nu("500"), nu("775")), BLACK);
-		txt := text_(st("restart"), point_(nu("450"), nu("750")), fontSize, BLACK);
+		A1 := segment_(point_(restartLeft, restartLow), point_(restartRight, restartLow), BLACK);
+		A2 := segment_(point_(restartLeft, restartHigh), point_(restartRight, restartHigh), BLACK);
+		A3 := segment_(point_(restartLeft, restartLow), point_(restartLeft, restartHigh), BLACK);
+		A4 := segment_(point_(restartRight, restartLow), point_(restartRight, restartHigh), BLACK);
+		txt := text_(st("restart"), point_(restartMidX, restartMidY), fontSize, BLACK);
 	in
 		se([A1, A2, A3, A4, txt]);
 
-gameResultDisplay(S) :=
-		se([text_(st("x won"), point_(nu("100"), nu("750")), fontSize, BLUE)]) when valToTrth(threeInRow(at("`x"), S)) else
-		se([text_(st("o won"), point_(nu("100"), nu("750")), fontSize, GREEN)]) when valToTrth(threeInRow(at("`o"), S)) else
-		se([text_(st("cat got it"), point_(nu("100"), nu("750")), fontSize, RED)]);
+gameResultDisplay(S) := 
+		se([text_(st("x won"), point_(nu("200"), nu("750")), fontSize, BLUE)]) when valToTrth(threeInRow(at("`x"), S)) else
+		se([text_(st("o won"), point_(nu("200"), nu("750")), fontSize, GREEN)]) when valToTrth(threeInRow(at("`o"), S)) else
+		se([text_(st("cat got it"), point_(nu("200"), nu("750")), fontSize, RED)]);
 
-images_(S) :=
+images_(S) := 
 	let
 		alwaysDisplay := unn(unn(gridDisplay, cellDisplays(S)), restartButton);
 		inPlayDisplay := unn(alwaysDisplay, currentPlayerDisplay(S));
@@ -112,77 +133,77 @@ images_(S) :=
 		gameOverDisplay when valToTrth(gameOver(S)) else
 		inPlayDisplay;
 
-xMin(c) :=
+xMin(c) := 
 		plusOp(nu("100"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-xMax(c) :=
+xMax(c) := 
 		plusOp(nu("200"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
 
-yMin(c) :=
+yMin(c) := 
 		bMns(nu("600"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-yMax(c) :=
+yMax(c) := 
 		bMns(nu("700"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
-cellClicked(c, I) :=
+cellClicked(c, I) := 
 		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), xMin(c))), less(CLICK_X(I), xMax(c))), greater(CLICK_Y(I), yMin(c))), less(CLICK_Y(I), yMax(c)));
 
-restartClicked(I) :=
-		conj(conj(conj(greater(CLICK_X(I), nu("400")), less(CLICK_X(I), nu("500"))), greater(CLICK_Y(I), nu("725"))), less(CLICK_Y(I), nu("775")));
+restartClicked(I) := 
+		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), restartLeft)), less(CLICK_X(I), restartRight)), greater(CLICK_Y(I), restartLow)), less(CLICK_Y(I), restartHigh));
 
-moveMadeIn(c, I, S) :=
+moveMadeIn(c, I, S) := 
 		conj(cellClicked(c, I), legalToMoveIn(c, S));
 
-movesMade(I, S) :=
+movesMade(I, S) := 
 		setCompr(AUX_8_AGGR_(I, S));
 
-newState_(I, S) :=
+newState_(I, S) := 
 		initialState_ when valToTrth(restartClicked(I)) else
 		unn(CURRENT_STATE(S), movesMade(I, S));
 
 /* AUXILIARY FUNCTIONS */
 
-AUX_1_A_(p, S, R) :=
+AUX_1_A_(p, S, R) := 
 		allSet(AUX_1_B_(p, S, R));
 
-AUX_1_B_(p, S, R)[i_] :=
+AUX_1_B_(p, S, R)[i_] := 
 	let
 		c := AUX_1_C_(p, S, R)[i_];
 	in
 		occupies(p, c, S);
 
-AUX_1_C_(p, S, R) :=
+AUX_1_C_(p, S, R) := 
 		valToSet(R);
 
-AUX_2_A_(p, S) :=
+AUX_2_A_(p, S) := 
 		someSet(AUX_2_B_(p, S));
 
-AUX_2_B_(p, S)[i_] :=
+AUX_2_B_(p, S)[i_] := 
 	let
 		R := AUX_2_C_(p, S)[i_];
 	in
 		AUX_1_A_(p, S, R);
 
-AUX_2_C_(p, S) :=
+AUX_2_C_(p, S) := 
 		valToSet(rows);
 
-AUX_3_AGGR_(S) :=
+AUX_3_AGGR_(S) := 
 		solSet(gameBoard);
 
-AUX_4_AGGR_(S)[i_] :=
-			let
+AUX_4_AGGR_(S)[i_] := 
+	let
 		b_ := AUX_3_AGGR_(S)[i_];
 		c := b_[1];
 	in
 		cellDisplay(c, S);
 
-AUX_5_AGGR_(I, S) :=
+AUX_5_AGGR_(I, S) := 
 		solSet(gameBoard);
 
-AUX_6_AGGR_(I, S, c) :=
+AUX_6_AGGR_(I, S, c) := 
 		solGround(moveMadeIn(c, I, S));
 
-AUX_7_DEEP_(I, S)[i1_, i2_] :=
+AUX_7_DEEP_(I, S)[i1_, i2_] := 
 			let
 		b1_ := AUX_5_AGGR_(I, S)[i1_];
 		c := b1_[1];
@@ -190,11 +211,11 @@ AUX_7_DEEP_(I, S)[i1_, i2_] :=
 	in
 		unnBinds(b1_, b2_);
 
-AUX_7_AGGR_(I, S) :=
+AUX_7_AGGR_(I, S) := 
 		join(AUX_7_DEEP_(I, S));
 
-AUX_8_AGGR_(I, S)[i_] :=
-			let
+AUX_8_AGGR_(I, S)[i_] := 
+	let
 		b_ := AUX_7_AGGR_(I, S)[i_];
 		c := b_[1];
 	in
@@ -203,53 +224,17 @@ AUX_8_AGGR_(I, S)[i_] :=
 /* ********** ********** ********** ********** ********** ********** */
 /* SECTION START */
 
-/* BELOW IS A COPY OF lib3.sl */
-
-/* todo test newState() manually */
-
-pointCell: int -> Point;
-pointCell(c) :=
-    let
-        v := intToVal(c);
-        x := centerX(v);
-        y := centerY(v);
-        x2 := valToInt(x);
-        y2 := valToInt(y);
-    in
-        point(x2, y2);
-
-inputCell: int -> Input;
-inputCell(c) :=
-    let
-        p := pointCell(c);
-        cl := click(true, p);
-    in
-        input(cl, "");
-
-ic(c) := inputCell(c);
-
-is := initialState;
-
-ns(I, S) := newState(I, S);
-
-x1 := ns(ic(1), is);
-o4 := ns(ic(4), x1);
-x2 := ns(ic(2), o4);
-o5 := ns(ic(5), x2);
-x3 := ns(ic(3), o5);
-
-/* SECTION END */
-/* ********** ********** ********** ********** ********** ********** */
-
-/* ********** ********** ********** ********** ********** ********** */
-/* SECTION START */
-
 /* BELOW IS A COPY OF lib2.sl */
+
+/*
+Easel library
+*/
 
 /* easel required functions */
 
 initialState: State;
-initialState := valToState(initialState_);
+initialState := 
+    valToState(initialState_);
 
 newState: Input * State -> State;
 newState(I, S) :=
@@ -265,11 +250,11 @@ images(S) :=
     in
         valToImages(v);
 
-/* default sound */
+/* easel default sound */
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* easel template */
+/* easel template by Bryant */
 // State ::= (time: int);
 // initialState := (time: 0);
 // newState(I, S) := (time: S.time + 1);
@@ -301,7 +286,7 @@ import <Utilities/Set.sl>;
 /* exporting */
 
 public
-    printNull, // debug-print
+    valNull, // erroneous value
     pp, // pretty-print
     Input, State, // Easel paramters
     Image, Point, // Easel types
@@ -331,15 +316,6 @@ public
 kindNull := "null";
 valNull := (kindLED: kindNull);
 
-printNull: Val;
-printNull :=
-    let
-        v := valNull;
-        st := pp(v) ++ "!!! ";
-    in
-        debugPrint(st, v);
-nul := printNull;
-
 ////////// ////////// ////////// ////////// ////////// //////////
 /* pretty-print */
 
@@ -357,7 +333,9 @@ prettyPrint(v) :=
         a when valOfKind(v, kindAtm) else
         numl when valOfKind(v, kindNumb) else
         Conversion::boolToString(t) when valOfKind(v, kindTrth) else
-        prettyPrintColl(c, valToKind(v)); // collection
+        prettyPrintColl(c, valToKind(v)) when valOfKinds(v, kindsColl) else
+        "an Easel " ++ valToKind(v) when valOfKinds(v, kindsEasel) else
+        "CANNOT PRETTY-PRINT THIS TYPE";
 pp(v) := prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
@@ -484,10 +462,13 @@ dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
 /* easel game-state */
+
 State ::= (val: Val);
-stateToVal(s) := s.val;
+
 valToState(v) := (val: v);
-pps(S) := pp(S.val);
+stateToVal(s) := s.val;
+
+pps(S) := prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
@@ -522,7 +503,7 @@ CLICK_Y(I) :=
         intToVal(i);
 
 ////////// ////////// ////////// ////////// ////////// //////////
-/* kinds of values: char(1) */
+/* value kinds: char(1) */
 
 kindNumb := "numb";
 kindTrth := "trth";
@@ -535,12 +516,18 @@ kindColor := "color";
 kindImage := "image";
 
 ////////// ////////// ////////// ////////// ////////// //////////
+/* value kind-lists: char(2) */
+
+kindsColl := [kindTpl, kindSet];
+kindsEasel := [kindPoint, kindColor, kindImage];
+
+////////// ////////// ////////// ////////// ////////// //////////
 /* type: value */
 
 Val ::= (   kindLED: char(1),
             strg: char(1), atm: char(1), numb: Numb, trth: bool, coll: Val(1),
             lmbd: (Val(1) -> Val),
-            ePoint: Point, eColor: Color, eImage: Image);
+            ePoint: Point, eColor: Color, eImage: Image); // Easel
 
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -549,6 +536,10 @@ valToKind(v) :=
 valOfKind: Val * char(1) -> bool;
 valOfKind(v, k(1)) :=
     equalList(valToKind(v), k);
+
+valOfKinds: Val * char(2) -> bool;
+valOfKinds(v, ks(2)) := 
+    some(valOfKind(v, ks));
 
 valsOfKind: Val * Val * char(1) -> bool;
 valsOfKind(v1, v2, k(1)) :=
@@ -847,20 +838,20 @@ plusOp: Val * Val -> Val;
 plusOp(v1, v2) :=
     add(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     tuConc(v1, v2) when valsOfKind(v1, v2, kindTpl) else
-    printNull;
+    valNull;
 
 starOp: Val * Val -> Val;
 starOp(v1, v2) :=
     mult(v1, v2) when valsOfKind(v1, v2, kindNumb) else
     cross(v1, v2) when valsOfKind(v1, v2, kindSet) else
-    printNull;
+    valNull;
 
 pipesOp: Val -> Val;
 pipesOp(v) :=
     ab(v) when valOfKind(v, kindNumb) else
     card(v) when valOfKind(v, kindSet) else
     tuLen(v) when valOfKind(v, kindTpl) else
-    printNull;
+    valNull;
 
 ////////// ////////// ////////// ////////// ////////// //////////
 /* set operations (value) */
