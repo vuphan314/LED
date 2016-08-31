@@ -151,19 +151,26 @@ The *restart button* consists of a rectangle around a "restart" text, displayed 
 /$
 restartLeft := 350
 restartRight := 550
-restartLow := 725
-restartHigh := 775
+
+restartBottom := 725
+restartTop := 775
+
+restartBottomLeftPoint := point(restartLeft, restartBottom)
+restartBottomRightPoint := point(restartRight, restartBottom)
+
+restartTopLeftPoint := point(restartLeft, restartTop)
+restartTopRightPoint := point(restartRight, restartTop)
 
 mid(a, b) := (a + b) / 2
 
 restartMidX := mid(restartLeft, restartRight)
-restartMidY := mid(restartLow, restartHigh)
+restartMidY := mid(restartBottom, restartTop)
 
 restartButton := {A1,A2,A3,A4,txt} where
-    A1 = segment(point(restartLeft,restartLow),point(restartRight,restartLow),BLACK) &
-    A2 = segment(point(restartLeft,restartHigh),point(restartRight,restartHigh),BLACK) &
-    A3 = segment(point(restartLeft,restartLow),point(restartLeft,restartHigh),BLACK) &
-    A4 = segment(point(restartRight,restartLow),point(restartRight,restartHigh),BLACK) &
+    A1 = segment(restartBottomLeftPoint,restartBottomRightPoint,BLACK) &
+    A2 = segment(restartTopLeftPoint,restartTopRightPoint,BLACK) &
+    A3 = segment(restartBottomLeftPoint,restartTopLeftPoint,BLACK) &
+    A4 = segment(restartBottomRightPoint,restartTopRightPoint,BLACK) &
     txt = text("restart",point(restartMidX,restartMidY),fontSize,BLACK)
 $/
 
@@ -212,7 +219,7 @@ $/
 restartClicked :=
     CLICKED &
     CLICK_X > restartLeft & CLICK_X < restartRight &
-    CLICK_Y > restartLow & CLICK_Y < restartHigh
+    CLICK_Y > restartBottom & CLICK_Y < restartTop
 $/
 
 ________________

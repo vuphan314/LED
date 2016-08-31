@@ -94,11 +94,23 @@ restartLeft :=
 restartRight := 
 		nu("550");
 
-restartLow := 
+restartBottom := 
 		nu("725");
 
-restartHigh := 
+restartTop := 
 		nu("775");
+
+restartBottomLeftPoint := 
+		point_(restartLeft, restartBottom);
+
+restartBottomRightPoint := 
+		point_(restartRight, restartBottom);
+
+restartTopLeftPoint := 
+		point_(restartLeft, restartTop);
+
+restartTopRightPoint := 
+		point_(restartRight, restartTop);
 
 mid(a, b) := 
 		div(plusOp(a, b), nu("2"));
@@ -107,14 +119,14 @@ restartMidX :=
 		mid(restartLeft, restartRight);
 
 restartMidY := 
-		mid(restartLow, restartHigh);
+		mid(restartBottom, restartTop);
 
 restartButton := 
 	let
-		A1 := segment_(point_(restartLeft, restartLow), point_(restartRight, restartLow), BLACK);
-		A2 := segment_(point_(restartLeft, restartHigh), point_(restartRight, restartHigh), BLACK);
-		A3 := segment_(point_(restartLeft, restartLow), point_(restartLeft, restartHigh), BLACK);
-		A4 := segment_(point_(restartRight, restartLow), point_(restartRight, restartHigh), BLACK);
+		A1 := segment_(restartBottomLeftPoint, restartBottomRightPoint, BLACK);
+		A2 := segment_(restartTopLeftPoint, restartTopRightPoint, BLACK);
+		A3 := segment_(restartBottomLeftPoint, restartTopLeftPoint, BLACK);
+		A4 := segment_(restartBottomRightPoint, restartTopRightPoint, BLACK);
 		txt := text_(st("restart"), point_(restartMidX, restartMidY), fontSize, BLACK);
 	in
 		se([A1, A2, A3, A4, txt]);
@@ -149,7 +161,7 @@ cellClicked(c, I) :=
 		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), xMin(c))), less(CLICK_X(I), xMax(c))), greater(CLICK_Y(I), yMin(c))), less(CLICK_Y(I), yMax(c)));
 
 restartClicked(I) := 
-		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), restartLeft)), less(CLICK_X(I), restartRight)), greater(CLICK_Y(I), restartLow)), less(CLICK_Y(I), restartHigh));
+		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), restartLeft)), less(CLICK_X(I), restartRight)), greater(CLICK_Y(I), restartBottom)), less(CLICK_Y(I), restartTop));
 
 moveMadeIn(c, I, S) := 
 		conj(cellClicked(c, I), legalToMoveIn(c, S));

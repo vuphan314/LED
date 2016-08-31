@@ -18,10 +18,8 @@ goto starting
         echo !base!
 
         REM !parse!
-
         REM !parse! >> !led!
         REM !led!
-
         REM !parse! > !p!
         REM !p!
 
