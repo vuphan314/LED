@@ -216,10 +216,12 @@ AUX_6_AGGR_(I, S, c) :=
 		solGround(moveMadeIn(c, I, S));
 
 AUX_7_DEEP_(I, S)[i1_, i2_] := 
-			let
-		b1_ := AUX_5_AGGR_(I, S)[i1_];
+	let
+		workaround1_ := AUX_5_AGGR_(I, S);
+		b1_ := workaround1_[i1_];
 		c := b1_[1];
-		b2_ := AUX_6_AGGR_(I, S, c)[i2_];
+		workaround2_ := AUX_6_AGGR_(I, S, c);
+		b2_ := workaround2_[i2_];
 	in
 		unnBinds(b1_, b2_);
 

@@ -512,7 +512,7 @@ class UnparserInfo:
         func = self.aFunc
         letCls = self.aGetAggrLetClauses(ind)
         inCl = self.aTerm
-        
+
         st = defRecur(  self, func, (), inCl, letCls = letCls, \
                         inds = (ind,), moreSpace = True)
         return st
@@ -557,26 +557,30 @@ class UnparserInfo:
         bindings = 'b1_', 'b2_'
         inds = 'i1_', 'i2_'
 
-        letCls = self.aGetConjLetClauses(bindings, inds)
-        expr = writeLetClauses(letCls)
-
-        inCl = applyRecur(self, 'unnBinds', bindings)
-        expr += writeInClause(inCl)
-
         func = self.aGetFuncConjDeep()
-        st = defRecur(self, func, (), expr, inds = inds, moreSpace = True)
+        expr = applyRecur(self, 'unnBinds', bindings)
+        letCls = self.aGetConjLetClauses(bindings, inds)
+
+        st = defRecur(  self, func, (), expr, letCls = letCls, \
+                        inds = inds, moreSpace = True)
         return st
 
     # aGetConjLetClauses: tuple(str) * tuple(str) -> tuple(str)
     def aGetConjLetClauses(self, bindings, inds):
+        workarounds = 'workaround1_', 'workaround2_'
         funcs = self.subInst1.aFunc, self.subInst2.aFunc
         letCls = ()
         for i in range(2):
+            # assign workaround
+            workaround = workarounds[i]
             func = funcs[i]
+            letCls += defRecur(self, workaround, (), func),
+            # call workaround
             ind = inds[i]
-            expr = applyRecur(self, func, (), inds = (ind,))
+            expr = applyRecur(self, workaround, (), inds = (ind,))
             binding = bindings[i]
             letCls += defRecur(self, binding, (), expr),
+        n = int(len(letCls) / 2)
 
         sts = ()
         for i in range(self.subInst1.getNumDepSymbs()):
@@ -586,7 +590,7 @@ class UnparserInfo:
             expr = applyRecur(self, func, (), inds = (num,))
             sts += defRecur(self, symb, (), expr),
 
-        sts = letCls[:1] + sts + letCls[1:]
+        sts = letCls[:n] + sts + letCls[n:]
         return sts
 
     # aGetFuncConjDeep: str
