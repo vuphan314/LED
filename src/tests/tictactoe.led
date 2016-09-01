@@ -24,10 +24,13 @@ A *move* is a pair (p,c) where p is a player and c is a cell. The move (p,c) rep
 
 A *state* is a set of moves, thought of as the set of moves made far in the game. In this program, the variable S will range over states.
 
+Tell the translator to produce a SequenceL file that runs with Easel:
+/$ #isGame $/
+
 Global variables:
-- *CURRENT_STATE*: same type as user-defined *initialState*
-- *CLICKED*: true/false
-- *CLICK_X*, *CLICK_Y*: integer
+- *currentState*: same type as user-defined *initialState*
+- *mouseClicked*: true/false
+- *mouseX*, *mouseY*: integer
 
 ======================================================================
 GAME RULES
@@ -40,9 +43,9 @@ Since the state of the game is the set of moves that have been made, the beginni
 initialState := {}
 $/
 
-Player p *occupies* cell c if the move (p,c) is a member of CURRENT_STATE. Cell c is *occupied* if it is occupied by `x or by `o.
+Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c is *occupied* if it is occupied by `x or by `o.
 /$
-occupies(p,c) iff (p,c) in CURRENT_STATE
+occupies(p,c) iff (p,c) in currentState
 
 occupied(c) iff occupies(`x,c) or occupies(`o,c)
 $/
@@ -62,7 +65,7 @@ $/
 
 *boardFull* if and only if all cells are occupied.
 /$
-boardFull := |CURRENT_STATE| = 9
+boardFull := |currentState| = 9
 $/
 
 *gameOver* if either the board is full, or one of the players three in a row.
@@ -73,7 +76,7 @@ $/
 *playerToMove* is `x if an even number of moves have been made, and `o otherwise.
 /$
 playerToMove :=
-    `x if even(|CURRENT_STATE|);
+    `x if even(|currentState|);
     `o otherwise
 
 even(n) iff n mod 2 = 0
@@ -126,8 +129,8 @@ xImage(c) := text("x", point(centerX(c), centerY(c)), fontSize, BLUE)
 oImage(c) := text("o", point(centerX(c), centerY(c)), fontSize, GREEN)
 
 cellDisplay(c) :=
-    {xImage(c)} if (`x, c) in CURRENT_STATE;
-    {oImage(c)} if (`o, c) in CURRENT_STATE;
+    {xImage(c)} if (`x, c) in currentState;
+    {oImage(c)} if (`o, c) in currentState;
     {} otherwise
 $/
 
@@ -209,17 +212,17 @@ $/
 cellClicked(c) means that cell c has been clicked.
 /$
 cellClicked(c) iff
-    CLICKED &
-    CLICK_X > xMin(c) & CLICK_X < xMax(c) &
-    CLICK_Y > yMin(c) & CLICK_Y < yMax(c)
+    mouseClicked &
+    mouseX > xMin(c) & mouseX < xMax(c) &
+    mouseY > yMin(c) & mouseY < yMax(c)
 $/
 
 *restartClicked* means that the most recent mouse click is inside the region of the play again button.
 /$
 restartClicked :=
-    CLICKED &
-    CLICK_X > restartLeft & CLICK_X < restartRight &
-    CLICK_Y > restartBottom & CLICK_Y < restartTop
+    mouseClicked &
+    mouseX > restartLeft & mouseX < restartRight &
+    mouseY > restartBottom & mouseY < restartTop
 $/
 
 ________________
@@ -232,5 +235,5 @@ movesMade := {(playerToMove,c) | c in gameBoard & moveMadeIn(c)}
 
 newState :=
     initialState if restartClicked;
-    CURRENT_STATE U movesMade otherwise
+    currentState U movesMade otherwise
 $/

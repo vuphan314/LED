@@ -1,6 +1,7 @@
 prog_el_s(progEls P) ::= prog_el(P)
 prog_el_s(progEls P cut_root(Ps)) ::= prog_el(P) prog_el_s(Ps)
 
+prog_el(H) ::= hashIsGame(H)
 prog_el(V) ::= var_decl(V)
 prog_el(D) ::= def_(D)
 

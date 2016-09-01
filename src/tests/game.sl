@@ -2,10 +2,10 @@ initialState_ :=
 		nu("0");
 
 newState_(I, S) := 
-		plusOp(CURRENT_STATE(S), nu("1"));
+		plusOp(currentState(S), nu("1"));
 
 images_(S) := 
-		se([text_(st(pp(CURRENT_STATE(S))), point_(nu("500"), nu("400")), nu("100"), color_(nu("0"), nu("0"), nu("255")))]);
+		se([text_(st(pp(currentState(S))), point_(nu("500"), nu("400")), nu("100"), color_(nu("0"), nu("0"), nu("255")))]);
 
 /* ********** ********** ********** ********** ********** ********** */
 /* SECTION START */
@@ -258,20 +258,20 @@ pps(S) := prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
-CURRENT_STATE: State -> Val;
-CURRENT_STATE(S) :=
+currentState: State -> Val;
+currentState(S) :=
     stateToVal(S);
 
-CLICKED: Input -> Val;
-CLICKED(I) :=
+mouseClicked: Input -> Val;
+mouseClicked(I) :=
     let
         c := I.iClick;
         t := c.clicked;
     in
         trthToVal(t);
 
-CLICK_X: Input -> Val;
-CLICK_X(I) :=
+mouseX: Input -> Val;
+mouseX(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
@@ -279,8 +279,8 @@ CLICK_X(I) :=
     in
         intToVal(i);
 
-CLICK_Y: Input -> Val;
-CLICK_Y(I) :=
+mouseY: Input -> Val;
+mouseY(I) :=
     let
         c := I.iClick;
         p := c.clPoint;

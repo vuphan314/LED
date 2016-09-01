@@ -2,7 +2,7 @@ initialState_ :=
 		se([]);
 
 occupies(p, c, S) := 
-		setMem(tu([p, c]), CURRENT_STATE(S));
+		setMem(tu([p, c]), currentState(S));
 
 occupied(c, S) := 
 		disj(occupies(at("`x"), c, S), occupies(at("`o"), c, S));
@@ -19,13 +19,13 @@ threeInRow(p, S) :=
 		AUX_2_A_(p, S);
 
 boardFull(S) := 
-		eq(pipesOp(CURRENT_STATE(S)), nu("9"));
+		eq(pipesOp(currentState(S)), nu("9"));
 
 gameOver(S) := 
 		disj(disj(boardFull(S), threeInRow(at("`x"), S)), threeInRow(at("`o"), S));
 
 playerToMove(S) := 
-		at("`x") when valToTrth(even(pipesOp(CURRENT_STATE(S)))) else
+		at("`x") when valToTrth(even(pipesOp(currentState(S)))) else
 		at("`o");
 
 even(n) := 
@@ -74,8 +74,8 @@ oImage(c) :=
 		text_(st("o"), point_(centerX(c), centerY(c)), fontSize, GREEN);
 
 cellDisplay(c, S) := 
-		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), CURRENT_STATE(S))) else
-		se([oImage(c)]) when valToTrth(setMem(tu([at("`o"), c]), CURRENT_STATE(S))) else
+		se([xImage(c)]) when valToTrth(setMem(tu([at("`x"), c]), currentState(S))) else
+		se([oImage(c)]) when valToTrth(setMem(tu([at("`o"), c]), currentState(S))) else
 		se([]);
 
 gameBoard := 
@@ -158,10 +158,10 @@ yMax(c) :=
 		bMns(nu("700"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
 
 cellClicked(c, I) := 
-		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), xMin(c))), less(CLICK_X(I), xMax(c))), greater(CLICK_Y(I), yMin(c))), less(CLICK_Y(I), yMax(c)));
+		conj(conj(conj(conj(mouseClicked(I), greater(mouseX(I), xMin(c))), less(mouseX(I), xMax(c))), greater(mouseY(I), yMin(c))), less(mouseY(I), yMax(c)));
 
 restartClicked(I) := 
-		conj(conj(conj(conj(CLICKED(I), greater(CLICK_X(I), restartLeft)), less(CLICK_X(I), restartRight)), greater(CLICK_Y(I), restartBottom)), less(CLICK_Y(I), restartTop));
+		conj(conj(conj(conj(mouseClicked(I), greater(mouseX(I), restartLeft)), less(mouseX(I), restartRight)), greater(mouseY(I), restartBottom)), less(mouseY(I), restartTop));
 
 moveMadeIn(c, I, S) := 
 		conj(cellClicked(c, I), legalToMoveIn(c, S));
@@ -171,7 +171,7 @@ movesMade(I, S) :=
 
 newState_(I, S) := 
 		initialState_ when valToTrth(restartClicked(I)) else
-		unn(CURRENT_STATE(S), movesMade(I, S));
+		unn(currentState(S), movesMade(I, S));
 
 /* AUXILIARY FUNCTIONS */
 
@@ -301,9 +301,10 @@ import <Utilities/Set.sl>;
 
 public
     valNull, // erroneous value
-    pp, // pretty-print
+    pp, pps, // pretty-print
+    Click, Image, Point, // Easel types
     Input, State, // Easel paramters
-    Image, Point, // Easel types
+    currentState, valToState, valToImages, text_, point_, color_, // Easel helpers
     Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
@@ -486,20 +487,20 @@ pps(S) := prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
-CURRENT_STATE: State -> Val;
-CURRENT_STATE(S) :=
+currentState: State -> Val;
+currentState(S) :=
     stateToVal(S);
 
-CLICKED: Input -> Val;
-CLICKED(I) :=
+mouseClicked: Input -> Val;
+mouseClicked(I) :=
     let
         c := I.iClick;
         t := c.clicked;
     in
         trthToVal(t);
 
-CLICK_X: Input -> Val;
-CLICK_X(I) :=
+mouseX: Input -> Val;
+mouseX(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
@@ -507,8 +508,8 @@ CLICK_X(I) :=
     in
         intToVal(i);
 
-CLICK_Y: Input -> Val;
-CLICK_Y(I) :=
+mouseY: Input -> Val;
+mouseY(I) :=
     let
         c := I.iClick;
         p := c.clPoint;

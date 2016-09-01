@@ -1,3 +1,5 @@
+hashIsGame = \A#isGame\Z
+
 numl = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 string = "[^"]*"
 atom = `[a-zA-Z][a-zA-Z\d]*

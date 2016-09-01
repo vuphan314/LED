@@ -11,23 +11,10 @@ from tester import *
 
 ########## ########## ########## ########## ########## ##########
 '''
-SL testing
-'''
-
-# printTest: str
-def printTest():
-    st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
-    for const in defedConsts:
-        func = applyRecur(None, 'pp', (const,))
-        st += func + '\n'
-    st += '\n(pp: pretty-print)'
-    st = blockComment(st)
-    return st
-
-########## ########## ########## ########## ########## ##########
-'''
 python global variables
 '''
+
+isGame = False
 
 defedFuncs = ()
 defedConsts = () # ('c1', 'c2',...)
@@ -43,13 +30,14 @@ note: tree := tuple/str
 '''
 
 # unparseTop: list -> str
-def unparseTop(L, useEasel = False):
+def unparseTop(L):
     T = listToTree(L)
+    T = updateIsGame(T)
 
     T = addOtherwiseClause(T)
     updateDefedFuncs(T)
 
-    if useEasel:
+    if isGame:
         updateFuncsAddParams(T)
         T = addEaselParams(T)
         imports = ''
@@ -276,8 +264,8 @@ def appendUnderscore(st):
         st += '_'
     return st
 
-easelFuncsClick = {'CLICKED', 'CLICK_X', 'CLICK_Y'}
-easelFuncsCurrentState = {'CURRENT_STATE'}
+easelFuncsClick = {'mouseClicked', 'mouseX', 'mouseY'}
+easelFuncsCurrentState = {'currentState'}
 easelFuncsGlobal = easelFuncsClick | easelFuncsCurrentState
 
 easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
@@ -1051,3 +1039,34 @@ def importLib():
 def prependLib(st):
     st = libAs + st
     return st
+
+########## ########## ########## ########## ########## ##########
+'''
+SL test constants
+'''
+
+# printTest: str
+def printTest():
+    st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
+    for const in defedConsts:
+        func = applyRecur(None, 'pp', (const,))
+        st += func + '\n'
+    st += '\n(pp: pretty-print)'
+    st = blockComment(st)
+    return st
+
+########## ########## ########## ########## ########## ##########
+'''
+for each keyword #isGame found: make isGame true and delete keyword from parsetree
+'''
+
+# updateIsGame: tree -> tree
+def updateIsGame(prog):
+    prog2 = prog[:1]
+    for el in prog[1:]:
+        if el[0] == 'hashIsGame':
+            global isGame
+            isGame = True
+        else:
+            prog2 += el,
+    return prog2

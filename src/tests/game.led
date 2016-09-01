@@ -1,4 +1,7 @@
-/$ initialState := 0
-newState := CURRENT_STATE + 1
-images := {text(st(pp(CURRENT_STATE)), point(500, 400), 100, color(0, 0, 255))}
+/$ #isGame $/
+
+/$ 
+initialState := 0
+newState := currentState + 1
+images := {text(st(pp(currentState)), point(500, 400), 100, color(0, 0, 255))}
  $/

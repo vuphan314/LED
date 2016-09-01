@@ -15,9 +15,10 @@ import <Utilities/Set.sl>;
 
 public
     valNull, // erroneous value
-    pp, // pretty-print
+    pp, pps, // pretty-print
+    Click, Image, Point, // Easel types
     Input, State, // Easel paramters
-    Image, Point, // Easel types
+    currentState, valToState, valToImages, text_, point_, color_, // Easel helpers
     Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
@@ -200,20 +201,20 @@ pps(S) := prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
-CURRENT_STATE: State -> Val;
-CURRENT_STATE(S) :=
+currentState: State -> Val;
+currentState(S) :=
     stateToVal(S);
 
-CLICKED: Input -> Val;
-CLICKED(I) :=
+mouseClicked: Input -> Val;
+mouseClicked(I) :=
     let
         c := I.iClick;
         t := c.clicked;
     in
         trthToVal(t);
 
-CLICK_X: Input -> Val;
-CLICK_X(I) :=
+mouseX: Input -> Val;
+mouseX(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
@@ -221,8 +222,8 @@ CLICK_X(I) :=
     in
         intToVal(i);
 
-CLICK_Y: Input -> Val;
-CLICK_Y(I) :=
+mouseY: Input -> Val;
+mouseY(I) :=
     let
         c := I.iClick;
         p := c.clPoint;
