@@ -1,3 +1,9 @@
+/* Copy/paste the block below into the SequenceL interpreter to test:
+
+pp(initialState_)
+
+(pp: pretty-print) */
+
 initialState_ := 
 		nu("0");
 
@@ -73,9 +79,10 @@ import <Utilities/Set.sl>;
 
 public
     valNull, // erroneous value
-    pp, // pretty-print
+    pp, pps, // pretty-print
+    Click, Image, Point, // Easel types
     Input, State, // Easel paramters
-    Image, Point, // Easel types
+    currentState, valToState, valToImages, text_, point_, color_, // Easel helpers
     Val, Numb, // LED types
     setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set

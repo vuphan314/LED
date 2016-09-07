@@ -237,3 +237,48 @@ newState :=
     initialState if restartClicked;
     currentState U movesMade otherwise
 $/
+
+test:
+
+cmd:>pp(initialState_)
+"{}"
+cmd:>pp(rows)
+"{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, {1, 5, 9}, {3, 5, 7}}"
+cmd:>pp(BLACK)
+"an Easel color"
+cmd:>pp(WHITE)
+"an Easel color"
+cmd:>pp(BLUE)
+"an Easel color"
+cmd:>pp(GREEN)
+"an Easel color"
+cmd:>pp(RED)
+"an Easel color"
+cmd:>pp(gridDisplay)
+"{an Easel image, an Easel image, an Easel image, an Easel image}"
+cmd:>pp(fontSize)
+"36"
+cmd:>pp(gameBoard)
+"{1, 2, 3, 4, 5, 6, 7, 8, 9}"
+cmd:>pp(restartLeft)
+"350"
+cmd:>pp(restartRight)
+"550"
+cmd:>pp(restartBottom)
+"725"
+cmd:>pp(restartTop)
+"775"
+cmd:>pp(restartBottomLeftPoint)
+"an Easel point"
+cmd:>pp(restartBottomRightPoint)
+"an Easel point"
+cmd:>pp(restartTopLeftPoint)
+"an Easel point"
+cmd:>pp(restartTopRightPoint)
+"an Easel point"
+cmd:>pp(restartMidX)
+"450"
+cmd:>pp(restartMidY)
+"750"
+cmd:>pp(restartButton)
+"{an Easel image, an Easel image, an Easel image, an Easel image, an Easel image}"

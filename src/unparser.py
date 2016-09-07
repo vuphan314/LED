@@ -35,16 +35,19 @@ def unparseTop(L):
     T = updateIsGame(T)
 
     T = addOtherwiseClause(T)
-    updateDefedFuncs(T)
+    updateDefedFuncsConsts(T)
 
     if isGame:
         updateFuncsAddParams(T)
         T = addEaselParams(T)
+        updateDefedConsts(T) # some constants were added parameters
         imports = ''
-        tests = ''
+            # Easel doesn't work well with imports;
+            # translator will append copies of libraries to output file
     else:
         imports = importLib()
-        tests = printTest()
+
+    tests = printTest()
 
     # for quantification
     T = expandSymsInS(T)
@@ -55,7 +58,7 @@ def unparseTop(L):
     if auxFuncDefs != '':
         st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
 
-    st = imports + st + tests
+    st = tests + imports + st
     return st
 
 ########## ########## ########## ########## ########## ##########
@@ -156,11 +159,11 @@ def recurTree(F, T):
 
 ########## ########## ########## ########## ########## ##########
 '''
-update defined functions
+update defined functions/constants
 '''
 
-# updateDefedFuncs: tree -> void
-def updateDefedFuncs(prog):
+# updateDefedFuncsConsts: tree -> void
+def updateDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
     for definition in prog[1:]:
@@ -169,9 +172,18 @@ def updateDefedFuncs(prog):
         if definition[0] == 'constDef':
             defedConsts += st,
 
+# updateDefedConsts: tree -> void
+def updateDefedConsts(prog):
+    global defedConsts
+    defedConsts = ()
+    for definition in prog[1:]:
+        if definition[0] == 'constDef':
+            st = definition[1][1][1]
+            defedConsts += st,
+
 ########## ########## ########## ########## ########## ##########
 '''
-easel
+Easel
 '''
 
 # addEaselParams: tree -> tree
@@ -268,8 +280,9 @@ easelFuncsClick = {'mouseClicked', 'mouseX', 'mouseY'}
 easelFuncsCurrentState = {'currentState'}
 easelFuncsGlobal = easelFuncsClick | easelFuncsCurrentState
 
-easelFuncsConstructor = {   'point', 'color', 'click', 'input', 'segment', 'circle',
-                            'text', 'disc', 'fTri', 'graphic'}
+easelFuncsConstructor = {\
+    'point', 'color', 'click', 'input', 'segment', 'circle', \
+    'text', 'disc', 'fTri', 'graphic'}
 easelFuncsAddNeither = easelFuncsConstructor | {'initialState'}
 
 easelFuncsAddInput = easelFuncsClick
@@ -278,8 +291,9 @@ easelFuncsAddState = easelFuncsCurrentState | {'images'}
 
 easelFuncsAddBoth = {'newState'}
 
-easelFuncs =    easelFuncsAddNeither | easelFuncsAddInput | easelFuncsAddState | \
-                easelFuncsAddBoth
+easelFuncs = \
+    easelFuncsAddNeither | easelFuncsAddInput | easelFuncsAddState | \
+    easelFuncsAddBoth
 
 funcsAddParams = {  'addNeither': easelFuncsAddNeither,
                     'addInput': easelFuncsAddInput,
@@ -1047,17 +1061,24 @@ SL test constants
 
 # printTest: str
 def printTest():
-    st = 'Copy/paste the block below into SequenceL interpreter to test:\n\n'
+    st = ''
     for const in defedConsts:
-        func = applyRecur(None, 'pp', (const,))
-        st += func + '\n'
-    st += '\n(pp: pretty-print)'
-    st = blockComment(st)
+        if const == 'initialState' or const not in easelFuncs:
+            func = applyRecur(None, 'pp', (const,))
+            st += func + '\n'
+    if st != '':
+        head = 'Copy/paste the block below into the SequenceL interpreter to test:\n\n'
+        tail = '\n(pp: pretty-print)'
+        st = head + st + tail
+        st = blockComment(st)
+        st += '\n\n'
     return st
 
 ########## ########## ########## ########## ########## ##########
 '''
-for each keyword #isGame found: make isGame true and delete keyword from parsetree
+for each keyword $#isGame$ found in LED input file
+- make python global variable $isGame$ true
+- delete keyword from parsetree
 '''
 
 # updateIsGame: tree -> tree

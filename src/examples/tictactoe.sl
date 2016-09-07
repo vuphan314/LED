@@ -1,3 +1,29 @@
+/* Copy/paste the block below into the SequenceL interpreter to test:
+
+pp(initialState_)
+pp(rows)
+pp(BLACK)
+pp(WHITE)
+pp(BLUE)
+pp(GREEN)
+pp(RED)
+pp(gridDisplay)
+pp(fontSize)
+pp(gameBoard)
+pp(restartLeft)
+pp(restartRight)
+pp(restartBottom)
+pp(restartTop)
+pp(restartBottomLeftPoint)
+pp(restartBottomRightPoint)
+pp(restartTopLeftPoint)
+pp(restartTopRightPoint)
+pp(restartMidX)
+pp(restartMidY)
+pp(restartButton)
+
+(pp: pretty-print) */
+
 initialState_ := 
 		se([]);
 

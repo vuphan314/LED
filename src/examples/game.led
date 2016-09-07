@@ -1,10 +1,9 @@
-/$ #isGame $/
+$ #isGame $/
 
-/$
-initialState := 0
+/$ initialState := 0 $/
 
-newState := currentState + 1
+/$ newState := currentState + 1 $/
 
-images :=
+/$ images :=
     {text(st(pp(currentState)), point(500, 400), 100, color(0, 0, 255))}
 $/
