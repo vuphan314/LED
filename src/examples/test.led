@@ -1,1 +1,5 @@
-/$ #isGamed $/
+$ #isGame $/
+
+/$ c := 0 $/
+
+/$ newState := 0 $/

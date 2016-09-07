@@ -2,7 +2,7 @@ goto starting
 
 :body
     set fold=examples\
-    set fil=quantification
+    set fil=aggregation
     set fils=test, game, tictactoe, aggregation, boolean, comparison, definition, quantification, set
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
@@ -16,7 +16,6 @@ goto starting
         REM py -i unparser.py
 
         echo !base!
-        !led!
 
         REM !parse!
         REM !parse! >> !led!
