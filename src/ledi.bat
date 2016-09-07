@@ -2,8 +2,8 @@ goto starting
 
 :body
     set fold=examples\
-    set fil=tictactoe
-    set fils=aggregation, boolean, comparison, definition, quantification, set, game
+    set fil=test
+    set fils=test, game, tictactoe, aggregation, boolean, comparison, definition, quantification, set
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
@@ -17,16 +17,16 @@ goto starting
 
         echo !base!
 
-        REM !parse!
+        !parse!
         REM !parse! >> !led!
         REM !led!
         REM !parse! > !p!
         REM !p!
 
         REM !transl!
-        !transl! > !sl!
-        !sl!
-        sli -l !sl!
+        REM !transl! > !sl!
+        REM !sl!
+        REM sli -l !sl!
     )
     goto done
 

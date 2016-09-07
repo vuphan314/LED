@@ -1,4 +1,4 @@
-hashIsGame = \A#isGame\Z
+hashIsGame = #isGame
 
 numl = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 string = "[^"]*"
