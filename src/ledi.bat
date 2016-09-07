@@ -1,9 +1,9 @@
 goto starting
 
 :body
-    set fold=tests\
+    set fold=examples\
     set fil=tictactoe
-    set fils=aggregation, boolean, comparison, definition, quantification, set, tictactoe
+    set fils=aggregation, boolean, comparison, definition, quantification, set, game
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
