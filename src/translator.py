@@ -71,6 +71,6 @@ initialize
 if __name__ == '__main__':
     preparsed = False
 
-    preparsed = True #toggle
+    # preparsed = True #toggle
 
     translate(preparsed = preparsed)
