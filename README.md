@@ -1,11 +1,19 @@
 <h6>top
 
 # LED: LANGUAGE OF EFFECTIVE DEFINITIONS
-LED system translates [literate language LED][LEDspec] into: 
+LED system translates [literate language LED][LEDspec] into:
 - [programming language SequenceL][SL]
 - documenting language LaTeX
 
-[LEDspec]: 
+## EXAMPLE
+- [LED input][tttLED]
+- [SequenceL output][tttSL]
+
+[tttLED]:
+https://github.com/vuphan314/LED/blob/master/src/examples/tictactoe.led
+[tttSL]:
+https://github.com/vuphan314/LED/blob/master/src/examples/tictactoe.sl
+[LEDspec]:
 https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
-[SL]: 
+[SL]:
 http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Language-Reference.pdf
