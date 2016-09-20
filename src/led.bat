@@ -4,7 +4,7 @@ goto starting
     set fold=examples\
     set fil=aggregation
     set fils=test, game, tictactoe, aggregation, boolean, comparison, definition, quantification, set
-    for %%i in (%fil%) do (
+    for %%i in (%fils%) do (
         set base=%fold%%%~ni
         set led=!base!.led
         set p=!base!.p
@@ -24,11 +24,11 @@ goto starting
         REM !p!
 
         REM !transl!
-        !transl! > !sl!
-        !sl!
-        sli -l !sl!
+        REM !transl! > !sl!
+        REM !sl!
+        REM sli -l !sl!
     )
-    goto done
+    goto ending
 
 :starting
     @echo off
@@ -38,6 +38,6 @@ goto starting
     echo:
     goto body
 
-:done
+:ending
     echo:
     echo done

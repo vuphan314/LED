@@ -27,13 +27,13 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 """
 
-########## ########## ########## ########## ########## ########## 
+########## ########## ########## ########## ########## ##########
 
 from optparse import OptionParser
 
 from regparser import *
 
-########## ########## ########## ########## ########## ########## 
+########## ########## ########## ########## ########## ##########
 
 def optparse_arguments():
     """
@@ -48,10 +48,10 @@ def regparse_file(program_file):
 
     # get the list of program elements
     parsed_file = regparser_instance.get_parsed_elements()
-    
+
     parsed_file = ['prog'] + parsed_file
     return parsed_file
-    
+
 def main():
     """
     Main entry point into the program
@@ -63,11 +63,11 @@ def main():
     # read arguments
     args = optparse_arguments()
     program_file = args[0]
-    
+
     # parse file
     parsed_file = regparse_file(program_file)
-    
+
     print(parsed_file)
 
 if __name__ == '__main__':
-    main()    
+    main()
