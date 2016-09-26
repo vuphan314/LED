@@ -1,5 +1,5 @@
-$ #isGame $/
+$ c := false & 0/0=0 $/
+$ d := false => 0/0=0 $/
+/$ e := false & 0/0=0 or false => 0/0=0 <=> true $/
 
-/$ c := 0 $/
-
-/$ newState := 0 $/
+c := (valFalse when not valToTrth(a) else b);

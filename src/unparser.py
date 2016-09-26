@@ -47,7 +47,7 @@ def unparseTop(L):
     else:
         imports = importLib()
 
-    tests = printTest()
+    tests = '\n' + printTest()
 
     # for quantification
     T = expandSymsInS(T)
@@ -83,6 +83,8 @@ def unparseRecur(u, T):
         return unparseAggr(u, T)
     elif T[0] in quantOps:
         return unparseQuant(u, T)
+    elif T[0] in nonstrictOps:
+        return unparseNonstrictOps(u, T)
     elif T[0] in libOps:
         return unparseLibOps(u, T)
     elif T[0] in ifLabels:
@@ -320,37 +322,37 @@ def updateFuncsAddParams(prog):
 # needBoth: tree -> bool
 def needBoth(body):
     return \
-        someStringFound(body, funcsAddParams['addBoth']) or \
-        eachStringFound(body, easelParams) or \
+        someStrFound(body, funcsAddParams['addBoth']) or \
+        eachStrFound(body, easelParams) or \
         needInput(body) and needState(body)
 
 # needInput: tree * bool
-def needInput(body): # provided: not someStringFound(body, funcsAddParams['addBoth'])
+def needInput(body): # provided: not someStrFound(body, funcsAddParams['addBoth'])
     return \
-        someStringFound(body, funcsAddParams['addInput']) or \
-        someStringFound(body, easelParamsInput)
+        someStrFound(body, funcsAddParams['addInput']) or \
+        someStrFound(body, easelParamsInput)
 
 # needState: tree * bool
-def needState(body): # provided: not someStringFound(body, funcsAddParams['addBoth'])
+def needState(body): # provided: not someStrFound(body, funcsAddParams['addBoth'])
     return \
-        someStringFound(body, funcsAddParams['addState']) or \
-        someStringFound(body, easelParamsState)
+        someStrFound(body, funcsAddParams['addState']) or \
+        someStrFound(body, easelParamsState)
 
-# eachStringFound: tree * strs -> bool
-def eachStringFound(T, sts):
+# eachStrFound: tree * strs -> bool
+def eachStrFound(T, sts):
     for st in sts:
         sts2 = {st}
-        if not someStringFound(T, sts2):
+        if not someStrFound(T, sts2):
             return False
     return True
 
-# someStringFound: tree * strs -> bool
-def someStringFound(T, sts):
+# someStrFound: tree * strs -> bool
+def someStrFound(T, sts):
     if type(T) == str:
         return T in sts
     else:
         for t in T[1:]:
-            if someStringFound(t, sts):
+            if someStrFound(t, sts):
                 return True
         return False
 
@@ -711,12 +713,41 @@ def unparseSet(u, T):
 
 ########## ########## ########## ########## ########## ##########
 '''
+non-strict operations
+'''
+
+nonstrictOps = {'impl', 'conj'}
+
+# unparseNonstrictOps: UnparserInfo * tree -> tree
+def unparseNonstrictOps(u, T):
+    st1 = unparseRecur(u, T[1])
+    st2 = unparseRecur(u, T[2])
+    if T[0] == 'conj':
+        mainSt = 'valFalse'
+        whenSt = 'not ' + applyRecur(u, 'valToTrth', (st1,))
+    elif T[0] == 'impl':
+        mainSt = 'valTrue'
+        whenSt = 'not ' + applyRecur(u, 'valToTrth', (st1,))
+    else:
+        raiseError('MUST BE NON-STRICT OPERATION')
+    elseSt = st2
+    st = writeWhenElseClause(mainSt, whenSt, elseSt)
+    return st
+
+# writeWhenElseClause: str * str * str -> str
+def writeWhenElseClause(mainSt, whenSt, elseSt):
+    st = mainSt + ' when ' + whenSt + ' else ' + elseSt
+    st = addParentheses(st)
+    return st
+
+########## ########## ########## ########## ########## ##########
+'''
 unparse library operations
 '''
 
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
-boolOps = {'equiv', 'impl', 'disj', 'conj', 'neg'}
+boolOps = {'equiv', 'disj', 'neg'}
 overloadedOps = {'pipesOp', 'plusOp', 'starOp'}
 arOps = {'bMns', 'uMns', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}

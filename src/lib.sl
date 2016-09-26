@@ -24,6 +24,7 @@ public
     solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
     someSet, allSet, valToSet, // quantification
     valToTrth, // when-clauses
+    valTrue, valFalse, // some values
     equiv, impl, disj, conj, neg, // boolean
     eq, uneq, // equality
     less, greater, lessEq, greaterEq, // relational
@@ -267,7 +268,7 @@ valOfKind(v, k(1)) :=
     equalList(valToKind(v), k);
 
 valOfKinds: Val * char(2) -> bool;
-valOfKinds(v, ks(2)) := 
+valOfKinds(v, ks(2)) :=
     some(valOfKind(v, ks));
 
 valsOfKind: Val * Val * char(1) -> bool;

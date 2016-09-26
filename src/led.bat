@@ -2,9 +2,9 @@ goto starting
 
 :body
     set fold=examples\
-    set fil=aggregation
-    set fils=test, game, tictactoe, aggregation, boolean, comparison, definition, quantification, set
-    for %%i in (%fils%) do (
+    set fil=nonstrict
+    set fils=aggregation, boolean, comparison, definition, game, nonstrict, quantification, set, test, tictactoe
+    for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
         set p=!base!.p
@@ -15,7 +15,8 @@ goto starting
         REM py -i translator.py
         REM py -i unparser.py
 
-        echo !base!
+        echo !base! & echo:
+        REM type !led!
 
         REM !parse!
         REM !parse! >> !led!
@@ -24,9 +25,9 @@ goto starting
         REM !p!
 
         REM !transl!
-        REM !transl! > !sl!
-        REM !sl!
-        REM sli -l !sl!
+        !transl! > !sl!
+        !sl!
+        sli -l !sl!
     )
     goto ending
 

@@ -1,0 +1,12 @@
+/$ c1 := false & 0/0 = 0 $/
+/$ c2 := false => 0/0 = 0 $/
+/$ c3 := true <=> false or false & 0/0 = 0 => 0/0 = 0 $/
+
+test:
+
+cmd:>pp(c1)
+"false"
+cmd:>pp(c2)
+"true"
+cmd:>pp(c3)
+"true"
