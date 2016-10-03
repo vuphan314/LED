@@ -89,19 +89,24 @@ $/
 
 ======================================================================
 VIDEO OUTPUT
- 
- {x | x in A /\ x < 7 /\ y in B/\ P(x,y)}
 
- {x | x in A & x < 7 & y in B & P(x,y)}
+experimenting disjunction/conjunction operators:
 
- {x | x in A, x < 7, y in B, P(x,y)}
+    V: disjuction
+    &: conjunction
 
- {x | x in A and x < 7 and y in B and P(x,y)}
+    {x | x in A /\ x < 7 /\ y in B /\ P(x, y)}
 
-  P iff
-	a,y in B & c        V
-     e & f & x < 7       V
-     x in A & f &  g     V
+    {x | x in A & x < 7 & y in B & P(x, y)}
+
+    {x | x in A, x < 7, y in B, P(x, y)}
+
+    {x | x in A and x < 7 and y in B and P(x, y)}
+
+    P :=
+        a, y in B & c   V
+        e & f & x < 7   V
+        x in A & f & g
 
 ======================================================================
 
@@ -251,4 +256,3 @@ newState :=
     initialState if restartClicked;
     currentState U movesMade otherwise
 $/
-

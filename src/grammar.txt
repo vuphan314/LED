@@ -107,10 +107,10 @@ bool_term_1(B2) ::= bool_term_2(B2)
 bool_term_2(impl B3 B2) ::= bool_term_3(B3) implies bool_term_2(B2)
 bool_term_2(B3) ::= bool_term_3(B3)
 
-bool_term_3(disj B3 B4) ::= bool_term_3(B3) or bool_term_4(B4)
+bool_term_3(disj B3 B4) ::= bool_term_3(B3) opDisj bool_term_4(B4)
 bool_term_3(B4) ::= bool_term_4(B4)
 
-bool_term_4(conj B4 B5) ::= bool_term_4(B4) amperstand bool_term_5(B5)
+bool_term_4(conj B4 B5) ::= bool_term_4(B4) opConj bool_term_5(B5)
 bool_term_4(B5) ::= bool_term_5(B5)
 
 bool_term_5(neg B5) ::= tilde bool_term_5(B5)

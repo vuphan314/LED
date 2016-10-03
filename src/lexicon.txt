@@ -7,11 +7,13 @@ atom = `[a-zA-Z][a-zA-Z\d]*
 primType = Nat|Int|Num|Bool
 truth = true|false
 
+opDisj = V
+opConj = &
+
 lam = lam
 floor = floor
 ceil = ceil
 mod = mod
-or = V
 in = in
 sub = sub
 U = U
@@ -45,7 +47,6 @@ equal = =
 unequal = /=
 lessOrEq = <=
 greaterOrEq = >=
-amperstand = &
 tilde = ~
 implies = =>
 equivalent = <=>
