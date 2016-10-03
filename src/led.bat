@@ -2,8 +2,8 @@ goto starting
 
 :body
     set fold=examples\
-    set fil=counting
-    set fils=aggregation, boolean, counting, comparison, definition, game, nonstrict, quantification, set, test, tictactoe
+    set fil=tictactoeV
+    set fils=aggregation, boolean, counting, comparison, definition, game, nonstrict, quantification, set, test, tictactoe, tictactoeV
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
@@ -19,13 +19,11 @@ goto starting
         REM type !led!
 
         REM !parse!
-        REM !parse! >> !led!
-        REM !led!
-        REM !parse! > !p!
-        REM !p!
+        !parse! > !p!
+        type !p!
 
         REM !transl!
-        !transl! > !sl!
+        REM !transl! > !sl!
         REM !sl!
         REM sli -l !sl!
     )
