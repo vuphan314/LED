@@ -27,189 +27,139 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 """
 
-########## ########## ########## ########## ########## ##########
+# modified by Vu Phan
+
+###########################################################
 
 from optparse import OptionParser
+from os import path
 
-from regparser import *
+from genparser.src.astgen.parsing import lexer, parser
 
-########## ########## ########## ########## ########## ##########
+###########################################################
 
 def optparse_arguments():
-    """
-    Return arguments parsed from sys.argv
-    """
+    """Return arguments parsed from sys.argv."""
     optParser = OptionParser()
     return optParser.parse_args()[1]
 
-def regparse_file(program_file):
-    # create regparser instance
-    regparser_instance = RegionParser(program_file)
+def parse_file(program_file):
+    region_parser = RegionParser(program_file)
 
     # get the list of program elements
-    parsed_file = regparser_instance.get_parsed_elements()
+    parsed_file = region_parser.get_parsed_elements()
 
     parsed_file = ['prog'] + parsed_file
     return parsed_file
 
 def main():
-    """
-    Main entry point into the program
-    Parse the command line arguments of the form: <program_file>
-    Initialize regparser with the contents of the program file
-    Remove comments and print the list of program elements found in the file
-    """
-
     # read arguments
     args = optparse_arguments()
     program_file = args[0]
 
     # parse file
-    parsed_file = regparse_file(program_file)
+    parsed_file = parse_file(program_file)
 
-    print(parsed_file)
+    return parsed_file
 
-if __name__ == '__main__':
-    main()
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-############################################################
-"""
-Copyright (c) 2014, Evgenii Balai
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY EVGENII BALAI "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL EVGENII BALAI OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those
-of the authors and should not be interpreted as representing official policies,
-either expressed or implied, of the FreeBSD Project.
-"""
-
-########## ########## ########## ########## ########## ##########
-
-import os
-
-from genparser.src.astgen.parsing.lexer import *
-from genparser.src.astgen.parsing.parser import *
-
-from tester import *
-
-########## ########## ########## ########## ########## ##########
+###########################################################
 
 class RegionParser:
     def __init__(self, program_file):
-        """
-        Read the program file; initialize lexer and parser instances
-        """
-        with open(program_file) as lf:
-            self.program_string = lf.read()
+        with open(program_file) as file_object:
+            self.program_string = file_object.read()
 
-        #initialize lexer and parser
-        lexicon_file = \
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon.txt")
-        grammar_file = \
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "grammar.txt")
-        self.lexer = Lexer(lexicon_file, False)
-        self.parser = Parser(grammar_file, self.lexer.lexicon_dict.keys())
+        file_names = 'lexicon.txt', 'grammar.txt'
+
+        lexicon_file, grammar_file = [
+            path.join(
+                path.dirname(path.abspath(__file__)),
+                file_name
+            ) for file_name in file_names
+        ]
+
+        self.lexer_instance = Lexer(lexicon_file)
+
+        self.parser_instance = Parser(
+            grammar_file,
+            self.lexer_instance.lexicon_dict.keys()
+        )
 
     def get_parsed_elements(self):
-        """
-        Get the list of parse trees corresponding to the elements of the given program
-        """
-        # split the program into regions and parse each region
+        # split the program into regions and
+        # parse each region
         all_regions_parsed = False
         parsed_elements = []
         unparsed_program_string = self.program_string
         cur_line = 1
         while not all_regions_parsed:
-            # search for the start of the next program region
-            region_start = re.search(r"/\$", unparsed_program_string)
+            # search for the start of
+            # the next program region
+            region_start = re.search(
+                '/$', #todo r'/\$'
+                unparsed_program_string
+            )
             if region_start is None:
                 break
 
-            # set cur_line to the line where the region starts
-            pre_region = unparsed_program_string[:region_start.start()]
+            # set cur_line to the line where
+            # the region starts
+            pre_region = unparsed_program_string[
+                :region_start.start()
+            ]
             cur_line += pre_region.count('\n')
 
             # find the matching end of the program region
-            end_delimiter = re.compile(r"\$/")
-            region_end = \
-                end_delimiter.search(unparsed_program_string, region_start.end())
+            end_delimiter = re.compile(r"\$/") #todo
+            region_end = end_delimiter.search(
+                unparsed_program_string,
+                region_start.end()
+            )
             if region_end is None:
                 raise UnmatchedRegion(cur_line)
 
             # get elements from the found region
-            region = unparsed_program_string[region_start.end():region_end.start()]
-            parsed_elements.extend(self.get_elements_from_region(region, cur_line))
+            region = unparsed_program_string[
+                region_start.end():
+                region_end.start()
+            ]
 
-            # update line number by adding the number of lines inside the region
+            parsed_elements.extend(
+                self.get_elements_from_region(
+                    region,
+                    cur_line
+                )
+            )
+
+            # update line number by adding the number of
+            # lines inside the region
             cur_line += region.count('\n')
 
-            # remove the current pre-region and region from unparsed_program_string
-            post_region = unparsed_program_string[region_end.end():]
+            # remove the current pre-region and
+            # region from unparsed_program_string
+            post_region = unparsed_program_string[
+                region_end.end():
+            ]
             unparsed_program_string = post_region
 
         return parsed_elements
 
     def get_elements_from_region(self, region, line_number):
-        # obtain lexing sequence from the region starting at line_number
-        lexing_sequence = self.lexer.get_lexing_sequence(region)
-
-        # test lexer
-        # L = []
-        # for lex in lexing_sequence:
-            # if lex[0] != 'spaces':
-                # L += [lex]
-        # test(L)
+        # obtain lexing sequence from 
+        # the region starting at line_number
+        lexing_sequence = (
+            self.lexer_instance.get_lexing_sequence(
+                region
+            )
+        )
 
         # obtain parse tree
-        ast = self.parser.get_ast(lexing_sequence)
+        ast = self.parser_instance.get_ast(lexing_sequence)
         if ast is None:
             raise InvalidRegion(region, line_number)
 
-        # return cut_root (list of program elements) of the parse tree
+        # return cut_root (list of program elements) of 
+        # the parse tree
         return ast.children_list()
 
 class UnmatchedRegion(Exception):
@@ -218,28 +168,36 @@ class UnmatchedRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return \
-            "\n\nThe program file contains an unmatched region starting from line " + \
-            str(self.line_number)
+        return '''
+
+The program file contains an unmatched region
+starting from line: {}
+
+'''.format(self.line_number)
 
     def __str__(self):
         return self.__repr__()
 
 class InvalidRegion(Exception):
-    """
-    Defines a class for representing exceptions which are thrown in the event of
-    a (syntactically) invalid program element in a region
-    """
-
     def __init__(self, contents, line_number):
         super(InvalidRegion, self).__init__()
         self.contents = contents
         self.line_number = line_number
 
     def __repr__(self):
-        return  "\n\nThe program file contains an invalid region " + \
-                "starting from line " + str(self.line_number) + ":\n\n" + \
-                self.contents + "\n\n"
+        return '''
+
+The program file contains an invalid region
+starting from line: {} :
+
+{}
+
+'''.format(self.line_number, self.contents)
 
     def __str__(self):
         return self.__repr__()
+
+############################################################
+
+if __name__ == '__main__':
+    main()
