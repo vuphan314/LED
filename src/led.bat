@@ -1,6 +1,6 @@
 goto starting
 
-:body
+:looping
     set fold=examples\
     set fil=tictactoeV
     set fils=aggregation, boolean, counting, comparison, definition, game, nonstrict, quantification, set, test, tictactoe, tictactoeV
@@ -35,7 +35,7 @@ goto starting
     setlocal enabledelayedexpansion
     echo starting...
     echo:
-    goto body
+    goto looping
 
 :ending
     echo:
