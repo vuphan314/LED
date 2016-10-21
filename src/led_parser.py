@@ -33,6 +33,7 @@ either expressed or implied, of the FreeBSD Project.
 
 from optparse import OptionParser
 from os import path
+import re
 
 from genparser.src.astgen.parsing import lexer, parser
 
@@ -69,7 +70,7 @@ class RegionParser:
         with open(program_file) as file_object:
             self.program_string = file_object.read()
 
-        file_names = 'lexicon.txt', 'grammar.txt'
+        file_names = 'led_lexicon.txt', 'led_grammar.txt'
 
         lexicon_file, grammar_file = [
             path.join(
@@ -78,9 +79,9 @@ class RegionParser:
             ) for file_name in file_names
         ]
 
-        self.lexer_instance = Lexer(lexicon_file)
+        self.lexer_instance = lexer.Lexer(lexicon_file)
 
-        self.parser_instance = Parser(
+        self.parser_instance = parser.Parser(
             grammar_file,
             self.lexer_instance.lexicon_dict.keys()
         )
@@ -96,7 +97,7 @@ class RegionParser:
             # search for the start of
             # the next program region
             region_start = re.search(
-                '/$', #todo r'/\$'
+                '/\$',
                 unparsed_program_string
             )
             if region_start is None:
@@ -110,7 +111,7 @@ class RegionParser:
             cur_line += pre_region.count('\n')
 
             # find the matching end of the program region
-            end_delimiter = re.compile(r"\$/") #todo
+            end_delimiter = re.compile('\$/')
             region_end = end_delimiter.search(
                 unparsed_program_string,
                 region_start.end()
@@ -145,7 +146,7 @@ class RegionParser:
         return parsed_elements
 
     def get_elements_from_region(self, region, line_number):
-        # obtain lexing sequence from 
+        # obtain lexing sequence from
         # the region starting at line_number
         lexing_sequence = (
             self.lexer_instance.get_lexing_sequence(
@@ -158,7 +159,7 @@ class RegionParser:
         if ast is None:
             raise InvalidRegion(region, line_number)
 
-        # return cut_root (list of program elements) of 
+        # return cut_root (list of program elements) of
         # the parse tree
         return ast.children_list()
 
@@ -188,7 +189,7 @@ class InvalidRegion(Exception):
         return '''
 
 The program file contains an invalid region
-starting from line: {} :
+starting from line: {}:
 
 {}
 
@@ -200,4 +201,5 @@ starting from line: {} :
 ############################################################
 
 if __name__ == '__main__':
-    main()
+    parsed_file = main()
+    print(parsed_file)
