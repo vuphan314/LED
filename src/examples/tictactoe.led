@@ -5,9 +5,9 @@ This is an LED program that defines a simple tic tac toe game to run in the ease
 
 The game begins with an empty grid and it being x's turn to move. When an empty cell is clicked, the player whose turn it occupies that cell and it becomes the other player's turn, until the game is over. When the game is over a message is displayed giving the result of the  game. The player can press the 'reset' button at any time to restart the game.
 
-======================================================================
+============================================================
 DATA MODEL
-======================================================================
+============================================================
 
 A *player* is either `x or `o. In this program, the variable p will range over players.
 
@@ -32,9 +32,9 @@ Global variables:
 - *mouseClicked*: true/false
 - *mouseX*, *mouseY*: integer
 
-======================================================================
+============================================================
 GAME RULES
-======================================================================
+============================================================
 
 This section defines the rules of tic-tac-toe in LED.
 
@@ -47,7 +47,7 @@ Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c
 /$
 occupies(p,c) iff (p,c) in currentState
 
-occupied(c) iff occupies(`x,c) or occupies(`o,c)
+occupied(c) iff occupies(`x,c) V occupies(`o,c)
 $/
 
 A *row* is a set of cells that form three in a row either horizontally, vertically, or diagonally.
@@ -70,7 +70,7 @@ $/
 
 *gameOver* if either the board is full, or one of the players three in a row.
 /$
-gameOver := boardFull or threeInRow(`x) or threeInRow(`o)
+gameOver :=  boardFull V threeInRow(`x) V threeInRow(`o)
 $/
 
 *playerToMove* is `x if an even number of moves have been made, and `o otherwise.
@@ -87,9 +87,9 @@ $/
 legalToMoveIn(c) iff ~occupied(c) & ~gameOver
 $/
 
-======================================================================
+============================================================
 VIDEO OUTPUT
-======================================================================
+============================================================
 
 The default color used in this game is BLACK
 /$
@@ -195,9 +195,9 @@ images :=
         gameOverDisplay = alwaysDisplay U gameResultDisplay
 $/
 
-======================================================================
+============================================================
 MOUSE INPUT
-======================================================================
+============================================================
 
 This section defines *update*, which specifies the program's response to mouse input. The variable *pt* will vary over points.
 
