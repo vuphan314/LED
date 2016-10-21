@@ -1,3 +1,5 @@
+import "lib_led.sl";
+
 /*
 Easel library
 */
@@ -5,7 +7,7 @@ Easel library
 /* easel required functions */
 
 initialState: State;
-initialState := 
+initialState :=
     valToState(initialState_);
 
 newState: Input * State -> State;
