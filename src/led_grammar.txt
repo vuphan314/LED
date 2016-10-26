@@ -161,7 +161,7 @@ ar_term_3(uMns A3) ::= minus ar_term_3(A3)
 ar_term_3(A3) ::= plus ar_term_3(A3)
 ar_term_3(A4) ::= ar_term_4(A4)
 
-ar_term_4(exp A5 A4) ::= ar_term_5(A5) hat ar_term_4(A4)
+ar_term_4(exp A5 A3) ::= ar_term_5(A5) hat ar_term_3(A3)
 ar_term_4(A5) ::= ar_term_5(A5)
 
 ar_term_5(arUT U) ::= user_term(U)
