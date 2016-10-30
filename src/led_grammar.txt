@@ -2,13 +2,7 @@ prog_el_s(progEls P) ::= prog_el(P)
 prog_el_s(progEls P cut_root(Ps)) ::= prog_el(P) prog_el_s(Ps)
 
 prog_el(H) ::= hashIsGame(H)
-prog_el(V) ::= var_decl(V)
 prog_el(D) ::= def_(D)
-
-var_decl(varDecl V) ::= var var_of_type(V)
-var_decl(varDecl V) ::= vars var_s_of_type_s(V)
-
-type(typ S) ::= set_term(S)
 
 def_(C) ::= const_def(C)
 def_(F) ::= fun_def(F)
@@ -36,9 +30,9 @@ unlikely_bool_term(S) ::= set_term(S)
 unlikely_bool_term(A) ::= ar_term(A)
 unlikely_bool_term(A) ::= atom_term(A)
 unlikely_bool_term(S) ::= string_term(S)
+unlikely_bool_term(S) ::= sequence_term(S)
 unlikely_bool_term(T) ::= tuple_term(T)
 unlikely_bool_term(T) ::= tuple_indexed_term(T)
-unlikely_bool_term(L) ::= lambda_term(L)
 unlikely_bool_term(I) ::= inner_bool_term(I)
 
 atom_term(atomT A1) ::= atom_term_1(A1)
@@ -51,20 +45,25 @@ string_term(strT S1) ::= string_term_1(S1)
 string_term_1(strUT U) ::= user_term(U)
 string_term_1(S) ::= string(S)
 
-tuple_term(tupT T1) ::= tuple_term_1(T1)
+sequence_term(seqT T1) ::= sequence_term_1(T1)
 
-tuple_term_1(plusOp T1 T2) ::= tuple_term_1(T1) plus tuple_term_2(T2)
-tuple_term_1(T2) ::= tuple_term_2(T2)
+sequence_term_1(seq) ::= lArrow rArrow
+sequence_term_1(seq T) ::= lArrow term_s(T) rArrow
 
-tuple_term_2(tupUT U) ::= user_term(U)
-tuple_term_2(tup T) ::= lParenth term_s(T) rParenth
-tuple_term_2(T) ::= tuple_indexed_term(T)
+sequence_term(tupT T1) ::= sequence_term_1(T1)
 
-tuple_indexed_term(tupIndT T1) ::= tuple_indexed_term_1(T1)
+sequence_term_1(plusOp T1 T2) ::= sequence_term_1(T1) plus sequence_term_2(T2)
+sequence_term_1(T2) ::= sequence_term_2(T2)
 
-tuple_indexed_term_1(tupIndUT U) ::= user_term(U)
-tuple_indexed_term_1(tuIn T A) ::= tuple_term(T) lBracket ar_term(A) rBracket
-tuple_indexed_term_1(tuSl T A A2) ::= tuple_term(T) lBracket ar_term(A) twoDots ar_term(A2) rBracket
+sequence_term_2(tupUT U) ::= user_term(U)
+sequence_term_2(tup T) ::= lParenth term_s(T) rParenth
+sequence_term_2(T) ::= sequence_indexed_term(T)
+
+sequence_indexed_term(tupIndT T1) ::= sequence_indexed_term_1(T1)
+
+sequence_indexed_term_1(tupIndUT U) ::= user_term(U)
+sequence_indexed_term_1(tuIn T A) ::= sequence_term(T) lBracket ar_term(A) rBracket
+sequence_indexed_term_1(tuSl T A A2) ::= sequence_term(T) lBracket ar_term(A) twoDots ar_term(A2) rBracket
 
 set_term(setT S1) ::= set_term_1(S1)
 
@@ -83,21 +82,12 @@ set_term_3(S4) ::= set_term_4(S4)
 set_term_4(setUT U) ::= user_term(U)
 set_term_4(S) ::= lParenth set_term(S) rParenth
 set_term_4(powSet S) ::= Pow lParenth set_term(S) rParenth
-set_term_4(S) ::= sequence(S)
 set_term_4(B) ::= brace_set(B)
-
-sequence(seq) ::= lArrow rArrow
-sequence(seq T) ::= lArrow term_s(T) rArrow
 
 brace_set(set) ::= lBrace rBrace
 brace_set(set T) ::= lBrace term_s(T) rBrace
 brace_set(iv A A2) ::= lBrace ar_term(A) twoDots ar_term(A2) rBrace
 brace_set(setCompr T B) ::= lBrace term(T) pipe bool_term(B) rBrace
-
-lambda_term(lmbdT L1) ::= lambda_term_1(L1)
-
-lambda_term_1(lmbdUT U) ::= user_term(U)
-lambda_term_1(lmbd S T) ::= lam symbol_s(S) dot term(T)
 
 bool_term(boolT B1) ::= bool_term_1(B1)
 
@@ -183,16 +173,6 @@ symbol_s(syms S cut_root(Ss)) ::= symbol_(S) comma symbol_s(Ss)
 
 symbol_s_in_set_term(symsInSet S S2) ::= symbol_s(S) in set_term(S2)
 
-var_s(vars V) ::= var_(V)
-var_s(vars V cut_root(Vs)) ::= var_(V) comma var_s(Vs)
-
-var_of_type(varOfT V T) ::= var_(V) colon type(T)
-
-var_s_of_type(varsOfT V T) ::= var_s(V) colon type(T)
-
-var_s_of_type_s(varsOfTs V) ::= var_s_of_type(V)
-var_s_of_type_s(varsOfTs V cut_root(Vs)) ::= var_s_of_type(V) comma var_s_of_type_s(Vs)
-
 term_if_bool_term(tIfBT T B) ::= term(T) if bool_term(B)
 
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
@@ -207,7 +187,6 @@ rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth
 
 symbol_(symN I) ::= id(I)
 
-var_(varN I) ::= id(I)
 const_(constT I) ::= id(I)
 
 fun_(I) ::= id(I)

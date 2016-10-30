@@ -4,13 +4,11 @@ numl = \d+|\d*\.\d+|\d*\.\d*\(\d+\.\.\)
 string = "[^"]*"
 atom = `[a-zA-Z][a-zA-Z\d]*
 
-primType = Nat|Int|Num|Bool
 truth = true|false
 
 opDisj = V
 opConj = &
 
-lam = lam
 floor = floor
 ceil = ceil
 mod = mod
@@ -22,12 +20,9 @@ Pow = Pow
 Sum = Sum
 Prod = Prod
 Sec = Sec
-var = var
-vars = vars
 if = if
 iff = iff
 where = where
-Set = Set
 some = some
 all = all
 otherwise = otherwise
@@ -52,9 +47,7 @@ implies = =>
 equivalent = <=>
 backslash = \\
 semicolon = ;
-colon = :
 colonEq = :=
-partialMap = ~>
 
 lArrow = <
 rArrow = >
