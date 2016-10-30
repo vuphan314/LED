@@ -2,8 +2,8 @@ goto starting
 
 :looping
     set fold=examples\
-    set fil=tmp
-    set fils=aggregation, boolean, counting, comparison, definition, game, nonstrict, quantification, set, tictactoe, tmp
+    set fil=tictactoe2
+    set fils=aggregation, boolean, comparison, counting, definition, game, nonstrict, quantification, set, tictactoe2, tmp
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
@@ -14,7 +14,7 @@ goto starting
         set parse=led_parser.py !led!
 
         REM !transl!
-        !parse!
+        !parse! > !p!
     )
     goto ending
 

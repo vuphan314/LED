@@ -1,6 +1,6 @@
-Use keyword *#isGame* to translate LED into Easel-ready SequenceL:
+Use keyword *#isGame* to translate LED
+into Easel-ready SequenceL:
 /$ #isGame $/
-(Easel engine is in directory "src/easel/easel.exe".)
 
 /$ initialState := 0 $/
 

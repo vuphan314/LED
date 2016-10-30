@@ -1,6 +1,6 @@
 /$ c1 := false & 0/0 = 0 $/
 /$ c2 := false => 0/0 = 0 $/
-/$ c3 := true <=> false or false & 0/0 = 0 => 0/0 = 0 $/
+/$ c3 := true <=> false V false & 0/0 = 0 => 0/0 = 0 $/
 
 test:
 

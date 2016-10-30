@@ -63,7 +63,7 @@ set_term_1(diff T T2) ::= set_term_1(T) backslash set_term_2(T2)
 set_term_1(T) ::= set_term_2(T)
 
 set_term_2(nrsec T T2) ::= set_term_2(T) sec set_term_3(T2)
-set_term_2(starOp T T2) ::= set_term_2(T) star set_term_3(T3)
+set_term_2(starOp T T2) ::= set_term_2(T) star set_term_3(T2)
 set_term_2(T) ::= set_term_3(T)
 
 set_term_3(aggrUnn T T2) ::= U lBracket bool_term(T) rBracket set_term_3(T2)
@@ -109,7 +109,7 @@ inner_bool_term(T) ::= truth(T)
 quantified_term(exist T T2) ::= some symbol_s_in_set_term(T) dot bool_term_6(T2)
 quantified_term(univ T T2) ::= all symbol_s_in_set_term(T) dot bool_term_6(T2)
 
-set_bool_term(sbset T T2) ::= set_term(T) sub set_term(S2)
+set_bool_term(sbset T T2) ::= set_term(T) sub set_term(T2)
 set_bool_term(setMem T T2) ::= set_mem_arg(T) in set_term(T2)
 
 set_mem_arg(T) ::= term(T)
@@ -131,9 +131,9 @@ ar_term_1(plusOp T T2) ::= ar_term_1(T) plus ar_term_2(T2)
 ar_term_1(bMns T T2) ::= ar_term_1(T) minus ar_term_2(T2)
 ar_term_1(T) ::= ar_term_2(T)
 
-ar_term_2(starOp T T2) ::= ar_term_2(T) star ar_term_3(T)
-ar_term_2(div T T2) ::= ar_term_2(T) slash ar_term_3(T)
-ar_term_2(md T T2) ::= ar_term_2(T) mod ar_term_3(T)
+ar_term_2(starOp T T2) ::= ar_term_2(T) star ar_term_3(T2)
+ar_term_2(div T T2) ::= ar_term_2(T) slash ar_term_3(T2)
+ar_term_2(md T T2) ::= ar_term_2(T) mod ar_term_3(T2)
 ar_term_2(T) ::= ar_term_3(T)
 
 ar_term_3(aggrSum T T2) ::= Sum lBracket bool_term(T) rBracket ar_term_3(T2)
@@ -142,7 +142,7 @@ ar_term_3(uMns T) ::= minus ar_term_3(T)
 ar_term_3(T) ::= plus ar_term_3(T)
 ar_term_3(T) ::= ar_term_4(T)
 
-ar_term_4(exp T T2) ::= inner_ar_term(T) hat ar_term_3(T)
+ar_term_4(exp T T2) ::= inner_ar_term(T) hat ar_term_3(T2)
 ar_term_4(T) ::= inner_ar_term(T)
 
 inner_ar_term(T) ::= user_term(T)
@@ -164,7 +164,7 @@ term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 symbol_s(syms T) ::= symbol_(T)
 symbol_s(syms T cut_root(Ts)) ::= symbol_(T) comma symbol_s(Ts)
 
-symbol_s_in_set_term(symsInSet T T2) ::= symbol_s(T) in set_term(S2)
+symbol_s_in_set_term(symsInSet T T2) ::= symbol_s(T) in set_term(T2)
 
 term_if_bool_term(tIfBT T T2) ::= term(T) if bool_term(T2)
 
