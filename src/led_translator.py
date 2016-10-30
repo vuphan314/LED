@@ -1,11 +1,7 @@
-"""
-convert an LED parsetree into a SL program
-"""
+"""Convert an LED parsetree into a SL program."""
 
 ############################################################
-"""
-importing
-"""
+"""Import."""
 
 from debugger import *
 

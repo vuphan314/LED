@@ -35,12 +35,13 @@ from optparse import OptionParser
 from os import path
 import re
 
+from debugger import *
 from genparser.src.astgen.parsing import lexer, parser
 
 ###########################################################
 
 def optparse_arguments():
-    """Return arguments parsed from sys.argv."""
+    """Return arguments parsed from `sys.argv`."""
     optParser = OptionParser()
     return optParser.parse_args()[1]
 
@@ -68,7 +69,7 @@ def main():
 class RegionParser:
     def __init__(self, program_file):
         with open(program_file) as file_object:
-            self.program_string = file_object.read()
+            self.program_str = file_object.read()
 
         file_names = 'led_lexicon.txt', 'led_grammar.txt'
 
@@ -91,7 +92,7 @@ class RegionParser:
         # parse each region
         all_regions_parsed = False
         parsed_elements = []
-        unparsed_program_string = self.program_string
+        unparsed_program_string = self.program_str
         cur_line = 1
         while not all_regions_parsed:
             # search for the start of
@@ -161,7 +162,8 @@ class RegionParser:
 
         # return cut_root (list of program elements) of
         # the parse tree
-        return ast.children_list()
+        lis = ast.children_list()
+        return lis
 
 class UnmatchedRegion(Exception):
     def __init__(self, line_number):
@@ -169,10 +171,10 @@ class UnmatchedRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return """
+        return '''
 
 The program file contains an unmatched region
-starting from line: {}
+starting from line {}
 
 '''.format(self.line_number)
 
@@ -186,10 +188,10 @@ class InvalidRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return """
+        return '''
 
 The program file contains an invalid region
-starting from line: {}:
+starting from line {}:
 
 {}
 

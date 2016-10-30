@@ -15,9 +15,18 @@ raise error
 
 # raiseError: raise
 def raiseError(o = 'DEFAULT ERROR MESSAGE'):
-    st = str(o)
-    raise NameError(st)
+    raise LedError(o)
 err = raiseError
+
+class LedError(Exception):
+    def __init__(self, error_message):
+        self.error_message = error_message
+
+    def __str__(self):
+        return '''
+
+{}
+'''.format(self.error_message)
 
 ############################################################
 """

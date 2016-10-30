@@ -1,10 +1,11 @@
-"""LED-SL translator.
+"""LED engine.
 
 Translate an LED program into
 a semantically equivalent SL program.
 """
 
 ############################################################
+
 """Import."""
 
 import sys
@@ -83,9 +84,6 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 '''
 
 ############################################################
-"""
-initialize
-"""
 
 if __name__ == '__main__':
     translate()
