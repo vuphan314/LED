@@ -3,6 +3,7 @@ LED library written in SequenceL
 */
 
 ////////////////////////////////////////////////////////////
+
 /* importing */
 
 import <Utilities/Conversion.sl>;

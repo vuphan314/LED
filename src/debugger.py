@@ -1,6 +1,6 @@
-'''
+"""
 print test string
-'''
+"""
 
 # tst: object -> print
 def tst(o = 'DEFAULT TEST STRING'):
@@ -8,10 +8,10 @@ def tst(o = 'DEFAULT TEST STRING'):
     st = markerComment + '\nTEST\n' + st + '\n' + markerComment + '\n'
     print(st)
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 raise error
-'''
+"""
 
 # raiseError: raise
 def raiseError(o = 'DEFAULT ERROR MESSAGE'):
@@ -19,10 +19,10 @@ def raiseError(o = 'DEFAULT ERROR MESSAGE'):
     raise NameError(st)
 err = raiseError
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 mark start and end of wanted string
-'''
+"""
 
 # markStartEnd: str -> str
 def markStartEnd(st):

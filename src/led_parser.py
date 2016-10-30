@@ -169,7 +169,7 @@ class UnmatchedRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return '''
+        return """
 
 The program file contains an unmatched region
 starting from line: {}
@@ -186,7 +186,7 @@ class InvalidRegion(Exception):
         self.line_number = line_number
 
     def __repr__(self):
-        return '''
+        return """
 
 The program file contains an invalid region
 starting from line: {}:

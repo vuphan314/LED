@@ -1,18 +1,18 @@
-'''
+"""
 convert an LED parsetree into a SL program
-'''
+"""
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 importing
-'''
+"""
 
-from tester import *
+from debugger import *
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 python global variables
-'''
+"""
 
 isGame = False
 
@@ -22,12 +22,12 @@ defedConsts = () # ('c1', 'c2',...)
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 unparse an LED parsetree into a string which represents a SL program
 
 note: tree := tuple/str
-'''
+"""
 
 # unparseTop: list -> str
 def unparseTop(L):
@@ -61,10 +61,10 @@ def unparseTop(L):
     st = tests + imports + st
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 recursion iterators
-'''
+"""
 
 # unparseRecur: UnparserInfo * tree -> str
 def unparseRecur(u, T):
@@ -128,10 +128,10 @@ def applyRecur(u, func, args, isInLib = False, argsAreBracketed = False, inds = 
     st = appendInds(st, inds)
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 recursion helpers
-'''
+"""
 
 # recurStr: (UnparserInfo * tree -> str) * UnparserInfo * tree -> str
 def recurStr(F, u, T):
@@ -159,10 +159,10 @@ def recurTree(F, T):
         T2 += F(t),
     return T2
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 update defined functions/constants
-'''
+"""
 
 # updateDefedFuncsConsts: tree -> void
 def updateDefedFuncsConsts(prog):
@@ -183,10 +183,10 @@ def updateDefedConsts(prog):
             st = definition[1][1][1]
             defedConsts += st,
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 Easel
-'''
+"""
 
 # addEaselParams: tree -> tree
 def addEaselParams(T):
@@ -356,10 +356,10 @@ def someStrFound(T, sts):
                 return True
         return False
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 unparse constant/function/relation definitions
-'''
+"""
 
 defLabels = {'constDef', 'funDef', 'relDef'}
 
@@ -413,10 +413,10 @@ def unparseWhereClauses(u, T):
     else:
         raiseError('INVALID WHERE CLAUSES')
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 information for unparsing
-'''
+"""
 
 class UnparserInfo:
     indepSymbs = () # ('i1',...)
@@ -460,20 +460,20 @@ class UnparserInfo:
         st = 'AUX_' + str(num) + '_' + extraAppend + '_'
         return st
 
-    '''
+    """
     fields specific to aggregation
-    '''
+    """
     # must assign immediately when instantiating
     aCateg = None # str
     # must assign later by calling function aDefFunc
     aFunc = None # 'AUX_3_(x, y)'
 
     aVal = ''
-    '''
+    """
     ground: 'x < y'
     eq:     'x + 1'
     set:    'x...2*x'
-    '''
+    """
 
     # term
     aTerm = None # 'x + y'
@@ -604,9 +604,9 @@ class UnparserInfo:
         st = applyRecur(self, func, args)
         return st
 
-    '''
+    """
     fields specific to quantification
-    '''
+    """
     isUniv = None # bool
     qSet = '' # '{1, 2,...}'
     qPred = '' # 'all y in S. y > x'
@@ -688,10 +688,10 @@ class UnparserInfo:
         st = self.appendToAux('C')
         return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 unparse collections
-'''
+"""
 
 # unparseTuple: UnparserInfo * tree -> str
 def unparseTuple(u, T):
@@ -711,10 +711,10 @@ def unparseSet(u, T):
     st = applyRecur(u, func, args, isInLib = True, argsAreBracketed = True)
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 non-strict operations
-'''
+"""
 
 nonstrictOps = {'impl', 'conj'}
 
@@ -740,10 +740,10 @@ def writeWhenElseClause(mainSt, whenSt, elseSt):
     st = addParentheses(st)
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 unparse library operations
-'''
+"""
 
 equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
@@ -761,10 +761,10 @@ def unparseLibOps(u, T):
     st = applyRecur(u, T[0], T[1:], isInLib = True)
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 SequenceL helpers
-'''
+"""
 
 # writeLetClauses: tuple(str) -> str
 def writeLetClauses(T):
@@ -813,10 +813,10 @@ def funcIsAux(st):
     b = st[-1] == '_'
     return b
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 miscellaneous
-'''
+"""
 
 # unionDicts: tuple(dict) -> dict
 def unionDicts(ds):
@@ -835,10 +835,10 @@ def listToTree(L):
             T += listToTree(l),
         return T
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 add otherwise-clase
-'''
+"""
 
 # addOtherwiseClause: tree -> tree
 def addOtherwiseClause(T):
@@ -860,10 +860,10 @@ def tIfBTsToTIfBTsO(tIfBTs):
     T = 'tIfBTsO', tIfBTs, t
     return T
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 expand quantifying symbols
-'''
+"""
 
 quantOps = {'exist', 'univ'}
 
@@ -897,10 +897,10 @@ def symsInSetToSymbInSet(T):
     T2 = recurTree(expandSymsInS, T2)
     return T2
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 aggregation
-'''
+"""
 
 aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
@@ -1008,10 +1008,10 @@ def newDepSymbFound(u, T):
 def isNewDepSymb(u, id):
     return id not in u.getSymbs() + defedConsts
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 quantification
-'''
+"""
 
 # unparseQuant: UnparserInfo * tree -> str
 def unparseQuant(u, T):
@@ -1045,10 +1045,10 @@ def getSymbsFromSyms(T):
         symbs += symb,
     return symbs
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 unparse lexemes
-'''
+"""
 
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 lexemes = unionDicts((lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}))
@@ -1064,10 +1064,10 @@ def unparseLexemes(u, T):
     st = applyRecur(u, func, args, isInLib = True)
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 importing and using LED library
-'''
+"""
 
 libPath = '../lib.sl'
 libAs = ''
@@ -1085,10 +1085,10 @@ def prependLib(st):
     st = libAs + st
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 SL test constants
-'''
+"""
 
 # printTest: str
 def printTest():
@@ -1105,12 +1105,12 @@ def printTest():
         st += '\n\n'
     return st
 
-########## ########## ########## ########## ########## ##########
-'''
+############################################################
+"""
 for each keyword $#isGame$ found in LED input file
 - make python global variable $isGame$ true
 - delete keyword from parsetree
-'''
+"""
 
 # updateIsGame: tree -> tree
 def updateIsGame(prog):
