@@ -71,7 +71,7 @@ def unparseRecur(u, T):
     elif T[0] == 'userFR':
         st = applyRecur(u, T[1], T[2][1:])
         return st
-    elif T[0] == 'tup':
+    elif T[0] == 'tpl':
         return unparseTuple(u, T)
     elif T[0] == 'set':
         return unparseSet(u, T)
@@ -195,7 +195,7 @@ def addEaselParams(T):
             terms = getIdsTree('terms', 'userSC', params)
             T = 'userFR', id, terms
         return T
-    elif T[0] == 'constT':
+    elif T[0] == 'constN':
         id = T[1]
         params = getParamsFromLexeme(id)
         if params != ():

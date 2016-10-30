@@ -1,179 +1,172 @@
-prog_el_s(progEls P) ::= prog_el(P)
-prog_el_s(progEls P cut_root(Ps)) ::= prog_el(P) prog_el_s(Ps)
+prog_el_s(progEls T) ::= prog_el(T)
+prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 
-prog_el(H) ::= hashIsGame(H)
-prog_el(D) ::= def_(D)
+prog_el(T) ::= hashIsGame(T)
+prog_el(T) ::= def_(T)
 
-def_(C) ::= const_def(C)
-def_(F) ::= fun_def(F)
-def_(R) ::= rel_def(R)
+def_(T) ::= const_def(T)
+def_(T) ::= fun_def(T)
+def_(T) ::= rel_def(T)
 
-const_def(constDef C D) ::= const_(C) colonEq def_body(D)
-const_def(constDef C D B) ::= const_(C) colonEq def_body(D) where bool_term(B)
+const_def(constDef T T2) ::= const_(T) colonEq def_body(T2)
+const_def(constDef T T2 T3) ::= const_(T) colonEq def_body(T2) where bool_term(T3)
 
-fun_def(funDef F D) ::= fun_term(F) colonEq def_body(D)
-fun_def(funDef F D B) ::= fun_term(F) colonEq def_body(D) where bool_term(B)
+fun_def(funDef T T2) ::= fun_term(T) colonEq def_body(T2)
+fun_def(funDef T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
 
-rel_def(relDef R B) ::= rel_term(R) iff bool_term(B)
-rel_def(relDef R B B2) ::= rel_term(R) iff bool_term(B) where bool_term(B2)
+rel_def(relDef T T2) ::= rel_term(T) iff bool_term(T2)
+rel_def(relDef T T2 T3) ::= rel_term(T) iff bool_term(T2) where bool_term(T3)
 
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
 def_body(T) ::= term_if_bool_term_s_other(T)
 
-term(U) ::= unlikely_bool_term(U)
-term(B) ::= bool_term(B)
+term(T) ::= user_term(T)
+term(T) ::= lParenth term(T) rParenth
+term(T) ::= atom_term(T)
+term(T) ::= string_term(T)
+term(T) ::= tuple_term(T)
+term(T) ::= tuple_indexed_term(T)
+term(T) ::= ar_term(T)
+term(T) ::= set_term(T)
+term(T) ::= bool_term(T)
 
-unlikely_bool_term(U) ::= user_term(U)
-unlikely_bool_term(T) ::= lParenth term(T) rParenth
-unlikely_bool_term(S) ::= set_term(S)
-unlikely_bool_term(A) ::= ar_term(A)
-unlikely_bool_term(A) ::= atom_term(A)
-unlikely_bool_term(S) ::= string_term(S)
-unlikely_bool_term(S) ::= sequence_term(S)
-unlikely_bool_term(T) ::= tuple_term(T)
-unlikely_bool_term(T) ::= tuple_indexed_term(T)
-unlikely_bool_term(I) ::= inner_bool_term(I)
+atom_term(T) ::= atom_term_1(T)
 
-atom_term(atomT A1) ::= atom_term_1(A1)
+atom_term_1(T) ::= user_term(T)
+atom_term_1(T) ::= atom(T)
 
-atom_term_1(atomUT U) ::= user_term(U)
-atom_term_1(A) ::= atom(A)
+string_term(T) ::= string_term_1(T)
 
-string_term(strT S1) ::= string_term_1(S1)
+string_term_1(T) ::= user_term(T)
+string_term_1(T) ::= string(T)
 
-string_term_1(strUT U) ::= user_term(U)
-string_term_1(S) ::= string(S)
+tuple_term(T) ::= tuple_term_1(T)
 
-sequence_term(seqT T1) ::= sequence_term_1(T1)
+tuple_term_1(plusOp T T2) ::= tuple_term_1(T) plus tuple_term_2(T2)
+tuple_term_1(T) ::= tuple_term_2(T)
 
-sequence_term_1(seq) ::= lArrow rArrow
-sequence_term_1(seq T) ::= lArrow term_s(T) rArrow
+tuple_term_2(T) ::= user_term(T)
+tuple_term_2(tpl T) ::= lParenth term_s(T) rParenth
+tuple_term_2(T) ::= tuple_indexed_term(T)
 
-sequence_term(tupT T1) ::= sequence_term_1(T1)
+tuple_indexed_term(T) ::= tuple_indexed_term_1(T)
 
-sequence_term_1(plusOp T1 T2) ::= sequence_term_1(T1) plus sequence_term_2(T2)
-sequence_term_1(T2) ::= sequence_term_2(T2)
+tuple_indexed_term_1(T) ::= user_term(T)
+tuple_indexed_term_1(tuIn T T2) ::= tuple_term(T) lBracket ar_term(T2) rBracket
+tuple_indexed_term_1(tuSl T T2 T3) ::= tuple_term(T) lBracket ar_term(T2) twoDots ar_term(T3) rBracket
 
-sequence_term_2(tupUT U) ::= user_term(U)
-sequence_term_2(tup T) ::= lParenth term_s(T) rParenth
-sequence_term_2(T) ::= sequence_indexed_term(T)
+set_term(T) ::= set_term_1(T)
 
-sequence_indexed_term(tupIndT T1) ::= sequence_indexed_term_1(T1)
+set_term_1(unn T T2) ::= set_term_1(T) U set_term_2(T2)
+set_term_1(diff T T2) ::= set_term_1(T) backslash set_term_2(T2)
+set_term_1(T) ::= set_term_2(T)
 
-sequence_indexed_term_1(tupIndUT U) ::= user_term(U)
-sequence_indexed_term_1(tuIn T A) ::= sequence_term(T) lBracket ar_term(A) rBracket
-sequence_indexed_term_1(tuSl T A A2) ::= sequence_term(T) lBracket ar_term(A) twoDots ar_term(A2) rBracket
+set_term_2(nrsec T T2) ::= set_term_2(T) sec set_term_3(T2)
+set_term_2(starOp T T2) ::= set_term_2(T) star set_term_3(T3)
+set_term_2(T) ::= set_term_3(T)
 
-set_term(setT S1) ::= set_term_1(S1)
+set_term_3(aggrUnn T T2) ::= U lBracket bool_term(T) rBracket set_term_3(T2)
+set_term_3(aggrNrsec T T2) ::= Sec lBracket bool_term(T) rBracket set_term_3(T2)
+set_term_3(T) ::= inner_set_term(T)
 
-set_term_1(unn S1 S2) ::= set_term_1(S1) U set_term_2(S2)
-set_term_1(diff S1 S2) ::= set_term_1(S1) backslash set_term_2(S2)
-set_term_1(S2) ::= set_term_2(S2)
-
-set_term_2(nrsec S2 S3) ::= set_term_2(S2) sec set_term_3(S3)
-set_term_2(starOp S2 S3) ::= set_term_2(S2) star set_term_3(S3)
-set_term_2(S3) ::= set_term_3(S3)
-
-set_term_3(aggrUnn B S3) ::= U lBracket bool_term(B) rBracket set_term_3(S3)
-set_term_3(aggrNrsec B S3) ::= Sec lBracket bool_term(B) rBracket set_term_3(S3)
-set_term_3(S4) ::= set_term_4(S4)
-
-set_term_4(setUT U) ::= user_term(U)
-set_term_4(S) ::= lParenth set_term(S) rParenth
-set_term_4(powSet S) ::= Pow lParenth set_term(S) rParenth
-set_term_4(B) ::= brace_set(B)
+inner_set_term(T) ::= user_term(T)
+inner_set_term(T) ::= lParenth set_term(T) rParenth
+inner_set_term(powSet T) ::= Pow lParenth set_term(T) rParenth
+inner_set_term(T) ::= brace_set(T)
 
 brace_set(set) ::= lBrace rBrace
 brace_set(set T) ::= lBrace term_s(T) rBrace
-brace_set(iv A A2) ::= lBrace ar_term(A) twoDots ar_term(A2) rBrace
-brace_set(setCompr T B) ::= lBrace term(T) pipe bool_term(B) rBrace
+brace_set(iv T T2) ::= lBrace ar_term(T) twoDots ar_term(T2) rBrace
+brace_set(setCompr T T2) ::= lBrace term(T) pipe bool_term(T2) rBrace
 
-bool_term(boolT B1) ::= bool_term_1(B1)
+bool_term(T) ::= bool_term_1(T)
 
-bool_term_1(equiv B2 B1) ::= bool_term_2(B2) equivalent bool_term_1(B1)
-bool_term_1(B2) ::= bool_term_2(B2)
+bool_term_1(equiv T T2) ::= bool_term_2(T) equivalent bool_term_1(T2)
+bool_term_1(T) ::= bool_term_2(T)
 
-bool_term_2(impl B3 B2) ::= bool_term_3(B3) implies bool_term_2(B2)
-bool_term_2(B3) ::= bool_term_3(B3)
+bool_term_2(impl T T2) ::= bool_term_3(T) implies bool_term_2(T2)
+bool_term_2(T) ::= bool_term_3(T)
 
-bool_term_3(disj B3 B4) ::= bool_term_3(B3) opDisj bool_term_4(B4)
-bool_term_3(B4) ::= bool_term_4(B4)
+bool_term_3(disj T T2) ::= bool_term_3(T) opDisj bool_term_4(T2)
+bool_term_3(T) ::= bool_term_4(T)
 
-bool_term_4(conj B4 B5) ::= bool_term_4(B4) opConj bool_term_5(B5)
-bool_term_4(B5) ::= bool_term_5(B5)
+bool_term_4(conj T T2) ::= bool_term_4(T) opConj bool_term_5(T2)
+bool_term_4(T) ::= bool_term_5(T)
 
-bool_term_5(neg B5) ::= tilde bool_term_5(B5)
-bool_term_5(B6) ::= bool_term_6(B6)
+bool_term_5(neg T) ::= tilde bool_term_5(T)
+bool_term_5(T) ::= bool_term_6(T)
 
-bool_term_6(Q) ::= quantified_term(Q)
-bool_term_6(S) ::= set_bool_term(S)
-bool_term_6(E) ::= equality(E)
-bool_term_6(I) ::= inner_bool_term(I)
+bool_term_6(T) ::= inner_bool_term(T)
+bool_term_6(T) ::= quantified_term(T)
+bool_term_6(T) ::= set_bool_term(T)
+bool_term_6(T) ::= equality(T)
 
-inner_bool_term(B) ::= lParenth bool_term(B) rParenth
-inner_bool_term(boolUT U) ::= user_term(U)
+inner_bool_term(T) ::= lParenth bool_term(T) rParenth
+inner_bool_term(T) ::= user_term(T)
 inner_bool_term(T) ::= truth(T)
 
-quantified_term(exist S B) ::= some symbol_s_in_set_term(S) dot bool_term_6(B)
-quantified_term(univ S B) ::= all symbol_s_in_set_term(S) dot bool_term_6(B)
+quantified_term(exist T T2) ::= some symbol_s_in_set_term(T) dot bool_term_6(T2)
+quantified_term(univ T T2) ::= all symbol_s_in_set_term(T) dot bool_term_6(T2)
 
-set_bool_term(sbset S S2) ::= set_term(S) sub set_term(S2)
-set_bool_term(setMem A S) ::= set_mem_arg(A) in set_term(S)
+set_bool_term(sbset T T2) ::= set_term(T) sub set_term(S2)
+set_bool_term(setMem T T2) ::= set_mem_arg(T) in set_term(T2)
 
-set_mem_arg(U) ::= unlikely_bool_term(U)
+set_mem_arg(T) ::= term(T)
 
-equality(eq A A2) ::= equality_arg(A) equal equality_arg(A2)
-equality(uneq A A2) ::= equality_arg(A) unequal equality_arg(A2)
-equality(R) ::= relational(R)
+equality(eq T T2) ::= equality_arg(T) equal equality_arg(T2)
+equality(uneq T T2) ::= equality_arg(T) unequal equality_arg(T2)
+equality(T) ::= relational(T)
 
-equality_arg(U) ::= unlikely_bool_term(U)
+equality_arg(T) ::= term(T)
 
-relational(less A A2) ::= ar_term(A) lArrow ar_term(A2)
-relational(greater A A2) ::= ar_term(A) rArrow ar_term(A2)
-relational(lessEq A A2) ::= ar_term(A) lessOrEq ar_term(A2)
-relational(greaterEq A A2) ::= ar_term(A) greaterOrEq ar_term(A2)
+relational(less T T2) ::= ar_term(T) lArrow ar_term(T2)
+relational(greater T T2) ::= ar_term(T) rArrow ar_term(T2)
+relational(lessEq T T2) ::= ar_term(T) lessOrEq ar_term(T2)
+relational(greaterEq T T2) ::= ar_term(T) greaterOrEq ar_term(T2)
 
-ar_term(arT A1) ::= ar_term_1(A1)
+ar_term(T) ::= ar_term_1(T)
 
-ar_term_1(plusOp A1 A2) ::= ar_term_1(A1) plus ar_term_2(A2)
-ar_term_1(bMns A1 A2) ::= ar_term_1(A1) minus ar_term_2(A2)
-ar_term_1(A2) ::= ar_term_2(A2)
+ar_term_1(plusOp T T2) ::= ar_term_1(T) plus ar_term_2(T2)
+ar_term_1(bMns T T2) ::= ar_term_1(T) minus ar_term_2(T2)
+ar_term_1(T) ::= ar_term_2(T)
 
-ar_term_2(starOp A2 A3) ::= ar_term_2(A2) star ar_term_3(A3)
-ar_term_2(div A2 A3) ::= ar_term_2(A2) slash ar_term_3(A3)
-ar_term_2(md A2 A3) ::= ar_term_2(A2) mod ar_term_3(A3)
-ar_term_2(A3) ::= ar_term_3(A3)
+ar_term_2(starOp T T2) ::= ar_term_2(T) star ar_term_3(T)
+ar_term_2(div T T2) ::= ar_term_2(T) slash ar_term_3(T)
+ar_term_2(md T T2) ::= ar_term_2(T) mod ar_term_3(T)
+ar_term_2(T) ::= ar_term_3(T)
 
-ar_term_3(aggrSum B A3) ::= Sum lBracket bool_term(B) rBracket ar_term_3(A3)
-ar_term_3(aggrProd B A3) ::= Prod lBracket bool_term(B) rBracket ar_term_3(A3)
-ar_term_3(uMns A3) ::= minus ar_term_3(A3)
-ar_term_3(A3) ::= plus ar_term_3(A3)
-ar_term_3(A4) ::= ar_term_4(A4)
+ar_term_3(aggrSum T T2) ::= Sum lBracket bool_term(T) rBracket ar_term_3(T2)
+ar_term_3(aggrProd T T2) ::= Prod lBracket bool_term(T) rBracket ar_term_3(T2)
+ar_term_3(uMns T) ::= minus ar_term_3(T)
+ar_term_3(T) ::= plus ar_term_3(T)
+ar_term_3(T) ::= ar_term_4(T)
 
-ar_term_4(exp A5 A3) ::= ar_term_5(A5) hat ar_term_3(A3)
-ar_term_4(A5) ::= ar_term_5(A5)
+ar_term_4(exp T T2) ::= inner_ar_term(T) hat ar_term_3(T)
+ar_term_4(T) ::= inner_ar_term(T)
 
-ar_term_5(arUT U) ::= user_term(U)
-ar_term_5(A) ::= lParenth ar_term(A) rParenth
-ar_term_5(flr A) ::= floor lParenth ar_term(A) rParenth
-ar_term_5(clng A) ::= ceil lParenth ar_term(A) rParenth
-ar_term_5(N) ::= numl(N)
-ar_term_5(pipesOp A) ::= pipe pipes_arg(A) pipe
+inner_ar_term(T) ::= user_term(T)
+inner_ar_term(T) ::= lParenth ar_term(T) rParenth
+inner_ar_term(flr T) ::= floor lParenth ar_term(T) rParenth
+inner_ar_term(clng T) ::= ceil lParenth ar_term(T) rParenth
+inner_ar_term(N) ::= numl(N)
+inner_ar_term(T) ::= pipe_ar_term(T)
 
-pipes_arg(A) ::= ar_term(A)
-pipes_arg(S) ::= set_term(S)
+pipe_ar_term(pipesOp T) ::= pipe pipes_arg(T) pipe
+
+pipes_arg(T) ::= ar_term(T)
+pipes_arg(T) ::= set_term(T)
 pipes_arg(T) ::= tuple_term(T)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 
-symbol_s(syms S) ::= symbol_(S)
-symbol_s(syms S cut_root(Ss)) ::= symbol_(S) comma symbol_s(Ss)
+symbol_s(syms T) ::= symbol_(T)
+symbol_s(syms T cut_root(Ts)) ::= symbol_(T) comma symbol_s(Ts)
 
-symbol_s_in_set_term(symsInSet S S2) ::= symbol_s(S) in set_term(S2)
+symbol_s_in_set_term(symsInSet T T2) ::= symbol_s(T) in set_term(S2)
 
-term_if_bool_term(tIfBT T B) ::= term(T) if bool_term(B)
+term_if_bool_term(tIfBT T T2) ::= term(T) if bool_term(T2)
 
 term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
 term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
@@ -182,15 +175,14 @@ term_other(tOther T) ::= term(T) otherwise
 
 term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
 
-fun_term(funT F V) ::= fun_(F) lParenth symbol_s(V) rParenth
-rel_term(relT R V) ::= rel_(R) lParenth symbol_s(V) rParenth
+fun_term(funT T T2) ::= fun_(T) lParenth symbol_s(T2) rParenth
+rel_term(relT T T2) ::= rel_(T) lParenth symbol_s(T2) rParenth
 
-symbol_(symN I) ::= id(I)
+symbol_(symN T) ::= id(T)
+const_(constN T) ::= id(T)
 
-const_(constT I) ::= id(I)
+fun_(funN T) ::= id(T)
+rel_(relN T) ::= id(T)
 
-fun_(I) ::= id(I)
-rel_(I) ::= id(I)
-
-user_term(userSC I) ::= id(I)
-user_term(userFR I T) ::= id(I) lParenth term_s(T) rParenth
+user_term(userSC T) ::= id(T)
+user_term(userFR T T2) ::= id(T) lParenth term_s(T2) rParenth
