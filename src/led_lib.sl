@@ -15,6 +15,7 @@ import <Utilities/Set.sl>;
 /* exporting */
 
 public
+    strgToVal, prettyPrint, // new
     valNull, // erroneous value
     pp, pps, // pretty-print
     Click, Image, Point, // Easel types
