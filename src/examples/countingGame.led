@@ -1,12 +1,12 @@
-Use keyword *#isGame* to translate LED
-into Easel-ready SequenceL:
+Use keyword *#isGame* to translate LED into
+Easel-ready SequenceL:
 /$ #isGame $/
 
 /$ initialState := 0 $/
 
 /$ newState := currentState + 1 $/
 
-Display current number in *currentState*:
+Display number in *currentState*:
 /$ images :=
     {text(strgToVal(prettyPrint(currentState)),
     point(500, 400), 100, color(0, 0, 255))}

@@ -1,4 +1,7 @@
-/* Copy/paste the block below into the SequenceL interpreter to test:
+
+/* 
+Copy/paste the block below into
+the SequenceL interpreter to test:
 
 pp(c1)
 pp(c2)
@@ -7,7 +10,7 @@ pp(c4)
 
 (pp: pretty-print) */
 
-import * from "../lib.sl" as *;
+import * from "../led_lib.sl" as *;
 
 c1 := 
 		AUX_1_A_;
@@ -42,7 +45,7 @@ AUX_2_B_[i_] :=
 	let
 		v := AUX_2_C_[i_];
 	in
-		conj(setMem(v, iv(uMns(nu("5")), nu("5"))), eq(md(v, nu("2")), nu("1")));
+		(valFalse when not valToTrth(setMem(v, iv(uMns(nu("5")), nu("5")))) else eq(md(v, nu("2")), nu("1")));
 
 AUX_2_C_ := 
 		valToSet(se([nu("1"), nu("3")]));
@@ -66,7 +69,7 @@ AUX_4_B_(x)[i_] :=
 	let
 		y := AUX_4_C_(x)[i_];
 	in
-		conj(less(x, nu("1.5")), y);
+		(valFalse when not valToTrth(less(x, nu("1.5"))) else y);
 
 AUX_4_C_(x) := 
 		valToSet(se([AUX_3_A_(x)]));

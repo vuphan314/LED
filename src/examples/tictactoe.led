@@ -1,4 +1,4 @@
-﻿Tic Tac Toe
+Tic Tac Toe
 by Qianji Zheng and J. Nelson Rushton, Texas Tech University
 
 This is an LED program that defines a simple tic tac toe game to run in the easel game engine.
@@ -100,7 +100,7 @@ GREEN := color(0, 255, 0)
 RED := color(255, 0, 0)
 $/
 
-----------------------------------------------------------------------
+------------------------------------------------------------
 
 This section defines the *display* function, specifying the images to display on the screen in each game state. The  *grid* consists is a set of four line segments that make up the tic tac toe playing area.
 /$
@@ -238,7 +238,11 @@ newState :=
     currentState U movesMade otherwise
 $/
 
-test:
+============================================================
+============================================================
+TEST: SEQUENCEL INTERPRETER
+============================================================
+============================================================
 
 cmd:>pp(initialState_)
 "{}"

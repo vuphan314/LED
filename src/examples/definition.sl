@@ -1,6 +1,22 @@
-////////// ////////// ////////// ////////// ////////// //////////
 
-import * from "../libLED.sl" as *;
+/* 
+Copy/paste the block below into
+the SequenceL interpreter to test:
+
+pp(a1)
+pp(a2)
+pp(a3)
+pp(c1)
+pp(c2)
+pp(c3)
+pp(d1)
+pp(d2)
+pp(d3)
+pp(e)
+
+(pp: pretty-print) */
+
+import * from "../led_lib.sl" as *;
 
 a1 := 
 		nu("0");
@@ -19,11 +35,13 @@ a3 :=
 		y;
 
 f1(x) := 
-		nu("1") when valToTrth(greater(x, nu("0")));
+		nu("1") when valToTrth(greater(x, nu("0"))) else
+		valNull;
 
 f2(x) := 
 		nu("1") when valToTrth(greater(x, nu("0"))) else
-		nu("0") when valToTrth(eq(x, nu("0")));
+		nu("0") when valToTrth(eq(x, nu("0"))) else
+		valNull;
 
 f3(x) := 
 		nu("1") when valToTrth(greater(x, nu("0"))) else
@@ -67,19 +85,4 @@ r(x, y, z) :=
 e := 
 		r(uMns(nu("1")), nu("0"), nu("1"));
 
-////////// ////////// ////////// ////////// ////////// //////////
 
-/** Copy/paste the block below into SequenceL interpreter to test:
-
-pp(a1)
-pp(a2)
-pp(a3)
-pp(c1)
-pp(c2)
-pp(c3)
-pp(d1)
-pp(d2)
-pp(d3)
-pp(e)
-
-(pp: pretty-print) */

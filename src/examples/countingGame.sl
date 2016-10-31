@@ -1,5 +1,7 @@
 
-/* Copy/paste the block below into the SequenceL interpreter to test:
+/* 
+Copy/paste the block below into
+the SequenceL interpreter to test:
 
 pp(initialState_)
 
@@ -14,104 +16,87 @@ newState_(I, S) :=
 images_(S) := 
 		se([text_(strgToVal(prettyPrint(currentState(S))), point_(nu("500"), nu("400")), nu("100"), color_(nu("0"), nu("0"), nu("255")))]);
 
-/* ********** ********** ********** ********** ********** ********** */
+/* ************************************************** */
 /* SECTION START */
 
-/* BELOW IS A COPY OF lib2.sl */
-
-/*
-Easel library
-*/
-
-/* easel required functions */
-
-initialState: State;
-initialState := 
-    valToState(initialState_);
-
-newState: Input * State -> State;
-newState(I, S) :=
-    let
-        v := newState_(I, S);
-    in
-        valToState(v);
-
-images: State -> Image(1);
-images(S) :=
-    let
-        v := images_(S);
-    in
-        valToImages(v);
-
-/* easel default sound */
-sounds: Input * State -> char(2);
-sounds(I, S) := ["ding"] when I.iClick.clicked else [];
-
-/* easel template by Bryant */
-// State ::= (time: int);
-// initialState := (time: 0);
-// newState(I, S) := (time: S.time + 1);
-// images(S) := [  text("Time: " ++ Conversion::intToString(S.time / 30),
-                // point(500, 400), 30, dBlue)];
-// sounds(I, S) := ["ding"] when I.iClick.clicked else [];
-
-/* SECTION END */
-/* ********** ********** ********** ********** ********** ********** */
-
-/* ********** ********** ********** ********** ********** ********** */
-/* SECTION START */
-
-/* BELOW IS A COPY OF lib.sl */
+/* BELOW IS A COPY OF led_lib.sl */
 
 /*
 LED library written in SequenceL
 */
 
-////////// ////////// ////////// ////////// ////////// //////////
-/* importing */
+////////////////////////////////////////////////////////////
+/* import */
 
 import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
 import <Utilities/Sequence.sl>;
 import <Utilities/Set.sl>;
 
-////////// ////////// ////////// ////////// ////////// //////////
-/* exporting */
+////////////////////////////////////////////////////////////
+/* export */
 
 public
-    valNull, // erroneous value
-    pp, pps, // pretty-print
-    Click, Image, Point, // Easel types
-    Input, State, // Easel paramters
-    currentState, valToState, valToImages, text_, point_, color_, // Easel helpers
-    Val, Numb, // LED types
-    setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
-    solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
-    someSet, allSet, valToSet, // quantification
-    valToTrth, // when-clauses
-    valTrue, valFalse, // some values
-    equiv, impl, disj, conj, neg, // boolean
-    eq, uneq, // equality
-    less, greater, lessEq, greaterEq, // relational
-    pipesOp, plusOp, starOp, // overloaded
-    setMem, sbset, unn, nrsec, diff, powSet, // set
-    bMns, uMns, div, flr, clng, md, exp, // arithmetic
-    tuIn, tuSl, // tuple
-    tu, // tuple to value
-    se, // set to value
-    iv, // interval to value
-    st, // string to value
-    at, // atom to value
-    tr, // truth to value
-    nu; // numeral to value
+    // pretty-print
+        prettyPrint, pp, pps,
+    // Easel
+        strgToVal,
+    // Easel types
+        Click, Image, Point,
+    // Easel paramters
+        Input, State,
+    // Easel helpers
+        currentState, valToState, valToImages,
+        text_, point_, color_,
+    // LED types
+        Val, Numb,
+    // erroneous value
+        valNull,
+    // aggregation
+        setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
+    // solution set
+        solGround, solEq, solEqs, solSet, solDisj, unnBinds,
+    // quantification
+        someSet, allSet, valToSet,
+    // when-clauses
+        valToTrth,
+    // some values
+        valTrue, valFalse,
+    // boolean
+        equiv, impl, disj, conj, neg,
+    // equality
+        eq, uneq,
+    // relational
+        less, greater, lessEq, greaterEq,
+    // overloaded
+        pipesOp, plusOp, starOp,
+    // set
+        setMem, sbset, unn, nrsec, diff, powSet,
+    // arithmetic
+        bMns, uMns, div, flr, clng, md, exp,
+    // tuple
+        tuIn, tuSl,
+    // to value
+        tu, // tuple
+        se, // set
+        iv, // interval
+        st, // string
+        at, // atom
+        tr, // truth
+        nu; // numeral
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* null-value */
 
-kindNull := "null";
-valNull := (kindLED: kindNull);
+kindNull: char(1);
+kindNull :=
+    "null";
 
-////////// ////////// ////////// ////////// ////////// //////////
+valNull: Val;
+valNull :=
+    (kindLED: kindNull);
+
+////////////////////////////////////////////////////////////
 /* pretty-print */
 
 prettyPrint: Val -> char(1);
@@ -123,7 +108,7 @@ prettyPrint(v) :=
         t := valToTrth(v);
         c := valToColl(v);
     in
-        "ERRONEOUS NULL VALUE" when valOfKind(v, kindNull) else
+        "ERRONEOUS VALUE" when valOfKind(v, kindNull) else
         s when valOfKind(v, kindStrg) else
         a when valOfKind(v, kindAtm) else
         numl when valOfKind(v, kindNumb) else
@@ -156,15 +141,18 @@ prettyPrintTail(vs(1))[i] :=
     in
         ", " ++ s;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* easel */
 
 /* easel types */
 Point ::= (x: int, y: int);
 Color ::= (red: int, green: int, blue: int);
-Image ::= ( kind: char(1), iColor: Color, vert1: Point, vert2: Point, vert3: Point,
-            center: Point, radius: int, height: int, width: int, message: char(1),
-            source: char(1));
+Image ::= (
+    kind: char(1), iColor: Color,
+    vert1: Point, vert2: Point, vert3: Point,
+    center: Point, radius: int, height: int, width: int,
+    message: char(1), source: char(1)
+);
 Click ::= (clicked: bool, clPoint: Point);
 Input ::= (iClick: Click, keys: char(1));
 
@@ -202,7 +190,9 @@ input: Click * char(1) -> Input;
 input(cl, k(1)) := (iClick: cl, keys: k);
 
 segment: Point * Point * Color -> Image;
-segment(e1, e2, c) := (kind: "segment", vert1: e1, vert2: e2, iColor: c);
+segment(e1, e2, c) := (
+    kind: "segment", vert1: e1, vert2: e2, iColor: c
+);
 
 segment_: Val * Val * Val -> Val;
 segment_(v1, v2, v3) :=
@@ -215,11 +205,15 @@ segment_(v1, v2, v3) :=
         imageToVal(i);
 
 circle: Point * int * Color -> Image;
-circle(ce, rad, c) := (kind: "circle", center: ce, radius: rad, iColor: c);
+circle(ce, rad, c) := (
+    kind: "circle", center: ce, radius: rad, iColor: c
+);
 
 text: char(1) * Point * int * Color -> Image;
-text(mes(1), cen, he, c) :=
-    (kind: "text", center: cen, height: he, iColor: c, message: mes);
+text(mes(1), cen, he, c) := (
+    kind: "text", center: cen, height: he,
+    iColor: c, message: mes
+);
 
 text_: Val * Val * Val * Val -> Val;
 text_(v1, v2, v3, v4) :=
@@ -233,14 +227,21 @@ text_(v1, v2, v3, v4) :=
         imageToVal(t);
 
 disc: Point * int * Color -> Image;
-disc(ce, rad, c) := (kind: "disc", center: ce, radius: rad, iColor: c);
+disc(ce, rad, c) := (
+    kind: "disc", center: ce, radius: rad, iColor: c
+);
 
 fTri: Point * Point * Point * Color -> Image;
-fTri(v1, v2, v3, c) := (kind: "triangle", vert1: v1, vert2: v2, vert3: v3, iColor: c);
+fTri(v1, v2, v3, c) := (
+    kind: "triangle", vert1: v1, vert2: v2, vert3: v3,
+    iColor: c
+);
 
 graphic: char(1) * Point * int * int -> Image;
-graphic(graphicFile(1), c, w, h) :=
-    (kind: "graphic", source: graphicFile, radius: 0, height: h, width: w, center: c);
+graphic(graphicFile(1), c, w, h) := (
+    kind: "graphic", source: graphicFile, radius: 0,
+    height: h, width: w, center: c
+);
 
 /* easel origin-point */
 originPoint := point(0,0);
@@ -256,14 +257,21 @@ dIndigo := color(70, 0, 130);
 dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
-/* easel game-state */
+/* type: easel game-state */
 
 State ::= (val: Val);
 
-valToState(v) := (val: v);
-stateToVal(s) := s.val;
+valToState: Val -> State;
+valToState(v) :=
+    (val: v);
 
-pps(S) := prettyPrint(stateToVal(S));
+stateToVal: State -> Val;
+stateToVal(s) :=
+    s.val;
+
+pps: State -> char(1);
+pps(S) :=
+    prettyPrint(stateToVal(S));
 
 /* easel global variables: Input/State -> Val */
 
@@ -297,7 +305,7 @@ mouseY(I) :=
     in
         intToVal(i);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* value kinds: char(1) */
 
 kindNumb := "numb";
@@ -310,19 +318,21 @@ kindPoint := "point";
 kindColor := "color";
 kindImage := "image";
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* value kind-lists: char(2) */
 
 kindsColl := [kindTpl, kindSet];
 kindsEasel := [kindPoint, kindColor, kindImage];
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* type: value */
 
-Val ::= (   kindLED: char(1),
-            strg: char(1), atm: char(1), numb: Numb, trth: bool, coll: Val(1),
-            lmbd: (Val(1) -> Val),
-            ePoint: Point, eColor: Color, eImage: Image); // Easel
+Val ::= (
+    kindLED: char(1),
+    strg: char(1), atm: char(1), numb: Numb, trth: bool,
+    coll: Val(1),
+    ePoint: Point, eColor: Color, eImage: Image // Easel
+);
 
 valToKind: Val -> char(1);
 valToKind(v) :=
@@ -340,7 +350,7 @@ valsOfKind: Val * Val * char(1) -> bool;
 valsOfKind(v1, v2, k(1)) :=
     valOfKind(v1, k) and valOfKind(v2, k);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* value to thing */
 
 valToTrth: Val -> bool;
@@ -389,7 +399,7 @@ valToImages(v)[i] :=
     in
         valToImage(v2);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* thing to value */
 
 numlToVal: char(1) -> Val;
@@ -438,7 +448,7 @@ imageToVal: Image -> Val;
 imageToVal(i) :=
     (kindLED: kindImage, eImage: i);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* aggregation */
 
 setCompr: Val(1) -> Val;
@@ -465,7 +475,7 @@ aggrProd(vs(1)) :=
     valOne when size(vs) = 0 else
     Sequence::fold(vs, mult);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* solution set */
 
 solGround: Val -> Val(2);
@@ -498,7 +508,7 @@ unnBinds: Val(1) * Val(1) -> Val(1);
 unnBinds(b1(1), b2(1)) :=
     b1 ++ b2;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* quantification */
 
 someSet: Val(1) -> Val;
@@ -523,7 +533,7 @@ allSet(vs(1)) :=
         h when n = 1 else
         conj(h, allSet(t));
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* tuple operations */
 
 tuConc: Val * Val -> Val;
@@ -561,7 +571,7 @@ tuLen(v) :=
     in
         intToVal(n);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* equality operations */
 
 eq: Val * Val -> Val;
@@ -580,18 +590,23 @@ trthEq(v1, v2) :=
         tr1 := valToTrth(v1); tr2 := valToTrth(v2);
         c1 := valToColl(v1); c2 := valToColl(v2);
     in
-        eqNumb(n1, n2) when valsOfKind(v1, v2, kindNumb) else
-        equalList(a1, a2) when valsOfKind(v1, v2, kindAtm) else
-        tr1 = tr2 when valsOfKind(v1, v2, kindTrth) else
-        equalList(c1, c2) when valsOfKind(v1, v2, kindTpl) else
-        equalSet(c1, c2) when valsOfKind(v1, v2, kindSet) else
+        eqNumb(n1, n2)
+            when valsOfKind(v1, v2, kindNumb) else
+        equalList(a1, a2)
+            when valsOfKind(v1, v2, kindAtm) else
+        tr1 = tr2
+            when valsOfKind(v1, v2, kindTrth) else
+        equalList(c1, c2)
+            when valsOfKind(v1, v2, kindTpl) else
+        equalSet(c1, c2)
+            when valsOfKind(v1, v2, kindSet) else
         false;
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
     sgn(bMnsNumb(numb1, numb2)) = 0;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* relational operations */
 
 less: Val * Val -> Val;
@@ -626,7 +641,7 @@ greaterEqNumb: Numb * Numb -> bool;
 greaterEqNumb(numb1, numb2) :=
     greaterNumb(numb1, numb2) or eqNumb(numb1, numb2);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* overloaded operations */
 
 plusOp: Val * Val -> Val;
@@ -648,7 +663,7 @@ pipesOp(v) :=
     tuLen(v) when valOfKind(v, kindTpl) else
     valNull;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* set operations (value) */
 
 setMem: Val * Val -> Val;
@@ -683,7 +698,7 @@ card: Val -> Val;
 card(v) :=
     stdSetToInt(cardSet, v);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* boolean operations (value) */
 
 equiv: Val * Val -> Val;
@@ -706,7 +721,7 @@ neg: Val -> Val;
 neg(v) :=
     stdTrthToTrth(negTrth, v);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* arithmetic operations (value) */
 
 add: Val * Val -> Val;
@@ -749,7 +764,7 @@ exp: Val * Val -> Val;
 exp(v1, v2) :=
     stdNumbIntToNumb(expNumb, v1, v2);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* interval */
 
 intervalToVal: Val * Val -> Val;
@@ -760,19 +775,16 @@ intervalToVal(v1, v2) :=
         s := twoIntsToSet(i1, i2);
     in
         setToVal(s);
-iv: Val * Val -> Val;
-iv(v1, v2) :=
-    intervalToVal(v1, v2);
+iv(v1, v2) := intervalToVal(v1, v2);
 
 twoIntsToSet: int32 * int32 -> Val(1);
 twoIntsToSet(i1, i2)[ind] :=
     intToVal(ind) foreach ind within i1...i2;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* type: number */
 
-Numb ::=
-    (Numr: int32, Denr: int32);
+Numb ::= (Numr: int32, Denr: int32);
 
 twoIntsToNumbRed: int32 * int32 -> Numb;
 twoIntsToNumbRed(i1, i2) :=
@@ -790,7 +802,7 @@ numbToDenr: Numb -> int32;
 numbToDenr(numb) :=
     numb.Denr;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* pseudotype: integer */
 
 numbIsInt: Numb -> bool;
@@ -813,7 +825,7 @@ valToInt: Val -> int32;
 valToInt(v) :=
     numbToInt(valToNumb(v));
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* some values: Val */
 
 valEmptySet := setToVal([]);
@@ -825,14 +837,14 @@ valZero := numbToVal(numbZero);
 valOne := numbToVal(numbOne);
 valTen := numbToVal(numbTen);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* some numbers: Numb */
 
 numbZero := intToNumb(0);
 numbOne := intToNumb(1);
 numbTen := intToNumb(10);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* arithmetic helper functions */
 
 recipr: Numb -> Numb;
@@ -861,7 +873,7 @@ gcd(i1, i2) :=
     i1 when i2 = 0 else
     gcd(i2, i1 mod i2);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* number to numeral */
 
 numbToNuml: Numb -> char(1);
@@ -930,10 +942,9 @@ getRemsQuots(divisor, rems(1), quots(1)) :=
         (l1: rems2, l2: quots2) when rem = 0 or rep else
         getRemsQuots(divisor, rems2, quots2);
 
-TwoIntLists ::=
-    (l1: int32(1), l2: int32(1));
+TwoIntLists ::= (l1: int32(1), l2: int32(1));
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* numeral to number */
 
 numlToNumb: char(1) -> Numb;
@@ -993,7 +1004,7 @@ intNumlToNumb: char(1) -> Numb;
 intNumlToNumb(iN(1)) :=
     intToNumb(Conversion::stringToInt(iN));
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* standardizer functions */
 
 stdValSetToTrth: (Val * Val(1) -> bool) * Val * Val -> Val;
@@ -1108,7 +1119,7 @@ stdNumbIntToNumb(f, v1, v2) :=
     in
         numbToVal(n2);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* set operations (non-value) */
 
 setMemSet: Val * Val(1) -> bool;
@@ -1160,7 +1171,7 @@ cardSet: Val(1) -> int32;
 cardSet(v(1)) :=
     size(v);
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* boolean operations (truth) */
 
 equivTrth: bool * bool -> bool;
@@ -1189,7 +1200,7 @@ negTrth: bool -> bool;
 negTrth(t) :=
     not t;
 
-////////// ////////// ////////// ////////// ////////// //////////
+////////////////////////////////////////////////////////////
 /* arithmetic operations (number) */
 
 addNumb: Numb * Numb -> Numb;
@@ -1262,6 +1273,6 @@ expTwoInts(numr, denr, p) :=
         expTwoInts(denr, numr, -p);
 
 /* SECTION END */
-/* ********** ********** ********** ********** ********** ********** */
+/* ************************************************** */
 
 

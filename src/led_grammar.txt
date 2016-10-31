@@ -21,15 +21,16 @@ def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
 def_body(T) ::= term_if_bool_term_s_other(T)
 
-term(T) ::= user_term(T)
-term(T) ::= lParenth term(T) rParenth
-term(T) ::= atom_term(T)
-term(T) ::= string_term(T)
-term(T) ::= tuple_term(T)
-term(T) ::= tuple_indexed_term(T)
-term(T) ::= ar_term(T)
-term(T) ::= set_term(T)
+term(T) ::= nonbool_term(T)
 term(T) ::= bool_term(T)
+
+nonbool_term(T) ::= inner_term(T)
+nonbool_term(T) ::= atom_term(T)
+nonbool_term(T) ::= string_term(T)
+nonbool_term(T) ::= tuple_term(T)
+nonbool_term(T) ::= tuple_indexed_term(T)
+nonbool_term(T) ::= ar_term(T)
+nonbool_term(T) ::= set_term(T)
 
 atom_term(T) ::= atom_term_1(T)
 
@@ -112,13 +113,15 @@ quantified_term(univ T T2) ::= all symbol_s_in_set_term(T) dot bool_term_6(T2)
 set_bool_term(sbset T T2) ::= set_term(T) sub set_term(T2)
 set_bool_term(setMem T T2) ::= set_mem_arg(T) in set_term(T2)
 
-set_mem_arg(T) ::= term(T)
+set_mem_arg(T) ::= nonbool_term(T)
+set_mem_arg(T) ::= inner_bool_term(T)
 
 equality(eq T T2) ::= equality_arg(T) equal equality_arg(T2)
 equality(uneq T T2) ::= equality_arg(T) unequal equality_arg(T2)
 equality(T) ::= relational(T)
 
-equality_arg(T) ::= term(T)
+equality_arg(T) ::= nonbool_term(T)
+equality_arg(T) ::= inner_bool_term(T)
 
 relational(less T T2) ::= ar_term(T) lArrow ar_term(T2)
 relational(greater T T2) ::= ar_term(T) rArrow ar_term(T2)
@@ -157,6 +160,9 @@ pipe_ar_term(pipesOp T) ::= pipe pipes_arg(T) pipe
 pipes_arg(T) ::= ar_term(T)
 pipes_arg(T) ::= set_term(T)
 pipes_arg(T) ::= tuple_term(T)
+
+inner_term(T) ::= lParenth term(T) rParenth
+inner_term(T) ::= user_term(T)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)

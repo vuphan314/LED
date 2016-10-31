@@ -42,8 +42,7 @@ def markStartEnd(st):
 def blockComment(st):
     return '/* ' + st + ' */'
 
-markerComment = \
-    blockComment('********** ********** ********** ********** ********** **********')
+markerComment = blockComment('*' * 50)
 
 startComment = markerComment + '\n' + blockComment('SECTION START')
 endComment = blockComment('SECTION END') + '\n' + markerComment

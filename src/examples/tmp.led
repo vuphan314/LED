@@ -1,1 +1,8 @@
-/$ c := 2^-3 $/
+/$ newState :=
+    initialState if restartClicked;
+    currentState U movesMade otherwise
+ $/
+
+/$
+initialState := {}
+$/

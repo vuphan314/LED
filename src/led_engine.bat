@@ -2,8 +2,8 @@ goto starting
 
 :looping
     set fold=examples\
-    set fil=aggregation
-    set fils=aggregation, boolean, comparison, counting, definition, game, nonstrict, quantification, set, tictactoe2, tmp
+    set fil=tictactoe
+    set fils=aggregation, boolean, comparison, countingGame, definition, nonstrict, quantification, set, tictactoe, tmp, tmpGame
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
         set led=!base!.led
@@ -12,8 +12,9 @@ goto starting
 
         set engine=led_engine.py !led!
 
-        !engine!
+        REM !engine!
         !engine! > !sl!
+        sli -l !sl!
     )
     goto ending
 

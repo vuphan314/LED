@@ -1,4 +1,7 @@
-/* Copy/paste the block below into the SequenceL interpreter to test:
+
+/* 
+Copy/paste the block below into
+the SequenceL interpreter to test:
 
 pp(c1)
 pp(c2)
@@ -8,7 +11,7 @@ pp(c5)
 
 (pp: pretty-print) */
 
-import * from "../lib.sl" as *;
+import * from "../led_lib.sl" as *;
 
 f(t) := 
 		setCompr(AUX_4_AGGR_(t));

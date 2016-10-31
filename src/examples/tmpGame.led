@@ -1,0 +1,3 @@
+/$ #isGame $/
+/$ c := 0 $/
+/$ occupies(p) iff p in currentState $/

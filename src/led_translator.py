@@ -305,8 +305,7 @@ Note: Python pseudotype `tree` is
 either type `tuple` or `str`.
 """
 
-def translateTop(L: list) -> str:
-    T = listToTree(L)
+def translateTop(T: tuple) -> str:
     T = updateIsGame(T)
 
     T = addOtherwiseClause(T)
@@ -453,7 +452,7 @@ def updateDefedFuncsConsts(prog) -> None:
     global defedFuncs
     global defedConsts
     for definition in prog[1:]:
-        st = definition[1][1][1]
+        st = translateRecur(LedDatum(), definition[1][1])
         defedFuncs += st,
         if definition[0] == 'constDef':
             defedConsts += st,
@@ -463,14 +462,14 @@ def updateDefedConsts(prog) -> None:
     defedConsts = ()
     for definition in prog[1:]:
         if definition[0] == 'constDef':
-            st = definition[1][1][1]
+            st = translateRecur(LedDatum(), definition[1])
             defedConsts += st,
 
 ############################################################
 """Easel."""
 
 def addEaselParams(T):
-    if type(T) == str:
+    if isinstance(T, str):
         return T
     elif T[0] == 'userSC':
         id = T[1]
@@ -505,6 +504,7 @@ def addEaselParams(T):
         return recurTree(addEaselParams, T)
     elif T[0] in {'funT', 'relT'}:
         params = getParamsFromLexeme(T[1])
+        # tst(params)
         syms = T[2]
         syms += getIdsTuple('symN', params)
         T = T[:2] + (syms,)
@@ -534,7 +534,7 @@ easelParamsState = easelState,
 easelParams = easelParamsInput + easelParamsState
 
 def getParamsFromLexeme(id) -> tuple:
-    st = id[1]
+    st = translateRecur(LedDatum(), id)
     if not isinstance(st, str):
         raiseError('MUST BE STRING')
 
@@ -586,7 +586,7 @@ funcsAddParams = {
 
 def updateFuncsAddParams(prog) -> None:
     for definition in prog[1:]:
-        head = definition[1][1][1]
+        head = translateRecur(LedDatum(), definition[1][1])
         if head not in easelFuncs:
             body = definition[2]
             if needBoth(body):
@@ -650,17 +650,17 @@ defLabels = {'constDef', 'funDef', 'relDef'}
 
 def translateDef(dat: LedDatum, T) -> str:
     func = translateRecur(dat, T[1][1])
-    u2 = dat.getAnotherInst()
+    dat2 = dat.getAnotherInst()
 
     if T[0] in {'funDef', 'relDef'}:
-        u2.indepSymbs = getSymbsFromSyms(T[1][2])
+        dat2.indepSymbs = getSymbsFromSyms(T[1][2])
 
     letCls = ()
     if len(T) > 3: # where-clauses
-        letCls = translateWhereClauses(u2, T[3][1])
+        letCls = translateWhereClauses(dat2, T[3])
 
     st = defRecur(
-        u2, func, u2.indepSymbs, T[2],
+        dat2, func, dat2.indepSymbs, T[2],
         moreSpace = True, letCls = letCls
     )
     return st
@@ -830,15 +830,6 @@ def unionDicts(ds) -> dict:
         D.update(d)
     return D
 
-def listToTree(L: list):
-    if type(L) == str:
-        return L
-    else:
-        T = L[0],
-        for l in L[1:]:
-            T += listToTree(l),
-        return T
-
 ############################################################
 """Add otherwise-clase."""
 
@@ -853,7 +844,7 @@ def addOtherwiseClause(T):
         return recurTree(addOtherwiseClause, T)
 
 def tIfBTsToTIfBTsO(tIfBTs):
-    t = 'printNull'
+    t = 'valNull'
     t = 'id', t
     t = 'userSC', t
     t = 'tOther', t
@@ -947,26 +938,26 @@ def translateAggr(dat: LedDatum, T) -> str:
     elif T[0] == 'disj':
         dat.aCateg = 'solDisj'
 
-        u1 = dat.getAnotherInst()
-        translateAggr(u1, T[1])
-        dat.subInst1 = u1
+        dat1 = dat.getAnotherInst()
+        translateAggr(dat1, T[1])
+        dat.subInst1 = dat1
 
-        u2 = dat.getAnotherInst()
-        translateAggr(u2, T[2])
-        dat.subInst2 = u2
+        dat2 = dat.getAnotherInst()
+        translateAggr(dat2, T[2])
+        dat.subInst2 = dat2
 
         st = dat.aDefFunc()
         return st
     elif T[0] == 'conj':
         dat.aCateg = 'solConj'
 
-        u1 = dat.getAnotherInst()
-        translateAggr(u1, T[1])
-        dat.subInst1 = u1
+        dat1 = dat.getAnotherInst()
+        translateAggr(dat1, T[1])
+        dat.subInst1 = dat1
 
-        u2 = u1.getAnotherInst(isNext = True)
-        translateAggr(u2, T[2])
-        dat.subInst2 = u2
+        dat2 = dat1.getAnotherInst(isNext = True)
+        translateAggr(dat2, T[2])
+        dat.subInst2 = dat2
 
         st = dat.aDefFunc()
         return st
@@ -1011,11 +1002,11 @@ def translateQuant(dat: LedDatum, T) -> str:
     symsInSet = T[1]
     dat.depSymbs = getSymbsFromSyms(symsInSet[1])
 
-    u2 = dat.getAnotherInst()
-    dat.qSet = translateRecur(u2, symsInSet[2])
+    dat2 = dat.getAnotherInst()
+    dat.qSet = translateRecur(dat2, symsInSet[2])
 
-    u3 = dat.getAnotherInst(isNext = True)
-    dat.qPred = translateRecur(u3, T[2])
+    dat3 = dat.getAnotherInst(isNext = True)
+    dat.qPred = translateRecur(dat3, T[2])
 
     global auxFuncDefs
     qFuncs = dat.qDefFuncs()
