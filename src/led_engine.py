@@ -5,7 +5,6 @@ a semantically equivalent SL program.
 """
 
 ############################################################
-
 """Import."""
 
 import sys
@@ -16,46 +15,39 @@ import led_unparser
 
 ############################################################
 
-def translate() -> None:
+def main() -> None:
     led = sys.argv[1]
     parsed = led_parser.regparse_file(led)
     sl = led_unparser.unparseTop(parsed)
     if led_unparser.isGame:
-        n = 2
-        # n = 0 #toggle
-        sl += getLibsStr(n)
+        sl += getLibsStr()
     print(sl)
 
 ############################################################
-"""
-copy libraries to easel output file
-"""
+"""Copy LED library to end of easel output file."""
 
-lib = 'lib.sl'
-lib2 = 'lib2.sl'
-libs = lib, lib2
+libName = 'libName.sl'
 
-# getLibsTuple: int -> tuple(str)
-def getLibsTuple(n):
-    return libs[:n][::-1]
-
-# getLibsStr: int -> str
-def getLibsStr(n):
+def getLibsStr() -> str:
     st = ''
-    for l in getLibsTuple(n):
-        with open(l) as myLib:
-            stLib = myLib.read()
-            mess = '\n\n' + blockComment('BELOW IS A COPY OF ' + l) + '\n\n'
-            stLib = mess + stLib + '\n'
-            stLib = markStartEnd(stLib) + '\n\n'
-            st += stLib
+    with open(libName) as libFile:
+        stLib = libFile.read()
+        mess = '''
+
+{}
+
+'''.format(blockComment('BELOW IS A COPY OF ' + libName))
+        stLib = mess + stLib + '\n'
+        stLib = markStartEnd(stLib) + '\n\n'
+        st += stLib
     return st
 
 ############################################################
 
-easel_lib = '''
+easelFragment = '''
+
 /*
-Easel library
+Easel fragment
 */
 
 /* easel required functions */
@@ -81,9 +73,10 @@ images(S) :=
 /* easel default sound */
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+
 '''
 
 ############################################################
 
 if __name__ == '__main__':
-    translate()
+    main()

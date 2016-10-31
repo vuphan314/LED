@@ -14,25 +14,45 @@ import <Utilities/Set.sl>;
 /* export */
 
 public
-    prettyPrint, pp, pps, // pretty-print
-    strgToVal, // Easel
-    Click, Image, Point, // Easel types
-    Input, State, // Easel paramters
-    currentState, valToState, valToImages, text_, point_, color_, // Easel helpers
-    Val, Numb, // LED types
-    valNull, // erroneous value
-    setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd, // aggregation
-    solGround, solEq, solEqs, solSet, solDisj, unnBinds, // solution set
-    someSet, allSet, valToSet, // quantification
-    valToTrth, // when-clauses
-    valTrue, valFalse, // some values
-    equiv, impl, disj, conj, neg, // boolean
-    eq, uneq, // equality
-    less, greater, lessEq, greaterEq, // relational
-    pipesOp, plusOp, starOp, // overloaded
-    setMem, sbset, unn, nrsec, diff, powSet, // set
-    bMns, uMns, div, flr, clng, md, exp, // arithmetic
-    tuIn, tuSl, // tuple
+    // pretty-print
+        prettyPrint, pp, pps,
+    // Easel
+        strgToVal,
+    // Easel types
+        Click, Image, Point,
+    // Easel paramters
+        Input, State,
+    // Easel helpers
+        currentState, valToState, valToImages,
+        text_, point_, color_,
+    // LED types
+        Val, Numb,
+    // erroneous value
+        valNull,
+    // aggregation
+        setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
+    // solution set
+        solGround, solEq, solEqs, solSet, solDisj, unnBinds,
+    // quantification
+        someSet, allSet, valToSet,
+    // when-clauses
+        valToTrth,
+    // some values
+        valTrue, valFalse,
+    // boolean
+        equiv, impl, disj, conj, neg,
+    // equality
+        eq, uneq,
+    // relational
+        less, greater, lessEq, greaterEq,
+    // overloaded
+        pipesOp, plusOp, starOp,
+    // set
+        setMem, sbset, unn, nrsec, diff, powSet,
+    // arithmetic
+        bMns, uMns, div, flr, clng, md, exp,
+    // tuple
+        tuIn, tuSl,
     tu, // tuple to value
     se, // set to value
     iv, // interval to value

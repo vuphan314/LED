@@ -13,8 +13,8 @@ goto starting
         set transl=led_translator.py !led!
         set parse=led_parser.py !led!
 
-        REM !transl!
-        !parse! > !p!
+        !transl!
+        REM !parse! > !p!
     )
     goto ending
 
