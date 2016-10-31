@@ -53,13 +53,14 @@ public
         bMns, uMns, div, flr, clng, md, exp,
     // tuple
         tuIn, tuSl,
-    tu, // tuple to value
-    se, // set to value
-    iv, // interval to value
-    st, // string to value
-    at, // atom to value
-    tr, // truth to value
-    nu; // numeral to value
+    // to value
+        tu, // tuple
+        se, // set
+        iv, // interval
+        st, // string
+        at, // atom
+        tr, // truth
+        nu; // numeral
 
 ////////////////////////////////////////////////////////////
 /* null-value */

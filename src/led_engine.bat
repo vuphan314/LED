@@ -2,7 +2,7 @@ goto starting
 
 :looping
     set fold=examples\
-    set fil=tictactoe2
+    set fil=aggregation
     set fils=aggregation, boolean, comparison, counting, definition, game, nonstrict, quantification, set, tictactoe2, tmp
     for %%i in (%fil%) do (
         set base=%fold%%%~ni
@@ -10,11 +10,10 @@ goto starting
         set p=!base!.p
         set sl=!base!.sl
 
-        set transl=led_translator.py !led!
-        set parse=led_parser.py !led!
+        set engine=led_engine.py !led!
 
-        !transl!
-        REM !parse! > !p!
+        !engine!
+        !engine! > !sl!
     )
     goto ending
 

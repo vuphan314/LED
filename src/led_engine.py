@@ -11,15 +11,15 @@ import sys
 
 from debugger import *
 import led_parser
-import led_unparser
+import led_translator
 
 ############################################################
 
 def main() -> None:
     led = sys.argv[1]
-    parsed = led_parser.regparse_file(led)
-    sl = led_unparser.unparseTop(parsed)
-    if led_unparser.isGame:
+    parsed = led_parser.parse_file(led)
+    sl = led_translator.translateTop(parsed)
+    if led_translator.isGame:
         sl += getLibsStr()
     print(sl)
 

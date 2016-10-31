@@ -54,7 +54,7 @@ def parse_file(program_file):
     parsed_file = ['prog'] + parsed_file
     return parsed_file
 
-def main():
+def parse_led():
     # read arguments
     args = optparse_arguments()
     program_file = args[0]
@@ -203,5 +203,5 @@ starting from line {}:
 ############################################################
 
 if __name__ == '__main__':
-    parsed_file = main()
+    parsed_file = parse_led()
     print(parsed_file)

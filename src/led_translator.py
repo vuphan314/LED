@@ -17,6 +17,285 @@ auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
 ############################################################
+"""LED datum."""
+
+class LedDatum:
+    indepSymbs = () # ('i1',...)
+    depSymbs = () # ('d1',...)
+
+    def getNumIndepSymbs(self) -> int:
+        n = len(self.indepSymbs)
+        return n
+
+    def getNumDepSymbs(self) -> int:
+        n = len(self.depSymbs)
+        return n
+
+    def getSymbs(self) -> tuple:
+        T = self.indepSymbs + self.depSymbs
+        return T
+
+    def getAnotherInst(self, isNext = False):
+        if isNext:
+            symbs = self.getNextIndepSymbs()
+        else:
+            symbs = self.indepSymbs
+        dat = LedDatum()
+        dat.indepSymbs = symbs
+        return dat
+
+    def getNextIndepSymbs(self) -> tuple:
+        T = self.getSymbs()
+        return T
+
+    def appendToAux(
+        self, extraAppend: str, isNext = False
+    ) -> str:
+        num = auxFuncNum
+        if isNext:
+            num += 1
+        st = 'AUX_' + str(num) + '_' + extraAppend + '_'
+        return st
+
+    """Fields specific to aggregation."""
+    # must assign immediately when instantiating
+    aCateg = None # str
+    # must assign later by calling function aDefFunc
+    aFunc = None # 'AUX_3_(x, y)'
+
+    aVal = ''
+    # ground: 'x < y'
+    # eq:     'x + 1'
+    # set:    'x...2*x'
+
+
+    # term
+    aTerm = None # 'x + y'
+    condInst = None # LedDatum
+
+    # conj/disj
+    subInst1 = None # LedDatum
+    subInst2 = None # LedDatum
+
+    def aCheckCateg(self) -> None:
+        if self.aCateg not in aCategs:
+            raiseError('INVALID AGGREGATE CATEGORY')
+
+    def aDefFunc(self) -> str:
+        global auxFuncNum
+        auxFuncNum += 1
+
+        func = self.appendToAux('AGGR')
+        args = self.indepSymbs
+        self.aFunc = applyRecur(self, func, args)
+
+        self.aCheckCateg()
+        if self.aCateg == 'isAggr':
+            st = self.aDefFuncAggr()
+        elif self.aCateg in aCategsLib:
+            st = self.aDefFuncLib()
+        else: # 'solConj'
+            st = self.aDefFuncConj()
+        global auxFuncDefs
+        auxFuncDefs += st
+
+        return self.aFunc
+
+    def aDefFuncAggr(self) -> str:
+        ind = 'i_'
+
+        func = self.aFunc
+        letCls = self.aGetAggrLetClauses(ind)
+        inCl = self.aTerm
+
+        st = defRecur(
+            self, func, (), inCl,
+            letCls = letCls, inds = (ind,), moreSpace = True
+        )
+        return st
+
+    def aGetAggrLetClauses(self, ind: str) -> str:
+        binding = 'b_'
+        expr = applyRecur(
+            self, self.condInst.aFunc, (), inds = (ind,)
+        )
+        letCls = defRecur(self, binding, (), expr),
+        for i in range(self.getNumDepSymbs()):
+            num = str(i + 1)
+            expr = applyRecur(
+                self, binding, (), inds = (num,)
+            )
+            letCls += defRecur(
+                self, self.depSymbs[i], (), expr
+            ),
+        return letCls
+
+    def aDefFuncLib(self) -> str:
+        expr = applyRecur(
+            self, self.aCateg, self.aGetArgsLib()
+        )
+        st = defRecur(
+            self, self.aFunc, (), expr, moreSpace = True
+        )
+        return st
+
+    def aGetArgsLib(self) -> tuple:
+        if self.aCateg == 'solDisj':
+            return self.subInst1.aFunc, self.subInst2.aFunc
+        elif self.aCateg in aCategsLib:
+            return self.aVal,
+        else:
+            raiseError('NOT IN LIBRARY')
+
+    def aDefFuncConj(self) -> str:
+        func = 'join'
+        args = self.aGetFuncConjDeep(),
+        expr = applyRecur(self, func, args)
+        st = defRecur(
+            self, self.aFunc, (), expr, moreSpace = True
+        )
+        st = self.aDefFuncConjDeep() + st
+        return st
+
+    def aDefFuncConjDeep(self) -> str:
+        bindings = 'b1_', 'b2_'
+        inds = 'i1_', 'i2_'
+
+        func = self.aGetFuncConjDeep()
+        expr = applyRecur(self, 'unnBinds', bindings)
+        letCls = self.aGetConjLetClauses(bindings, inds)
+
+        st = defRecur(
+            self, func, (), expr, letCls = letCls,
+            inds = inds, moreSpace = True
+        )
+        return st
+
+    def aGetConjLetClauses(
+        self, bindings: tuple, inds: tuple
+    ) -> tuple:
+        workarounds = 'workaround1_', 'workaround2_'
+        funcs = self.subInst1.aFunc, self.subInst2.aFunc
+        letCls = ()
+        for i in range(2):
+            # assign workaround
+            workaround = workarounds[i]
+            func = funcs[i]
+            letCls += defRecur(self, workaround, (), func),
+            # call workaround
+            ind = inds[i]
+            expr = applyRecur(
+                self, workaround, (), inds = (ind,)
+            )
+            binding = bindings[i]
+            letCls += defRecur(self, binding, (), expr),
+        n = int(len(letCls) / 2)
+
+        sts = ()
+        for i in range(self.subInst1.getNumDepSymbs()):
+            symb = self.subInst1.depSymbs[i]
+            func = bindings[0]
+            num = str(i + 1)
+            expr = applyRecur(self, func, (), inds = (num,))
+            sts += defRecur(self, symb, (), expr),
+
+        sts = letCls[:n] + sts + letCls[n:]
+        return sts
+
+    def aGetFuncConjDeep(self) -> str:
+        func = self.appendToAux('DEEP')
+        args = self.indepSymbs
+        st = applyRecur(self, func, args)
+        return st
+
+    """Fields specific to quantification."""
+    isUniv = None # bool
+    qSet = '' # '{1, 2,...}'
+    qPred = '' # 'all y in S. y > x'
+
+    def qDefFuncs(self) -> str:
+        st = (
+            self.qDefFuncMain() + self.qDefFuncPred() +
+            self.qDefFuncSet()
+        )
+        return st
+
+    def qDefFuncMain(self) -> str:
+        global auxFuncNum
+        auxFuncNum += 1
+
+        S = self.indepSymbs
+
+        funcPred = self.qGetFuncPred()
+        argsQuant = applyRecur(self, funcPred, S),
+
+        funcQuant = self.qGetFuncQuant()
+        expr = applyRecur(self, funcQuant, argsQuant)
+
+        funcMain = self.qGetFuncMain()
+        st = defRecur(
+            self, funcMain, S, expr, moreSpace = True
+        )
+        return st
+
+    def qDefFuncPred(self) -> str:
+        ind = 'i_'
+
+        letCls = self.qGetPredLetClause(ind),
+
+        func = self.qPred
+        if funcIsAux(func):
+            args = self.getNextIndepSymbs()
+            func = applyRecur(self, func, args)
+        expr = func
+
+        func2 = self.qGetFuncPred()
+        args2 = self.indepSymbs
+
+        st = defRecur(
+            self, func2, args2, expr,
+            inds = (ind,), letCls = letCls
+        )
+        return st
+
+    def qGetPredLetClause(self, ind: str) -> str:
+        """Return 'y := S(x)[i_];'."""
+        expr = applyRecur(
+            self, self.qGetFuncSet(), self.indepSymbs,
+            inds = (ind,)
+        )
+        st = defRecur(self, self.depSymbs[0], (), expr)
+        return st
+
+    def qDefFuncSet(self) -> str:
+        func = self.qGetFuncSet()
+        args = self.indepSymbs
+        expr = applyRecur(self, 'valToSet', (self.qSet,))
+        st = defRecur(
+            self, func, args, expr, moreSpace = True
+        )
+        return st
+
+    def qGetFuncQuant(self) -> str:
+        if self.isUniv:
+            func = 'allSet'
+        else: # universal
+            func = 'someSet'
+        return func
+
+    def qGetFuncMain(self) -> str:
+        st = self.appendToAux('A')
+        return st
+
+    def qGetFuncPred(self) -> str:
+        st = self.appendToAux('B')
+        return st
+
+    def qGetFuncSet(self) -> str:
+        st = self.appendToAux('C')
+        return st
+
+############################################################
 """Main function.
 
 Translate an LED parsetree into a string which
@@ -133,7 +412,7 @@ def applyRecur(
         if argsAreBracketed:
             st2 = addBrackets(st2)
 
-    st += addParentheses(st2)
+        st += addParentheses(st2)
 
     st = appendInds(st, inds)
     return st
@@ -419,285 +698,6 @@ def translateWhereClauses(dat, T):
         return recurTuple(translateWhereClauses, dat, T)
     else:
         raiseError('INVALID WHERE CLAUSES')
-
-############################################################
-"""LED datum."""
-
-class LedDatum:
-    indepSymbs = () # ('i1',...)
-    depSymbs = () # ('d1',...)
-
-    def getNumIndepSymbs(self) -> int:
-        n = len(self.indepSymbs)
-        return n
-
-    def getNumDepSymbs(self) -> int:
-        n = len(self.depSymbs)
-        return n
-
-    def getSymbs(self) -> tuple:
-        T = self.indepSymbs + self.depSymbs
-        return T
-
-    def getAnotherInst(self, isNext = False) -> LedDatum:
-        if isNext:
-            symbs = self.getNextIndepSymbs()
-        else:
-            symbs = self.indepSymbs
-        dat = LedDatum()
-        dat.indepSymbs = symbs
-        return dat
-
-    def getNextIndepSymbs(self) -> tuple:
-        T = self.getSymbs()
-        return T
-
-    def appendToAux(
-        self, extraAppend: str, isNext = False
-    ) -> str:
-        num = auxFuncNum
-        if isNext:
-            num += 1
-        st = 'AUX_' + str(num) + '_' + extraAppend + '_'
-        return st
-
-    """Fields specific to aggregation."""
-    # must assign immediately when instantiating
-    aCateg = None # str
-    # must assign later by calling function aDefFunc
-    aFunc = None # 'AUX_3_(x, y)'
-
-    aVal = ''
-    # ground: 'x < y'
-    # eq:     'x + 1'
-    # set:    'x...2*x'
-
-
-    # term
-    aTerm = None # 'x + y'
-    condInst = None # LedDatum
-
-    # conj/disj
-    subInst1 = None # LedDatum
-    subInst2 = None # LedDatum
-
-    def aCheckCateg(self) -> None:
-        if self.aCateg not in aCategs:
-            raiseError('INVALID AGGREGATE CATEGORY')
-
-    def aDefFunc(self) -> str:
-        global auxFuncNum
-        auxFuncNum += 1
-
-        func = self.appendToAux('AGGR')
-        args = self.indepSymbs
-        self.aFunc = applyRecur(self, func, args)
-
-        self.aCheckCateg()
-        if self.aCateg == 'isAggr':
-            st = self.aDefFuncAggr()
-        elif self.aCateg in aCategsLib:
-            st = self.aDefFuncLib()
-        else: # 'solConj'
-            st = self.aDefFuncConj()
-        global auxFuncDefs
-        auxFuncDefs += st
-
-        return self.aFunc
-
-    def aDefFuncAggr(self) -> str:
-        ind = 'i_'
-
-        func = self.aFunc
-        letCls = self.aGetAggrLetClauses(ind)
-        inCl = self.aTerm
-
-        st = defRecur(
-            self, func, (), inCl,
-            letCls = letCls, inds = (ind,), moreSpace = True
-        )
-        return st
-
-    def aGetAggrLetClauses(self, ind: str) -> str:
-        binding = 'b_'
-        expr = applyRecur(
-            self, self.condInst.aFunc, (), inds = (ind,)
-        )
-        letCls = defRecur(self, binding, (), expr),
-        for i in range(self.getNumDepSymbs()):
-            num = str(i + 1)
-            expr = applyRecur(
-                self, binding, (), inds = (num,)
-            )
-            letCls += defRecur(
-                self, self.depSymbs[i], (), expr
-            ),
-        return letCls
-
-    def aDefFuncLib(self) -> str:
-        expr = applyRecur(
-            self, self.aCateg, self.aGetArgsLib()
-        )
-        st = defRecur(
-            self, self.aFunc, (), expr, moreSpace = True
-        )
-        return st
-
-    def aGetArgsLib(self) -> tuple:
-        if self.aCateg == 'solDisj':
-            return self.subInst1.aFunc, self.subInst2.aFunc
-        elif self.aCateg in aCategsLib:
-            return self.aVal,
-        else:
-            raiseError('NOT IN LIBRARY')
-
-    def aDefFuncConj(self) -> str:
-        func = 'join'
-        args = self.aGetFuncConjDeep(),
-        expr = applyRecur(self, func, args)
-        st = defRecur(
-            self, self.aFunc, (), expr, moreSpace = True
-        )
-        st = self.aDefFuncConjDeep() + st
-        return st
-
-    def aDefFuncConjDeep(self) -> str:
-        bindings = 'b1_', 'b2_'
-        inds = 'i1_', 'i2_'
-
-        func = self.aGetFuncConjDeep()
-        expr = applyRecur(self, 'unnBinds', bindings)
-        letCls = self.aGetConjLetClauses(bindings, inds)
-
-        st = defRecur(
-            self, func, (), expr, letCls = letCls,
-            inds = inds, moreSpace = True
-        )
-        return st
-
-    def aGetConjLetClauses(
-        self, bindings: tuple, inds: tuple
-    ) -> tuple:
-        workarounds = 'workaround1_', 'workaround2_'
-        funcs = self.subInst1.aFunc, self.subInst2.aFunc
-        letCls = ()
-        for i in range(2):
-            # assign workaround
-            workaround = workarounds[i]
-            func = funcs[i]
-            letCls += defRecur(self, workaround, (), func),
-            # call workaround
-            ind = inds[i]
-            expr = applyRecur(
-                self, workaround, (), inds = (ind,)
-            )
-            binding = bindings[i]
-            letCls += defRecur(self, binding, (), expr),
-        n = int(len(letCls) / 2)
-
-        sts = ()
-        for i in range(self.subInst1.getNumDepSymbs()):
-            symb = self.subInst1.depSymbs[i]
-            func = bindings[0]
-            num = str(i + 1)
-            expr = applyRecur(self, func, (), inds = (num,))
-            sts += defRecur(self, symb, (), expr),
-
-        sts = letCls[:n] + sts + letCls[n:]
-        return sts
-
-    def aGetFuncConjDeep(self) -> str:
-        func = self.appendToAux('DEEP')
-        args = self.indepSymbs
-        st = applyRecur(self, func, args)
-        return st
-
-    """Fields specific to quantification."""
-    isUniv = None # bool
-    qSet = '' # '{1, 2,...}'
-    qPred = '' # 'all y in S. y > x'
-
-    def qDefFuncs(self) -> str:
-        st = (
-            self.qDefFuncMain() + self.qDefFuncPred() +
-            self.qDefFuncSet()
-        )
-        return st
-
-    def qDefFuncMain(self) -> str:
-        global auxFuncNum
-        auxFuncNum += 1
-
-        S = self.indepSymbs
-
-        funcPred = self.qGetFuncPred()
-        argsQuant = applyRecur(self, funcPred, S),
-
-        funcQuant = self.qGetFuncQuant()
-        expr = applyRecur(self, funcQuant, argsQuant)
-
-        funcMain = self.qGetFuncMain()
-        st = defRecur(
-            self, funcMain, S, expr, moreSpace = True
-        )
-        return st
-
-    def qDefFuncPred(self) -> str:
-        ind = 'i_'
-
-        letCls = self.qGetPredLetClause(ind),
-
-        func = self.qPred
-        if funcIsAux(func):
-            args = self.getNextIndepSymbs()
-            func = applyRecur(self, func, args)
-        expr = func
-
-        func2 = self.qGetFuncPred()
-        args2 = self.indepSymbs
-
-        st = defRecur(
-            self, func2, args2, expr,
-            inds = (ind,), letCls = letCls
-        )
-        return st
-
-    def qGetPredLetClause(self, ind: str) -> str:
-        """Return 'y := S(x)[i_];'."""
-        expr = applyRecur(
-            self, self.qGetFuncSet(), self.indepSymbs,
-            inds = (ind,)
-        )
-        st = defRecur(self, self.depSymbs[0], (), expr)
-        return st
-
-    def qDefFuncSet(self) -> str:
-        func = self.qGetFuncSet()
-        args = self.indepSymbs
-        expr = applyRecur(self, 'valToSet', (self.qSet,))
-        st = defRecur(
-            self, func, args, expr, moreSpace = True
-        )
-        return st
-
-    def qGetFuncQuant(self) -> str:
-        if self.isUniv:
-            func = 'allSet'
-        else: # universal
-            func = 'someSet'
-        return func
-
-    def qGetFuncMain(self) -> str:
-        st = self.appendToAux('A')
-        return st
-
-    def qGetFuncPred(self) -> str:
-        st = self.appendToAux('B')
-        return st
-
-    def qGetFuncSet(self) -> str:
-        st = self.appendToAux('C')
-        return st
 
 ############################################################
 """Translate collections."""
@@ -1039,10 +1039,8 @@ def getSymbsFromSyms(T) -> tuple:
 """Translate lexemes."""
 
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
-lexemes = unionDicts(
-    exemesDoublyQuoted,
-    {'string': 'st', 'truth': 'tr'}
-)
+dicts = lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}
+lexemes = unionDicts(dicts)
 
 def translateLexemes(dat: LedDatum, T) -> str:
     lex = T[0]
