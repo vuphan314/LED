@@ -6,9 +6,7 @@
 from debugger import *
 
 ############################################################
-"""
-python global variables
-"""
+"""Python global variables."""
 
 isGame = False
 
@@ -19,14 +17,16 @@ auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
 ############################################################
-"""
-unparse an LED parsetree into a string which represents a SL program
+"""Main function.
 
-note: tree := tuple/str
+Unparse an LED parsetree into a string which
+represents a SL program.
+
+Note: Python pseudotype `tree` is
+either type `tuple` or `str`.
 """
 
-# unparseTop: list -> str
-def unparseTop(L):
+def unparseTop(L: list) -> str:
     T = listToTree(L)
     T = updateIsGame(T)
 
@@ -36,10 +36,14 @@ def unparseTop(L):
     if isGame:
         updateFuncsAddParams(T)
         T = addEaselParams(T)
-        updateDefedConsts(T) # some constants were added parameters
+
+        # some constants were added parameters
+        updateDefedConsts(T)
+
         imports = ''
-            # Easel doesn't work well with imports;
-            # translator will append copies of libraries to output file
+        # Easel doesn't work well with imports.
+        # Will write LED libraries at end of output file.
+
     else:
         imports = importLib()
 
@@ -48,23 +52,23 @@ def unparseTop(L):
     # for quantification
     T = expandSymsInS(T)
 
-    u = UnparserInfo()
+    u = LedDatum()
     st = unparseRecur(u, T)
 
     if auxFuncDefs != '':
-        st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
+        st += (
+            blockComment('AUXILIARY FUNCTIONS') +
+            '\n\n' + auxFuncDefs
+        )
 
     st = tests + imports + st
     return st
 
 ############################################################
-"""
-recursion iterators
-"""
+"""Recursion iterators."""
 
-# unparseRecur: UnparserInfo * tree -> str
-def unparseRecur(u, T):
-    if type(T) == str:
+def unparseRecur(u: LedDatum, T) -> str:
+    if isinstance(T, str):
         return appendUnderscore(T)
     elif T[0] in lexemes:
         return unparseLexemes(u, T)
@@ -90,7 +94,7 @@ def unparseRecur(u, T):
     else:
         return recurStr(unparseRecur, u, T)
 
-# defRecur: UnparserInfo * tree * tuple(tree) * tree -> str
+# defRecur: LedDatum * tree * tuple(tree) * tree -> str
 def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
     head = applyRecur(u, func, args, inds = inds)
     expr = unparseRecur(u, expr)
@@ -108,7 +112,7 @@ def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
     st = head + ' := ' + body
     return st
 
-# applyRecur: UnparserInfo * tree * tuple(tree) -> str
+# applyRecur: LedDatum * tree * tuple(tree) -> str
 def applyRecur(u, func, args, isInLib = False, argsAreBracketed = False, inds = ()):
     func = unparseRecur(u, func)
     if isInLib:
@@ -129,21 +133,21 @@ def applyRecur(u, func, args, isInLib = False, argsAreBracketed = False, inds = 
 recursion helpers
 """
 
-# recurStr: (UnparserInfo * tree -> str) * UnparserInfo * tree -> str
+# recurStr: (LedDatum * tree -> str) * LedDatum * tree -> str
 def recurStr(F, u, T):
     st = ''
     for t in T[1:]:
         st += F(u, t)
     return st
 
-# recurTuple: (UnparserInfo * tree -> tuple(str)) * UnparserInfo * tree -> tuple(str)
+# recurTuple: (LedDatum * tree -> tuple(str)) * LedDatum * tree -> tuple(str)
 def recurTuple(F, u, T):
     tu = ()
     for t in T[1:]:
         tu += F(u, t)
     return tu
 
-# recurVoid: (UnparserInfo * tree -> void) * UnparserInfo * tree -> void
+# recurVoid: (LedDatum * tree -> void) * LedDatum * tree -> void
 def recurVoid(F, u, T):
     for t in T[1:]:
         F(u, t)
@@ -359,7 +363,7 @@ unparse constant/function/relation definitions
 
 defLabels = {'constDef', 'funDef', 'relDef'}
 
-# unparseDef: UnparserInfo * tree -> str
+# unparseDef: LedDatum * tree -> str
 def unparseDef(u, T):
     func = unparseRecur(u, T[1][1])
     u2 = u.getAnotherInst()
@@ -376,7 +380,7 @@ def unparseDef(u, T):
 
 ifLabels = {'tIfBTs', 'tIfBTsO'}
 
-# unparseIfClauses: UnparserInfo * tree -> str
+# unparseIfClauses: LedDatum * tree -> str
 def unparseIfClauses(u, T):
     if T[0] == 'tOther':
         st = unparseRecur(u, T[1])
@@ -399,7 +403,7 @@ def unparseIfClauses(u, T):
     else:
         raiseError('INVALID IF CLAUSES')
 
-# unparseWhereClauses: UnparserInfo * tree -> tuple(str)
+# unparseWhereClauses: LedDatum * tree -> tuple(str)
 def unparseWhereClauses(u, T):
     if T[0] == 'eq':
         st = defRecur(u, T[1], (), T[2])
@@ -414,7 +418,7 @@ def unparseWhereClauses(u, T):
 information for unparsing
 """
 
-class UnparserInfo:
+class LedDatum:
     indepSymbs = () # ('i1',...)
     depSymbs = () # ('d1',...)
 
@@ -433,13 +437,13 @@ class UnparserInfo:
         T = self.indepSymbs + self.depSymbs
         return T
 
-    # getAnotherInst: UnparserInfo
+    # getAnotherInst: LedDatum
     def getAnotherInst(self, isNext = False):
         if isNext:
             symbs = self.getNextIndepSymbs()
         else:
             symbs = self.indepSymbs
-        u = UnparserInfo()
+        u = LedDatum()
         u.indepSymbs = symbs
         return u
 
@@ -473,11 +477,11 @@ class UnparserInfo:
 
     # term
     aTerm = None # 'x + y'
-    condInst = None # UnparserInfo
+    condInst = None # LedDatum
 
     # conj/disj
-    subInst1 = None # UnparserInfo
-    subInst2 = None # UnparserInfo
+    subInst1 = None # LedDatum
+    subInst2 = None # LedDatum
 
     # aCheckCateg: void
     def aCheckCateg(self):
@@ -689,14 +693,14 @@ class UnparserInfo:
 unparse collections
 """
 
-# unparseTuple: UnparserInfo * tree -> str
+# unparseTuple: LedDatum * tree -> str
 def unparseTuple(u, T):
     func = 'tu'
     terms = T[1]
     st = applyRecur(u, func, terms[1:], isInLib = True, argsAreBracketed = True)
     return st
 
-# unparseSet: UnparserInfo * tree -> str
+# unparseSet: LedDatum * tree -> str
 def unparseSet(u, T):
     func = 'se'
     if len(T) == 1: # empty set
@@ -714,7 +718,7 @@ non-strict operations
 
 nonstrictOps = {'impl', 'conj'}
 
-# unparseNonstrictOps: UnparserInfo * tree -> tree
+# unparseNonstrictOps: LedDatum * tree -> tree
 def unparseNonstrictOps(u, T):
     st1 = unparseRecur(u, T[1])
     st2 = unparseRecur(u, T[2])
@@ -752,7 +756,7 @@ tupleOps = {'tuIn', 'tuSl'}
 libOps = \
     overloadedOps | equalityOps | relationalOps | arOps | setOps | boolOps | tupleOps
 
-# unparseLibOps: UnparserInfo * tree -> str
+# unparseLibOps: LedDatum * tree -> str
 def unparseLibOps(u, T):
     st = applyRecur(u, T[0], T[1:], isInLib = True)
     return st
@@ -903,7 +907,7 @@ aggrOps = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 aCategsLib = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 aCategs = aCategsLib | {'isAggr', 'solConj'}
 
-# unparseAggr: UnparserInfo * tree -> str
+# unparseAggr: LedDatum * tree -> str
 def unparseAggr(u, T):
     if T[0] in aggrOps:
         u.aCateg = 'isAggr'
@@ -971,7 +975,7 @@ def unparseAggr(u, T):
     else:
         return recurStr(unparseAggr, u, T)
 
-# updateDepSymbsRecur: UnparserInfo * tree -> void
+# updateDepSymbsRecur: LedDatum * tree -> void
 def updateDepSymbsRecur(u, T):
     if type(T) == tuple:
         if T[0] == 'userSC':
@@ -981,11 +985,11 @@ def updateDepSymbsRecur(u, T):
         else:
             recurVoid(updateDepSymbsRecur, u, T)
 
-# isGround: UnparserInfo * tree -> bool
+# isGround: LedDatum * tree -> bool
 def isGround(u, T):
     return not newDepSymbFound(u, T)
 
-# newDepSymbFound: UnparserInfo * tree -> bool
+# newDepSymbFound: LedDatum * tree -> bool
 def newDepSymbFound(u, T):
     if type(T) == str:
         return False
@@ -1000,7 +1004,7 @@ def newDepSymbFound(u, T):
                 return True
         return False
 
-# isNewDepSymb: UnparserInfo * str -> bool
+# isNewDepSymb: LedDatum * str -> bool
 def isNewDepSymb(u, id):
     return id not in u.getSymbs() + defedConsts
 
@@ -1009,7 +1013,7 @@ def isNewDepSymb(u, id):
 quantification
 """
 
-# unparseQuant: UnparserInfo * tree -> str
+# unparseQuant: LedDatum * tree -> str
 def unparseQuant(u, T):
     u.isUniv = T[0] == 'univ'
 
@@ -1049,7 +1053,7 @@ unparse lexemes
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 lexemes = unionDicts((lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}))
 
-# unparseLexemes: UnparserInfo * tree -> str
+# unparseLexemes: LedDatum * tree -> str
 def unparseLexemes(u, T):
     lex = T[0]
     func = lexemes[lex]
