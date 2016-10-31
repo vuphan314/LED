@@ -52,8 +52,8 @@ def unparseTop(L: list) -> str:
     # for quantification
     T = expandSymsInS(T)
 
-    u = LedDatum()
-    st = unparseRecur(u, T)
+    dat = LedDatum()
+    st = unparseRecur(dat, T)
 
     if auxFuncDefs != '':
         st += (
@@ -67,37 +67,37 @@ def unparseTop(L: list) -> str:
 ############################################################
 """Recursion iterators."""
 
-def unparseRecur(u: LedDatum, T) -> str:
+def unparseRecur(dat: LedDatum, T) -> str:
     if isinstance(T, str):
         return appendUnderscore(T)
     elif T[0] in lexemes:
-        return unparseLexemes(u, T)
+        return unparseLexemes(dat, T)
     elif T[0] == 'userFR':
-        st = applyRecur(u, T[1], T[2][1:])
+        st = applyRecur(dat, T[1], T[2][1:])
         return st
     elif T[0] == 'tpl':
-        return unparseTuple(u, T)
+        return unparseTuple(dat, T)
     elif T[0] == 'set':
-        return unparseSet(u, T)
+        return unparseSet(dat, T)
     elif T[0] in aggrOps:
-        return unparseAggr(u, T)
+        return unparseAggr(dat, T)
     elif T[0] in quantOps:
-        return unparseQuant(u, T)
+        return unparseQuant(dat, T)
     elif T[0] in nonstrictOps:
-        return unparseNonstrictOps(u, T)
+        return unparseNonstrictOps(dat, T)
     elif T[0] in libOps:
-        return unparseLibOps(u, T)
+        return unparseLibOps(dat, T)
     elif T[0] in ifLabels:
-        return unparseIfClauses(u, T)
+        return unparseIfClauses(dat, T)
     elif T[0] in defLabels:
-        return unparseDef(u, T)
+        return unparseDef(dat, T)
     else:
-        return recurStr(unparseRecur, u, T)
+        return recurStr(unparseRecur, dat, T)
 
 # defRecur: LedDatum * tree * tuple(tree) * tree -> str
-def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
-    head = applyRecur(u, func, args, inds = inds)
-    expr = unparseRecur(u, expr)
+def defRecur(dat, func, args, expr, inds = (), letCls = (), moreSpace = False):
+    head = applyRecur(dat, func, args, inds = inds)
+    expr = unparseRecur(dat, expr)
     if letCls != ():
         letCls = writeLetClauses(letCls)
         inCl = writeInClause(expr)
@@ -113,15 +113,15 @@ def defRecur(u, func, args, expr, inds = (), letCls = (), moreSpace = False):
     return st
 
 # applyRecur: LedDatum * tree * tuple(tree) -> str
-def applyRecur(u, func, args, isInLib = False, argsAreBracketed = False, inds = ()):
-    func = unparseRecur(u, func)
+def applyRecur(dat, func, args, isInLib = False, argsAreBracketed = False, inds = ()):
+    func = unparseRecur(dat, func)
     if isInLib:
         func = prependLib(func)
     st = func
     if args != ():
-        st2 = unparseRecur(u, args[0])
+        st2 = unparseRecur(dat, args[0])
         for arg in args[1:]:
-            st2 += ', ' + unparseRecur(u, arg)
+            st2 += ', ' + unparseRecur(dat, arg)
         if argsAreBracketed:
             st2 = addBrackets(st2)
         st += addParentheses(st2)
@@ -134,23 +134,23 @@ recursion helpers
 """
 
 # recurStr: (LedDatum * tree -> str) * LedDatum * tree -> str
-def recurStr(F, u, T):
+def recurStr(F, dat, T):
     st = ''
     for t in T[1:]:
-        st += F(u, t)
+        st += F(dat, t)
     return st
 
 # recurTuple: (LedDatum * tree -> tuple(str)) * LedDatum * tree -> tuple(str)
-def recurTuple(F, u, T):
+def recurTuple(F, dat, T):
     tu = ()
     for t in T[1:]:
-        tu += F(u, t)
+        tu += F(dat, t)
     return tu
 
 # recurVoid: (LedDatum * tree -> void) * LedDatum * tree -> void
-def recurVoid(F, u, T):
+def recurVoid(F, dat, T):
     for t in T[1:]:
-        F(u, t)
+        F(dat, t)
 
 # recurTree: (tree -> tree) * tree -> tree
 def recurTree(F, T):
@@ -364,9 +364,9 @@ unparse constant/function/relation definitions
 defLabels = {'constDef', 'funDef', 'relDef'}
 
 # unparseDef: LedDatum * tree -> str
-def unparseDef(u, T):
-    func = unparseRecur(u, T[1][1])
-    u2 = u.getAnotherInst()
+def unparseDef(dat, T):
+    func = unparseRecur(dat, T[1][1])
+    u2 = dat.getAnotherInst()
 
     if T[0] in {'funDef', 'relDef'}:
         u2.indepSymbs = getSymbsFromSyms(T[1][2])
@@ -381,35 +381,35 @@ def unparseDef(u, T):
 ifLabels = {'tIfBTs', 'tIfBTsO'}
 
 # unparseIfClauses: LedDatum * tree -> str
-def unparseIfClauses(u, T):
+def unparseIfClauses(dat, T):
     if T[0] == 'tOther':
-        st = unparseRecur(u, T[1])
+        st = unparseRecur(dat, T[1])
         st = writeElseClause(st)
         return st
     elif T[0] == 'tIfBT':
-        st1 = unparseRecur(u, T[1])
-        st2 = unparseRecur(u, T[2])
-        st2 = applyRecur(u, 'valToTrth', (st2,))
+        st1 = unparseRecur(dat, T[1])
+        st2 = unparseRecur(dat, T[2])
+        st2 = applyRecur(dat, 'valToTrth', (st2,))
         st = st1 + ' when ' + st2
         return st
     elif T[0] == 'tIfBTs':
-        st = unparseIfClauses(u, T[1])
+        st = unparseIfClauses(dat, T[1])
         for t in T[2:]:
-            st2 = unparseIfClauses(u, t)
+            st2 = unparseIfClauses(dat, t)
             st += writeElseClause(st2)
         return st
     elif T[0] == 'tIfBTsO':
-        return recurStr(unparseIfClauses, u, T)
+        return recurStr(unparseIfClauses, dat, T)
     else:
         raiseError('INVALID IF CLAUSES')
 
 # unparseWhereClauses: LedDatum * tree -> tuple(str)
-def unparseWhereClauses(u, T):
+def unparseWhereClauses(dat, T):
     if T[0] == 'eq':
-        st = defRecur(u, T[1], (), T[2])
+        st = defRecur(dat, T[1], (), T[2])
         return st,
     elif T[0] == 'conj':
-        return recurTuple(unparseWhereClauses, u, T)
+        return recurTuple(unparseWhereClauses, dat, T)
     else:
         raiseError('INVALID WHERE CLAUSES')
 
@@ -443,9 +443,9 @@ class LedDatum:
             symbs = self.getNextIndepSymbs()
         else:
             symbs = self.indepSymbs
-        u = LedDatum()
-        u.indepSymbs = symbs
-        return u
+        dat = LedDatum()
+        dat.indepSymbs = symbs
+        return dat
 
     # getNextIndepSymbs: tuple(str)
     def getNextIndepSymbs(self):
@@ -694,21 +694,21 @@ unparse collections
 """
 
 # unparseTuple: LedDatum * tree -> str
-def unparseTuple(u, T):
+def unparseTuple(dat, T):
     func = 'tu'
     terms = T[1]
-    st = applyRecur(u, func, terms[1:], isInLib = True, argsAreBracketed = True)
+    st = applyRecur(dat, func, terms[1:], isInLib = True, argsAreBracketed = True)
     return st
 
 # unparseSet: LedDatum * tree -> str
-def unparseSet(u, T):
+def unparseSet(dat, T):
     func = 'se'
     if len(T) == 1: # empty set
         args = '',
     else:
         terms = T[1]
         args = terms[1:]
-    st = applyRecur(u, func, args, isInLib = True, argsAreBracketed = True)
+    st = applyRecur(dat, func, args, isInLib = True, argsAreBracketed = True)
     return st
 
 ############################################################
@@ -719,15 +719,15 @@ non-strict operations
 nonstrictOps = {'impl', 'conj'}
 
 # unparseNonstrictOps: LedDatum * tree -> tree
-def unparseNonstrictOps(u, T):
-    st1 = unparseRecur(u, T[1])
-    st2 = unparseRecur(u, T[2])
+def unparseNonstrictOps(dat, T):
+    st1 = unparseRecur(dat, T[1])
+    st2 = unparseRecur(dat, T[2])
     if T[0] == 'conj':
         mainSt = 'valFalse'
-        whenSt = 'not ' + applyRecur(u, 'valToTrth', (st1,))
+        whenSt = 'not ' + applyRecur(dat, 'valToTrth', (st1,))
     elif T[0] == 'impl':
         mainSt = 'valTrue'
-        whenSt = 'not ' + applyRecur(u, 'valToTrth', (st1,))
+        whenSt = 'not ' + applyRecur(dat, 'valToTrth', (st1,))
     else:
         raiseError('MUST BE NON-STRICT OPERATION')
     elseSt = st2
@@ -757,8 +757,8 @@ libOps = \
     overloadedOps | equalityOps | relationalOps | arOps | setOps | boolOps | tupleOps
 
 # unparseLibOps: LedDatum * tree -> str
-def unparseLibOps(u, T):
-    st = applyRecur(u, T[0], T[1:], isInLib = True)
+def unparseLibOps(dat, T):
+    st = applyRecur(dat, T[0], T[1:], isInLib = True)
     return st
 
 ############################################################
@@ -908,9 +908,9 @@ aCategsLib = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 aCategs = aCategsLib | {'isAggr', 'solConj'}
 
 # unparseAggr: LedDatum * tree -> str
-def unparseAggr(u, T):
+def unparseAggr(dat, T):
     if T[0] in aggrOps:
-        u.aCateg = 'isAggr'
+        dat.aCateg = 'isAggr'
         if T[0] == 'setCompr':
             termTree = T[1]
             condTree = T[2]
@@ -918,95 +918,95 @@ def unparseAggr(u, T):
             termTree = T[2]
             condTree = T[1]
 
-        updateDepSymbsRecur(u, condTree)
-        uTerm = u.getAnotherInst(isNext = True)
-        u.aTerm = unparseRecur(uTerm, termTree)
+        updateDepSymbsRecur(dat, condTree)
+        uTerm = dat.getAnotherInst(isNext = True)
+        dat.aTerm = unparseRecur(uTerm, termTree)
 
-        uCond = u.getAnotherInst()
+        uCond = dat.getAnotherInst()
         unparseAggr(uCond, condTree)
-        u.condInst = uCond
+        dat.condInst = uCond
 
-        args = u.aDefFunc(),
-        st = applyRecur(u, T[0], args)
+        args = dat.aDefFunc(),
+        st = applyRecur(dat, T[0], args)
         return st
-    elif isGround(u, T):
-        u.aCateg = 'solGround'
-        u.aVal = unparseRecur(u, T)
-        st = u.aDefFunc()
+    elif isGround(dat, T):
+        dat.aCateg = 'solGround'
+        dat.aVal = unparseRecur(dat, T)
+        st = dat.aDefFunc()
         return st
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == 'userSC':
-                u.aCateg = 'solEq'
+                dat.aCateg = 'solEq'
             else: # 'tupT'
-                u.aCateg = 'solEqs'
+                dat.aCateg = 'solEqs'
         else: # 'setMem'
-            u.aCateg = 'solSet'
-        updateDepSymbsRecur(u, T[1])
-        u.aVal = unparseRecur(u, T[2])
-        st = u.aDefFunc()
+            dat.aCateg = 'solSet'
+        updateDepSymbsRecur(dat, T[1])
+        dat.aVal = unparseRecur(dat, T[2])
+        st = dat.aDefFunc()
         return st
     elif T[0] == 'disj':
-        u.aCateg = 'solDisj'
+        dat.aCateg = 'solDisj'
 
-        u1 = u.getAnotherInst()
+        u1 = dat.getAnotherInst()
         unparseAggr(u1, T[1])
-        u.subInst1 = u1
+        dat.subInst1 = u1
 
-        u2 = u.getAnotherInst()
+        u2 = dat.getAnotherInst()
         unparseAggr(u2, T[2])
-        u.subInst2 = u2
+        dat.subInst2 = u2
 
-        st = u.aDefFunc()
+        st = dat.aDefFunc()
         return st
     elif T[0] == 'conj':
-        u.aCateg = 'solConj'
+        dat.aCateg = 'solConj'
 
-        u1 = u.getAnotherInst()
+        u1 = dat.getAnotherInst()
         unparseAggr(u1, T[1])
-        u.subInst1 = u1
+        dat.subInst1 = u1
 
         u2 = u1.getAnotherInst(isNext = True)
         unparseAggr(u2, T[2])
-        u.subInst2 = u2
+        dat.subInst2 = u2
 
-        st = u.aDefFunc()
+        st = dat.aDefFunc()
         return st
     else:
-        return recurStr(unparseAggr, u, T)
+        return recurStr(unparseAggr, dat, T)
 
 # updateDepSymbsRecur: LedDatum * tree -> void
-def updateDepSymbsRecur(u, T):
+def updateDepSymbsRecur(dat, T):
     if type(T) == tuple:
         if T[0] == 'userSC':
             st = T[1][1]
-            if isNewDepSymb(u, st):
-                u.depSymbs += st,
+            if isNewDepSymb(dat, st):
+                dat.depSymbs += st,
         else:
-            recurVoid(updateDepSymbsRecur, u, T)
+            recurVoid(updateDepSymbsRecur, dat, T)
 
 # isGround: LedDatum * tree -> bool
-def isGround(u, T):
-    return not newDepSymbFound(u, T)
+def isGround(dat, T):
+    return not newDepSymbFound(dat, T)
 
 # newDepSymbFound: LedDatum * tree -> bool
-def newDepSymbFound(u, T):
+def newDepSymbFound(dat, T):
     if type(T) == str:
         return False
     elif T[0] == 'userSC':
-        if isNewDepSymb(u, T[1][1]):
+        if isNewDepSymb(dat, T[1][1]):
             return True
         else:
             return False
     else:
         for t in T[1:]:
-            if newDepSymbFound(u, t):
+            if newDepSymbFound(dat, t):
                 return True
         return False
 
 # isNewDepSymb: LedDatum * str -> bool
-def isNewDepSymb(u, id):
-    return id not in u.getSymbs() + defedConsts
+def isNewDepSymb(dat, id):
+    return id not in dat.getSymbs() + defedConsts
 
 ############################################################
 """
@@ -1014,25 +1014,25 @@ quantification
 """
 
 # unparseQuant: LedDatum * tree -> str
-def unparseQuant(u, T):
-    u.isUniv = T[0] == 'univ'
+def unparseQuant(dat, T):
+    dat.isUniv = T[0] == 'univ'
 
     symsInSet = T[1]
-    u.depSymbs = getSymbsFromSyms(symsInSet[1])
+    dat.depSymbs = getSymbsFromSyms(symsInSet[1])
 
-    u2 = u.getAnotherInst()
-    u.qSet = unparseRecur(u2, symsInSet[2])
+    u2 = dat.getAnotherInst()
+    dat.qSet = unparseRecur(u2, symsInSet[2])
 
-    u3 = u.getAnotherInst(isNext = True)
-    u.qPred = unparseRecur(u3, T[2])
+    u3 = dat.getAnotherInst(isNext = True)
+    dat.qPred = unparseRecur(u3, T[2])
 
     global auxFuncDefs
-    qFuncs = u.qDefFuncs()
+    qFuncs = dat.qDefFuncs()
     auxFuncDefs += qFuncs
 
-    func = u.qGetFuncMain()
-    args = u.indepSymbs
-    st = applyRecur(u, func, args)
+    func = dat.qGetFuncMain()
+    args = dat.indepSymbs
+    st = applyRecur(dat, func, args)
 
     return st
 
@@ -1054,14 +1054,14 @@ lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 lexemes = unionDicts((lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}))
 
 # unparseLexemes: LedDatum * tree -> str
-def unparseLexemes(u, T):
+def unparseLexemes(dat, T):
     lex = T[0]
     func = lexemes[lex]
     arg = T[1]
     if lex in lexemesDoublyQuoted:
         arg = addDoubleQuotes(arg)
     args = arg,
-    st = applyRecur(u, func, args, isInLib = True)
+    st = applyRecur(dat, func, args, isInLib = True)
     return st
 
 ############################################################
