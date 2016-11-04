@@ -35,7 +35,7 @@ from optparse import OptionParser
 from os import path
 import re
 
-from debugger import *
+from vu_toolkit.vu_debugger import *
 from genparser.src.astgen.parsing import lexer, parser
 
 ###########################################################
