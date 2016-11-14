@@ -29,7 +29,7 @@ either expressed or implied, of the FreeBSD Project.
 
 # modified by Vu Phan
 
-###########################################################
+############################################################
 
 from optparse import OptionParser
 from os import path
@@ -38,7 +38,7 @@ import re
 from vu_toolkit.vu_debugger import *
 from genparser.src.astgen.parsing import lexer, parser
 
-###########################################################
+############################################################
 
 def optparse_arguments():
     """Return arguments parsed from `sys.argv`."""
@@ -64,7 +64,7 @@ def parse_led():
 
     return parsed_file
 
-###########################################################
+############################################################
 
 class RegionParser:
     def __init__(self, program_file):
