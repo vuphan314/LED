@@ -9,7 +9,7 @@ a semantically equivalent SL program.
 
 import sys
 
-from vu_toolkit.vu_debugger import *
+from debugtools.debug_tool import *
 import led_parser
 import led_translator
 

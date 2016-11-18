@@ -3,7 +3,7 @@
 ############################################################
 """Import."""
 
-from vu_toolkit.vu_debugger import *
+from debugtools.debug_tool import *
 
 ############################################################
 """Python global variables."""
