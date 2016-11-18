@@ -4,6 +4,3 @@
 [submodule "src/genparser"]
 	path = src/genparser
 	url = https://github.com/iensen/genparser
-[submodule "src/vu_toolkit"]
-	path = src/vu_toolkit
-	url = https://github.com/vuphan314/vu_toolkit
