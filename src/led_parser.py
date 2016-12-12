@@ -88,8 +88,7 @@ class RegionParser:
         )
 
     def get_parsed_elements(self):
-        # split the program into regions and
-        # parse each region
+        # split the program into regions; parse each region
         all_regions_parsed = False
         parsed_elements = []
         unparsed_program_string = self.program_str
@@ -98,21 +97,20 @@ class RegionParser:
             # search for the start of
             # the next program region
             region_start = re.search(
-                '/\$',
+                r'/\$',
                 unparsed_program_string
             )
             if region_start is None:
                 break
 
-            # set cur_line to the line where
-            # the region starts
+            # set cur_line to where the region starts
             pre_region = unparsed_program_string[
                 :region_start.start()
             ]
             cur_line += pre_region.count('\n')
 
             # find the matching end of the program region
-            end_delimiter = re.compile('\$/')
+            end_delimiter = re.compile(r'\$/')
             region_end = end_delimiter.search(
                 unparsed_program_string,
                 region_start.end()
