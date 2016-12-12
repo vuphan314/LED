@@ -1,15 +1,15 @@
 <h6>top
 
 # LED: LANGUAGE OF EFFECTIVE DEFINITIONS
-LED system translates [literate language LED][LEDspec] into:
-- [functional language SequenceL][SL]
-- formatting language LaTeX
+LED system translates [literate language LED][linkLED] into:
+- [functional language SequenceL][linkSL]
+- formatting language TeX
 
-## EXAMPLE
+## EXAMPLES
 - [LED input][tttLED]
 - [SequenceL output][tttSL]
 
-## SUBMODULE
+## SUBMODULES
 The [generic parser][genparser] (`src/genparser/`)
 is developed by Evgenii Balai.
 
@@ -18,9 +18,9 @@ https://github.com/vuphan314/LED/blob/master/examples/tictactoe.led
 [tttSL]:
 https://github.com/vuphan314/LED/blob/master/examples/tictactoe.sl
 
-[LEDspec]:
+[linkLED]:
 https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
-[SL]:
+[linkSL]:
 http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Language-Reference.pdf
 
 [genparser]:

@@ -227,7 +227,7 @@ starting from line {}:
 
 def main():
     led_path = sys.argv[1]
-    syntax_dict = parse_file(led_path, quiet=False)
+    syntax_dict = parse_file(led_path)
 
 if __name__ == '__main__':
     print()
