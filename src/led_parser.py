@@ -31,44 +31,69 @@ either expressed or implied, of the FreeBSD Project.
 
 ############################################################
 
-from optparse import OptionParser
 from os import path
 import re
+import sys
 
 from debugtools.debug_tool import *
 from genparser.src.astgen.parsing import lexer, parser
 
 ############################################################
 
-def optparse_arguments():
-    """Return arguments parsed from `sys.argv`."""
-    optParser = OptionParser()
-    return optParser.parse_args()[1]
+LED_STR_TAB = ' ' * 2
 
-def parse_file(program_file):
-    region_parser = RegionParser(program_file)
+############################################################
 
-    # get the list of program elements
-    parsed_file = region_parser.get_parsed_elements()
+def parse_file(led_path, quiet=False) -> tuple:
+    region_parser = RegionParser(led_path)
+    syntax_list = region_parser.get_parsed_elements()
+    syntax_list = ['prog'] + syntax_list
+    syntax_tree = get_syntax_tree(syntax_list)
+    if not quiet:
+        syntax_str = get_syntax_str(syntax_tree)
+        print(syntax_str)
+    return syntax_tree
 
-    parsed_file = ['prog'] + parsed_file
-    return parsed_file
+############################################################
 
-def parse_led():
-    # read arguments
-    args = optparse_arguments()
-    program_file = args[0]
+def get_syntax_tree(L: list):
+    if type(L) == str:
+        return L
+    else:
+        T = L[0],
+        for l in L[1:]:
+            T += get_syntax_tree(l),
+        return T
 
-    # parse file
-    parsed_file = parse_file(program_file)
+def get_syntax_str(T: tuple, tab_count=1) -> str:
+    tabs = LED_STR_TAB * tab_count
+    st = tabs
+    if is_termimal(T):
+        st += str(T)
+    else:
+        st += "('" + T[0] + "'"
+        for t in T[1:]:
+            st2 = ',\n'
+            st2 += get_syntax_str(
+                    t, tab_count=tab_count+1
+                )
+            st += st2
+        st += '\n' + tabs + ')'
+    return st
 
-    return parsed_file
+def is_termimal(T: tuple) -> bool:
+    boo = (
+        isinstance(T, tuple) and
+        len(T) > 1 and
+        isinstance(T[1], str)
+    )
+    return boo
 
 ############################################################
 
 class RegionParser:
-    def __init__(self, program_file):
-        with open(program_file) as file_object:
+    def __init__(self, led_path):
+        with open(led_path) as file_object:
             self.program_str = file_object.read()
 
         file_names = 'led_lexicon.txt', 'led_grammar.txt'
@@ -200,6 +225,10 @@ starting from line {}:
 
 ############################################################
 
+def main():
+    led_path = sys.argv[1]
+    syntax_dict = parse_file(led_path, quiet=False)
+
 if __name__ == '__main__':
-    parsed_file = parse_led()
-    print(parsed_file)
+    print()
+    main()
