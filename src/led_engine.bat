@@ -1,7 +1,7 @@
 goto starting
 
 :looping
-    set fold=examples\
+    set fold=..\examples\
     set fil=tictactoe
     set fils=aggregation, boolean, comparison, countingGame, definition, nonstrict, quantification, set, tictactoe, tmp, tmpGame
     for %%i in (%fil%) do (

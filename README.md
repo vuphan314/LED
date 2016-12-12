@@ -14,9 +14,9 @@ The [generic parser][genparser] (`src/genparser/`)
 is developed by Evgenii Balai.
 
 [tttLED]:
-https://github.com/vuphan314/LED/blob/master/src/examples/tictactoe.led
+https://github.com/vuphan314/LED/blob/master/examples/tictactoe.led
 [tttSL]:
-https://github.com/vuphan314/LED/blob/master/src/examples/tictactoe.sl
+https://github.com/vuphan314/LED/blob/master/examples/tictactoe.sl
 
 [LEDspec]:
 https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
