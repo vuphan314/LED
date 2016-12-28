@@ -4,4 +4,8 @@ f := 0
 f2(x) := f3(x)
 g(x, y) := g2 (x, y)
 
+r iff true
+r(x) iff x
+r(x, y, z) iff r(x, z, y)
+
 $/

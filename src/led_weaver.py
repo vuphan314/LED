@@ -8,13 +8,13 @@ from debugtools.debug_tool import *
 ############################################################
 
 TEX_TOP = '''
-\\documentclass{{article}}
-\\usepackage{{led_pkg}}
-\\begin{{document}}
+\\documentclass[14pt]{extarticle}
+\\usepackage{led_pkg}
+\\begin{document}
 
 '''
 TEX_BOTTOM = '''
-\\end{{document}}
+\\end{document}
 '''
 
 FUN_REL_DEFS = {'funDef', 'relDef'}
