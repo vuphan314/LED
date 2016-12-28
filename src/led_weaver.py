@@ -6,33 +6,39 @@ PKG_CMDS = {'funDef', 'relDef'}
 
 ############################################################
 
-def weave_top(T: tuple) -> str:
+def weave_top(T) -> str:
     st = weave_recur(T)
     return st
 
 ############################################################
 
-def weave_recur(T: tuple) -> str:
+def weave_recur(T) -> str:
     if isinstance(T, str):
         return T
     elif T[0] in {'funT', 'relT'}:
-        pass
+        return apply_recur(T[1], T[2:])
     elif T[0] in PKG_CMDS:
-        cmd_name = T[0]
-        cmd_args = map(weave_recur, T[1:])
-        cmd = get_cmd(cmd_name, cmd_args)
-        return cmd
+        return get_cmd_recur(T[1], T[2:])
     else:
         return recur_str(weave_recur, T)
 
 ############################################################
 
-def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
-    st = '\\' + cmd_name
+def get_cmd_recur(cmd_name, cmd_args: tuple) -> str:
+    st = '\\' + weave_recur(cmd_name)
     for cmd_arg in cmd_args:
-        st2 = surround_str(cmd_arg, '{', '}')
-        st += st2
+        st2 = weave_recur(cmd_arg)
+        st += surround_str(st2, '{', '}')
     st = surround_str(st, '{', '}')
+    return st
+
+def apply_recur(func, args: tuple) -> str:
+    st = weave_recur(func)
+    if args:
+        st2 = weave_recur(args[0])
+        for arg in args[1:]:
+            st2 += ', ' + weave_recur(arg)
+        st += parenthesize_str(st2)
     return st
 
 ############################################################
@@ -49,7 +55,7 @@ def surround_str(
 
 ############################################################
 
-def recur_str(F: 'function', T: tuple) -> str:
+def recur_str(F, T) -> str:
     st = ''
     for t in T[1:]:
         st += F(t)
