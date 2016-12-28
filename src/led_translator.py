@@ -350,7 +350,7 @@ def translateRecur(dat: LedDatum, T) -> str:
         return appendUnderscore(T)
     elif T[0] in lexemes:
         return translateLexemes(dat, T)
-    elif T[0] == 'userFR':
+    elif T[0] == 'nonnullFunRel':
         st = applyRecur(dat, T[1], T[2][1:])
         return st
     elif T[0] == 'tpl':
@@ -471,12 +471,12 @@ def updateDefedConsts(prog) -> None:
 def addEaselParams(T):
     if isinstance(T, str):
         return T
-    elif T[0] == 'userSC':
+    elif T[0] == 'symOrNullFunRel':
         id = T[1]
         params = getParamsFromLexeme(id)
         if params != ():
-            terms = getIdsTree('terms', 'userSC', params)
-            T = 'userFR', id, terms
+            terms = getIdsTree('terms', 'symOrNullFunRel', params)
+            T = 'nonnullFunRel', id, terms
         return T
     elif T[0] == 'constN':
         id = T[1]
@@ -496,10 +496,10 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == 'userFR':
+    elif T[0] == 'nonnullFunRel':
         params = getParamsFromLexeme(T[1])
         terms = T[2]
-        terms += getIdsTuple('userSC', params)
+        terms += getIdsTuple('symOrNullFunRel', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
     elif T[0] in {'funT', 'relT'}:
@@ -846,7 +846,7 @@ def addOtherwiseClause(T):
 def tIfBTsToTIfBTsO(tIfBTs):
     t = 'valNull'
     t = 'id', t
-    t = 'userSC', t
+    t = 'symOrNullFunRel', t
     t = 'tOther', t
     T = 'tIfBTsO', tIfBTs, t
     return T
@@ -925,7 +925,7 @@ def translateAggr(dat: LedDatum, T) -> str:
         return st
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
-            if T[1][0] == 'userSC':
+            if T[1][0] == 'symOrNullFunRel':
                 dat.aCateg = 'solEq'
             else: # 'tupT'
                 dat.aCateg = 'solEqs'
@@ -966,7 +966,7 @@ def translateAggr(dat: LedDatum, T) -> str:
 
 def updateDepSymbsRecur(dat: LedDatum, T) -> None:
     if type(T) == tuple:
-        if T[0] == 'userSC':
+        if T[0] == 'symOrNullFunRel':
             st = T[1][1]
             if isNewDepSymb(dat, st):
                 dat.depSymbs += st,
@@ -979,7 +979,7 @@ def isGround(dat: LedDatum, T) -> bool:
 def newDepSymbFound(dat: LedDatum, T) -> bool:
     if type(T) == str:
         return False
-    elif T[0] == 'userSC':
+    elif T[0] == 'symOrNullFunRel':
         if isNewDepSymb(dat, T[1][1]):
             return True
         else:

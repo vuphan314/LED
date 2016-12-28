@@ -10,8 +10,8 @@ def_(T) ::= rel_def(T)
 fun_def(funDef T T2) ::= fun_term(T) colonEq def_body(T2)
 fun_def(funDef T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
 
-rel_def(relDef T T2) ::= rel_term(T) iff bool_term(T2)
-rel_def(relDef T T2 T3) ::= rel_term(T) iff bool_term(T2) where bool_term(T3)
+rel_def(relDef T T2) ::= rel_term(T) iff def_body(T2)
+rel_def(relDef T T2 T3) ::= rel_term(T) iff def_body(T2) where bool_term(T3)
 
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
@@ -20,13 +20,16 @@ def_body(T) ::= term_if_bool_term_s_other(T)
 term(T) ::= nonbool_term(T)
 term(T) ::= bool_term(T)
 
-nonbool_term(T) ::= inner_term(T)
 nonbool_term(T) ::= atom_term(T)
 nonbool_term(T) ::= string_term(T)
 nonbool_term(T) ::= tuple_term(T)
 nonbool_term(T) ::= tuple_indexed_term(T)
-nonbool_term(T) ::= ar_term(T)
 nonbool_term(T) ::= set_term(T)
+nonbool_term(T) ::= ar_term(T)
+nonbool_term(T) ::= inner_term(T)
+
+inner_term(T) ::= lParenth term(T) rParenth
+inner_term(T) ::= user_term(T)
 
 atom_term(T) ::= atom_term_1(T)
 
@@ -67,8 +70,8 @@ set_term_3(aggrUnn T T2) ::= U lBracket bool_term(T) rBracket set_term_3(T2)
 set_term_3(aggrNrsec T T2) ::= Sec lBracket bool_term(T) rBracket set_term_3(T2)
 set_term_3(T) ::= inner_set_term(T)
 
-inner_set_term(T) ::= user_term(T)
 inner_set_term(T) ::= lParenth set_term(T) rParenth
+inner_set_term(T) ::= user_term(T)
 inner_set_term(powSet T) ::= Pow lParenth set_term(T) rParenth
 inner_set_term(T) ::= brace_set(T)
 
@@ -94,10 +97,10 @@ bool_term_4(T) ::= bool_term_5(T)
 bool_term_5(neg T) ::= tilde bool_term_5(T)
 bool_term_5(T) ::= bool_term_6(T)
 
-bool_term_6(T) ::= inner_bool_term(T)
 bool_term_6(T) ::= quantified_term(T)
 bool_term_6(T) ::= set_bool_term(T)
 bool_term_6(T) ::= equality(T)
+bool_term_6(T) ::= inner_bool_term(T)
 
 inner_bool_term(T) ::= lParenth bool_term(T) rParenth
 inner_bool_term(T) ::= user_term(T)
@@ -144,21 +147,16 @@ ar_term_3(T) ::= ar_term_4(T)
 ar_term_4(exp T T2) ::= inner_ar_term(T) hat ar_term_3(T2)
 ar_term_4(T) ::= inner_ar_term(T)
 
-inner_ar_term(T) ::= user_term(T)
 inner_ar_term(T) ::= lParenth ar_term(T) rParenth
+inner_ar_term(T) ::= user_term(T)
+inner_ar_term(N) ::= numl(N)
 inner_ar_term(flr T) ::= floor lParenth ar_term(T) rParenth
 inner_ar_term(clng T) ::= ceil lParenth ar_term(T) rParenth
-inner_ar_term(N) ::= numl(N)
-inner_ar_term(T) ::= pipe_ar_term(T)
-
-pipe_ar_term(pipesOp T) ::= pipe pipes_arg(T) pipe
+inner_ar_term(pipesOp T) ::= pipe pipes_arg(T) pipe
 
 pipes_arg(T) ::= ar_term(T)
 pipes_arg(T) ::= set_term(T)
 pipes_arg(T) ::= tuple_term(T)
-
-inner_term(T) ::= lParenth term(T) rParenth
-inner_term(T) ::= user_term(T)
 
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
@@ -177,17 +175,15 @@ term_other(tOther T) ::= term(T) otherwise
 
 term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
 
-fun_term(funT T) ::= fun_(T)
-fun_term(funT T T2) ::= fun_(T) lParenth symbol_s(T2) rParenth
+fun_term(funT T) ::= fun_name(T)
+fun_term(funT T T2) ::= fun_name(T) lParenth symbol_s(T2) rParenth
 
-rel_term(relT T) ::= rel_(T)
-rel_term(relT T T2) ::= rel_(T) lParenth symbol_s(T2) rParenth
+rel_term(relT T) ::= rel_name(T)
+rel_term(relT T T2) ::= rel_name(T) lParenth symbol_s(T2) rParenth
 
 symbol_(symN T) ::= id(T)
-const_(constN T) ::= id(T)
+fun_name(funN T) ::= id(T)
+rel_name(relN T) ::= id(T)
 
-fun_(funN T) ::= id(T)
-rel_(relN T) ::= id(T)
-
-user_term(userSC T) ::= id(T)
-user_term(userFR T T2) ::= id(T) lParenth term_s(T2) rParenth
+user_term(symOrNullFunRel T) ::= id(T)
+user_term(nonnullFunRel T T2) ::= id(T) lParenth term_s(T2) rParenth
