@@ -182,6 +182,8 @@ term_other(tOther T) ::= term(T) otherwise
 term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
 
 fun_term(funT T T2) ::= fun_(T) lParenth symbol_s(T2) rParenth
+
+rel_term(relT T) ::= rel_(T)
 rel_term(relT T T2) ::= rel_(T) lParenth symbol_s(T2) rParenth
 
 symbol_(symN T) ::= id(T)

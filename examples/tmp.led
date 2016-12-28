@@ -1,9 +1,12 @@
-/$
+$
 
 c := 0
 
 f(x) := 0
 
-R(x) iff true
+/$
+
+R iff true
+R2(x) iff true
 
 $/

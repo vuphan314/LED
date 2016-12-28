@@ -230,5 +230,4 @@ def main():
     syntax_dict = parse_file(led_path)
 
 if __name__ == '__main__':
-    print()
     main()
