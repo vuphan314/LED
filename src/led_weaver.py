@@ -35,7 +35,7 @@ def weave_recur(T) -> str:
     if isinstance(T, str):
         return T
     elif T[0] in FUN_REL_EXPRS:
-        return weave_fun_rel(T)
+        return weave_fun_rel_expr(T)
     elif T[0] in PKG_CMDS:
         return get_cmd_recur(T[0], T[1:])
     else:
@@ -64,11 +64,11 @@ def get_cmd_recur(cmd_name, cmd_args: tuple) -> str:
 
 ############################################################
 
-def weave_fun_rel(T) -> str:
-    if len(T) == 2: # nullary
-        args = ()
-    else:
+def weave_fun_rel_expr(T) -> str:
+    if len(T) > 2: # nonnullary
         args = T[2][1:]
+    else:
+        args = ()
     return apply_recur(T[1], args)
 
 ############################################################
