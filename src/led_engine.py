@@ -12,19 +12,22 @@ import sys
 from debugtools.debug_tool import *
 import led_parser
 import led_translator
+import led_weaver
 
 ############################################################
 
 def main() -> None:
     led = sys.argv[1]
 
-    parsed = led_parser.parse_file(led)
+    parsed = led_parser.parse_file(led, quiet=True)
 
-    sl = led_translator.translateTop(parsed)
-    if led_translator.isGame:
-        sl += easelFragment + getLibsStr()
+    # sl = led_translator.translateTop(parsed)
+    # if led_translator.isGame:
+    #     sl += easelFragment + getLibsStr()
+    # print(sl)
 
-    print(sl)
+    tex = led_weaver.weave_top(parsed)
+    print(tex)
 
 ############################################################
 """Copy LED library to end of easel output file."""
