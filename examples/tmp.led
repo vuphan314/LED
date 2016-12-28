@@ -1,8 +1,9 @@
-/$ newState :=
-    initialState if restartClicked;
-    currentState U movesMade otherwise
- $/
-
 /$
-initialState := {}
+
+c := 0
+
+f(x) := 0
+
+R(x) iff true
+
 $/
