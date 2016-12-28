@@ -1,12 +1,6 @@
-$
-
-c := 0
-
-f(x) := 0
-
 /$
 
-R iff true
-R2(x) iff true
+f := 0
+g(x) := x
 
 $/

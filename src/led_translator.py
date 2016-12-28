@@ -1,4 +1,4 @@
-"""Convert an LED parsetree into a SL program."""
+"""Convert an LED parsetree to a SL program."""
 
 ############################################################
 """Import."""
@@ -35,7 +35,7 @@ class LedDatum:
         T = self.indepSymbs + self.depSymbs
         return T
 
-    def getAnotherInst(self, isNext = False):
+    def getAnotherInst(self, isNext=False):
         if isNext:
             symbs = self.getNextIndepSymbs()
         else:
@@ -49,7 +49,7 @@ class LedDatum:
         return T
 
     def appendToAux(
-        self, extraAppend: str, isNext = False
+        self, extraAppend: str, isNext=False
     ) -> str:
         num = auxFuncNum
         if isNext:
@@ -110,7 +110,7 @@ class LedDatum:
 
         st = defRecur(
             self, func, (), inCl,
-            letCls = letCls, inds = (ind,), moreSpace = True
+            letCls=letCls, inds = (ind,), moreSpace=True
         )
         return st
 
@@ -135,7 +135,7 @@ class LedDatum:
             self, self.aCateg, self.aGetArgsLib()
         )
         st = defRecur(
-            self, self.aFunc, (), expr, moreSpace = True
+            self, self.aFunc, (), expr, moreSpace=True
         )
         return st
 
@@ -152,7 +152,7 @@ class LedDatum:
         args = self.aGetFuncConjDeep(),
         expr = applyRecur(self, func, args)
         st = defRecur(
-            self, self.aFunc, (), expr, moreSpace = True
+            self, self.aFunc, (), expr, moreSpace=True
         )
         st = self.aDefFuncConjDeep() + st
         return st
@@ -166,8 +166,8 @@ class LedDatum:
         letCls = self.aGetConjLetClauses(bindings, inds)
 
         st = defRecur(
-            self, func, (), expr, letCls = letCls,
-            inds = inds, moreSpace = True
+            self, func, (), expr, letCls=letCls,
+            inds = inds, moreSpace=True
         )
         return st
 
@@ -234,7 +234,7 @@ class LedDatum:
 
         funcMain = self.qGetFuncMain()
         st = defRecur(
-            self, funcMain, S, expr, moreSpace = True
+            self, funcMain, S, expr, moreSpace=True
         )
         return st
 
@@ -254,7 +254,7 @@ class LedDatum:
 
         st = defRecur(
             self, func2, args2, expr,
-            inds = (ind,), letCls = letCls
+            inds = (ind,), letCls=letCls
         )
         return st
 
@@ -272,7 +272,7 @@ class LedDatum:
         args = self.indepSymbs
         expr = applyRecur(self, 'valToSet', (self.qSet,))
         st = defRecur(
-            self, func, args, expr, moreSpace = True
+            self, func, args, expr, moreSpace=True
         )
         return st
 
@@ -374,7 +374,7 @@ def translateRecur(dat: LedDatum, T) -> str:
 
 def defRecur(
     dat: LedDatum, func, args: tuple, expr,
-    inds = (), letCls = (), moreSpace = False
+    inds=(), letCls=(), moreSpace=False
 ) -> str:
     head = applyRecur(dat, func, args, inds = inds)
     expr = translateRecur(dat, expr)
@@ -394,7 +394,7 @@ def defRecur(
 
 def applyRecur(
     dat: LedDatum, func, args: tuple,
-    isInLib = False, argsAreBracketed = False, inds = ()
+    isInLib=False, argsAreBracketed=False, inds=()
 ) -> str:
     func = translateRecur(dat, func)
 
@@ -661,7 +661,7 @@ def translateDef(dat: LedDatum, T) -> str:
 
     st = defRecur(
         dat2, func, dat2.indepSymbs, T[2],
-        moreSpace = True, letCls = letCls
+        moreSpace=True, letCls=letCls
     )
     return st
 
@@ -706,8 +706,8 @@ def translateTuple(dat: LedDatum, T) -> str:
     func = 'tu'
     terms = T[1]
     st = applyRecur(
-        dat, func, terms[1:], isInLib = True,
-        argsAreBracketed = True
+        dat, func, terms[1:], isInLib=True,
+        argsAreBracketed=True
     )
     return st
 
@@ -719,8 +719,8 @@ def translateSet(dat: LedDatum, T) -> str:
         terms = T[1]
         args = terms[1:]
     st = applyRecur(
-        dat, func, args, isInLib = True,
-        argsAreBracketed = True
+        dat, func, args, isInLib=True,
+        argsAreBracketed=True
     )
     return st
 
@@ -775,7 +775,7 @@ libOps = (
 )
 
 def translateLibOps(dat: LedDatum, T) -> str:
-    st = applyRecur(dat, T[0], T[1:], isInLib = True)
+    st = applyRecur(dat, T[0], T[1:], isInLib=True)
     return st
 
 ############################################################
@@ -908,7 +908,7 @@ def translateAggr(dat: LedDatum, T) -> str:
             condTree = T[1]
 
         updateDepSymbsRecur(dat, condTree)
-        uTerm = dat.getAnotherInst(isNext = True)
+        uTerm = dat.getAnotherInst(isNext=True)
         dat.aTerm = translateRecur(uTerm, termTree)
 
         uCond = dat.getAnotherInst()
@@ -955,7 +955,7 @@ def translateAggr(dat: LedDatum, T) -> str:
         translateAggr(dat1, T[1])
         dat.subInst1 = dat1
 
-        dat2 = dat1.getAnotherInst(isNext = True)
+        dat2 = dat1.getAnotherInst(isNext=True)
         translateAggr(dat2, T[2])
         dat.subInst2 = dat2
 
@@ -1005,7 +1005,7 @@ def translateQuant(dat: LedDatum, T) -> str:
     dat2 = dat.getAnotherInst()
     dat.qSet = translateRecur(dat2, symsInSet[2])
 
-    dat3 = dat.getAnotherInst(isNext = True)
+    dat3 = dat.getAnotherInst(isNext=True)
     dat.qPred = translateRecur(dat3, T[2])
 
     global auxFuncDefs
@@ -1040,7 +1040,7 @@ def translateLexemes(dat: LedDatum, T) -> str:
     if lex in lexemesDoublyQuoted:
         arg = addDoubleQuotes(arg)
     args = arg,
-    st = applyRecur(dat, func, args, isInLib = True)
+    st = applyRecur(dat, func, args, isInLib=True)
     return st
 
 ############################################################
