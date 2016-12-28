@@ -4,12 +4,8 @@ prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 prog_el(T) ::= hashIsGame(T)
 prog_el(T) ::= def_(T)
 
-def_(T) ::= const_def(T)
 def_(T) ::= fun_def(T)
 def_(T) ::= rel_def(T)
-
-const_def(constDef T T2) ::= const_(T) colonEq def_body(T2)
-const_def(constDef T T2 T3) ::= const_(T) colonEq def_body(T2) where bool_term(T3)
 
 fun_def(funDef T T2) ::= fun_term(T) colonEq def_body(T2)
 fun_def(funDef T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
@@ -181,6 +177,7 @@ term_other(tOther T) ::= term(T) otherwise
 
 term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
 
+fun_term(funT T) ::= fun_(T)
 fun_term(funT T T2) ::= fun_(T) lParenth symbol_s(T2) rParenth
 
 rel_term(relT T) ::= rel_(T)
