@@ -40,11 +40,11 @@ from genparser.src.astgen.parsing import lexer, parser
 
 ############################################################
 
-LED_STR_TAB = ' ' * 2
+PRETTY_STR_TAB = ' ' * 2
 
 ############################################################
 
-def parse_file(led_path, quiet=False) -> tuple:
+def parse_file(led_path: str, quiet=False) -> tuple:
     region_parser = RegionParser(led_path)
     syntax_list = region_parser.get_parsed_elements()
     syntax_list = ['prog'] + syntax_list
@@ -66,7 +66,7 @@ def get_syntax_tree(L: list):
         return T
 
 def get_syntax_str(T: tuple, tab_count=1) -> str:
-    tabs = LED_STR_TAB * tab_count
+    tabs = PRETTY_STR_TAB * tab_count
     st = tabs
     if is_termimal(T):
         st += str(T)

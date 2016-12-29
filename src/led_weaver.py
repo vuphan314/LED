@@ -9,8 +9,11 @@ from debugtools.debug_tool import *
 
 TEX_TOP = '''
 \\documentclass[14pt]{extarticle}
+\\usepackage[scale=0.9]{geometry}
 \\usepackage{led_pkg}
 \\begin{document}
+
+LED Engine \\bigskip
 
 '''
 TEX_BOTTOM = '''
@@ -21,7 +24,9 @@ FUN_REL_DEFS = {'funDef', 'relDef'}
 FUN_REL_EXPRS = {
     'funT', 'relT', 'symOrNullFunRel', 'nonnullFunRel'
 }
-PKG_CMDS = FUN_REL_DEFS | FUN_REL_EXPRS
+COLLECTIONS = {'tpl'}
+MANY = {'terms', 'symbol_s'}
+PKG_CMDS = FUN_REL_DEFS | FUN_REL_EXPRS | COLLECTIONS | MANY
 
 ############################################################
 
@@ -34,32 +39,42 @@ def weave_top(T) -> str:
 def weave_recur(T) -> str:
     if isinstance(T, str):
         return T
+    elif T[0] == 'string':
+        return '``' + T[1][1:-1] + '"'
+    elif T[0] == 'truth':
+        return get_cmd('textKeyword', T[1:])
+    elif T[0] in MANY:
+        return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
     elif T[0] in PKG_CMDS:
-        return get_cmd_recur(T[0], T[1:])
+        return get_cmd(T[0], T[1:])
     else:
         return recur_str(weave_recur, T)
 
 ############################################################
 
-def apply_recur(func, args: tuple) -> str:
-    st = weave_recur(func)
-    if args:
-        st2 = weave_recur(args[0])
-        for arg in args[1:]:
-            st2 += ', ' + weave_recur(arg)
-        st2 = get_cmd_recur('parenthesize', [st2])
-        st += ' ' + st2
-    return st
-
-def get_cmd_recur(cmd_name, cmd_args: tuple) -> str:
+def get_cmd(cmd_name, cmd_args: tuple) -> str:
     st = '\\' + weave_recur(cmd_name)
     for cmd_arg in cmd_args:
         st2 = weave_recur(cmd_arg)
         st += surround_str(st2, '{', '}')
     if cmd_name in FUN_REL_DEFS:
         st += '\n'
+    return st
+
+def apply_recur(func, args: tuple) -> str:
+    st = weave_recur(func)
+    if args:
+        st2 = weave_many(args)
+        st2 = get_cmd('parenthesize', [st2])
+        st += ' ' + st2
+    return st
+
+def weave_many(args: tuple) -> str:
+    st = weave_recur(args[0])
+    for arg in args[1:]:
+        st += ', ' + weave_recur(arg)
     return st
 
 ############################################################

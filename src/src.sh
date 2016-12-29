@@ -1,5 +1,11 @@
 #!/bin/bash
 
-python3 ./led_engine.py ../examples/tmp.led > ../examples/tmp.tex
-cat ../examples/tmp.tex
-latexmk -pdf -outdir=../examples/out/ ../examples/tmp.tex
+input_base=tmp
+
+examples_path=../examples
+base_path=$examples_path/$input_base
+led_path=$base_path.led
+out_path=$examples_path/out
+
+python3 led_engine.py -f $led_path
+latexmk -pdf -outdir=$out_path $base_path

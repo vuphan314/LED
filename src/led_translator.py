@@ -340,7 +340,64 @@ def translateTop(T: tuple) -> str:
         )
 
     st = tests + imports + st
+
+    if isGame:
+        st += easelFragment + getLibsStr()
+
     return st
+
+############################################################
+"""Copy LED library to end of easel output file."""
+
+libName = 'led_lib.sl'
+
+def getLibsStr() -> str:
+    st = ''
+    with open(libName) as libFile:
+        stLib = libFile.read()
+        msg = '''
+
+{}
+
+'''.format(blockComment('BELOW IS A COPY OF ' + libName))
+        stLib = msg + stLib + '\n'
+        stLib = markStartEnd(stLib) + '\n\n'
+        st += stLib
+    return st
+
+############################################################
+
+easelFragment = '''
+
+/*
+Easel fragment
+*/
+
+/* easel required functions */
+
+initialState: State;
+initialState :=
+    valToState(initialState_);
+
+newState: Input * State -> State;
+newState(I, S) :=
+    let
+        v := newState_(I, S);
+    in
+        valToState(v);
+
+images: State -> Image(1);
+images(S) :=
+    let
+        v := images_(S);
+    in
+        valToImages(v);
+
+/* easel default sound */
+sounds: Input * State -> char(2);
+sounds(I, S) := ["ding"] when I.iClick.clicked else [];
+
+'''
 
 ############################################################
 """Recursion iterators."""
