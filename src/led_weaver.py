@@ -60,7 +60,8 @@ def weave_recur(T) -> str:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
-    elif T[0] == ''
+    elif T[0] == 'tIfBTs':
+        return weave_if_clauses(T)
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
@@ -68,16 +69,17 @@ def weave_recur(T) -> str:
 
 ############################################################
 
-def get_cmd(cmd_name, cmd_args: tuple) -> str:
-    st = '\\' + weave_recur(cmd_name)
-    for cmd_arg in cmd_args:
-        st2 = weave_recur(cmd_arg)
-        st += surround_str(st2, '{', '}')
-    if cmd_name in DEF_LABELS:
-        st += '\n'
-    return st
+def weave_if_clauses(T) -> str:
+    get_env('cases', T)
 
-def apply_recur(func, args: tuple) -> str:
+def weave_fun_rel_expr(T) -> str:
+    if len(T) > 2: # nonnullary
+        args = T[2][1:]
+    else:
+        args = ()
+    return weave_call(T[1], args)
+
+def weave_call(func, args: tuple) -> str:
     st = weave_recur(func)
     if args:
         st2 = weave_many(args)
@@ -93,12 +95,23 @@ def weave_many(args: tuple) -> str:
 
 ############################################################
 
-def weave_fun_rel_expr(T) -> str:
-    if len(T) > 2: # nonnullary
-        args = T[2][1:]
-    else:
-        args = ()
-    return apply_recur(T[1], args)
+def get_env(env_name: str, env_items: tuple) -> str:
+    st = ''
+    for env_item in env_items:
+        st += weave_recur(env_item) + '\n'
+    env_name = surround_str(env_name, '{', '}')
+    env_start = '\\begin' + env_name + '\n'
+    env_end = '\\end' + env_name + '\n'
+    return surround_str(st, env_start, env_end)
+
+def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
+    st = '\\' + cmd_name
+    for cmd_arg in cmd_args:
+        st2 = weave_recur(cmd_arg)
+        st += surround_str(st2, '{', '}')
+    if cmd_name in DEF_LABELS:
+        st += '\n\n'
+    return st
 
 ############################################################
 
