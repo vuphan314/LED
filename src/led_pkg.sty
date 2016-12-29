@@ -1,14 +1,35 @@
-\newcommand{\funDef}[2]{$$ #1 := #2 $$}
-\newcommand{\relDef}[2]{$$ #1 \equiv #2 $$}
+\newcommand{\infixOp}[3]{#1 #3 #2}
 
-\newcommand{\parenthesize}[1]{\left( #1 \right)}
+\newcommand{\funDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
+\newcommand{\relDef}[2]{$$ \infixOp{#1}{#2}{\equiv} $$}
 
-% \newcommand{\infixOp}[3]{#1 #3 #2}
-% \newcommand{\opDi}[2]{\infixOp{#1}{#2}{\vee}}
+\newcommand{\aggrUnn}[2]{\bigcup_{#1}{#2}}
+\newcommand{\aggrNrsec}[2]{\bigcap_{#1}{#2}}
+\newcommand{\setCompr}[2]{\braces{#1 | #2}}
 
-\newcommand{\tpl}[1]{\parenthesize{#1}}
+\newcommand{\pipesOp}[1]{\pipes{#1}}
+\newcommand{\plusOp}[2]{\infixOp{#1}{#2}{+}}
+\newcommand{\starOp}[2]{\infixOp{#1}{#2}{\times}}
+
+\newcommand{\equiv}[2]{} todo
+
+\newcommand{\powSet}[1]{\wp \parentheses{#1}}
+
+\newcommand{\tpl}[1]{\parentheses{#1}}
+\newcommand{\tuIn}[2]{#1 \brackets{#2}}
+\newcommand{\tuSl}[3]{#1 \brackets{#2 .. #3}}
+
+\newcommand{\unn}[2]{\infixOp{#1}{#2}{\cup}}
+\newcommand{\diff}[2]{\infixOp{#1}{#2}{\setminus}}
+\newcommand{\nrsec}[2]{\infixOp{#1}{#2}{\cap}}
+\newcommand{\iv}[2]{\braces{#1 .. #2}}
 
 \newcommand{\textKeyword}[1]{\texttt{#1}}
+
+\newcommand{\parentheses}[1]{\left( #1 \right)}
+\newcommand{\braces}[1]{\left\{ #1 \right\}}
+\newcommand{\brackets}[1]{\left[ #1 \right]}
+\newcommand{\pipes}[1]{\left| #1 \right|}
 
 % rushton
 % \newcommand{\caseif}[2] {#1 & \text{if } #2 \\}

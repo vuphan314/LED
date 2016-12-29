@@ -12,7 +12,6 @@ TEX_TOP = '''
 \\usepackage[scale=0.9]{geometry}
 \\usepackage{led_pkg}
 \\begin{document}
-
 LED Engine \\bigskip
 
 '''
@@ -20,13 +19,21 @@ TEX_BOTTOM = '''
 \\end{document}
 '''
 
-FUN_REL_DEFS = {'funDef', 'relDef'}
+DEF_LABELS = {'funDef', 'relDef'}
+AGGR_OPS = {'aggrUnn', 'aggrNrsec', 'setCompr'}
+OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
+BUILTIN_FUNS = {'powSet'}
+TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
+SET_LABELS = {'unn', 'diff', 'nrsec', 'iv'}
+MANY_LABELS = {'terms', 'symbol_s'}
+PKG_CMDS = (
+    DEF_LABELS | AGGR_OPS | OVERLOADED_OPS | BUILTIN_FUNS |
+    TUPLE_LABELS | SET_LABELS |
+    MANY_LABELS
+)
 FUN_REL_EXPRS = {
     'funT', 'relT', 'symOrNullFunRel', 'nonnullFunRel'
 }
-COLLECTIONS = {'tpl'}
-MANY = {'terms', 'symbol_s'}
-PKG_CMDS = FUN_REL_DEFS | FUN_REL_EXPRS | COLLECTIONS | MANY
 
 ############################################################
 
@@ -43,7 +50,7 @@ def weave_recur(T) -> str:
         return '``' + T[1][1:-1] + '"'
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
-    elif T[0] in MANY:
+    elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
@@ -59,7 +66,7 @@ def get_cmd(cmd_name, cmd_args: tuple) -> str:
     for cmd_arg in cmd_args:
         st2 = weave_recur(cmd_arg)
         st += surround_str(st2, '{', '}')
-    if cmd_name in FUN_REL_DEFS:
+    if cmd_name in DEF_LABELS:
         st += '\n'
     return st
 
