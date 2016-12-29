@@ -36,10 +36,10 @@ PKG_CMDS = (
     DEF_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
-MANY_LABELS = {'terms', 'syms'}
 FUN_REL_EXPRS = {
     'funT', 'relT', 'symOrNullFunRel', 'nonnullFunRel'
 }
+MANY_LABELS = {'terms', 'syms'}
 
 ############################################################
 
@@ -60,6 +60,7 @@ def weave_recur(T) -> str:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
+    elif T[0] == ''
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
