@@ -1,6 +1,9 @@
 /$
 
-f := {x | true}
+r iff some x in S . x
+r iff some x, y in S . x
+f := - Sum[false] ceil(x^2)
+f := - Prod[false]x
 
 $/
 

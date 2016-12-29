@@ -1,37 +1,75 @@
+\usepackage[scale=0.9]{geometry}
+\usepackage{amsmath}
+
 \newcommand{\infixOp}[3]{#1 #3 #2}
 
+% DEF_LABELS
 \newcommand{\funDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
-\newcommand{\relDef}[2]{$$ \infixOp{#1}{#2}{\equiv} $$}
+\newcommand{\relDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
 
+% QUANT_OPS
+\newcommand{\exist}[2]{\exists #1 . #2}
+\newcommand{\univ}[2]{\forall #1 . #2}
+
+% AGGR_OPS
+\newcommand{\setCompr}[2]{\braces{#1 | #2}}
 \newcommand{\aggrUnn}[2]{\bigcup_{#1}{#2}}
 \newcommand{\aggrNrsec}[2]{\bigcap_{#1}{#2}}
-\newcommand{\setCompr}[2]{\braces{#1 | #2}}
+\newcommand{\aggrSum}[2]{\sum_{#1}{#2}}
+\newcommand{\aggrProd}[2]{\prod_{#1}{#2}}
 
+% OVERLOADED_OPS
 \newcommand{\pipesOp}[1]{\pipes{#1}}
 \newcommand{\plusOp}[2]{\infixOp{#1}{#2}{+}}
 \newcommand{\starOp}[2]{\infixOp{#1}{#2}{\times}}
 
-\newcommand{\equiv}[2]{} todo
+% BOOL_OPS
+\renewcommand{\equiv}[2]{\infixOp{#1}{#2}{\iff}}
+\newcommand{\impl}[2]{\infixOp{#1}{#2}{\implies}}
+\newcommand{\disj}[2]{\infixOp{#1}{#2}{\vee}}
+\newcommand{\conj}[2]{\infixOp{#1}{#2}{\wedge}}
+% built-in \neg
+\newcommand{\eq}[2]{\infixOp{#1}{#2}{=}}
+\newcommand{\uneq}[2]{\infixOp{#1}{#2}{\ne}}
+\newcommand{\less}[2]{\infixOp{#1}{#2}{<}}
+\newcommand{\greater}[2]{\infixOp{#1}{#2}{>}}
+\newcommand{\lessEq}[2]{\infixOp{#1}{#2}{\le}}
+\newcommand{\greaterEq}[2]{\infixOp{#1}{#2}{\ge}}
 
-\newcommand{\powSet}[1]{\wp \parentheses{#1}}
+% AR_OPS
+\newcommand{\uMns}[1]{- #1}
+\newcommand{\bMns}[2]{\infixOp{#1}{#2}{-}}
+\renewcommand{\div}[2]{\infixOp{#1}{#2}{/}}
+\newcommand{\md}[2]{\infixOp{#1}{#2}{\textKeyword{mod}}}
+\renewcommand{\exp}[2]{{#1}^{#2}}
+\newcommand{\flr}[1]{\floors{#1}}
+\newcommand{\clng}[1]{\ceils{#1}}
 
+% TUPLE_LABELS
 \newcommand{\tpl}[1]{\parentheses{#1}}
 \newcommand{\tuIn}[2]{#1 \brackets{#2}}
 \newcommand{\tuSl}[3]{#1 \brackets{#2 .. #3}}
 
+% SET_LABELS
+\newcommand{\powSet}[1]{\wp \parentheses{#1}}
+\newcommand{\iv}[2]{\braces{#1 .. #2}}
 \newcommand{\unn}[2]{\infixOp{#1}{#2}{\cup}}
 \newcommand{\diff}[2]{\infixOp{#1}{#2}{\setminus}}
 \newcommand{\nrsec}[2]{\infixOp{#1}{#2}{\cap}}
-\newcommand{\iv}[2]{\braces{#1 .. #2}}
+\newcommand{\sbset}[2]{\infixOp{#1}{#2}{\subseteq}}
+\newcommand{\setMem}[2]{\infixOp{#1}{#2}{\in}}
+\newcommand{\symsInSet}[2]{\setMem{#1}{#2}}
 
 \newcommand{\textKeyword}[1]{\texttt{#1}}
 
+% surrounders
 \newcommand{\parentheses}[1]{\left( #1 \right)}
 \newcommand{\braces}[1]{\left\{ #1 \right\}}
 \newcommand{\brackets}[1]{\left[ #1 \right]}
 \newcommand{\pipes}[1]{\left| #1 \right|}
+\newcommand{\floors}[1]{\lfloor #1 \rfloor}
+\newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % rushton
 % \newcommand{\caseif}[2] {#1 & \text{if } #2 \\}
 % \newcommand{\caseow}[1] {#1 & \text{otherwise }}
-% \newcommand{\MOD} {\ \text{mod}\ }

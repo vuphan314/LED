@@ -9,7 +9,6 @@ from debugtools.debug_tool import *
 
 TEX_TOP = '''
 \\documentclass[14pt]{extarticle}
-\\usepackage[scale=0.9]{geometry}
 \\usepackage{led_pkg}
 \\begin{document}
 LED Engine \\bigskip
@@ -20,17 +19,24 @@ TEX_BOTTOM = '''
 '''
 
 DEF_LABELS = {'funDef', 'relDef'}
-AGGR_OPS = {'aggrUnn', 'aggrNrsec', 'setCompr'}
+QUANT_OPS = {'exist', 'univ'}
+AGGR_OPS = {
+    'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
+}
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
-BUILTIN_FUNS = {'powSet'}
+BOOL_OPS = {
+    'equiv', 'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
+}
+AR_OPS = {'uMns', 'bMns', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
-SET_LABELS = {'unn', 'diff', 'nrsec', 'iv'}
-MANY_LABELS = {'terms', 'symbol_s'}
+SET_LABELS = {
+    'powSet', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
+}
 PKG_CMDS = (
-    DEF_LABELS | AGGR_OPS | OVERLOADED_OPS | BUILTIN_FUNS |
-    TUPLE_LABELS | SET_LABELS |
-    MANY_LABELS
+    DEF_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
+
+MANY_LABELS = {'terms', 'syms'}
 FUN_REL_EXPRS = {
     'funT', 'relT', 'symOrNullFunRel', 'nonnullFunRel'
 }

@@ -1,10 +1,12 @@
 
 \documentclass[14pt]{extarticle}
-\usepackage[scale=0.9]{geometry}
 \usepackage{led_pkg}
 \begin{document}
 LED Engine \bigskip
 
-\funDef{f}{\setCompr{x}{\textKeyword{true}}}
+\relDef{r}{\exist{\symsInSet{x}{S}}{x}}
+\relDef{r}{\exist{\symsInSet{x, y}{S}}{x}}
+\funDef{f}{\uMns{\aggrSum{\textKeyword{false}}{\clng{\exp{x}{2}}}}}
+\funDef{f}{\uMns{\aggrProd{\textKeyword{false}}{x}}}
 
 \end{document}
