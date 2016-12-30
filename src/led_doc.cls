@@ -1,6 +1,6 @@
-\LoadClass[12pt]{extarticle}
+\LoadClass[10pt]{extarticle}
 
-\usepackage[scale=0.95]{geometry}
+\usepackage[hmargin=0.1in]{geometry}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{breqn}
@@ -46,7 +46,7 @@
 \renewcommand{\equiv}[2]{\infixOp{#1}{#2}{\iff}}
 \newcommand{\impl}[2]{\infixOp{#1}{#2}{\implies}}
 \newcommand{\disj}[2]{\infixOp{#1}{#2}{\vee}}
-\newcommand{\conj}[2]{\infixOp{#1}{#2}{\wedge \\}}
+\newcommand{\conj}[2]{\infixOp{#1}{#2}{\wedge}}
 % built-in \neg
 \newcommand{\eq}[2]{\infixOp{#1}{#2}{=}}
 \newcommand{\uneq}[2]{\infixOp{#1}{#2}{\ne}}
@@ -92,6 +92,6 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
-\newcommand{\whereClause}[1]{\textKeyword{where} #1}
+\newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\texttt{ #1 }}
 \newcommand{\infixOp}[3]{{#1}\ {#3}\ {#2}}

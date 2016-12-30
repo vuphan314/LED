@@ -4,4 +4,6 @@
 
 f := {} if true; {0} otherwise; -1 otherwise; true if z < 0
 
+r iff false
+
 $/

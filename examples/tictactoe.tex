@@ -1,5 +1,4 @@
-\documentclass[12pt]{extarticle}
-\usepackage{led_pkg}
+\documentclass{led_doc}
 \begin{document}
 LED Engine
 
@@ -8,19 +7,19 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{occupies \parentheses{p, c}}{\setMem{\tpl{p, c}}{currentState}}
+\relDefNoWhere{occupies}{\setMem{\tpl{p, c}}{currentState}}
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{occupied \parentheses{c}}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
+\relDefNoWhere{occupied}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefWhere{rows}{\unn{\unn{hRows}{vRows}}{diagonals}}{\conj{\conj{\eq{hRows}{\set{\set{1, 2, 3}, \set{4, 5, 6}, \set{7, 8, 9}}}}{\eq{vRows}{\set{\set{1, 4, 7}, \set{2, 5, 8}, \set{3, 6, 9}}}}}{\eq{diagonals}{\set{\set{1, 5, 9}, \set{3, 5, 7}}}}}
+\funDefWhere{rows}{\unn{\unn{hRows}{vRows}}{diagonals}}{\conj{\conj{\eq{hRows}{\setNonempty{\setNonempty{1, 2, 3}, \setNonempty{4, 5, 6}, \setNonempty{7, 8, 9}}}}{\eq{vRows}{\setNonempty{\setNonempty{1, 4, 7}, \setNonempty{2, 5, 8}, \setNonempty{3, 6, 9}}}}}{\eq{diagonals}{\setNonempty{\setNonempty{1, 5, 9}, \setNonempty{3, 5, 7}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{threeInRow \parentheses{p}}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
+\relDefNoWhere{threeInRow}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -41,11 +40,11 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{even \parentheses{n}}{\eq{\md{n}{2}}{0}}
+\relDefNoWhere{even}{\eq{\md{n}{2}}{0}}
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{legalToMoveIn \parentheses{c}}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
+\relDefNoWhere{legalToMoveIn}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -69,7 +68,7 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\funDefWhere{gridDisplay}{\set{L1, L2, L3, L4}}{\conj{\conj{\conj{\eq{L1}{segment \parentheses{point \parentheses{200, 700}, point \parentheses{200, 400}, BLACK}}}{\eq{L2}{segment \parentheses{point \parentheses{300, 700}, point \parentheses{300, 400}, BLACK}}}}{\eq{L3}{segment \parentheses{point \parentheses{100, 600}, point \parentheses{400, 600}, BLACK}}}}{\eq{L4}{segment \parentheses{point \parentheses{100, 500}, point \parentheses{400, 500}, BLACK}}}}
+\funDefWhere{gridDisplay}{\setNonempty{L1, L2, L3, L4}}{\conj{\conj{\conj{\eq{L1}{segment \parentheses{point \parentheses{200, 700}, point \parentheses{200, 400}, BLACK}}}{\eq{L2}{segment \parentheses{point \parentheses{300, 700}, point \parentheses{300, 400}, BLACK}}}}{\eq{L3}{segment \parentheses{point \parentheses{100, 600}, point \parentheses{400, 600}, BLACK}}}}{\eq{L4}{segment \parentheses{point \parentheses{100, 500}, point \parentheses{400, 500}, BLACK}}}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -77,26 +76,26 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{centerX \parentheses{c}}{\plusOp{150}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{centerX}{\plusOp{150}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{centerY \parentheses{c}}{\bMns{650}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{centerY}{\bMns{650}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{xImage \parentheses{c}}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
+\funDefNoWhere{xImage}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{oImage \parentheses{c}}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
+\funDefNoWhere{oImage}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{cellDisplay \parentheses{c}}{
+\funDefNoWhere{cellDisplay}{
 \begin{cases}
-\tIfBT{\set{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
-\tIfBT{\set{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
+\tIfBT{\setNonempty{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
+\tIfBT{\setNonempty{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
 \tOther{\setEmpty}
 \end{cases}
 }
@@ -113,8 +112,8 @@ LED Engine
 \begin{ledDef}
 \funDefNoWhere{currentPlayerDisplay}{
 \begin{cases}
-\tIfBT{\set{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
-\tOther{\set{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
+\tIfBT{\setNonempty{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
+\tOther{\setNonempty{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
 \end{cases}
 }
 \end{ledDef}
@@ -152,7 +151,7 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{mid \parentheses{a, b}}{\div{\plusOp{a}{b}}{2}}
+\funDefNoWhere{mid}{\div{\plusOp{a}{b}}{2}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -164,15 +163,15 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\funDefWhere{restartButton}{\set{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{``restart", point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
+\funDefWhere{restartButton}{\setNonempty{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{``restart", point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
 \end{ledDef}
 
 \begin{ledDef}
 \funDefNoWhere{gameResultDisplay}{
 \begin{cases}
-\tIfBT{\set{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
-\tIfBT{\set{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
-\tOther{\set{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
+\tIfBT{\setNonempty{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
+\tIfBT{\setNonempty{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
+\tOther{\setNonempty{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
 \end{cases}
 }
 \end{ledDef}
@@ -187,23 +186,23 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{xMin \parentheses{c}}{\plusOp{100}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{xMin}{\plusOp{100}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{xMax \parentheses{c}}{\plusOp{200}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{xMax}{\plusOp{200}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMin \parentheses{c}}{\bMns{600}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{yMin}{\bMns{600}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMax \parentheses{c}}{\bMns{700}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{yMax}{\bMns{700}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{cellClicked \parentheses{c}}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
+\relDefNoWhere{cellClicked}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -211,7 +210,7 @@ LED Engine
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{moveMadeIn \parentheses{c}}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
+\relDefNoWhere{moveMadeIn}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
 \end{ledDef}
 
 \begin{ledDef}
