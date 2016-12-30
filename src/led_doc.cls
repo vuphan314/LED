@@ -22,9 +22,9 @@
 \newcommand{\relDefWhere}[3]
   {\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
-% COND_LABELS
+% IF_CLAUSES
 \newcommand{\tIfBT}[2]{#1 & \textKeyword{if} #2 \\}
-\newcommand{\tOther}[1]{#1 & \textKeyword{otherwise}}
+\newcommand{\tOther}[1]{#1 & \textKeyword{otherwise} \\}
 
 % QUANT_OPS
 \newcommand{\exist}[2]{\exists #1 . #2}
@@ -71,8 +71,8 @@
 
 % SET_LABELS
 \newcommand{\powSet}[1]{\wp \parentheses{#1}}
-\newcommand{\set}[1]{\braces{#1}}
 \newcommand{\setEmpty}{\varnothing}
+\newcommand{\setNonempty}[1]{\braces{#1}}
 \newcommand{\iv}[2]{\braces{#1 .. #2}}
 \newcommand{\unn}[2]{\infixOp{#1}{#2}{\cup}}
 \newcommand{\diff}[2]{\infixOp{#1}{#2}{\setminus}}

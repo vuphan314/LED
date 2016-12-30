@@ -17,7 +17,7 @@ TEX_BOTTOM = '\n' '\\end{document}' '\n'
 DEF_LABELS = {
     'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
 }
-COND_LABELS = {'tIfBT', 'tOther'}
+IF_CLAUSES = {'tIfBT', 'tOther'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
     'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
@@ -29,10 +29,10 @@ BOOL_OPS = {
 AR_OPS = {'uMns', 'bMns', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
-    'powSet', 'set', 'setEmpty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
+    'powSet', 'setEmpty', 'setNonempty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
 }
 PKG_CMDS = (
-    DEF_LABELS | COND_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
+    DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
 FUN_REL_EXPRS = {
@@ -43,21 +43,13 @@ MANY_LABELS = {'terms', 'syms'}
 ############################################################
 
 def weave_top(T) -> str:
-    T = change_label(T)
+    # T = change_label(T)
     st = weave_recur(T)
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
 
 def change_label(T):
     if isinstance(T, str):
         return T
-    elif T[0] == 'set' and len(T) < 2: # empty
-        T2 = ('setEmpty',) + T[1:]
-        return change_label(T2)
-    elif T[0] == 'tIfBTsO':
-        tIfBTs = T[1]
-        tOther = T[2]
-        T2 = tIfBTs + (tOther,)
-        return change_label(T2)
     else:
         return recur_tree(change_label, T)
 
@@ -72,14 +64,14 @@ def weave_recur(T) -> str:
         return '``' + T[1][1:-1] + '"'
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
-    elif T[0] == 'tIfBTs':
-        return weave_tIfBTs(T)
+    elif T[0] == 'ifClauses':
+        return get_env('cases', T[1:])
+    elif T[0] in {'funDef', 'relDef'}:
+        return get_env('ledDef', T[1:])
     elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
-    elif T[0] in {'funDef', 'relDef'}:
-        return get_env('ledDef', T[1:])
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
@@ -88,10 +80,9 @@ def weave_recur(T) -> str:
 ############################################################
 
 def weave_fun_rel_expr(T) -> str:
-    if len(T) > 2: # nonnullary
+    args = ()
+    if T[0] == 'nonnullFunRel':
         args = T[2][1:]
-    else:
-        args = ()
     return weave_call(T[1], args)
 
 def weave_many(args: tuple) -> str:
@@ -101,10 +92,6 @@ def weave_many(args: tuple) -> str:
     return st
 
 ############################################################
-
-def weave_tIfBTs(T) -> str:
-    st = get_env('cases', T[1:])
-    return st
 
 def weave_call(func, args: tuple) -> str:
     st = weave_recur(func)

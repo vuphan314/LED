@@ -3,7 +3,14 @@
 LED Engine
 
 \begin{ledDef}
-\funDefWhere{f}{\unn{\setEmpty}{\set{1}}}{\textKeyword{false}}
+\funDefNoWhere{f}{
+\begin{cases}
+\tIfBT{\setEmpty}{\textKeyword{true}}
+\tOther{\setNonempty{0}}
+\tOther{\uMns{1}}
+\tIfBT{\textKeyword{true}}{\less{z}{0}}
+\end{cases}
+}
 \end{ledDef}
 
 \end{document}

@@ -14,8 +14,7 @@ rel_def(relDefNoWhere T T2) ::= rel_term(T) iff def_body(T2)
 rel_def(relDefWhere T T2 T3) ::= rel_term(T) iff def_body(T2) where bool_term(T3)
 
 def_body(T) ::= term(T)
-def_body(T) ::= term_if_bool_term_s(T)
-def_body(T) ::= term_if_bool_term_s_other(T)
+def_body(T) ::= if_clause_s(T)
 
 term(T) ::= nonbool_term(T)
 term(T) ::= bool_term(T)
@@ -75,8 +74,8 @@ inner_set_term(T) ::= user_term(T)
 inner_set_term(powSet T) ::= Pow lParenth set_term(T) rParenth
 inner_set_term(T) ::= brace_set(T)
 
-brace_set(set) ::= lBrace rBrace
-brace_set(set T) ::= lBrace term_s(T) rBrace
+brace_set(setEmpty) ::= lBrace rBrace
+brace_set(setNonempty T) ::= lBrace term_s(T) rBrace
 brace_set(iv T T2) ::= lBrace ar_term(T) twoDots ar_term(T2) rBrace
 brace_set(setCompr T T2) ::= lBrace term(T) pipe bool_term(T2) rBrace
 
@@ -167,13 +166,13 @@ symbol_s(syms T cut_root(Ts)) ::= symbol_(T) comma symbol_s(Ts)
 symbol_s_in_set_term(symsInSet T T2) ::= symbol_s(T) in set_term(T2)
 
 term_if_bool_term(tIfBT T T2) ::= term(T) if bool_term(T2)
-
-term_if_bool_term_s(tIfBTs T) ::= term_if_bool_term(T)
-term_if_bool_term_s(tIfBTs T cut_root(Ts)) ::= term_if_bool_term(T) semicolon term_if_bool_term_s(Ts)
-
 term_other(tOther T) ::= term(T) otherwise
 
-term_if_bool_term_s_other(tIfBTsO T T2) ::= term_if_bool_term_s(T) semicolon term_other(T2)
+if_clause(T) ::= term_if_bool_term(T)
+if_clause(T) ::= term_other(T)
+
+if_clause_s(ifClauses T) ::= if_clause(T)
+if_clause_s(ifClauses T cut_root(Ts)) ::= if_clause(T) semicolon if_clause_s(Ts)
 
 fun_term(funT T) ::= fun_name(T)
 fun_term(funT T T2) ::= fun_name(T) lParenth symbol_s(T2) rParenth
