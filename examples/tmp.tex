@@ -4,9 +4,12 @@
 \begin{document}
 LED Engine \bigskip
 
-\relDef{r}{\exist{\symsInSet{x}{S}}{x}}
-\relDef{r}{\exist{\symsInSet{x, y}{S}}{x}}
-\funDef{f}{\uMns{\aggrSum{\textKeyword{false}}{\clng{\exp{x}{2}}}}}
-\funDef{f}{\uMns{\aggrProd{\textKeyword{false}}{x}}}
+\funDef{f}{
+\begin{cases}
+\tIfBT{\plusOp{1}{1}}{x}
+\tIfBT{0}{\neg{x}}
+\end{cases}
+}
+
 
 \end{document}

@@ -19,6 +19,7 @@ TEX_BOTTOM = '''
 '''
 
 DEF_LABELS = {'funDef', 'relDef'}
+COND_LABELS = {'tIfBT', 'tOther'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
     'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
@@ -33,7 +34,7 @@ SET_LABELS = {
     'powSet', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
 }
 PKG_CMDS = (
-    DEF_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
+    DEF_LABELS | COND_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
 FUN_REL_EXPRS = {
@@ -61,7 +62,7 @@ def weave_recur(T) -> str:
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
     elif T[0] == 'tIfBTs':
-        return weave_if_clauses(T)
+        return weave_tIfBTs(T)
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
@@ -69,8 +70,9 @@ def weave_recur(T) -> str:
 
 ############################################################
 
-def weave_if_clauses(T) -> str:
-    get_env('cases', T)
+def weave_tIfBTs(T) -> str:
+    st = get_env('cases', T[1:])
+    return st
 
 def weave_fun_rel_expr(T) -> str:
     if len(T) > 2: # nonnullary
@@ -98,10 +100,10 @@ def weave_many(args: tuple) -> str:
 def get_env(env_name: str, env_items: tuple) -> str:
     st = ''
     for env_item in env_items:
-        st += weave_recur(env_item) + '\n'
+        st += weave_recur(env_item)
     env_name = surround_str(env_name, '{', '}')
-    env_start = '\\begin' + env_name + '\n'
-    env_end = '\\end' + env_name + '\n'
+    env_start = surround_str(env_name, '\n' '\\begin', '\n')
+    env_end = surround_str(env_name, '\\end', '\n')
     return surround_str(st, env_start, env_end)
 
 def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
@@ -111,6 +113,8 @@ def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
         st += surround_str(st2, '{', '}')
     if cmd_name in DEF_LABELS:
         st += '\n\n'
+    if cmd_name in COND_LABELS:
+        st += '\n'
     return st
 
 ############################################################

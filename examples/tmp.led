@@ -1,9 +1,8 @@
 /$
 
-r iff some x in S . x
-r iff some x, y in S . x
-f := - Sum[false] ceil(x^2)
-f := - Prod[false]x
+f :=
+  1+1 if x;
+  0 if ~x
 
 $/
 

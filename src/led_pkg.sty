@@ -1,13 +1,15 @@
 \usepackage[scale=0.9]{geometry}
 \usepackage{amsmath}
 
-\newcommand{\infixOp}[3]{#1 #3 #2}
-
 % DEF_LABELS
 \newcommand{\funDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
 \newcommand{\relDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
 \newcommand{\tIfBT}[2]{#1 & \textKeyword{if} #2 \\}
 \newcommand{\tOther}[1]{#1 & \textKeyword{otherwise}}
+
+% COND_LABELS
+\renewcommand{\tIfBT}[2]{#1 & \textKeyword{if } #2 \\}
+\renewcommand{\tOther}[1]{#1 & \textKeyword{otherwise}}
 
 % QUANT_OPS
 \newcommand{\exist}[2]{\exists #1 . #2}
@@ -62,8 +64,6 @@
 \newcommand{\setMem}[2]{\infixOp{#1}{#2}{\in}}
 \newcommand{\symsInSet}[2]{\setMem{#1}{#2}}
 
-\newcommand{\textKeyword}[1]{\texttt{#1}}
-
 % surrounders
 \newcommand{\parentheses}[1]{\left( #1 \right)}
 \newcommand{\braces}[1]{\left\{ #1 \right\}}
@@ -72,6 +72,6 @@
 \newcommand{\floors}[1]{\lfloor #1 \rfloor}
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
-% rushton
-% \newcommand{\caseif}[2] {#1 & \text{if } #2 \\}
-% \newcommand{\caseow}[1] {#1 & \text{otherwise }}
+% misc
+\newcommand{\textKeyword}[1]{\texttt{#1}}
+\newcommand{\infixOp}[3]{#1\ #3\ #2}
