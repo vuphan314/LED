@@ -30,7 +30,7 @@ BOOL_OPS = {
 AR_OPS = {'uMns', 'bMns', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
-    'powSet', 'set', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
+    'powSet', 'set', 'setEmpty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
 }
 PKG_CMDS = (
     DEF_LABELS | COND_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
@@ -44,20 +44,23 @@ MANY_LABELS = {'terms', 'syms'}
 ############################################################
 
 def weave_top(T) -> str:
-    T = convert_tIfBTsO_to_tIfBTs(T)
+    T = change_label(T)
     st = weave_recur(T)
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
 
-def convert_tIfBTsO_to_tIfBTs(T):
+def change_label(T):
     if isinstance(T, str):
         return T
+    elif T[0] == 'set' and len(T) < 2: # empty
+        T2 = ('setEmpty',) + T[1:]
+        return change_label(T2)
     elif T[0] == 'tIfBTsO':
         tIfBTs = T[1]
         tOther = T[2]
         T2 = tIfBTs + (tOther,)
-        return T2
+        return change_label(T2)
     else:
-        return recur_tree(convert_tIfBTsO_to_tIfBTs, T)
+        return recur_tree(change_label, T)
 
 ############################################################
 

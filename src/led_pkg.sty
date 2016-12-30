@@ -1,11 +1,12 @@
 \usepackage[scale=0.95]{geometry}
+\usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{breqn}
 \usepackage{listings}
 
 \newenvironment{ledDef}
-  {\begin{dmath}}
-  {\end{dmath}}
+  {\begin{gather}}
+  {\end{gather}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PKG_CMDS
@@ -43,7 +44,7 @@
 \renewcommand{\equiv}[2]{\infixOp{#1}{#2}{\iff}}
 \newcommand{\impl}[2]{\infixOp{#1}{#2}{\implies}}
 \newcommand{\disj}[2]{\infixOp{#1}{#2}{\vee}}
-\newcommand{\conj}[2]{\infixOp{#1}{#2}{\wedge}}
+\newcommand{\conj}[2]{\infixOp{#1}{#2}{\wedge \\}}
 % built-in \neg
 \newcommand{\eq}[2]{\infixOp{#1}{#2}{=}}
 \newcommand{\uneq}[2]{\infixOp{#1}{#2}{\ne}}
@@ -69,6 +70,7 @@
 % SET_LABELS
 \newcommand{\powSet}[1]{\wp \parentheses{#1}}
 \newcommand{\set}[1]{\braces{#1}}
+\newcommand{\setEmpty}{\varnothing}
 \newcommand{\iv}[2]{\braces{#1 .. #2}}
 \newcommand{\unn}[2]{\infixOp{#1}{#2}{\cup}}
 \newcommand{\diff}[2]{\infixOp{#1}{#2}{\setminus}}
@@ -88,6 +90,6 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
-\newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
+\newcommand{\whereClause}[1]{\textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\texttt{ #1 }}
-\newcommand{\infixOp}[3]{{#1} {#3} {#2}}
+\newcommand{\infixOp}[3]{{#1}\ {#3}\ {#2}}
