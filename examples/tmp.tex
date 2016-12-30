@@ -3,19 +3,14 @@
 \begin{document}
 LED Engine \bigskip
 
-\funDef{f}{
+\funDefWhere{f \parentheses{x, y, z}}{
 \begin{cases}
 \tIfBT{1}{\textKeyword{true}}
-\tOther{0}
+\tIfBT{0}{\textKeyword{false}}
+\tOther{\uMns{1}}
 \end{cases}
-}
+}{\disj{\conj{\eq{x}{5}}{\eq{y}{4}}}{\eq{z}{0}}}
 
-\funDef{f}{
-\begin{cases}
-\tIfBT{1}{\textKeyword{true}}
-\tIfBT{\uMns{1}}{\textKeyword{false}}
-\tOther{0}
-\end{cases}
-}
+\relDefWhere{r}{x}{\uneq{x}{\textKeyword{false}}}
 
 \end{document}

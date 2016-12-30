@@ -1,7 +1,7 @@
 /$
 
-f := 1 if true; 0 otherwise
-f := 1 if true; -1 if false; 0 otherwise
+f(x, y, z) := 1 if true; 0 if false; -1 otherwise where x = 5 & y = 4 V z = 0
+r iff x where x /= false
 
 $/
 

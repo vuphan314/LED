@@ -15,7 +15,7 @@ TEX_TOP = (
 )
 TEX_BOTTOM = '\\end{document}' '\n'
 
-DEF_LABELS = {'funDef', 'relDef'}
+DEF_LABELS = {'funDef', 'relDef', 'funDefWhere', 'relDefWhere'}
 COND_LABELS = {'tIfBT', 'tOther'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
@@ -72,6 +72,8 @@ def weave_recur(T) -> str:
         return weave_fun_rel_expr(T)
     elif T[0] == 'tIfBTs':
         return weave_tIfBTs(T)
+    elif T[0] in DEF_LABELS and len(T) > 3: # where-clause
+        return get_cmd(T[0] + 'Where', T[1:])
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
@@ -94,7 +96,7 @@ def weave_call(func, args: tuple) -> str:
     st = weave_recur(func)
     if args:
         st2 = weave_many(args)
-        st2 = get_cmd('parenthesize', [st2])
+        st2 = get_cmd('parentheses', [st2])
         st += ' ' + st2
     return st
 
