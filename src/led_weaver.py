@@ -11,7 +11,7 @@ TEX_TOP = (
     '\\documentclass[14pt]{extarticle}' '\n'
     '\\usepackage{led_pkg}' '\n'
     '\\begin{document}' '\n'
-    'LED Engine \\bigskip' '\n\n'
+    'LED Engine' '\n\n'
 )
 TEX_BOTTOM = '\\end{document}' '\n'
 
@@ -62,6 +62,8 @@ def convert_tIfBTsO_to_tIfBTs(T):
 def weave_recur(T) -> str:
     if isinstance(T, str):
         return T
+    elif T[0] == 'hashIsGame':
+        return ''
     elif T[0] == 'string':
         return '``' + T[1][1:-1] + '"'
     elif T[0] == 'truth':

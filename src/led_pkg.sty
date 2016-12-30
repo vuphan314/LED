@@ -2,8 +2,9 @@
 \usepackage{amsmath}
 
 % DEF_LABELS
-\newcommand{\funDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
-\newcommand{\relDef}[2]{$$ \infixOp{#1}{#2}{:=} $$}
+\newcommand{\funDef}[2]{\defSpace{\infixOp{#1}{#2}{:=}}}
+\newcommand{\relDef}[2]
+  {\defSpace{\infixOp{#1}{#2}{\textKeyword{iff}}}}
 \newcommand{\funDefWhere}[3]{\funDef{#1}{#2} \whereClause{#3}}
 \newcommand{\relDefWhere}[3]{\relDef{#1}{#2} \whereClause{#3}}
 
@@ -73,6 +74,7 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
+\newcommand{\defSpace}[1]{\bigskip $$ #1 $$}
 \newcommand{\whereClause}[1]{$$ \textKeyword{where} #1 $$}
 \newcommand{\textKeyword}[1]{\texttt{ #1 }}
 \newcommand{\infixOp}[3]{#1\ #3\ #2}
