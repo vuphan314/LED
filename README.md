@@ -9,8 +9,8 @@ LED system translates [literate language LED][linkLED] into:
 - input: [LED file][tttLED]
 - output:
   - [SequenceL file][tttSL]
-  - [TeX file][papersTEX]
-    - [PDF file][papersPDF]
+  - [TeX file][tttTEX]
+    - [PDF file][tttPDF]
 
 ## GIT SUBMODULES
 The [generic parser][genparser] (`src/genparser/`)
