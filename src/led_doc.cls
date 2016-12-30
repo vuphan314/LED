@@ -1,3 +1,5 @@
+\LoadClass[12pt]{extarticle}
+
 \usepackage[scale=0.95]{geometry}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -5,20 +7,20 @@
 \usepackage{listings}
 
 \newenvironment{ledDef}
-  {\begin{gather}}
-  {\end{gather}}
+  {\begin{dmath}}
+  {\end{dmath}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PKG_CMDS
 
 % DEF_LABELS
 \newcommand{\funDefNoWhere}[2]{\infixOp{#1}{#2}{:=}}
+\newcommand{\funDefWhere}[3]
+  {\funDefNoWhere{#1}{#2} \whereClause{#3}}
 \newcommand{\relDefNoWhere}[2]
   {\infixOp{#1}{#2}{\textKeyword{iff}}}
-\newcommand{\funDefWhere}[3]
-  {\infixOp{#1}{#2}{:=} \whereClause{#3}}
 \newcommand{\relDefWhere}[3]
-  {\infixOp{#1}{#2}{\textKeyword{iff}\whereClause{#3}}}
+  {\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
 % COND_LABELS
 \newcommand{\tIfBT}[2]{#1 & \textKeyword{if} #2 \\}

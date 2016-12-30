@@ -78,11 +78,7 @@ def main() -> None:
         force = parsed_argv.force
         write_output_files(led_path, force)
     time_taken = int(time.time() - time_start)
-    print(
-        '\n' 'LED engine took: {} secs.\n'.format(
-            time_taken
-        )
-    )
+    print('LED engine took: {} secs.\n'.format(time_taken))
 
 if __name__ == '__main__':
     main()

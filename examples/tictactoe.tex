@@ -1,0 +1,230 @@
+\documentclass[12pt]{extarticle}
+\usepackage{led_pkg}
+\begin{document}
+LED Engine
+
+\begin{ledDef}
+\funDefNoWhere{initialState}{\setEmpty}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{occupies \parentheses{p, c}}{\setMem{\tpl{p, c}}{currentState}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{occupied \parentheses{c}}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{rows}{\unn{\unn{hRows}{vRows}}{diagonals}}{\conj{\conj{\eq{hRows}{\set{\set{1, 2, 3}, \set{4, 5, 6}, \set{7, 8, 9}}}}{\eq{vRows}{\set{\set{1, 4, 7}, \set{2, 5, 8}, \set{3, 6, 9}}}}}{\eq{diagonals}{\set{\set{1, 5, 9}, \set{3, 5, 7}}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{threeInRow \parentheses{p}}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{boardFull}{\eq{\pipesOp{currentState}}{9}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{gameOver}{\disj{\disj{boardFull}{threeInRow \parentheses{`x}}}{threeInRow \parentheses{`o}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{playerToMove}{
+\begin{cases}
+\tIfBT{`x}{even \parentheses{\pipesOp{currentState}}}
+\tOther{`o}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{even \parentheses{n}}{\eq{\md{n}{2}}{0}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{legalToMoveIn \parentheses{c}}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{BLACK}{color \parentheses{0, 0, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{WHITE}{color \parentheses{255, 255, 255}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{BLUE}{color \parentheses{0, 0, 255}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{GREEN}{color \parentheses{0, 255, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{RED}{color \parentheses{255, 0, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{gridDisplay}{\set{L1, L2, L3, L4}}{\conj{\conj{\conj{\eq{L1}{segment \parentheses{point \parentheses{200, 700}, point \parentheses{200, 400}, BLACK}}}{\eq{L2}{segment \parentheses{point \parentheses{300, 700}, point \parentheses{300, 400}, BLACK}}}}{\eq{L3}{segment \parentheses{point \parentheses{100, 600}, point \parentheses{400, 600}, BLACK}}}}{\eq{L4}{segment \parentheses{point \parentheses{100, 500}, point \parentheses{400, 500}, BLACK}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{fontSize}{36}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{centerX \parentheses{c}}{\plusOp{150}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{centerY \parentheses{c}}{\bMns{650}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{xImage \parentheses{c}}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{oImage \parentheses{c}}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{cellDisplay \parentheses{c}}{
+\begin{cases}
+\tIfBT{\set{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
+\tIfBT{\set{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
+\tOther{\setEmpty}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{gameBoard}{\iv{1}{9}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{cellDisplays}{\aggrUnn{\setMem{c}{gameBoard}}{cellDisplay \parentheses{c}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{currentPlayerDisplay}{
+\begin{cases}
+\tIfBT{\set{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
+\tOther{\set{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartLeft}{350}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartRight}{550}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartBottom}{725}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartTop}{775}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartBottomLeftPoint}{point \parentheses{restartLeft, restartBottom}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartBottomRightPoint}{point \parentheses{restartRight, restartBottom}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartTopLeftPoint}{point \parentheses{restartLeft, restartTop}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartTopRightPoint}{point \parentheses{restartRight, restartTop}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{mid \parentheses{a, b}}{\div{\plusOp{a}{b}}{2}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartMidX}{mid \parentheses{restartLeft, restartRight}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartMidY}{mid \parentheses{restartBottom, restartTop}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{restartButton}{\set{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{``restart", point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{gameResultDisplay}{
+\begin{cases}
+\tIfBT{\set{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
+\tIfBT{\set{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
+\tOther{\set{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{images}{
+\begin{cases}
+\tIfBT{gameOverDisplay}{gameOver}
+\tOther{inPlayDisplay}
+\end{cases}
+}{\conj{\conj{\eq{alwaysDisplay}{\unn{\unn{gridDisplay}{cellDisplays}}{restartButton}}}{\eq{inPlayDisplay}{\unn{alwaysDisplay}{currentPlayerDisplay}}}}{\eq{gameOverDisplay}{\unn{alwaysDisplay}{gameResultDisplay}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{xMin \parentheses{c}}{\plusOp{100}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{xMax \parentheses{c}}{\plusOp{200}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{yMin \parentheses{c}}{\bMns{600}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{yMax \parentheses{c}}{\bMns{700}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{cellClicked \parentheses{c}}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{restartClicked}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{restartLeft}}}{\less{mouseX}{restartRight}}}{\greater{mouseY}{restartBottom}}}{\less{mouseY}{restartTop}}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{moveMadeIn \parentheses{c}}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{movesMade}{\setCompr{\tpl{playerToMove, c}}{\conj{\setMem{c}{gameBoard}}{moveMadeIn \parentheses{c}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{newState}{
+\begin{cases}
+\tIfBT{initialState}{restartClicked}
+\tOther{\unn{currentState}{movesMade}}
+\end{cases}
+}
+\end{ledDef}
+
+\end{document}

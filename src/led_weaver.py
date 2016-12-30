@@ -8,8 +8,7 @@ from debugtools.debug_tool import *
 ############################################################
 
 TEX_TOP = (
-    '\\documentclass[14pt]{extarticle}' '\n'
-    '\\usepackage{led_pkg}' '\n'
+    '\\documentclass{led_doc}' '\n'
     '\\begin{document}' '\n'
     'LED Engine' '\n'
 )
@@ -80,22 +79,13 @@ def weave_recur(T) -> str:
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
     elif T[0] in {'funDef', 'relDef'}:
-        return weave_def(T)
+        return get_env('ledDef', T[1:])
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
         return recur_str(weave_recur, T)
 
 ############################################################
-
-def weave_def(T) -> str:
-    if len(T) > 3: # where-clause
-        postfix = 'Where'
-    else:
-        postfix = 'NoWhere'
-    T = (T[0] + postfix,) + T[1:]
-    st = get_env('ledDef', [T])
-    return st
 
 def weave_fun_rel_expr(T) -> str:
     if len(T) > 2: # nonnullary

@@ -2,6 +2,6 @@
 
 #isGame
 
-f := {} U {1}
+f := {} U {1} where false
 
 $/

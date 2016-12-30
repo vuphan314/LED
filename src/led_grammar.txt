@@ -4,14 +4,14 @@ prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 prog_el(T) ::= hashIsGame(T)
 prog_el(T) ::= def_(T)
 
-def_(T) ::= fun_def(T)
-def_(T) ::= rel_def(T)
+def_(funDef T) ::= fun_def(T)
+def_(relDef T) ::= rel_def(T)
 
-fun_def(funDef T T2) ::= fun_term(T) colonEq def_body(T2)
-fun_def(funDef T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
+fun_def(funDefNoWhere T T2) ::= fun_term(T) colonEq def_body(T2)
+fun_def(funDefWhere T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
 
-rel_def(relDef T T2) ::= rel_term(T) iff def_body(T2)
-rel_def(relDef T T2 T3) ::= rel_term(T) iff def_body(T2) where bool_term(T3)
+rel_def(relDefNoWhere T T2) ::= rel_term(T) iff def_body(T2)
+rel_def(relDefWhere T T2 T3) ::= rel_term(T) iff def_body(T2) where bool_term(T3)
 
 def_body(T) ::= term(T)
 def_body(T) ::= term_if_bool_term_s(T)
