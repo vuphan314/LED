@@ -9,5 +9,5 @@ tex_path=$base_path.tex
 out_path=$examples_path/out
 
 python3 led_engine.py -f $led_path
-atom $tex_path
+# atom $tex_path
 latexmk -pdf -outdir=$out_path $base_path

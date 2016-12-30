@@ -3,14 +3,8 @@
 \begin{document}
 LED Engine
 
-\funDefWhere{ffff \parentheses{x, y, z}}{
-\begin{cases}
-\tIfBT{1}{\textKeyword{true}}
-\tIfBT{0}{\textKeyword{false}}
-\tOther{\uMns{1}}
-\end{cases}
-}{\disj{\conj{\eq{x}{5}}{\eq{y}{4}}}{\eq{z}{0}}}
-
-\relDefWhere{r}{x}{\uneq{x}{\textKeyword{false}}}
+\begin{ledDef}
+\funDefWhere{f \parentheses{x, y, z}}{\conj{\conj{x}{x}}{x}}{\conj{\conj{\conj{\conj{\conj{\conj{\eq{xxxxxxxx}{1111111111}}{\eq{xxxxxxxx}{1111111111}}}{\eq{xxxxxxxx}{1111111111}}}{\eq{xxxxxxxx}{1111111111}}}{\eq{xxxxxxxx}{1111111111}}}{\eq{xxxxxxxx}{1111111111}}}{\eq{xxxxxxxx}{1111111111}}}
+\end{ledDef}
 
 \end{document}

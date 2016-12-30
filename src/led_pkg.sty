@@ -1,12 +1,23 @@
-\usepackage[scale=0.9]{geometry}
+\usepackage[scale=0.95]{geometry}
 \usepackage{amsmath}
+\usepackage{breqn}
+\usepackage{listings}
+
+\newenvironment{ledDef}
+  {\begin{dmath}}
+  {\end{dmath}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PKG_CMDS
 
 % DEF_LABELS
-\newcommand{\funDef}[2]{\defSpace{\infixOp{#1}{#2}{:=}}}
-\newcommand{\relDef}[2]
-  {\defSpace{\infixOp{#1}{#2}{\textKeyword{iff}}}}
-\newcommand{\funDefWhere}[3]{\funDef{#1}{#2} \whereClause{#3}}
-\newcommand{\relDefWhere}[3]{\relDef{#1}{#2} \whereClause{#3}}
+\newcommand{\funDefNoWhere}[2]{\infixOp{#1}{#2}{:=}}
+\newcommand{\relDefNoWhere}[2]
+  {\infixOp{#1}{#2}{\textKeyword{iff}}}
+\newcommand{\funDefWhere}[3]
+  {\infixOp{#1}{#2}{:=} \whereClause{#3}}
+\newcommand{\relDefWhere}[3]
+  {\infixOp{#1}{#2}{\textKeyword{iff}\whereClause{#3}}}
 
 % COND_LABELS
 \newcommand{\tIfBT}[2]{#1 & \textKeyword{if} #2 \\}
@@ -57,6 +68,7 @@
 
 % SET_LABELS
 \newcommand{\powSet}[1]{\wp \parentheses{#1}}
+\newcommand{\set}[1]{\braces{#1}}
 \newcommand{\iv}[2]{\braces{#1 .. #2}}
 \newcommand{\unn}[2]{\infixOp{#1}{#2}{\cup}}
 \newcommand{\diff}[2]{\infixOp{#1}{#2}{\setminus}}
@@ -64,6 +76,8 @@
 \newcommand{\sbset}[2]{\infixOp{#1}{#2}{\subseteq}}
 \newcommand{\setMem}[2]{\infixOp{#1}{#2}{\in}}
 \newcommand{\symsInSet}[2]{\setMem{#1}{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % surrounders
 \newcommand{\parentheses}[1]{\left( #1 \right)}
@@ -74,7 +88,6 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
-\newcommand{\defSpace}[1]{\bigskip $$ #1 $$}
-\newcommand{\whereClause}[1]{$$ \textKeyword{where} #1 $$}
+\newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\texttt{ #1 }}
-\newcommand{\infixOp}[3]{#1\ #3\ #2}
+\newcommand{\infixOp}[3]{{#1} {#3} {#2}}

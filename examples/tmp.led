@@ -2,17 +2,6 @@
 
 #isGame
 
-ffff(x, y, z) := 1 if true; 0 if false; -1 otherwise where x = 5 & y = 4 V z = 0
-
-r iff x where x /= false
+f(x, y, z) := x & x & x where xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111 & xxxxxxxx = 1111111111
 
 $/
-
-f := "0123456789"
-f := ""
-f2(x) := f3(x)
-g(x, y) := g2 (x, y)
-
-r iff true
-r(x) iff x
-r(x, y, z) iff r(x, z, y)

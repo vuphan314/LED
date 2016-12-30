@@ -11,11 +11,13 @@ TEX_TOP = (
     '\\documentclass[14pt]{extarticle}' '\n'
     '\\usepackage{led_pkg}' '\n'
     '\\begin{document}' '\n'
-    'LED Engine' '\n\n'
+    'LED Engine' '\n'
 )
-TEX_BOTTOM = '\\end{document}' '\n'
+TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
-DEF_LABELS = {'funDef', 'relDef', 'funDefWhere', 'relDefWhere'}
+DEF_LABELS = {
+    'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
+}
 COND_LABELS = {'tIfBT', 'tOther'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
@@ -28,7 +30,7 @@ BOOL_OPS = {
 AR_OPS = {'uMns', 'bMns', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
-    'powSet', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
+    'powSet', 'set', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
 }
 PKG_CMDS = (
     DEF_LABELS | COND_LABELS | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
@@ -68,14 +70,14 @@ def weave_recur(T) -> str:
         return '``' + T[1][1:-1] + '"'
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
+    elif T[0] == 'tIfBTs':
+        return weave_tIfBTs(T)
     elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
-    elif T[0] == 'tIfBTs':
-        return weave_tIfBTs(T)
-    elif T[0] in DEF_LABELS and len(T) > 3: # where-clause
-        return get_cmd(T[0] + 'Where', T[1:])
+    elif T[0] in {'funDef', 'relDef'}:
+        return weave_def(T)
     elif T[0] in PKG_CMDS:
         return get_cmd(T[0], T[1:])
     else:
@@ -83,8 +85,13 @@ def weave_recur(T) -> str:
 
 ############################################################
 
-def weave_tIfBTs(T) -> str:
-    st = get_env('cases', T[1:])
+def weave_def(T) -> str:
+    if len(T) > 3: # where-clause
+        postfix = 'Where'
+    else:
+        postfix = 'NoWhere'
+    T = (T[0] + postfix,) + T[1:]
+    st = get_env('ledDef', [T])
     return st
 
 def weave_fun_rel_expr(T) -> str:
@@ -94,14 +101,6 @@ def weave_fun_rel_expr(T) -> str:
         args = ()
     return weave_call(T[1], args)
 
-def weave_call(func, args: tuple) -> str:
-    st = weave_recur(func)
-    if args:
-        st2 = weave_many(args)
-        st2 = get_cmd('parentheses', [st2])
-        st += ' ' + st2
-    return st
-
 def weave_many(args: tuple) -> str:
     st = weave_recur(args[0])
     for arg in args[1:]:
@@ -110,24 +109,35 @@ def weave_many(args: tuple) -> str:
 
 ############################################################
 
+def weave_tIfBTs(T) -> str:
+    st = get_env('cases', T[1:])
+    return st
+
+def weave_call(func, args: tuple) -> str:
+    st = weave_recur(func)
+    if args:
+        st2 = weave_many(args)
+        st2 = get_cmd('parentheses', [st2])
+        st += ' ' + st2
+    return st
+
+############################################################
+
 def get_env(env_name: str, env_items: tuple) -> str:
     st = ''
     for env_item in env_items:
-        st += weave_recur(env_item)
+        st += weave_recur(env_item) + '\n'
     env_name = surround_str(env_name, '{', '}')
     env_start = surround_str(env_name, '\n' '\\begin', '\n')
     env_end = surround_str(env_name, '\\end', '\n')
-    return surround_str(st, env_start, env_end)
+    st = surround_str(st, env_start, env_end)
+    return st
 
 def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
     st = '\\' + cmd_name
     for cmd_arg in cmd_args:
         st2 = weave_recur(cmd_arg)
         st += surround_str(st2, '{', '}')
-    if cmd_name in DEF_LABELS:
-        st += '\n\n'
-    if cmd_name in COND_LABELS:
-        st += '\n'
     return st
 
 ############################################################
