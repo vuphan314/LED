@@ -7,16 +7,13 @@ from debugtools.debug_tool import *
 
 ############################################################
 
-TEX_TOP = '''
-\\documentclass[14pt]{extarticle}
-\\usepackage{led_pkg}
-\\begin{document}
-LED Engine \\bigskip
-
-'''
-TEX_BOTTOM = '''
-\\end{document}
-'''
+TEX_TOP = (
+    '\\documentclass[14pt]{extarticle}' '\n'
+    '\\usepackage{led_pkg}' '\n'
+    '\\begin{document}' '\n'
+    'LED Engine \\bigskip' '\n\n'
+)
+TEX_BOTTOM = '\\end{document}' '\n'
 
 DEF_LABELS = {'funDef', 'relDef'}
 COND_LABELS = {'tIfBT', 'tOther'}
@@ -45,8 +42,20 @@ MANY_LABELS = {'terms', 'syms'}
 ############################################################
 
 def weave_top(T) -> str:
+    T = convert_tIfBTsO_to_tIfBTs(T)
     st = weave_recur(T)
-    return TEX_TOP + st + TEX_BOTTOM
+    return surround_str(st, TEX_TOP, TEX_BOTTOM)
+
+def convert_tIfBTsO_to_tIfBTs(T):
+    if isinstance(T, str):
+        return T
+    elif T[0] == 'tIfBTsO':
+        tIfBTs = T[1]
+        tOther = T[2]
+        T2 = tIfBTs + (tOther,)
+        return T2
+    else:
+        return recur_tree(convert_tIfBTsO_to_tIfBTs, T)
 
 ############################################################
 
@@ -126,6 +135,12 @@ def surround_str(
     return st
 
 ############################################################
+
+def recur_tree(F, T):
+    T2 = T[:1]
+    for t in T[1:]:
+        T2 += F(t),
+    return T2
 
 def recur_str(F, T) -> str:
     st = ''

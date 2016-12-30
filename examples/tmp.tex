@@ -1,4 +1,3 @@
-
 \documentclass[14pt]{extarticle}
 \usepackage{led_pkg}
 \begin{document}
@@ -6,10 +5,17 @@ LED Engine \bigskip
 
 \funDef{f}{
 \begin{cases}
-\tIfBT{\plusOp{1}{1}}{x}
-\tIfBT{0}{\neg{x}}
+\tIfBT{1}{\textKeyword{true}}
+\tOther{0}
 \end{cases}
 }
 
+\funDef{f}{
+\begin{cases}
+\tIfBT{1}{\textKeyword{true}}
+\tIfBT{\uMns{1}}{\textKeyword{false}}
+\tOther{0}
+\end{cases}
+}
 
 \end{document}
