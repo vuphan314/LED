@@ -6,12 +6,18 @@
 \usepackage{breqn}
 \usepackage{listings}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{ledComment}
+  {\begin{lstlisting}}
+  {\end{lstlisting}}
+
 \newenvironment{ledDef}
   {\begin{dmath}}
   {\end{dmath}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PKG_CMDS
+% CLS_CMDS
 
 % DEF_LABELS
 \newcommand{\funDefNoWhere}[2]{\infixOp{#1}{#2}{:=}}

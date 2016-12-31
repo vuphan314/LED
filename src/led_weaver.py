@@ -31,7 +31,7 @@ TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
     'powSet', 'setEmpty', 'setNonempty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
 }
-PKG_CMDS = (
+CLS_CMDS = (
     DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
@@ -72,7 +72,7 @@ def weave_recur(T) -> str:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
-    elif T[0] in PKG_CMDS:
+    elif T[0] in CLS_CMDS:
         return get_cmd(T[0], T[1:])
     else:
         return recur_str(weave_recur, T)

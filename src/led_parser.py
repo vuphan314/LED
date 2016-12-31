@@ -189,16 +189,12 @@ class UnmatchedRegion(Exception):
         super(UnmatchedRegion, self).__init__()
         self.line_number = line_number
 
-    def __repr__(self):
-        return '''
-
-The program file contains an unmatched region
-starting from line {}
-
-'''.format(self.line_number)
-
     def __str__(self):
-        return self.__repr__()
+        return (
+            '\n\n' 'The LED program contains '
+            'an unmatched region starting from '
+            'line {}'.format(self.line_number)
+        )
 
 class InvalidRegion(Exception):
     def __init__(self, contents, line_number):
@@ -206,18 +202,14 @@ class InvalidRegion(Exception):
         self.contents = contents
         self.line_number = line_number
 
-    def __repr__(self):
-        return '''
-
-The program file contains an invalid region
-starting from line {}:
-
-{}
-
-'''.format(self.line_number, self.contents)
-
     def __str__(self):
-        return self.__repr__()
+        return (
+            '\n\n' 'The LED program contains '
+            'an invalid region starting from '
+            'line {}:\n\n{}'.format(
+                self.line_number, self.contents
+            )
+        )
 
 ############################################################
 
