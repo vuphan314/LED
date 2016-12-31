@@ -163,6 +163,15 @@ class RegionParser:
 
         return parsed_elements
 
+    def append_cmnt_tree(
+        self, base_list: list, cmnt_str: str
+    ) -> None:
+        if cmnt_str and not cmnt_str.isspace():
+            base_list.append(self.get_cmnt_tree(cmnt_str))
+
+    def get_cmnt_tree(self, cmnt_str: str) -> tuple:
+        return 'ledCmnt', cmnt_str.strip()
+
     def get_elements_from_region(
         self, region: str, line_number: int
     ) -> list:
@@ -182,15 +191,6 @@ class RegionParser:
         # return cut_root (list of program elements) of
         # the parsetree
         return ast.children_list()
-
-    def append_cmnt_tree(
-        self, base_list: list, cmnt_str: str
-    ) -> None:
-        if cmnt_str and not cmnt_str.isspace():
-            base_list.append(self.get_cmnt_tree(cmnt_str))
-
-    def get_cmnt_tree(self, cmnt_str: str) -> tuple:
-        return 'ledCmnt', cmnt_str.strip()
 
 class UnmatchedRegion(Exception):
     def __init__(self, line_number):

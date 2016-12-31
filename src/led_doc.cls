@@ -4,18 +4,14 @@
 \usepackage[yyyymmdd]{datetime}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{listings} \lstset{breaklines}
 \usepackage{breqn}
-\usepackage{listings}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\lstnewenvironment{ledCmnt}
-  {}
-  {}
+\lstnewenvironment{ledCmnt}{}{}
 
-\newenvironment{ledDef}
-  {\begin{dmath}}
-  {\end{dmath}}
+\newenvironment{ledDef}{\begin{dmath}}{\end{dmath}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLS_CMDS

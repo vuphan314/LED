@@ -1,10 +1,59 @@
 \documentclass{led_doc}
 \begin{document}
-LED Engine
+LED Engine: \today \hrulefill
+
+\begin{ledCmnt}
+Tic Tac Toe
+by Qianji Zheng and J. Nelson Rushton, Texas Tech University
+
+This is an LED program that defines a simple tic tac toe game to run in the easel game engine.
+
+The game begins with an empty grid and it being x's turn to move. When an empty cell is clicked, the player whose turn it occupies that cell and it becomes the other player's turn, until the game is over. When the game is over a message is displayed giving the result of the  game. The player can press the 'reset' button at any time to restart the game.
+
+============================================================
+DATA MODEL
+============================================================
+
+A *player* is either `x or `o. In this program, the variable p will range over players.
+
+A *cell* is an integer in {1..9}. In this program, the variable c will range over cells.
+
+Cells represent squares on the tic tac toe board as pictured below:
+    1|2|3
+    -----
+    4|5|6
+    -----
+    7|8|9
+
+A *move* is a pair (p,c) where p is a player and c is a cell. The move (p,c) represents a move by player p in cell c. In this program, the variable m will range over moves.
+
+A *state* is a set of moves, thought of as the set of moves made far in the game. In this program, the variable S will range over states.
+
+Tell the translator to produce a SequenceL file that runs with Easel:
+\end{ledCmnt}
+
+\begin{ledCmnt}
+Global variables:
+- *currentState*: same type as user-defined *initialState*
+- *mouseClicked*: true/false
+- *mouseX*, *mouseY*: integer
+
+============================================================
+GAME RULES
+============================================================
+
+This section defines the rules of tic-tac-toe in LED.
+
+Since the state of the game is the set of moves that have been made, the beginning state *initialState* is the empty set.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{initialState}{\setEmpty}
 \end{ledDef}
+
+\begin{ledCmnt}
+Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c is *occupied* if it is occupied by `x or by `o.
+\end{ledCmnt}
 
 \begin{ledDef}
 \relDefNoWhere{occupies}{\setMem{\tpl{p, c}}{currentState}}
@@ -14,21 +63,41 @@ LED Engine
 \relDefNoWhere{occupied}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+A *row* is a set of cells that form three in a row either horizontally, vertically, or diagonally.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefWhere{rows}{\unn{\unn{hRows}{vRows}}{diagonals}}{\conj{\conj{\eq{hRows}{\setNonempty{\setNonempty{1, 2, 3}, \setNonempty{4, 5, 6}, \setNonempty{7, 8, 9}}}}{\eq{vRows}{\setNonempty{\setNonempty{1, 4, 7}, \setNonempty{2, 5, 8}, \setNonempty{3, 6, 9}}}}}{\eq{diagonals}{\setNonempty{\setNonempty{1, 5, 9}, \setNonempty{3, 5, 7}}}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+*threeInRow(p)* if player p occupies all of the cells in some row.
+\end{ledCmnt}
 
 \begin{ledDef}
 \relDefNoWhere{threeInRow}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+*boardFull* if and only if all cells are occupied.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{boardFull}{\eq{\pipesOp{currentState}}{9}}
 \end{ledDef}
 
+\begin{ledCmnt}
+*gameOver* if either the board is full, or one of the players three in a row.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{gameOver}{\disj{\disj{boardFull}{threeInRow \parentheses{`x}}}{threeInRow \parentheses{`o}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+*playerToMove* is `x if an even number of moves have been made, and `o otherwise.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{playerToMove}{
@@ -43,9 +112,21 @@ LED Engine
 \relDefNoWhere{even}{\eq{\md{n}{2}}{0}}
 \end{ledDef}
 
+\begin{ledCmnt}
+*legalToMoveIn(c)* means that it is legal for the player whose turn it is to move in cell c in the current state of the game -- that is, if the game is not over and the cell is not occupied.
+\end{ledCmnt}
+
 \begin{ledDef}
 \relDefNoWhere{legalToMoveIn}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+============================================================
+VIDEO OUTPUT
+============================================================
+
+The default color used in this game is BLACK
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{BLACK}{color \parentheses{0, 0, 0}}
@@ -67,13 +148,27 @@ LED Engine
 \funDefNoWhere{RED}{color \parentheses{255, 0, 0}}
 \end{ledDef}
 
+\begin{ledCmnt}
+------------------------------------------------------------
+
+This section defines the *display* function, specifying the images to display on the screen in each game state. The  *grid* consists is a set of four line segments that make up the tic tac toe playing area.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefWhere{gridDisplay}{\setNonempty{L1, L2, L3, L4}}{\conj{\conj{\conj{\eq{L1}{segment \parentheses{point \parentheses{200, 700}, point \parentheses{200, 400}, BLACK}}}{\eq{L2}{segment \parentheses{point \parentheses{300, 700}, point \parentheses{300, 400}, BLACK}}}}{\eq{L3}{segment \parentheses{point \parentheses{100, 600}, point \parentheses{400, 600}, BLACK}}}}{\eq{L4}{segment \parentheses{point \parentheses{100, 500}, point \parentheses{400, 500}, BLACK}}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+The default font size for displayed text in this program is 36.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{fontSize}{36}
 \end{ledDef}
+
+\begin{ledCmnt}
+*centerX(c)* and *centerY(c)* are the x and y coordinates of the center of cell c, respectively.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{centerX}{\plusOp{150}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
@@ -82,6 +177,10 @@ LED Engine
 \begin{ledDef}
 \funDefNoWhere{centerY}{\bMns{650}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+*cellDisplay(c)* is a display of a text character "x" or an "o" in cell c, or the empty display, respectively in case cell c is occupied by `x, occupied by `o, or not occupied in the current game state.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{xImage}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
@@ -101,6 +200,10 @@ LED Engine
 }
 \end{ledDef}
 
+\begin{ledCmnt}
+*cellDisplays* is the set of all images of x's and o's on the board in the current state.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{gameBoard}{\iv{1}{9}}
 \end{ledDef}
@@ -108,6 +211,12 @@ LED Engine
 \begin{ledDef}
 \funDefNoWhere{cellDisplays}{\aggrUnn{\setMem{c}{gameBoard}}{cellDisplay \parentheses{c}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+________________
+
+If the game is not over, *currentPlayerDisplay* is a text in the upper left hand region of the game window indicating the player to move, either "play x's turn" or "play o's turn",
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{currentPlayerDisplay}{
@@ -117,6 +226,10 @@ LED Engine
 \end{cases}
 }
 \end{ledDef}
+
+\begin{ledCmnt}
+The *restart button* consists of a rectangle around a "restart" text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{restartLeft}{350}
@@ -166,6 +279,10 @@ LED Engine
 \funDefWhere{restartButton}{\setNonempty{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{``restart", point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+If the game is over, *gameResultDisplay* is a display in the upper left region of the screen telling the outcome of the game, either "x won", "o won", or "cat got it"
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{gameResultDisplay}{
 \begin{cases}
@@ -176,6 +293,10 @@ LED Engine
 }
 \end{ledDef}
 
+\begin{ledCmnt}
+The *display* is the screen display for the current game state. The grid, cell displays, and restart button are always displayed. Additionally, the display includes the game results if the game is over, and the player to move if the game is not over.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefWhere{images}{
 \begin{cases}
@@ -184,6 +305,16 @@ LED Engine
 \end{cases}
 }{\conj{\conj{\eq{alwaysDisplay}{\unn{\unn{gridDisplay}{cellDisplays}}{restartButton}}}{\eq{inPlayDisplay}{\unn{alwaysDisplay}{currentPlayerDisplay}}}}{\eq{gameOverDisplay}{\unn{alwaysDisplay}{gameResultDisplay}}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+============================================================
+MOUSE INPUT
+============================================================
+
+This section defines *update*, which specifies the program's response to mouse input. The variable *pt* will vary over points.
+
+*xMin(c)*, *xMax(c)*, *yMin(c)*, and *yMax(c)* denote the graphical boundaries of cell c, in the obvious manner.
+\end{ledCmnt}
 
 \begin{ledDef}
 \funDefNoWhere{xMin}{\plusOp{100}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
@@ -201,13 +332,27 @@ LED Engine
 \funDefNoWhere{yMax}{\bMns{700}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+cellClicked(c) means that cell c has been clicked.
+\end{ledCmnt}
+
 \begin{ledDef}
 \relDefNoWhere{cellClicked}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
 \end{ledDef}
 
+\begin{ledCmnt}
+*restartClicked* means that the most recent mouse click is inside the region of the play again button.
+\end{ledCmnt}
+
 \begin{ledDef}
 \funDefNoWhere{restartClicked}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{restartLeft}}}{\less{mouseX}{restartRight}}}{\greater{mouseY}{restartBottom}}}{\less{mouseY}{restartTop}}}
 \end{ledDef}
+
+\begin{ledCmnt}
+________________
+
+*moveMade(c)* means that cell c has been clicked and the player to move may legally move there.
+\end{ledCmnt}
 
 \begin{ledDef}
 \relDefNoWhere{moveMadeIn}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
@@ -225,5 +370,58 @@ LED Engine
 \end{cases}
 }
 \end{ledDef}
+
+\begin{ledCmnt}
+============================================================
+TEST: SEQUENCEL INTERPRETER
+============================================================
+
+cmd:>pp(initialState_)
+"{}"
+cmd:>pp(rows)
+"{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, {1, 5, 9}, {3, 5, 7}}"
+cmd:>pp(BLACK)
+"an Easel color"
+cmd:>pp(WHITE)
+"an Easel color"
+cmd:>pp(BLUE)
+"an Easel color"
+cmd:>pp(GREEN)
+"an Easel color"
+cmd:>pp(RED)
+"an Easel color"
+cmd:>pp(gridDisplay)
+"{an Easel image, an Easel image, an Easel image, an Easel image}"
+cmd:>pp(fontSize)
+"36"
+cmd:>pp(gameBoard)
+"{1, 2, 3, 4, 5, 6, 7, 8, 9}"
+cmd:>pp(restartLeft)
+"350"
+cmd:>pp(restartRight)
+"550"
+cmd:>pp(restartBottom)
+"725"
+cmd:>pp(restartTop)
+"775"
+cmd:>pp(restartBottomLeftPoint)
+"an Easel point"
+cmd:>pp(restartBottomRightPoint)
+"an Easel point"
+cmd:>pp(restartTopLeftPoint)
+"an Easel point"
+cmd:>pp(restartTopRightPoint)
+"an Easel point"
+cmd:>pp(restartMidX)
+"450"
+cmd:>pp(restartMidY)
+"750"
+cmd:>pp(restartButton)
+"{an Easel image, an Easel image, an Easel image, an Easel image, an Easel image}"
+
+============================================================
+LED engine took: 43 secs.
+============================================================
+\end{ledCmnt}
 
 \end{document}
