@@ -44,12 +44,12 @@ PRETTY_STR_TAB = ' ' * 2
 
 ############################################################
 
-def parse_file(led_path: str, quiet=False) -> tuple:
+def parse_file(led_path: str, verbose=False) -> tuple:
     region_parser = RegionParser(led_path)
     syntax_list = region_parser.get_parsed_elements()
     syntax_list = ['prog'] + syntax_list
     syntax_tree = get_syntax_tree(syntax_list)
-    if not quiet:
+    if verbose:
         syntax_str = get_syntax_str(syntax_tree)
         print(syntax_str)
     return syntax_tree
@@ -225,9 +225,9 @@ starting from line {}:
 
 ############################################################
 
-def main():
+def main() -> None:
     led_path = sys.argv[1]
-    syntax_dict = parse_file(led_path)
+    syntax_dict = parse_file(led_path, verbose=True)
 
 if __name__ == '__main__':
     main()

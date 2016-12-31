@@ -56,8 +56,8 @@
   Type "help", "copyright", "credits" or "license" for more information.
   >>> import led_parser
   >>> led_path = '../examples/boolean.led'
-  >>> led_tree = led_parser.parse_file(led_path, quiet=True)
+  >>> led_tree = led_parser.parse_file(led_path)
   >>> led_tree
-  ('prog', ('constDef', ('constN', ('id', 'c')), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('set',)))))
+  ('prog', ('funDef', ('funDefNoWhere', ('funT', ('funN', ('id', 'c'))), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',))))))
 
   ```
