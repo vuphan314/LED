@@ -96,5 +96,5 @@
 
 % misc
 \newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
-\newcommand{\textKeyword}[1]{\texttt{ #1 }}
+\newcommand{\textKeyword}[1]{\text{ #1 }}
 \newcommand{\infixOp}[3]{{#1}\ {#3}\ {#2}}
