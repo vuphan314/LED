@@ -65,7 +65,7 @@ def get_syntax_tree(L: list) -> tuple:
             T += get_syntax_tree(l),
         return T
 
-def get_syntax_str(T: tuple, tab_count=1) -> str:
+def get_syntax_str(T: tuple, tab_count=0) -> str:
     tabs = PRETTY_STR_TAB * tab_count
     st = tabs
     if is_termimal(T):
