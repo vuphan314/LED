@@ -722,26 +722,26 @@ def translateDef(dat: LedDatum, T) -> str:
     )
     return st
 
-ifLabels = {'tIfBTs', 'tIfBTsO'}
+ifLabels = {'termIfBoolTerms', 'termIfBoolTermsO'}
 
 def translateIfClauses(dat: LedDatum, T) -> str:
-    if T[0] == 'tOther':
+    if T[0] == 'termOw':
         st = translateRecur(dat, T[1])
         st = writeElseClause(st)
         return st
-    elif T[0] == 'tIfBT':
+    elif T[0] == 'termIfBoolTerm':
         st1 = translateRecur(dat, T[1])
         st2 = translateRecur(dat, T[2])
         st2 = applyRecur(dat, 'valToTrth', (st2,))
         st = st1 + ' when ' + st2
         return st
-    elif T[0] == 'tIfBTs':
+    elif T[0] == 'termIfBoolTerms':
         st = translateIfClauses(dat, T[1])
         for t in T[2:]:
             st2 = translateIfClauses(dat, t)
             st += writeElseClause(st2)
         return st
-    elif T[0] == 'tIfBTsO':
+    elif T[0] == 'termIfBoolTermsO':
         return recurStr(translateIfClauses, dat, T)
     else:
         raiseError('INVALID IF CLAUSES')
@@ -819,7 +819,7 @@ equalityOps = {'eq', 'uneq'}
 relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
 boolOps = {'equiv', 'disj', 'neg'}
 overloadedOps = {'pipesOp', 'plusOp', 'starOp'}
-arOps = {'bMns', 'uMns', 'div', 'flr', 'clng', 'md', 'exp'}
+arOps = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
 setOps = {
     'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet',
     'iv'
@@ -893,19 +893,19 @@ def unionDicts(ds) -> dict:
 def addOtherwiseClause(T):
     if type(T) == str:
         return T
-    elif T[0] == 'tIfBTs':
-        return tIfBTsToTIfBTsO(T)
-    elif T[0] == 'tIfBTsO':
+    elif T[0] == 'termIfBoolTerms':
+        return termIfBoolTermsTotermIfBoolTermsO(T)
+    elif T[0] == 'termIfBoolTermsO':
         return T
     else:
         return recurTree(addOtherwiseClause, T)
 
-def tIfBTsToTIfBTsO(tIfBTs):
+def termIfBoolTermsTotermIfBoolTermsO(termIfBoolTerms):
     t = 'valNull'
     t = 'id', t
     t = 'symOrNullFunRel', t
-    t = 'tOther', t
-    T = 'tIfBTsO', tIfBTs, t
+    t = 'termOw', t
+    T = 'termIfBoolTermsO', termIfBoolTerms, t
     return T
 
 ############################################################

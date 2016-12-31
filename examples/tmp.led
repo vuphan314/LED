@@ -1,18 +1,1 @@
-1st comment
-
-/$
-
-region1 := 0
-
-$/
-
-2nd comment
-
-/$region2 iff x$/
-
-      3rd comment
-
-
-
-
-                
+/$ f(x) := 0 $/

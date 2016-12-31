@@ -17,7 +17,7 @@ TEX_BOTTOM = '\n' '\\end{document}' '\n'
 DEF_LABELS = {
     'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
 }
-IF_CLAUSES = {'tIfBT', 'tOther'}
+IF_CLAUSES = {'termIfBoolTerm', 'termOw'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
     'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
@@ -26,7 +26,7 @@ OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 BOOL_OPS = {
     'equiv', 'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
 }
-AR_OPS = {'uMns', 'bMns', 'div', 'md', 'exp', 'flr', 'clng'}
+AR_OPS = {'unaryMinus', 'binaryMinus', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
     'powSet', 'setEmpty', 'setNonempty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'

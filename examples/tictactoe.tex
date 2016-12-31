@@ -102,8 +102,8 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \begin{ledDef}
 \funDefNoWhere{playerToMove}{
 \begin{cases}
-\tIfBT{`x}{even \parentheses{\pipesOp{currentState}}}
-\tOther{`o}
+\termIfBoolTerm{`x}{even \parentheses{\pipesOp{currentState}}}
+\termOw{`o}
 \end{cases}
 }
 \end{ledDef}
@@ -171,11 +171,11 @@ The default font size for displayed text in this program is 36.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{centerX}{\plusOp{150}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{centerX}{\plusOp{150}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{centerY}{\bMns{650}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{centerY}{\binaryMinus{650}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -193,9 +193,9 @@ The default font size for displayed text in this program is 36.
 \begin{ledDef}
 \funDefNoWhere{cellDisplay}{
 \begin{cases}
-\tIfBT{\setNonempty{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
-\tIfBT{\setNonempty{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
-\tOther{\setEmpty}
+\termIfBoolTerm{\setNonempty{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
+\termIfBoolTerm{\setNonempty{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
+\termOw{\setEmpty}
 \end{cases}
 }
 \end{ledDef}
@@ -221,8 +221,8 @@ If the game is not over, *currentPlayerDisplay* is a text in the upper left hand
 \begin{ledDef}
 \funDefNoWhere{currentPlayerDisplay}{
 \begin{cases}
-\tIfBT{\setNonempty{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
-\tOther{\setNonempty{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
+\termOw{\setNonempty{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
 \end{cases}
 }
 \end{ledDef}
@@ -286,9 +286,9 @@ If the game is over, *gameResultDisplay* is a display in the upper left region o
 \begin{ledDef}
 \funDefNoWhere{gameResultDisplay}{
 \begin{cases}
-\tIfBT{\setNonempty{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
-\tIfBT{\setNonempty{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
-\tOther{\setNonempty{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
+\termOw{\setNonempty{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
 \end{cases}
 }
 \end{ledDef}
@@ -300,8 +300,8 @@ The *display* is the screen display for the current game state. The grid, cell d
 \begin{ledDef}
 \funDefWhere{images}{
 \begin{cases}
-\tIfBT{gameOverDisplay}{gameOver}
-\tOther{inPlayDisplay}
+\termIfBoolTerm{gameOverDisplay}{gameOver}
+\termOw{inPlayDisplay}
 \end{cases}
 }{\conj{\conj{\eq{alwaysDisplay}{\unn{\unn{gridDisplay}{cellDisplays}}{restartButton}}}{\eq{inPlayDisplay}{\unn{alwaysDisplay}{currentPlayerDisplay}}}}{\eq{gameOverDisplay}{\unn{alwaysDisplay}{gameResultDisplay}}}}
 \end{ledDef}
@@ -317,19 +317,19 @@ This section defines *update*, which specifies the program's response to mouse i
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{xMin}{\plusOp{100}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{xMin}{\plusOp{100}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{xMax}{\plusOp{200}{\starOp{100}{\md{\bMns{c}{1}}{3}}}}
+\funDefNoWhere{xMax}{\plusOp{200}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMin}{\bMns{600}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{yMin}{\binaryMinus{600}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMax}{\bMns{700}{\starOp{100}{\flr{\div{\bMns{c}{1}}{3}}}}}
+\funDefNoWhere{yMax}{\binaryMinus{700}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -365,8 +365,8 @@ ________________
 \begin{ledDef}
 \funDefNoWhere{newState}{
 \begin{cases}
-\tIfBT{initialState}{restartClicked}
-\tOther{\unn{currentState}{movesMade}}
+\termIfBoolTerm{initialState}{restartClicked}
+\termOw{\unn{currentState}{movesMade}}
 \end{cases}
 }
 \end{ledDef}

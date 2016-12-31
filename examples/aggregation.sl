@@ -32,7 +32,7 @@ r(s, t) :=
 		eq(aggrNrsec(AUX_18_AGGR_(s, t)), se([nu("1")]));
 
 c5 := 
-		r(uMns(nu("1")), nu("1"));
+		r(unaryMinus(nu("1")), nu("1"));
 
 /* AUXILIARY FUNCTIONS */
 
@@ -85,7 +85,7 @@ AUX_8_AGGR_[i_] :=
 		aggrSum(AUX_6_AGGR_(x));
 
 AUX_9_AGGR_ := 
-		solSet(iv(nu("1"), uMns(nu("1"))));
+		solSet(iv(nu("1"), unaryMinus(nu("1"))));
 
 AUX_10_AGGR_[i_] := 
 	let
@@ -95,7 +95,7 @@ AUX_10_AGGR_[i_] :=
 		exp(x, x);
 
 AUX_11_AGGR_ := 
-		solSet(iv(uMns(nu("2")), nu("2")));
+		solSet(iv(unaryMinus(nu("2")), nu("2")));
 
 AUX_12_AGGR_(x) := 
 		solGround(eq(md(x, nu("2")), nu("1")));

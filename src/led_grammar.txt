@@ -129,7 +129,7 @@ relational(greaterEq T T2) ::= ar_term(T) greaterOrEq ar_term(T2)
 ar_term(T) ::= ar_term_1(T)
 
 ar_term_1(plusOp T T2) ::= ar_term_1(T) plus ar_term_2(T2)
-ar_term_1(bMns T T2) ::= ar_term_1(T) minus ar_term_2(T2)
+ar_term_1(binaryMinus T T2) ::= ar_term_1(T) minus ar_term_2(T2)
 ar_term_1(T) ::= ar_term_2(T)
 
 ar_term_2(starOp T T2) ::= ar_term_2(T) star ar_term_3(T2)
@@ -139,7 +139,7 @@ ar_term_2(T) ::= ar_term_3(T)
 
 ar_term_3(aggrSum T T2) ::= Sum lBracket bool_term(T) rBracket ar_term_3(T2)
 ar_term_3(aggrProd T T2) ::= Prod lBracket bool_term(T) rBracket ar_term_3(T2)
-ar_term_3(uMns T) ::= minus ar_term_3(T)
+ar_term_3(unaryMinus T) ::= minus ar_term_3(T)
 ar_term_3(T) ::= plus ar_term_3(T)
 ar_term_3(T) ::= ar_term_4(T)
 

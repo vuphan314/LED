@@ -23,7 +23,7 @@ c0 :=
 		uneq(nu("3"), nu("5"));
 
 c1 := 
-		greaterEq(uMns(nu("2.(6..)")), starOp(uMns(nu("2")), nu("1.(3..)")));
+		greaterEq(unaryMinus(nu("2.(6..)")), starOp(unaryMinus(nu("2")), nu("1.(3..)")));
 
 c2 := 
 		eq(at("`a"), at("`a"));

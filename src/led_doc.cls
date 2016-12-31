@@ -26,8 +26,8 @@
   {\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
 % IF_CLAUSES
-\newcommand{\tIfBT}[2]{#1 & \textKeyword{if} #2 \\}
-\newcommand{\tOther}[1]{#1 & \textKeyword{otherwise} \\}
+\newcommand{\termIfBoolTerm}[2]{#1 & \textKeyword{if} #2 \\}
+\newcommand{\termOw}[1]{#1 & \textKeyword{otherwise} \\}
 
 % QUANT_OPS
 \newcommand{\exist}[2]{\exists #1 . #2}
@@ -59,8 +59,8 @@
 \newcommand{\greaterEq}[2]{\infixOp{#1}{#2}{\ge}}
 
 % AR_OPS
-\newcommand{\uMns}[1]{- #1}
-\newcommand{\bMns}[2]{\infixOp{#1}{#2}{-}}
+\newcommand{\unaryMinus}[1]{- #1}
+\newcommand{\binaryMinus}[2]{\infixOp{#1}{#2}{-}}
 \renewcommand{\div}[2]{\infixOp{#1}{#2}{/}}
 \newcommand{\md}[2]{\infixOp{#1}{#2}{\textKeyword{mod}}}
 \renewcommand{\exp}[2]{{#1}^{#2}}

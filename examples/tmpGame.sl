@@ -73,7 +73,7 @@ public
     // set
         setMem, sbset, unn, nrsec, diff, powSet,
     // arithmetic
-        bMns, uMns, div, flr, clng, md, exp,
+        binaryMinus, unaryMinus, div, flr, clng, md, exp,
     // tuple
         tuIn, tuSl,
     // to value
@@ -604,7 +604,7 @@ trthEq(v1, v2) :=
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
-    sgn(bMnsNumb(numb1, numb2)) = 0;
+    sgn(binaryMinusNumb(numb1, numb2)) = 0;
 
 ////////////////////////////////////////////////////////////
 /* relational operations */
@@ -615,7 +615,7 @@ less(v1, v2) :=
 
 lessNumb: Numb * Numb -> bool;
 lessNumb(numb1, numb2) :=
-    sgn(bMnsNumb(numb1, numb2)) < 0;
+    sgn(binaryMinusNumb(numb1, numb2)) < 0;
 
 greater: Val * Val -> Val;
 greater(v1, v2) :=
@@ -728,13 +728,13 @@ add: Val * Val -> Val;
 add(v1, v2) :=
     stdNumbNumbToNumb(addNumb, v1, v2);
 
-bMns: Val * Val -> Val;
-bMns(v1, v2) :=
-    stdNumbNumbToNumb(bMnsNumb, v1, v2);
+binaryMinus: Val * Val -> Val;
+binaryMinus(v1, v2) :=
+    stdNumbNumbToNumb(binaryMinusNumb, v1, v2);
 
-uMns: Val -> Val;
-uMns(v) :=
-    stdNumbToNumb(uMnsNumb, v);
+unaryMinus: Val -> Val;
+unaryMinus(v) :=
+    stdNumbToNumb(unaryMinusNumb, v);
 
 mult: Val * Val -> Val;
 mult(v1, v2) :=
@@ -987,7 +987,7 @@ repBlToNumb(rB(1)) :=
         iN := rB[2 ... size(rB) - 3];
         rept := intNumlToNumb(iN);
         lenRept := size(iN);
-        divisor := bMnsNumb(expNumb(numbTen, lenRept), numbOne);
+        divisor := binaryMinusNumb(expNumb(numbTen, lenRept), numbOne);
     in
         divNumb(rept, divisor);
 
@@ -1213,12 +1213,12 @@ addNumb(numb1, numb2) :=
     in
         twoIntsToNumbRed(numr, denr);
 
-bMnsNumb: Numb * Numb -> Numb;
-bMnsNumb(numb1, numb2) :=
-    addNumb(numb1, uMnsNumb(numb2));
+binaryMinusNumb: Numb * Numb -> Numb;
+binaryMinusNumb(numb1, numb2) :=
+    addNumb(numb1, unaryMinusNumb(numb2));
 
-uMnsNumb: Numb -> Numb;
-uMnsNumb(numb) :=
+unaryMinusNumb: Numb -> Numb;
+unaryMinusNumb(numb) :=
     twoIntsToNumbRed(-numbToNumr(numb), numbToDenr(numb));
 
 multNumb: Numb * Numb -> Numb;

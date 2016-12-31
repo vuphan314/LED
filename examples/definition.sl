@@ -46,7 +46,7 @@ f2(x) :=
 f3(x) := 
 		nu("1") when valToTrth(greater(x, nu("0"))) else
 		nu("0") when valToTrth(eq(x, nu("0"))) else
-		uMns(nu("1"));
+		unaryMinus(nu("1"));
 
 c1 := 
 		f1(nu("1"));
@@ -55,11 +55,11 @@ c2 :=
 		f2(nu("0"));
 
 c3 := 
-		f3(uMns(nu("1")));
+		f3(unaryMinus(nu("1")));
 
 f(x, y) := 
 	let
-		z1 := bMns(x, y);
+		z1 := binaryMinus(x, y);
 		z2 := z1;
 		z3 := z2;
 	in
@@ -74,7 +74,7 @@ d2 :=
 		f(nu("0"), nu("0"));
 
 d3 := 
-		f(uMns(nu("1")), nu("0"));
+		f(unaryMinus(nu("1")), nu("0"));
 
 r(x, y, z) := 
 	let
@@ -83,6 +83,6 @@ r(x, y, z) :=
 		eq(t, nu("0"));
 
 e := 
-		r(uMns(nu("1")), nu("0"), nu("1"));
+		r(unaryMinus(nu("1")), nu("0"), nu("1"));
 
 

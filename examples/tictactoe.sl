@@ -91,10 +91,10 @@ fontSize :=
 		nu("36");
 
 centerX(c) := 
-		plusOp(nu("150"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
+		plusOp(nu("150"), starOp(nu("100"), md(binaryMinus(c, nu("1")), nu("3"))));
 
 centerY(c) := 
-		bMns(nu("650"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
+		binaryMinus(nu("650"), starOp(nu("100"), flr(div(binaryMinus(c, nu("1")), nu("3")))));
 
 xImage(c) := 
 		text_(st("x"), point_(centerX(c), centerY(c)), fontSize, BLUE);
@@ -175,16 +175,16 @@ images_(S) :=
 		inPlayDisplay;
 
 xMin(c) := 
-		plusOp(nu("100"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
+		plusOp(nu("100"), starOp(nu("100"), md(binaryMinus(c, nu("1")), nu("3"))));
 
 xMax(c) := 
-		plusOp(nu("200"), starOp(nu("100"), md(bMns(c, nu("1")), nu("3"))));
+		plusOp(nu("200"), starOp(nu("100"), md(binaryMinus(c, nu("1")), nu("3"))));
 
 yMin(c) := 
-		bMns(nu("600"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
+		binaryMinus(nu("600"), starOp(nu("100"), flr(div(binaryMinus(c, nu("1")), nu("3")))));
 
 yMax(c) := 
-		bMns(nu("700"), starOp(nu("100"), flr(div(bMns(c, nu("1")), nu("3")))));
+		binaryMinus(nu("700"), starOp(nu("100"), flr(div(binaryMinus(c, nu("1")), nu("3")))));
 
 cellClicked(c, I) := 
 		(valFalse when not valToTrth((valFalse when not valToTrth((valFalse when not valToTrth((valFalse when not valToTrth(mouseClicked(I)) else greater(mouseX(I), xMin(c)))) else less(mouseX(I), xMax(c)))) else greater(mouseY(I), yMin(c)))) else less(mouseY(I), yMax(c)));
@@ -351,7 +351,7 @@ public
     // set
         setMem, sbset, unn, nrsec, diff, powSet,
     // arithmetic
-        bMns, uMns, div, flr, clng, md, exp,
+        binaryMinus, unaryMinus, div, flr, clng, md, exp,
     // tuple
         tuIn, tuSl,
     // to value
@@ -882,7 +882,7 @@ trthEq(v1, v2) :=
 
 eqNumb: Numb * Numb -> bool;
 eqNumb(numb1, numb2) :=
-    sgn(bMnsNumb(numb1, numb2)) = 0;
+    sgn(binaryMinusNumb(numb1, numb2)) = 0;
 
 ////////////////////////////////////////////////////////////
 /* relational operations */
@@ -893,7 +893,7 @@ less(v1, v2) :=
 
 lessNumb: Numb * Numb -> bool;
 lessNumb(numb1, numb2) :=
-    sgn(bMnsNumb(numb1, numb2)) < 0;
+    sgn(binaryMinusNumb(numb1, numb2)) < 0;
 
 greater: Val * Val -> Val;
 greater(v1, v2) :=
@@ -1006,13 +1006,13 @@ add: Val * Val -> Val;
 add(v1, v2) :=
     stdNumbNumbToNumb(addNumb, v1, v2);
 
-bMns: Val * Val -> Val;
-bMns(v1, v2) :=
-    stdNumbNumbToNumb(bMnsNumb, v1, v2);
+binaryMinus: Val * Val -> Val;
+binaryMinus(v1, v2) :=
+    stdNumbNumbToNumb(binaryMinusNumb, v1, v2);
 
-uMns: Val -> Val;
-uMns(v) :=
-    stdNumbToNumb(uMnsNumb, v);
+unaryMinus: Val -> Val;
+unaryMinus(v) :=
+    stdNumbToNumb(unaryMinusNumb, v);
 
 mult: Val * Val -> Val;
 mult(v1, v2) :=
@@ -1265,7 +1265,7 @@ repBlToNumb(rB(1)) :=
         iN := rB[2 ... size(rB) - 3];
         rept := intNumlToNumb(iN);
         lenRept := size(iN);
-        divisor := bMnsNumb(expNumb(numbTen, lenRept), numbOne);
+        divisor := binaryMinusNumb(expNumb(numbTen, lenRept), numbOne);
     in
         divNumb(rept, divisor);
 
@@ -1491,12 +1491,12 @@ addNumb(numb1, numb2) :=
     in
         twoIntsToNumbRed(numr, denr);
 
-bMnsNumb: Numb * Numb -> Numb;
-bMnsNumb(numb1, numb2) :=
-    addNumb(numb1, uMnsNumb(numb2));
+binaryMinusNumb: Numb * Numb -> Numb;
+binaryMinusNumb(numb1, numb2) :=
+    addNumb(numb1, unaryMinusNumb(numb2));
 
-uMnsNumb: Numb -> Numb;
-uMnsNumb(numb) :=
+unaryMinusNumb: Numb -> Numb;
+unaryMinusNumb(numb) :=
     twoIntsToNumbRed(-numbToNumr(numb), numbToDenr(numb));
 
 multNumb: Numb * Numb -> Numb;

@@ -45,7 +45,7 @@ AUX_2_B_[i_] :=
 	let
 		v := AUX_2_C_[i_];
 	in
-		(valFalse when not valToTrth(setMem(v, iv(uMns(nu("5")), nu("5")))) else eq(md(v, nu("2")), nu("1")));
+		(valFalse when not valToTrth(setMem(v, iv(unaryMinus(nu("5")), nu("5")))) else eq(md(v, nu("2")), nu("1")));
 
 AUX_2_C_ := 
 		valToSet(se([nu("1"), nu("3")]));
