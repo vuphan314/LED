@@ -1,20 +1,25 @@
 \documentclass{led_doc}
 \begin{document}
-LED Engine
+LED Engine: \today \hrulefill
+
+\begin{ledCmnt}
+1st comment
+\end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{f}{
-\begin{cases}
-\tIfBT{\setEmpty}{\textKeyword{true}}
-\tOther{\setNonempty{0}}
-\tOther{\uMns{1}}
-\tIfBT{\textKeyword{true}}{\less{z}{0}}
-\end{cases}
-}
+\funDefNoWhere{region1}{0}
 \end{ledDef}
 
+\begin{ledCmnt}
+2nd comment
+\end{ledCmnt}
+
 \begin{ledDef}
-\relDefNoWhere{r}{\textKeyword{false}}
+\relDefNoWhere{region2}{x}
 \end{ledDef}
+
+\begin{ledCmnt}
+3rd comment
+\end{ledCmnt}
 
 \end{document}

@@ -1,3 +1,18 @@
-/$abc
-a
-zxy$/0000
+1st comment
+
+/$
+
+region1 := 0
+
+$/
+
+2nd comment
+
+/$region2 iff x$/
+
+      3rd comment
+
+
+
+
+                

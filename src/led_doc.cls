@@ -1,6 +1,7 @@
 \LoadClass[10pt]{extarticle}
 
 \usepackage[hmargin=0.1in]{geometry}
+\usepackage[yyyymmdd]{datetime}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{breqn}
@@ -8,9 +9,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newenvironment{ledComment}
-  {\begin{lstlisting}}
-  {\end{lstlisting}}
+\lstnewenvironment{ledCmnt}
+  {}
+  {}
 
 \newenvironment{ledDef}
   {\begin{dmath}}

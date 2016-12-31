@@ -94,7 +94,7 @@ def is_termimal(T: tuple) -> bool:
 class RegionParser:
     def __init__(self, led_path: str):
         with open(led_path) as file_object:
-            self.program_str = file_object.read()
+            self.prog_str = file_object.read()
 
         file_names = 'led_lexicon.txt', 'led_grammar.txt'
         lexicon_file, grammar_file = [
@@ -112,55 +112,54 @@ class RegionParser:
 
     def get_parsed_elements(self) -> list:
         # split the program into regions; parse each region
-        unparsed_program_string = self.program_str
+        unparsed_remainder = self.prog_str
         parsed_elements = []
         cur_line = 1
-        all_regions_parsed = False
-        while not all_regions_parsed:
+        while True:
             # search for the start of
             # the next program region
             region_start = re.search(
-                r'/\$', unparsed_program_string
+                r'/\$', unparsed_remainder
             )
             if region_start is None:
+                self.append_cmnt_tree(
+                    parsed_elements, unparsed_remainder
+                )
                 break
 
-            # set cur_line to where the region starts
-            pre_region = unparsed_program_string[
+            # pre_region is comment
+            pre_region = unparsed_remainder[
                 :region_start.start()
             ]
             cur_line += pre_region.count('\n')
+            self.append_cmnt_tree(
+                parsed_elements, pre_region
+            )
 
             # find the matching end of the program region
             end_delimiter = re.compile(r'\$/')
             region_end = end_delimiter.search(
-                unparsed_program_string, region_start.end()
+                unparsed_remainder, region_start.end()
             )
             if region_end is None:
                 raise UnmatchedRegion(cur_line)
 
             # get elements from the found region
-            region = unparsed_program_string[
-                region_start.end():
-                region_end.start()
+            region = unparsed_remainder[
+                region_start.end():region_end.start()
             ]
             parsed_elements.extend(
                 self.get_elements_from_region(
                     region, cur_line
                 )
             )
-
-            # update cur_line
             cur_line += region.count('\n')
 
-            # remove the current pre-region and
-            # region from unparsed_program_string
-            post_region = unparsed_program_string[
+            # remove current pre_region and
+            # region from unparsed_remainder
+            unparsed_remainder = unparsed_remainder[
                 region_end.end():
             ]
-
-            # continue with the rest of the program string
-            unparsed_program_string = post_region
 
         return parsed_elements
 
@@ -183,6 +182,15 @@ class RegionParser:
         # return cut_root (list of program elements) of
         # the parsetree
         return ast.children_list()
+
+    def append_cmnt_tree(
+        self, base_list: list, cmnt_str: str
+    ) -> None:
+        if cmnt_str and not cmnt_str.isspace():
+            base_list.append(self.get_cmnt_tree(cmnt_str))
+
+    def get_cmnt_tree(self, cmnt_str: str) -> tuple:
+        return 'ledCmnt', cmnt_str.strip()
 
 class UnmatchedRegion(Exception):
     def __init__(self, line_number):

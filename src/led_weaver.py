@@ -10,7 +10,7 @@ from debugtools.debug_tool import *
 TEX_TOP = (
     '\\documentclass{led_doc}' '\n'
     '\\begin{document}' '\n'
-    'LED Engine' '\n'
+    'LED Engine: \\today \\hrulefill' '\n'
 )
 TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
@@ -64,16 +64,18 @@ def weave_recur(T) -> str:
         return '``' + T[1][1:-1] + '"'
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
-    elif T[0] == 'ifClauses':
-        return get_env('cases', T[1:])
-    elif T[0] in {'funDef', 'relDef'}:
-        return get_env('ledDef', T[1:])
     elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
     elif T[0] in FUN_REL_EXPRS:
         return weave_fun_rel_expr(T)
     elif T[0] in CLS_CMDS:
         return get_cmd(T[0], T[1:])
+    elif T[0] == 'ifClauses':
+        return get_env('cases', T[1:])
+    elif T[0] in {'funDef', 'relDef'}:
+        return get_env('ledDef', T[1:])
+    elif T[0] == 'ledCmnt':
+        return get_env('ledCmnt', T[1:])
     else:
         return recur_str(weave_recur, T)
 
