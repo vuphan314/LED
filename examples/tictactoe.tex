@@ -56,11 +56,11 @@ Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c
 \end{ledCmnt}
 
 \begin{ledDef}
-\relDefNoWhere{occupies}{\setMem{\tpl{p, c}}{currentState}}
+\relDefNoWhere{occupies \parentheses{p, c}}{\setMem{\tpl{p, c}}{currentState}}
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{occupied}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
+\relDefNoWhere{occupied \parentheses{c}}{\disj{occupies \parentheses{`x, c}}{occupies \parentheses{`o, c}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -76,7 +76,7 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledCmnt}
 
 \begin{ledDef}
-\relDefNoWhere{threeInRow}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
+\relDefNoWhere{threeInRow \parentheses{p}}{\exist{\symsInSet{R}{rows}}{\univ{\symsInSet{c}{R}}{occupies \parentheses{p, c}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -109,7 +109,7 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledDef}
 
 \begin{ledDef}
-\relDefNoWhere{even}{\eq{\md{n}{2}}{0}}
+\relDefNoWhere{even \parentheses{n}}{\eq{\md{n}{2}}{0}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -117,7 +117,7 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledCmnt}
 
 \begin{ledDef}
-\relDefNoWhere{legalToMoveIn}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
+\relDefNoWhere{legalToMoveIn \parentheses{c}}{\conj{\neg{occupied \parentheses{c}}}{\neg{gameOver}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -171,11 +171,11 @@ The default font size for displayed text in this program is 36.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{centerX}{\plusOp{150}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
+\funDefNoWhere{centerX \parentheses{c}}{\plusOp{150}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{centerY}{\binaryMinus{650}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
+\funDefNoWhere{centerY \parentheses{c}}{\binaryMinus{650}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -183,15 +183,15 @@ The default font size for displayed text in this program is 36.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{xImage}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
+\funDefNoWhere{xImage \parentheses{c}}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{oImage}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
+\funDefNoWhere{oImage \parentheses{c}}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{cellDisplay}{
+\funDefNoWhere{cellDisplay \parentheses{c}}{
 \begin{cases}
 \termIfBoolTerm{\setNonempty{xImage \parentheses{c}}}{\setMem{\tpl{`x, c}}{currentState}}
 \termIfBoolTerm{\setNonempty{oImage \parentheses{c}}}{\setMem{\tpl{`o, c}}{currentState}}
@@ -264,7 +264,7 @@ The *restart button* consists of a rectangle around a "restart" text, displayed 
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{mid}{\div{\plusOp{a}{b}}{2}}
+\funDefNoWhere{mid \parentheses{a, b}}{\div{\plusOp{a}{b}}{2}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -317,19 +317,19 @@ This section defines *update*, which specifies the program's response to mouse i
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{xMin}{\plusOp{100}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
+\funDefNoWhere{xMin \parentheses{c}}{\plusOp{100}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{xMax}{\plusOp{200}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
+\funDefNoWhere{xMax \parentheses{c}}{\plusOp{200}{\starOp{100}{\md{\binaryMinus{c}{1}}{3}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMin}{\binaryMinus{600}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
+\funDefNoWhere{yMin \parentheses{c}}{\binaryMinus{600}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{yMax}{\binaryMinus{700}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
+\funDefNoWhere{yMax \parentheses{c}}{\binaryMinus{700}{\starOp{100}{\flr{\div{\binaryMinus{c}{1}}{3}}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -337,7 +337,7 @@ cellClicked(c) means that cell c has been clicked.
 \end{ledCmnt}
 
 \begin{ledDef}
-\relDefNoWhere{cellClicked}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
+\relDefNoWhere{cellClicked \parentheses{c}}{\conj{\conj{\conj{\conj{mouseClicked}{\greater{mouseX}{xMin \parentheses{c}}}}{\less{mouseX}{xMax \parentheses{c}}}}{\greater{mouseY}{yMin \parentheses{c}}}}{\less{mouseY}{yMax \parentheses{c}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -355,7 +355,7 @@ ________________
 \end{ledCmnt}
 
 \begin{ledDef}
-\relDefNoWhere{moveMadeIn}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
+\relDefNoWhere{moveMadeIn \parentheses{c}}{\conj{cellClicked \parentheses{c}}{legalToMoveIn \parentheses{c}}}
 \end{ledDef}
 
 \begin{ledDef}
