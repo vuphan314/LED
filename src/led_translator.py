@@ -407,7 +407,7 @@ def translateRecur(dat: LedDatum, T) -> str:
         return appendUnderscore(T)
     elif T[0] in lexemes:
         return translateLexemes(dat, T)
-    elif T[0] == 'nonnullFunRel':
+    elif T[0] == 'namedTermParenth':
         st = applyRecur(dat, T[1], T[2][1:])
         return st
     elif T[0] == 'tpl':
@@ -528,18 +528,18 @@ def updateDefedConsts(prog) -> None:
 def addEaselParams(T):
     if isinstance(T, str):
         return T
-    elif T[0] == 'symOrNullFunRel':
+    elif T[0] == 'namedTermNoParenth':
         id = T[1]
         params = getParamsFromLexeme(id)
         if params != ():
-            terms = getIdsTree('terms', 'symOrNullFunRel', params)
-            T = 'nonnullFunRel', id, terms
+            terms = getIdsTree('terms', 'namedTermNoParenth', params)
+            T = 'namedTermParenth', id, terms
         return T
     elif T[0] == 'constN':
         id = T[1]
         params = getParamsFromLexeme(id)
         if params != ():
-            syms = getIdsTree('syms', 'symN', params)
+            syms = getIdsTree('syms', 'symName', params)
             T = 'funT', id, syms
         return T
     elif T[0] == 'constDef':
@@ -553,17 +553,17 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == 'nonnullFunRel':
+    elif T[0] == 'namedTermParenth':
         params = getParamsFromLexeme(T[1])
         terms = T[2]
-        terms += getIdsTuple('symOrNullFunRel', params)
+        terms += getIdsTuple('namedTermNoParenth', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
     elif T[0] in {'funT', 'relT'}:
         params = getParamsFromLexeme(T[1])
         # tst(params)
         syms = T[2]
-        syms += getIdsTuple('symN', params)
+        syms += getIdsTuple('symName', params)
         T = T[:2] + (syms,)
         return T
     else:
@@ -903,7 +903,7 @@ def addOtherwiseClause(T):
 def termIfBoolTermsTotermIfBoolTermsO(termIfBoolTerms):
     t = 'valNull'
     t = 'id', t
-    t = 'symOrNullFunRel', t
+    t = 'namedTermNoParenth', t
     t = 'termOw', t
     T = 'termIfBoolTermsO', termIfBoolTerms, t
     return T
@@ -982,7 +982,7 @@ def translateAggr(dat: LedDatum, T) -> str:
         return st
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
-            if T[1][0] == 'symOrNullFunRel':
+            if T[1][0] == 'namedTermNoParenth':
                 dat.aCateg = 'solEq'
             else: # 'tupT'
                 dat.aCateg = 'solEqs'
@@ -1023,7 +1023,7 @@ def translateAggr(dat: LedDatum, T) -> str:
 
 def updateDepSymbsRecur(dat: LedDatum, T) -> None:
     if type(T) == tuple:
-        if T[0] == 'symOrNullFunRel':
+        if T[0] == 'namedTermNoParenth':
             st = T[1][1]
             if isNewDepSymb(dat, st):
                 dat.depSymbs += st,
@@ -1036,7 +1036,7 @@ def isGround(dat: LedDatum, T) -> bool:
 def newDepSymbFound(dat: LedDatum, T) -> bool:
     if type(T) == str:
         return False
-    elif T[0] == 'symOrNullFunRel':
+    elif T[0] == 'namedTermNoParenth':
         if isNewDepSymb(dat, T[1][1]):
             return True
         else:

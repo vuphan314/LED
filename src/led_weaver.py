@@ -36,7 +36,7 @@ CLS_CMDS = (
 )
 
 FUN_REL_EXPRS = {
-    'funT', 'relT', 'symOrNullFunRel', 'nonnullFunRel'
+    'funT', 'relT', 'namedTermNoParenth', 'namedTermParenth'
 }
 MANY_LABELS = {'terms', 'syms'}
 
@@ -83,7 +83,7 @@ def weave_recur(T) -> str:
 
 def weave_fun_rel_expr(T) -> str:
     args = ()
-    if T[0] == 'nonnullFunRel':
+    if T[0] == 'namedTermParenth':
         args = T[2][1:]
     return weave_call(T[1], args)
 
