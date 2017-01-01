@@ -186,38 +186,32 @@ class RegionParser:
         # obtain parsetree
         ast = self.parser_instance.get_ast(lexing_sequence)
         if ast is None:
-            raise InvalidRegion(region, line_number)
+            raise InvalidRegion(line_number, region)
 
         # return cut_root (list of program elements) of
         # the parsetree
         return ast.children_list()
 
-class UnmatchedRegion(Exception):
-    def __init__(self, line_number):
-        super(UnmatchedRegion, self).__init__()
+class ParserError(Exception):
+    def __init__(self, line_number: int, contents=''):
+        # super().__init__()
+        self.contents = contents.strip()
         self.line_number = line_number
 
     def __str__(self):
         return (
-            '\n\n' 'The LED program contains '
-            'an unmatched region starting from '
-            'line {}'.format(self.line_number)
-        )
-
-class InvalidRegion(Exception):
-    def __init__(self, contents, line_number):
-        super(InvalidRegion, self).__init__()
-        self.contents = contents
-        self.line_number = line_number
-
-    def __str__(self):
-        return (
-            '\n\n' 'The LED program contains '
-            'an invalid region starting from '
-            'line {}:\n\n{}'.format(
+            '\n' 'The LED program contains '
+            'an unmatched/invalid region starting from '
+            'line {}:\n{}'.format(
                 self.line_number, self.contents
             )
         )
+
+class UnmatchedRegion(ParserError):
+    pass
+
+class InvalidRegion(ParserError):
+    pass
 
 ############################################################
 

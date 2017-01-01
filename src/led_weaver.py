@@ -35,9 +35,7 @@ CLS_CMDS = (
     DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
-FUN_REL_EXPRS = {
-    'funT', 'relT', 'namedTermNoParenth', 'namedTermParenth'
-}
+FUN_EXPRS = {'formFunExpr', 'actFunExpr'}
 MANY_LABELS = {'terms', 'syms'}
 
 ############################################################
@@ -66,11 +64,11 @@ def weave_recur(T) -> str:
         return get_cmd('textKeyword', T[1:])
     elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
-    elif T[0] in FUN_REL_EXPRS:
-        return weave_fun_rel_expr(T)
+    elif T[0] in FUN_EXPRS:
+        return weave_fun_expr(T)
     elif T[0] in CLS_CMDS:
         return get_cmd(T[0], T[1:])
-    elif T[0] == 'ifClauses':
+    elif T[0] == 'condTerms':
         return get_env('cases', T[1:])
     elif T[0] in {'funDef', 'relDef'}:
         return get_env('ledDef', T[1:])
@@ -81,9 +79,9 @@ def weave_recur(T) -> str:
 
 ############################################################
 
-def weave_fun_rel_expr(T) -> str:
+def weave_fun_expr(T) -> str:
     args = ()
-    if T[0] == 'namedTermParenth':
+    if len(T) > 2:
         args = T[2][1:]
     return weave_call(T[1], args)
 

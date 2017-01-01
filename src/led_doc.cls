@@ -17,11 +17,11 @@
 % CLS_CMDS
 
 % DEF_LABELS
-\newcommand{\funDefNoWhere}[2]{\infixOp{#1}{#2}{:=}}
+\newcommand{\funDefNoWhere}[2]{\defNoWhere{#1}{#2}{:=}}
 \newcommand{\funDefWhere}[3]
   {\funDefNoWhere{#1}{#2} \whereClause{#3}}
 \newcommand{\relDefNoWhere}[2]
-  {\infixOp{#1}{#2}{\textKeyword{iff}}}
+  {\defNoWhere{#1}{#2}{\textKeyword{iff}}}
 \newcommand{\relDefWhere}[3]
   {\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
@@ -95,6 +95,7 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
+\newcommand{\defNoWhere}[3]{\infixOp{#1}{#2}{#3}}
 \newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\text{ #1 }}
 \newcommand{\infixOp}[3]{{#1}\ {#3}\ {#2}}

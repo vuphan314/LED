@@ -16,8 +16,8 @@
   ('prog',
     ('funDef',
       ('funDefNoWhere',
-        ('funT',
-          ('funN',
+        ('formFunExpr',
+          ('funName',
             ('id', 'c')
           )
         ),
@@ -60,6 +60,6 @@
   Type "help", "copyright", "credits" or "license" for more information.
   >>> import led_parser
   >>> led_parser.parse_file('../examples/boolean.led')
-  ('prog', ('funDef', ('funDefNoWhere', ('funT', ('funN', ('id', 'c'))), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',))))), ('ledCmnt', 'test:\n\ncmd:>pp(c)\n"true"'))
+  ('prog', ('funDef', ('funDefNoWhere', ('formFunExpr', ('funName', ('id', 'c'))), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',))))), ('ledCmnt', 'test:\n\ncmd:>pp(c)\n"true"'))
 
   ```

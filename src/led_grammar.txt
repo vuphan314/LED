@@ -2,19 +2,19 @@ prog_el_s(progEls T) ::= prog_el(T)
 prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 
 prog_el(T) ::= hashIsGame(T)
-prog_el(T) ::= def_(T)
+prog_el(T) ::= led_def(T)
 
-def_(funDef T) ::= fun_def(T)
-def_(relDef T) ::= rel_def(T)
+led_def(funDef T) ::= fun_def(T)
+led_def(relDef T) ::= rel_def(T)
 
-fun_def(funDefNoWhere T T2) ::= fun_term(T) colonEq def_body(T2)
-fun_def(funDefWhere T T2 T3) ::= fun_term(T) colonEq def_body(T2) where bool_term(T3)
+fun_def(funDefNoWhere T T2) ::= form_fun_expr(T) colonEq def_body(T2)
+fun_def(funDefWhere T T2 T3) ::= form_fun_expr(T) colonEq def_body(T2) where bool_term(T3)
 
-rel_def(relDefNoWhere T T2) ::= rel_term(T) iff def_body(T2)
-rel_def(relDefWhere T T2 T3) ::= rel_term(T) iff def_body(T2) where bool_term(T3)
+rel_def(relDefNoWhere T T2) ::= form_fun_expr(T) iff def_body(T2)
+rel_def(relDefWhere T T2 T3) ::= form_fun_expr(T) iff def_body(T2) where bool_term(T3)
 
 def_body(T) ::= term(T)
-def_body(T) ::= if_clause_s(T)
+def_body(T) ::= cond_term_s(T)
 
 term(T) ::= nonbool_term(T)
 term(T) ::= bool_term(T)
@@ -105,8 +105,8 @@ inner_bool_term(T) ::= lParenth bool_term(T) rParenth
 inner_bool_term(T) ::= named_term(T)
 inner_bool_term(T) ::= truth(T)
 
-quantified_term(exist T T2) ::= some symbol_s_in_set_term(T) dot bool_term_6(T2)
-quantified_term(univ T T2) ::= all symbol_s_in_set_term(T) dot bool_term_6(T2)
+quantified_term(exist T T2) ::= some sym_s_in_set_term(T) dot bool_term_6(T2)
+quantified_term(univ T T2) ::= all sym_s_in_set_term(T) dot bool_term_6(T2)
 
 set_bool_term(sbset T T2) ::= set_term(T) sub set_term(T2)
 set_bool_term(setMem T T2) ::= set_mem_arg(T) in set_term(T2)
@@ -160,29 +160,29 @@ pipes_arg(T) ::= tuple_term(T)
 term_s(terms T) ::= term(T)
 term_s(terms T cut_root(Ts)) ::= term(T) comma term_s(Ts)
 
-symbol_s(syms T) ::= sym_name(T)
-symbol_s(syms T cut_root(Ts)) ::= sym_name(T) comma symbol_s(Ts)
+sym_s(syms T) ::= led_sym(T)
+sym_s(syms T cut_root(Ts)) ::= led_sym(T) comma sym_s(Ts)
 
-symbol_s_in_set_term(symsInSet T T2) ::= symbol_s(T) in set_term(T2)
+sym_s_in_set_term(symsInSet T T2) ::= sym_s(T) in set_term(T2)
 
 term_if_bool_term(termIfBoolTerm T T2) ::= term(T) if bool_term(T2)
 term_ow(termOw T) ::= term(T) otherwise
 
-if_clause(T) ::= term_if_bool_term(T)
-if_clause(T) ::= term_ow(T)
+cond_term(T) ::= term_if_bool_term(T)
+cond_term(T) ::= term_ow(T)
 
-if_clause_s(ifClauses T) ::= if_clause(T)
-if_clause_s(ifClauses T cut_root(Ts)) ::= if_clause(T) semicolon if_clause_s(Ts)
+cond_term_s(condTerms T) ::= cond_term(T)
+cond_term_s(condTerms T cut_root(Ts)) ::= cond_term(T) semicolon cond_term_s(Ts)
 
-fun_term(funT T) ::= fun_name(T)
-fun_term(funT T T2) ::= fun_name(T) lParenth symbol_s(T2) rParenth
+form_fun_expr(formFunExpr T) ::= fun_name(T)
+form_fun_expr(formFunExpr T T2) ::= fun_name(T) lParenth sym_s(T2) rParenth
 
-rel_term(relT T) ::= rel_name(T)
-rel_term(relT T T2) ::= rel_name(T) lParenth symbol_s(T2) rParenth
+act_fun_expr(actFunExpr T) ::= fun_name(T)
+act_fun_expr(actFunExpr T T2) ::= fun_name(T) lParenth term_s(T2) rParenth
 
-sym_name(symName T) ::= id(T)
-fun_name(funN T) ::= id(T)
-rel_name(relN T) ::= id(T)
+fun_name(T) ::= id(T)
 
-named_term(namedTermNoParenth T) ::= id(T)
-named_term(namedTermParenth T T2) ::= id(T) lParenth term_s(T2) rParenth
+named_term(T) ::= led_sym(T)
+named_term(T) ::= act_fun_expr(T)
+
+led_sym(T) ::= id(T)

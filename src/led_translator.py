@@ -407,7 +407,7 @@ def translateRecur(dat: LedDatum, T) -> str:
         return appendUnderscore(T)
     elif T[0] in lexemes:
         return translateLexemes(dat, T)
-    elif T[0] == 'namedTermParenth':
+    elif T[0] == 'actFunExpr':
         st = applyRecur(dat, T[1], T[2][1:])
         return st
     elif T[0] == 'tpl':
@@ -533,19 +533,19 @@ def addEaselParams(T):
         params = getParamsFromLexeme(id)
         if params != ():
             terms = getIdsTree('terms', 'namedTermNoParenth', params)
-            T = 'namedTermParenth', id, terms
+            T = 'actFunExpr', id, terms
         return T
     elif T[0] == 'constN':
         id = T[1]
         params = getParamsFromLexeme(id)
         if params != ():
             syms = getIdsTree('syms', 'symName', params)
-            T = 'funT', id, syms
+            T = 'formFunExpr', id, syms
         return T
     elif T[0] == 'constDef':
         root = T[0]
         head = addEaselParams(T[1])
-        if head[0] == 'funT':
+        if head[0] == 'formFunExpr':
             root = 'funDef'
         expr = addEaselParams(T[2])
         T2 = root, head, expr
@@ -553,13 +553,13 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == 'namedTermParenth':
+    elif T[0] == 'actFunExpr':
         params = getParamsFromLexeme(T[1])
         terms = T[2]
         terms += getIdsTuple('namedTermNoParenth', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
-    elif T[0] in {'funT', 'relT'}:
+    elif T[0] in {'formFunExpr', 'relT'}:
         params = getParamsFromLexeme(T[1])
         # tst(params)
         syms = T[2]
