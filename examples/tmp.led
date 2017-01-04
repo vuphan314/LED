@@ -1,3 +1,5 @@
+hi \textbf{bold} text
+
 /$
 
 occupied(c) iff occupies(c, `x)

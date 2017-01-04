@@ -9,7 +9,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\lstnewenvironment{ledCmnt}{}{}
+\newenvironment{ledCmnt}{}{}
 
 \newenvironment{ledDef}{\begin{dmath}}{\end{dmath}}
 
