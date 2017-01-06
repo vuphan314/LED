@@ -10,9 +10,11 @@ from debugtools.debug_tool import *
 TEX_TOP = (
     '\\documentclass{led_doc}' '\n'
     '\\begin{document}' '\n'
-    'LED Engine: \\today \\hrulefill' '\n'
+    )
+TEX_BOTTOM = (
+    '\n' '\\hrulefill' '\n'
+    '\\end{document}' '\n'
 )
-TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
 DEF_LABELS = {
     'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
