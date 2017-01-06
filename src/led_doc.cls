@@ -1,6 +1,6 @@
-\LoadClass[10pt]{extarticle}
+\LoadClass[12pt]{extarticle}
 
-\usepackage[hmargin=0.1in]{geometry}
+\usepackage[hmargin=0.5in]{geometry}
 \usepackage[yyyymmdd]{datetime}
 \usepackage{amssymb}
 \usepackage{amsmath}

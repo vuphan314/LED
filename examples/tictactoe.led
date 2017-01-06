@@ -11,7 +11,7 @@ the player whose turn it occupies that cell and it becomes the other player's tu
 game is over. When the game is over a message is displayed giving the result of the  game.
 The player can press the 'reset' button at any time to restart the game.
 
-/section{Data model}
+\section{Data model}
 
 
 A {\em player} is either $x$ or $o$. In this program, the variable $p$ will range over players.
