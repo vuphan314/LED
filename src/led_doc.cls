@@ -1,4 +1,4 @@
-\LoadClass[12pt]{extarticle}
+\LoadClass[11pt]{extarticle}
 
 \usepackage[hmargin=0.5in]{geometry}
 \usepackage[yyyymmdd]{datetime}
@@ -95,7 +95,7 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
-\newcommand{\defNoWhere}[3]{\infixOp{#1}{#2}{#3}}
+\newcommand{\defNoWhere}[3]{{#1} {#3} {#2}}
 \newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\text{ #1 }}
-\newcommand{\infixOp}[3]{{#1}\ {#3}\ {#2}}
+\newcommand{\infixOp}[3]{({#1}) {#3} ({#2})}

@@ -11,10 +11,7 @@ TEX_TOP = (
     '\\documentclass{led_doc}' '\n'
     '\\begin{document}' '\n'
     )
-TEX_BOTTOM = (
-    '\n' '\\hrulefill' '\n'
-    '\\end{document}' '\n'
-)
+TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
 DEF_LABELS = {
     'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
@@ -61,7 +58,7 @@ def weave_recur(T) -> str:
     elif T[0] == 'hashIsGame':
         return ''
     elif T[0] == 'string':
-        return '``' + T[1][1:-1] + '"'
+        return '``' + T[1][1:-1].replace(' ', '\ ') + '"'
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
     elif T[0] in MANY_LABELS:

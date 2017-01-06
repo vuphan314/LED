@@ -239,8 +239,8 @@ region of the game window indicating the player to move, either ``play x's turn'
 \begin{ledDef}
 \funDefNoWhere{currentPlayerDisplay}{
 \begin{cases}
-\termIfBoolTerm{\setNonempty{text \parentheses{``x's turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
-\termOw{\setNonempty{text \parentheses{``o's turn", point \parentheses{100, 750}, fontSize, BLACK}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``x's\ turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
+\termOw{\setNonempty{text \parentheses{``o's\ turn", point \parentheses{100, 750}, fontSize, BLACK}}}
 \end{cases}
 }
 \end{ledDef}
@@ -307,9 +307,9 @@ screen telling the outcome of the game, either ``x won'', "o won", or ``cat got 
 \begin{ledDef}
 \funDefNoWhere{gameResultDisplay}{
 \begin{cases}
-\termIfBoolTerm{\setNonempty{text \parentheses{``x won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
-\termIfBoolTerm{\setNonempty{text \parentheses{``o won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
-\termOw{\setNonempty{text \parentheses{``cat got it", point \parentheses{200, 750}, fontSize, RED}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``x\ won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
+\termIfBoolTerm{\setNonempty{text \parentheses{``o\ won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
+\termOw{\setNonempty{text \parentheses{``cat\ got\ it", point \parentheses{200, 750}, fontSize, RED}}}
 \end{cases}
 }
 \end{ledDef}
@@ -452,5 +452,4 @@ LED engine took: 43 secs.
 \end{verbatim}
 \end{ledCmnt}
 
-\hrulefill
 \end{document}
