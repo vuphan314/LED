@@ -3,48 +3,63 @@
 LED Engine: \today \hrulefill
 
 \begin{ledCmnt}
-Tic Tac Toe
-by Qianji Zheng and J. Nelson Rushton, Texas Tech University
+\title{Tic Tac Toe}
+\date{}
+\author{Qianji Zheng and J. Nelson Rushton, Texas Tech University}
+\maketitle
 
 This is an LED program that defines a simple tic tac toe game to run in the easel game engine.
 
-The game begins with an empty grid and it being x's turn to move. When an empty cell is clicked, the player whose turn it occupies that cell and it becomes the other player's turn, until the game is over. When the game is over a message is displayed giving the result of the  game. The player can press the 'reset' button at any time to restart the game.
+The game begins with an empty gridTic Tac Toe
+ and it being $x$'s turn to move. When an empty cell is clicked,
+the player whose turn it occupies that cell and it becomes the other player's turn, until the
+game is over. When the game is over a message is displayed giving the result of the  game.
+The player can press the 'reset' button at any time to restart the game.
 
-============================================================
-DATA MODEL
-============================================================
+/section{Data model}
 
-A *player* is either `x or `o. In this program, the variable p will range over players.
 
-A *cell* is an integer in {1..9}. In this program, the variable c will range over cells.
+A {\em player} is either $x$ or $o$. In this program, the variable $p$ will range over players.
+
+A {\em cell} is an integer in $\{1..9\}$. In this program, the variable $c$ will range over cells.
 
 Cells represent squares on the tic tac toe board as pictured below:
+
+\begin{verbatim}
+
     1|2|3
     -----
     4|5|6
     -----
     7|8|9
 
-A *move* is a pair (p,c) where p is a player and c is a cell. The move (p,c) represents a move by player p in cell c. In this program, the variable m will range over moves.
+\end{verbatim}
 
-A *state* is a set of moves, thought of as the set of moves made far in the game. In this program, the variable S will range over states.
+A {\em move} is a pair $(p,c)$ where $p$ is a player and $c$ is a cell.
+The move $(p,c)$ represents a move by player $p$ in cell $c$. In this program,
+the variable $m4$ will range over moves.
+
+A {\em state} is a set of moves, thought of as the set of moves made far in the
+game. In this program, the variable $S$ will range over states.
 
 Tell the translator to produce a SequenceL file that runs with Easel:
 \end{ledCmnt}
 
 \begin{ledCmnt}
-Global variables:
-- *currentState*: same type as user-defined *initialState*
-- *mouseClicked*: true/false
-- *mouseX*, *mouseY*: integer
+The following are recognized as constant symmbols in the Easel engvironment
+\begin{enumerate}
+\item $currentState$ (same type as user-defined $initialState$)
+\item $mouseClicked$ (boolean, true if the left mouse button is clicked in the current frame)
+\item $mouseX$, $mouseY$: integer
+\end{enumerate}
 
-============================================================
-GAME RULES
-============================================================
+\section{Game rules}
+
 
 This section defines the rules of tic-tac-toe in LED.
 
-Since the state of the game is the set of moves that have been made, the beginning state *initialState* is the empty set.
+Since the state of the game is the set of moves that have been made,
+the beginning state $initialState$ is the empty set.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -52,7 +67,8 @@ Since the state of the game is the set of moves that have been made, the beginni
 \end{ledDef}
 
 \begin{ledCmnt}
-Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c is *occupied* if it is occupied by `x or by `o.
+Player $p$ {\em occupies} cell $c$ if the move $(p,c)$ is a member of $currentState$.
+Cell $c$ is $occupied$ if it is occupied by $x$ or by $o$.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -64,7 +80,7 @@ Player p *occupies* cell c if the move (p,c) is a member of currentState. Cell c
 \end{ledDef}
 
 \begin{ledCmnt}
-A *row* is a set of cells that form three in a row either horizontally, vertically, or diagonally.
+A {\em row} is a set of cells that form three in a row either horizontally, vertically, or diagonally.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -72,7 +88,7 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledDef}
 
 \begin{ledCmnt}
-*threeInRow(p)* if player p occupies all of the cells in some row.
+{\em threeInRow(p)} if player $p$ occupies all of the cells in some row.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -80,23 +96,23 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledDef}
 
 \begin{ledCmnt}
-*boardFull* if and only if all cells are occupied.
+$boardFull$ if all cells are occupied.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{boardFull}{\eq{\pipesOp{currentState}}{9}}
+\relDefNoWhere{boardFull}{\eq{\pipesOp{currentState}}{9}}
 \end{ledDef}
 
 \begin{ledCmnt}
-*gameOver* if either the board is full, or one of the players three in a row.
+$gameOver$ if either the board is full, or one of the players three in a row.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{gameOver}{\disj{\disj{boardFull}{threeInRow \parentheses{`x}}}{threeInRow \parentheses{`o}}}
+\relDefNoWhere{gameOver}{\disj{\disj{boardFull}{threeInRow \parentheses{`x}}}{threeInRow \parentheses{`o}}}
 \end{ledDef}
 
 \begin{ledCmnt}
-*playerToMove* is `x if an even number of moves have been made, and `o otherwise.
+$playerToMove$ is $x$ if an even number of moves have been made, and $o$ otherwise.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -113,7 +129,9 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledDef}
 
 \begin{ledCmnt}
-*legalToMoveIn(c)* means that it is legal for the player whose turn it is to move in cell c in the current state of the game -- that is, if the game is not over and the cell is not occupied.
+$legalToMoveIn(c)$ means that it is legal for the player whose
+turn it is to move in cell $c$ in the current state of the game ---
+that is, if the game is not over and the cell is not occupied.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -121,11 +139,9 @@ A *row* is a set of cells that form three in a row either horizontally, vertical
 \end{ledDef}
 
 \begin{ledCmnt}
-============================================================
-VIDEO OUTPUT
-============================================================
+\section{Video output}
 
-The default color used in this game is BLACK
+The default color used in this game is $BLACK$.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -149,9 +165,10 @@ The default color used in this game is BLACK
 \end{ledDef}
 
 \begin{ledCmnt}
-------------------------------------------------------------
-
-This section defines the *display* function, specifying the images to display on the screen in each game state. The  *grid* consists is a set of four line segments that make up the tic tac toe playing area.
+The purpose of this section is to define the {\em display} function,
+which specifies the images to display on the screen in each game state.
+The  $gridDisplay$ consists is a set of four line segments that make up the tic
+tac toe playing area.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -167,7 +184,7 @@ The default font size for displayed text in this program is 36.
 \end{ledDef}
 
 \begin{ledCmnt}
-*centerX(c)* and *centerY(c)* are the x and y coordinates of the center of cell c, respectively.
+$centerX(c)$ and $centerY(c)$ are the $x$ and $y$ coordinates of the center of cell $c$, respectively.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -179,7 +196,9 @@ The default font size for displayed text in this program is 36.
 \end{ledDef}
 
 \begin{ledCmnt}
-*cellDisplay(c)* is a display of a text character "x" or an "o" in cell c, or the empty display, respectively in case cell c is occupied by `x, occupied by `o, or not occupied in the current game state.
+$cellDisplay(c)$ is a display of a text character `x' or an `o' in cell $c$,
+or the empty display, respectively in case cell $c$ is occupied by $x$, occupied
+by $o$, or not occupied in the current game state.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -201,7 +220,7 @@ The default font size for displayed text in this program is 36.
 \end{ledDef}
 
 \begin{ledCmnt}
-*cellDisplays* is the set of all images of x's and o's on the board in the current state.
+$cellDisplays$ is the set of all images of $x$'s and $o$'s on the board in the current state.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -213,9 +232,9 @@ The default font size for displayed text in this program is 36.
 \end{ledDef}
 
 \begin{ledCmnt}
-________________
-
-If the game is not over, *currentPlayerDisplay* is a text in the upper left hand region of the game window indicating the player to move, either "play x's turn" or "play o's turn",
+If the game is not over, $currentPlayerDisplay$ is a text in the upper left hand
+region of the game window indicating the player to move, either ``play x's turn'' or
+``play o's turn'',
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -228,7 +247,9 @@ If the game is not over, *currentPlayerDisplay* is a text in the upper left hand
 \end{ledDef}
 
 \begin{ledCmnt}
-The *restart button* consists of a rectangle around a "restart" text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
+The {\em restart button} consists of a rectangle around a ``restart'' text,
+displayed in the upper right region of the screen. Formally, it is a set of
+four line segments and a text.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -280,7 +301,8 @@ The *restart button* consists of a rectangle around a "restart" text, displayed 
 \end{ledDef}
 
 \begin{ledCmnt}
-If the game is over, *gameResultDisplay* is a display in the upper left region of the screen telling the outcome of the game, either "x won", "o won", or "cat got it"
+If the game is over, $gameResultDisplay$ is a display in the upper left region of the
+screen telling the outcome of the game, either ``x won'', "o won", or ``cat got it''
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -294,7 +316,9 @@ If the game is over, *gameResultDisplay* is a display in the upper left region o
 \end{ledDef}
 
 \begin{ledCmnt}
-The *display* is the screen display for the current game state. The grid, cell displays, and restart button are always displayed. Additionally, the display includes the game results if the game is over, and the player to move if the game is not over.
+The ``display'' is the screen display for the current game state. The grid, cell
+displays, and restart button are always displayed. Additionally, the display includes
+the game results if the game is over, and the player to move if the game is not over.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -307,13 +331,13 @@ The *display* is the screen display for the current game state. The grid, cell d
 \end{ledDef}
 
 \begin{ledCmnt}
-============================================================
-MOUSE INPUT
-============================================================
+\section{Mouse input}
 
-This section defines *update*, which specifies the program's response to mouse input. The variable *pt* will vary over points.
+This section defines $update$, which specifies the program's response to mouse
+input. The variable $pt$ will vary over points.
 
-*xMin(c)*, *xMax(c)*, *yMin(c)*, and *yMax(c)* denote the graphical boundaries of cell c, in the obvious manner.
+$xMin(c)$, $xMax(c)$, $yMin(c)$, and $yMax(c)$ denote the graphical boundaries of
+cell $c$, in the obvious manner.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -333,7 +357,7 @@ This section defines *update*, which specifies the program's response to mouse i
 \end{ledDef}
 
 \begin{ledCmnt}
-cellClicked(c) means that cell c has been clicked.
+$cellClicked(c)$ means that cell $c$ has been clicked.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -341,7 +365,7 @@ cellClicked(c) means that cell c has been clicked.
 \end{ledDef}
 
 \begin{ledCmnt}
-*restartClicked* means that the most recent mouse click is inside the region of the play again button.
+$restartClicked$ means that the most recent mouse click is inside the region of the play again button.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -349,9 +373,7 @@ cellClicked(c) means that cell c has been clicked.
 \end{ledDef}
 
 \begin{ledCmnt}
-________________
-
-*moveMade(c)* means that cell c has been clicked and the player to move may legally move there.
+$moveMade(c)$ means that cell c has been clicked and the player to move may legally move there.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -372,6 +394,11 @@ ________________
 \end{ledDef}
 
 \begin{ledCmnt}
+\section{Test cases}
+
+This section contains test cases for use with the SequenceL interpreter.
+
+\begin{verbatim}
 ============================================================
 TEST: SEQUENCEL INTERPRETER
 ============================================================
@@ -422,6 +449,8 @@ cmd:>pp(restartButton)
 ============================================================
 LED engine took: 43 secs.
 ============================================================
+
+\end{verbatim}
 \end{ledCmnt}
 
 \end{document}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-input_base=comment
+input_base=tictactoe
 
 examples_path=../examples
 base_path=$examples_path/$input_base
