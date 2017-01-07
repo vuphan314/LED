@@ -21,8 +21,7 @@
 \newcommand{\funDefNoWhere}[2]{\defNoWhere{#1}{#2}{:=}}
 \newcommand{\funDefWhere}[3]
   {\funDefNoWhere{#1}{#2} \whereClause{#3}}
-\newcommand{\relDefNoWhere}[2]
-  {\defNoWhere{#1}{#2}{\textKeyword{iff}}}
+\newcommand{\relDefNoWhere}[2]{\defNoWhere{#1}{#2}{\equiv}}
 \newcommand{\relDefWhere}[3]
   {\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
@@ -47,11 +46,11 @@
 \newcommand{\starOp}[2]{\infixPar{#1}{#2}{\times}}
 
 % BOOL_OPS
-\renewcommand{\equiv}[2]{\infixPar{#1}{#2}{\iff}}
-\newcommand{\impl}[2]{\infixPar{#1}{#2}{\implies}}
+\newcommand{\equivLED}[2]{\infixPar{#1}{#2}{\Leftrightarrow}}
+\newcommand{\impl}[2]{\infixPar{#1}{#2}{\Rightarrow}}
 \newcommand{\disj}[2]{\infixPar{#1}{#2}{\vee}}
 \newcommand{\conj}[2]{\infixPar{#1}{#2}{\wedge}}
-% built-in \neg
+% builtin \neg
 \newcommand{\eq}[2]{\infixPar{#1}{#2}{=}}
 \newcommand{\uneq}[2]{\infixPar{#1}{#2}{\ne}}
 \newcommand{\less}[2]{\infixPar{#1}{#2}{<}}

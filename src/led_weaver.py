@@ -23,7 +23,8 @@ AGGR_OPS = {
 }
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 BOOL_OPS = {
-    'equiv', 'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
+    # separate 'equiv',
+    'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
 }
 AR_OPS = {'unaryMinus', 'binaryMinus', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
@@ -58,9 +59,11 @@ def weave_recur(T) -> str:
     elif T[0] == 'hashIsGame':
         return ''
     elif T[0] == 'string':
-        return '``' + T[1][1:-1].replace(' ', '\ ') + '"'
+        return get_cmd('texttt', T[1:])
     elif T[0] == 'truth':
         return get_cmd('textKeyword', T[1:])
+    elif T[0] == 'equiv':
+        return get_cmd('equivLED', T[1:])
     elif T[0] in MANY_LABELS:
         return weave_many(T[1:])
     elif T[0] in FUN_EXPRS:
