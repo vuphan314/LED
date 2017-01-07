@@ -1,0 +1,19 @@
+\documentclass{led_doc}
+\begin{document}
+
+\begin{ledCmnt}
+Currently, all infix operands are parenthesized:
+\end{ledCmnt}
+
+\begin{ledDef}
+\funDefNoWhere{zero}{\starOp{0}{\plusOp{1}{2}}}
+\end{ledDef}
+
+\begin{ledCmnt}
+Otherwise:
+$$ zero := 0 \times 1 + 2 $$
+
+(Automatic removal of unnecessary parentheses is nontrivial.)
+\end{ledCmnt}
+
+\end{document}

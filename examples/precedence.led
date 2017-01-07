@@ -1,0 +1,9 @@
+Currently, all infix operands are parenthesized:
+/$
+zero := 0 * (1 + 2)
+$/
+
+Otherwise:
+$$ zero := 0 \times 1 + 2 $$
+
+(Automatic removal of unnecessary parentheses is nontrivial.)
