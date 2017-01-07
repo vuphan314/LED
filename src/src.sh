@@ -1,4 +1,4 @@
-input_base=tictactoe # precedence, tictactoe, tmp
+input_base=precedence # precedence, tictactoe, tmp
 
 examples_path=../examples
 base_path=$examples_path/$input_base
