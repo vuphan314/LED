@@ -201,11 +201,11 @@ by $o$, or not occupied in the current game state.
 \end{ledCmnt}
 
 \begin{ledDef}
-\funDefNoWhere{xImage \parentheses{c}}{text \parentheses{``x", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
+\funDefNoWhere{xImage \parentheses{c}}{text \parentheses{\texttt{"x"}, point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, BLUE}}
 \end{ledDef}
 
 \begin{ledDef}
-\funDefNoWhere{oImage \parentheses{c}}{text \parentheses{``o", point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
+\funDefNoWhere{oImage \parentheses{c}}{text \parentheses{\texttt{"o"}, point \parentheses{centerX \parentheses{c}, centerY \parentheses{c}}, fontSize, GREEN}}
 \end{ledDef}
 
 \begin{ledDef}
@@ -239,8 +239,8 @@ region of the game window indicating the player to move, either ``play x's turn'
 \begin{ledDef}
 \funDefNoWhere{currentPlayerDisplay}{
 \begin{cases}
-\termIfBoolTerm{\setNonempty{text \parentheses{``x's\ turn", point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
-\termOw{\setNonempty{text \parentheses{``o's\ turn", point \parentheses{100, 750}, fontSize, BLACK}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{\texttt{"x's turn"}, point \parentheses{100, 750}, fontSize, BLACK}}}{\eq{playerToMove}{`x}}
+\termOw{\setNonempty{text \parentheses{\texttt{"o's turn"}, point \parentheses{100, 750}, fontSize, BLACK}}}
 \end{cases}
 }
 \end{ledDef}
@@ -296,7 +296,7 @@ four line segments and a text.
 \end{ledDef}
 
 \begin{ledDef}
-\funDefWhere{restartButton}{\setNonempty{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{``restart", point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
+\funDefWhere{restartButton}{\setNonempty{A1, A2, A3, A4, txt}}{\conj{\conj{\conj{\conj{\eq{A1}{segment \parentheses{restartBottomLeftPoint, restartBottomRightPoint, BLACK}}}{\eq{A2}{segment \parentheses{restartTopLeftPoint, restartTopRightPoint, BLACK}}}}{\eq{A3}{segment \parentheses{restartBottomLeftPoint, restartTopLeftPoint, BLACK}}}}{\eq{A4}{segment \parentheses{restartBottomRightPoint, restartTopRightPoint, BLACK}}}}{\eq{txt}{text \parentheses{\texttt{"restart"}, point \parentheses{restartMidX, restartMidY}, fontSize, BLACK}}}}
 \end{ledDef}
 
 \begin{ledCmnt}
@@ -307,9 +307,9 @@ screen telling the outcome of the game, either ``x won'', "o won", or ``cat got 
 \begin{ledDef}
 \funDefNoWhere{gameResultDisplay}{
 \begin{cases}
-\termIfBoolTerm{\setNonempty{text \parentheses{``x\ won", point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
-\termIfBoolTerm{\setNonempty{text \parentheses{``o\ won", point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
-\termOw{\setNonempty{text \parentheses{``cat\ got\ it", point \parentheses{200, 750}, fontSize, RED}}}
+\termIfBoolTerm{\setNonempty{text \parentheses{\texttt{"x won"}, point \parentheses{200, 750}, fontSize, BLUE}}}{threeInRow \parentheses{`x}}
+\termIfBoolTerm{\setNonempty{text \parentheses{\texttt{"o won"}, point \parentheses{200, 750}, fontSize, GREEN}}}{threeInRow \parentheses{`o}}
+\termOw{\setNonempty{text \parentheses{\texttt{"cat got it"}, point \parentheses{200, 750}, fontSize, RED}}}
 \end{cases}
 }
 \end{ledDef}
