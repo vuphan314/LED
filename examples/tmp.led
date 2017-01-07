@@ -1,6 +1,15 @@
-$x y  \texttt{"asdas"} z $
+\blindtext
+
+/$ x := x $/
+
+\blindtext
 
 /$
-x := (-1)^2
-y iff -1^2
+x:=x
+x:=x
+x:=x
+x:=x
+x:=x
 $/
+
+\blindtext

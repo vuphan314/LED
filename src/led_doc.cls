@@ -5,14 +5,16 @@
 \usepackage[yyyymmdd]{datetime}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{listings} \lstset{breaklines}
 \usepackage{breqn}
+\usepackage{blindtext}
+
+\setlength{\parindent}{0pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{ledCmnt}{}{}
 
-\newenvironment{ledDef}{\begin{dmath}}{\end{dmath}}
+\newenvironment{ledDef}{\begin{dmath}}{\end{dmath} \medskip}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLS_CMDS
