@@ -1,4 +1,5 @@
 \LoadClass[11pt]{extarticle}
+% 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
 
 \usepackage[hmargin=0.5in]{geometry}
 \usepackage[yyyymmdd]{datetime}
@@ -63,7 +64,7 @@
 \newcommand{\binaryMinus}[2]{\infixOp{#1}{#2}{-}}
 \renewcommand{\div}[2]{\infixOp{#1}{#2}{/}}
 \newcommand{\md}[2]{\infixOp{#1}{#2}{\textKeyword{mod}}}
-\renewcommand{\exp}[2]{{#1}^{#2}}
+\renewcommand{\exp}[2]{{(#1)} ^ {#2}}
 \newcommand{\flr}[1]{\floors{#1}}
 \newcommand{\clng}[1]{\ceils{#1}}
 
@@ -95,7 +96,9 @@
 \newcommand{\ceils}[1]{\lceil #1 \rceil}
 
 % misc
-\newcommand{\defNoWhere}[3]{{#1} {#3} {#2}}
+\newcommand{\defNoWhere}[3]{{#1}\ {#3}\ {#2}}
 \newcommand{\whereClause}[1]{\\ \textKeyword{where} #1}
 \newcommand{\textKeyword}[1]{\text{ #1 }}
+% \newcommand{\infixOp}[3]{{#1} {#3} {#2}}
+% \newcommand{\infixOp}[3]{({#1} {#3} {#2})}
 \newcommand{\infixOp}[3]{({#1}) {#3} ({#2})}
