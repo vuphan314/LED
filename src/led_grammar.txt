@@ -181,8 +181,7 @@ act_fun_expr(actFunExpr T) ::= fun_name(T)
 act_fun_expr(actFunExpr T T2) ::= fun_name(T) lParenth term_s(T2) rParenth
 
 fun_name(T) ::= id(T)
-
-named_term(T) ::= led_sym(T)
-named_term(T) ::= act_fun_expr(T)
-
 led_sym(T) ::= id(T)
+
+named_term(T) ::= act_fun_expr(T)
+named_term(T) ::= led_sym(T)
