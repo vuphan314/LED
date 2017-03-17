@@ -11,7 +11,7 @@ import <Utilities/Set.sl>;
 
 public
 // pretty-print:
-  prettyPrint, pp, pps,
+  prettyPrint, pp, prettyPrintState, pps,
 // Easel:
   strgToVal,
 // Easel types:
@@ -59,7 +59,7 @@ public
   nu; // numeral
 
 ////////////////////////////////////////////////////////////
-/* null-value */
+/* erroneous value */
 
 kindNull: char(1);
 kindNull :=
@@ -124,9 +124,9 @@ prettyPrintTail(vs(1))[i] :=
     ", " ++ s;
 
 ////////////////////////////////////////////////////////////
-/* easel */
+/* Easel */
 
-/* easel types */
+/* Easel types */
 Point ::= (x: int, y: int);
 Color ::= (red: int, green: int, blue: int);
 Image ::= (
@@ -138,7 +138,7 @@ Image ::= (
 Click ::= (clicked: bool, clPoint: Point);
 Input ::= (iClick: Click, keys: char(1));
 
-/* easel constructors */
+/* Easel constructors */
 
 point: int * int -> Point;
 point(a, b) := (x: a, y: b);
@@ -225,10 +225,10 @@ graphic(graphicFile(1), c, w, h) := (
   height: h, width: w, center: c
 );
 
-/* easel origin-point */
+/* Easel origin-point */
 originPoint := point(0,0);
 
-/* easel colors */
+/* Easel colors */
 dBlack := color(0, 0, 0);
 dRed := color(255, 0, 0);
 dOrange := color(255, 128, 0);
@@ -239,7 +239,7 @@ dIndigo := color(70, 0, 130);
 dViolet := color(148, 0, 211);
 dWhite := color(255, 255, 255);
 
-/* type: easel game-state */
+/* type: Easel game-state */
 
 State ::= (val: Val);
 
@@ -251,11 +251,15 @@ stateToVal: State -> Val;
 stateToVal(s) :=
   s.val;
 
-pps: State -> char(1);
-pps(S) :=
-  prettyPrint(stateToVal(S));
+prettyPrintState: State -> char(1);
+prettyPrintState(s) :=
+  prettyPrint(stateToVal(s));
 
-/* easel global variables: Input/State -> Val */
+pps: State -> char(1);
+pps(s) :=
+  prettyPrintState(s);
+
+/* Easel global variables: Input/State -> Val */
 
 currentState: State -> Val;
 currentState(S) :=
