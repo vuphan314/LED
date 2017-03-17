@@ -312,9 +312,9 @@ kindsEasel := [kindPoint, kindColor, kindImage];
 
 Val ::=
   (kindLed: char(1),
-  strg: char(1), atm: char(1), numb: Numb, trth: bool,
-  coll: Val(1),
-  ePoint: Point, eColor: Color, eImage: Image // Easel);
+  strg: char(1), atm: char(1),
+  numb: Numb, trth: bool, coll: Val(1),
+  ePoint: Point, eColor: Color, eImage: Image); // Easel
 
 valToKind: Val -> char(1);
 valToKind(v) :=
