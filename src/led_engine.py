@@ -31,10 +31,12 @@ def write_output_files(led_path: str, force: bool):
 def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
     sl_str = led_translator.translateTop(syntax_tree)
     write_output_str(sl_str, sl_path, force)
+    print('Wrote {}.'.format(sl_path))
 
 def write_tex(syntax_tree: tuple, tex_path: str, force: bool):
     tex_str = led_weaver.weave_top(syntax_tree)
     write_output_str(tex_str, tex_path, force)
+    print('Wrote {}.'.format(tex_path))
 
 def write_output_str(
     output_str: str, output_path: str, force: bool
@@ -74,7 +76,7 @@ def main():
         force = parsed_argv.force
         write_output_files(led_path, force)
     time_taken = int(time.time() - time_start)
-    print('LED engine took: {} secs.\n'.format(time_taken))
+    print('LED engine took: {} secs.'.format(time_taken))
 
 if __name__ == '__main__':
     main()
