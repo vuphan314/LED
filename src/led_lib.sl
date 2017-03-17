@@ -130,12 +130,11 @@ prettyPrintTail(vs(1))[i] :=
 /* Easel types */
 Point ::= (x: int, y: int);
 Color ::= (red: int, green: int, blue: int);
-Image ::= (
-  kind: char(1), iColor: Color,
+Image ::=
+  (kind: char(1), iColor: Color,
   vert1: Point, vert2: Point, vert3: Point,
   center: Point, radius: int, height: int, width: int,
-  message: char(1), source: char(1)
-);
+  message: char(1), source: char(1));
 Click ::= (clicked: bool, clPoint: Point);
 Input ::= (iClick: Click, keys: char(1));
 
@@ -311,12 +310,11 @@ kindsEasel := [kindPoint, kindColor, kindImage];
 ////////////////////////////////////////////////////////////
 /* type: value */
 
-Val ::= (
-  kindLed: char(1),
+Val ::=
+  (kindLed: char(1),
   strg: char(1), atm: char(1), numb: Numb, trth: bool,
   coll: Val(1),
-  ePoint: Point, eColor: Color, eImage: Image // Easel
-);
+  ePoint: Point, eColor: Color, eImage: Image // Easel);
 
 valToKind: Val -> char(1);
 valToKind(v) :=
