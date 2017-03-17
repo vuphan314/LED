@@ -98,7 +98,8 @@ prettyPrint(v) :=
     "CANNOT PRETTY-PRINT THIS TYPE";
 
 pp: Val -> char(1);
-pp(v) := prettyPrint(v);
+pp(v) :=
+  prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
 prettyPrintColl(vs(1), k(1)) :=
@@ -141,7 +142,8 @@ Input ::= (iClick: Click, keys: char(1));
 /* Easel constructors */
 
 point: int * int -> Point;
-point(a, b) := (x: a, y: b);
+point(a, b) :=
+  (x: a, y: b);
 
 point_: Val * Val -> Val;
 point_(v1, v2) :=
@@ -153,7 +155,8 @@ point_(v1, v2) :=
     pointToVal(p);
 
 color: int * int * int -> Color;
-color(r, g, b) := (red: r, green: g, blue: b);
+color(r, g, b) :=
+  (red: r, green: g, blue: b);
 
 color_: Val * Val * Val -> Val;
 color_(v1, v2, v3) :=
@@ -166,15 +169,16 @@ color_(v1, v2, v3) :=
     colorToVal(c);
 
 click: bool * Point -> Click;
-click(cl, p) := (clicked: cl, clPoint: p);
+click(cl, p) :=
+  (clicked: cl, clPoint: p);
 
 input: Click * char(1) -> Input;
-input(cl, k(1)) := (iClick: cl, keys: k);
+input(cl, k(1)) :=
+  (iClick: cl, keys: k);
 
 segment: Point * Point * Color -> Image;
-segment(e1, e2, c) := (
-  kind: "segment", vert1: e1, vert2: e2, iColor: c
-);
+segment(e1, e2, c) :=
+  (kind: "segment", vert1: e1, vert2: e2, iColor: c);
 
 segment_: Val * Val * Val -> Val;
 segment_(v1, v2, v3) :=
@@ -187,15 +191,13 @@ segment_(v1, v2, v3) :=
     imageToVal(i);
 
 circle: Point * int * Color -> Image;
-circle(ce, rad, c) := (
-  kind: "circle", center: ce, radius: rad, iColor: c
-);
+circle(ce, rad, c) :=
+  (kind: "circle", center: ce, radius: rad, iColor: c);
 
 text: char(1) * Point * int * Color -> Image;
-text(mes(1), cen, he, c) := (
-  kind: "text", center: cen, height: he,
-  iColor: c, message: mes
-);
+text(mes(1), cen, he, c) :=
+  (kind: "text", center: cen, height: he,
+  iColor: c, message: mes);
 
 text_: Val * Val * Val * Val -> Val;
 text_(v1, v2, v3, v4) :=
@@ -209,21 +211,17 @@ text_(v1, v2, v3, v4) :=
     imageToVal(t);
 
 disc: Point * int * Color -> Image;
-disc(ce, rad, c) := (
-  kind: "disc", center: ce, radius: rad, iColor: c
-);
+disc(ce, rad, c) :=
+  (kind: "disc", center: ce, radius: rad, iColor: c);
 
 fTri: Point * Point * Point * Color -> Image;
-fTri(v1, v2, v3, c) := (
-  kind: "triangle", vert1: v1, vert2: v2, vert3: v3,
-  iColor: c
-);
+fTri(v1, v2, v3, c) :=
+  (kind: "triangle", vert1: v1, vert2: v2, vert3: v3, iColor: c);
 
 graphic: char(1) * Point * int * int -> Image;
-graphic(graphicFile(1), c, w, h) := (
-  kind: "graphic", source: graphicFile, radius: 0,
-  height: h, width: w, center: c
-);
+graphic(graphicFile(1), c, w, h) :=
+  (kind: "graphic", source: graphicFile, radius: 0,
+  height: h, width: w, center: c);
 
 /* Easel origin-point */
 originPoint := point(0,0);
@@ -362,8 +360,14 @@ valToAtm(v) :=
 valToColl: Val -> Val(1);
 valToColl(v) :=
   v.coll;
-valToTpl(v) := valToColl(v);
-valToSet(v) := valToColl(v);
+
+valToTpl: Val -> Val(1);
+valToTpl(v) :=
+  valToColl(v);
+
+valToSet: Val -> Val(1);
+valToSet(v) :=
+  valToColl(v);
 
 valToPoint: Val -> Point;
 valToPoint(v) :=
@@ -391,7 +395,10 @@ valToImages(v)[i] :=
 numlToVal: char(1) -> Val;
 numlToVal(n(1)) :=
   numbToVal(numlToNumb(n));
-nu(n(1)) := numlToVal(n);
+
+nu: char(1) -> Val;
+nu(n(1)) :=
+  numlToVal(n);
 
 numbToVal: Numb -> Val;
 numbToVal(n) :=
@@ -400,27 +407,43 @@ numbToVal(n) :=
 trthToVal: bool -> Val;
 trthToVal(t) :=
   (kindLed: kindTrth, trth: t);
-tr(t) := trthToVal(t);
+
+tr: bool -> Val;
+tr(t) :=
+  trthToVal(t);
 
 strgToVal: char(1) -> Val;
 strgToVal(s(1)) :=
   (kindLed: kindStrg, strg: s);
-st(s(1)) := strgToVal(s);
+
+
+st: char(1) -> Val;
+st(s(1)) :=
+  strgToVal(s);
 
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
   (kindLed: kindAtm, atm: a);
-at(a(1)) := atmToVal(a);
+
+at: char(1) -> Val;
+at(a(1)) :=
+  atmToVal(a);
 
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
   (kindLed: kindTpl, coll: t);
-tu(t(1)) := tplToVal(t);
+
+tu: Val(1) -> Val;
+tu(t(1)) :=
+  tplToVal(t);
 
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
   (kindLed: kindSet, coll: removeDups(s));
-se(s(1)) := setToVal(s);
+
+se: Val(1) -> Val;
+se(s(1)) :=
+  setToVal(s);
 
 pointToVal: Point -> Val;
 pointToVal(p) :=
@@ -761,7 +784,10 @@ intervalToVal(v1, v2) :=
     s := twoIntsToSet(i1, i2);
   in
     setToVal(s);
-iv(v1, v2) := intervalToVal(v1, v2);
+
+iv: Val * Val -> Val;
+iv(v1, v2) :=
+  intervalToVal(v1, v2);
 
 twoIntsToSet: int32 * int32 -> Val(1);
 twoIntsToSet(i1, i2)[ind] :=
