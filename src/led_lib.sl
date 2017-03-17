@@ -1,9 +1,6 @@
-/*
-LED library written in SequenceL
-*/
+/* LED library written in SequenceL */
 
 ////////////////////////////////////////////////////////////
-/* import */
 
 import <Utilities/Conversion.sl>;
 import <Utilities/Math.sl>;
@@ -11,56 +8,55 @@ import <Utilities/Sequence.sl>;
 import <Utilities/Set.sl>;
 
 ////////////////////////////////////////////////////////////
-/* export */
 
 public
-  // pretty-print
-    prettyPrint, pp, pps,
-  // Easel
-    strgToVal,
-  // Easel types
-    Click, Image, Point,
-  // Easel paramters
-    Input, State,
-  // Easel helpers
-    currentState, valToState, valToImages,
-    text_, point_, color_,
-  // LED types
-    Val, Numb,
-  // erroneous value
-    valNull,
-  // aggregation
-    setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
-  // solution set
-    solGround, solEq, solEqs, solSet, solDisj, unnBinds,
-  // quantification
-    someSet, allSet, valToSet,
-  // when-clauses
-    valToTrth,
-  // some values
-    valTrue, valFalse,
-  // boolean
-    equiv, impl, disj, conj, neg,
-  // equality
-    eq, uneq,
-  // relational
-    less, greater, lessEq, greaterEq,
-  // overloaded
-    pipesOp, plusOp, starOp,
-  // set
-    setMem, sbset, unn, nrsec, diff, powSet,
-  // arithmetic
-    binaryMinus, unaryMinus, div, flr, clng, md, exp,
-  // tuple
-    tuIn, tuSl,
-  // to value
-    tu, // tuple
-    se, // set
-    iv, // interval
-    st, // string
-    at, // atom
-    tr, // truth
-    nu; // numeral
+// pretty-print:
+  prettyPrint, pp, pps,
+// Easel:
+  strgToVal,
+// Easel types:
+  Click, Image, Point,
+// Easel paramters:
+  Input, State,
+// Easel helpers:
+  currentState, valToState, valToImages,
+  text_, point_, color_,
+// LED types:
+  Val, Numb,
+// erroneous value:
+  valNull,
+// aggregation:
+  setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
+// solution set:
+  solGround, solEq, solEqs, solSet, solDisj, unnBinds,
+// quantification:
+  someSet, allSet, valToSet,
+// when-clauses:
+  valToTrth,
+// some values:
+  valTrue, valFalse,
+// boolean:
+  equiv, impl, disj, conj, neg,
+// equality:
+  eq, uneq,
+// relational:
+  less, greater, lessEq, greaterEq,
+// overloaded:
+  pipesOp, plusOp, starOp,
+// set:
+  setMem, sbset, unn, nrsec, diff, powSet,
+// arithmetic:
+  binaryMinus, unaryMinus, div, flr, clng, md, exp,
+// tuple:
+  tuIn, tuSl,
+// to value:
+  tu, // tuple
+  se, // set
+  iv, // interval
+  st, // string
+  at, // atom
+  tr, // truth
+  nu; // numeral
 
 ////////////////////////////////////////////////////////////
 /* null-value */
