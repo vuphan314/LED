@@ -67,7 +67,7 @@ kindNull :=
 
 valNull: Val;
 valNull :=
-  (kindLED: kindNull);
+  (kindLed: kindNull);
 
 ////////////////////////////////////////////////////////////
 /* pretty-print */
@@ -301,7 +301,7 @@ kindsEasel := [kindPoint, kindColor, kindImage];
 /* type: value */
 
 Val ::= (
-  kindLED: char(1),
+  kindLed: char(1),
   strg: char(1), atm: char(1), numb: Numb, trth: bool,
   coll: Val(1),
   ePoint: Point, eColor: Color, eImage: Image // Easel
@@ -309,7 +309,7 @@ Val ::= (
 
 valToKind: Val -> char(1);
 valToKind(v) :=
-  v.kindLED;
+  v.kindLed;
 
 valOfKind: Val * char(1) -> bool;
 valOfKind(v, k(1)) :=
@@ -382,44 +382,44 @@ nu(n(1)) := numlToVal(n);
 
 numbToVal: Numb -> Val;
 numbToVal(n) :=
-  (kindLED: kindNumb, numb: n);
+  (kindLed: kindNumb, numb: n);
 
 trthToVal: bool -> Val;
 trthToVal(t) :=
-  (kindLED: kindTrth, trth: t);
+  (kindLed: kindTrth, trth: t);
 tr(t) := trthToVal(t);
 
 strgToVal: char(1) -> Val;
 strgToVal(s(1)) :=
-  (kindLED: kindStrg, strg: s);
+  (kindLed: kindStrg, strg: s);
 st(s(1)) := strgToVal(s);
 
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
-  (kindLED: kindAtm, atm: a);
+  (kindLed: kindAtm, atm: a);
 at(a(1)) := atmToVal(a);
 
 tplToVal: Val(1) -> Val;
 tplToVal(t(1)) :=
-  (kindLED: kindTpl, coll: t);
+  (kindLed: kindTpl, coll: t);
 tu(t(1)) := tplToVal(t);
 
 setToVal: Val(1) -> Val;
 setToVal(s(1)) :=
-  (kindLED: kindSet, coll: removeDups(s));
+  (kindLed: kindSet, coll: removeDups(s));
 se(s(1)) := setToVal(s);
 
 pointToVal: Point -> Val;
 pointToVal(p) :=
-  (kindLED: kindPoint, ePoint: p);
+  (kindLed: kindPoint, ePoint: p);
 
 colorToVal: Color -> Val;
 colorToVal(c) :=
-  (kindLED: kindColor, eColor: c);
+  (kindLed: kindColor, eColor: c);
 
 imageToVal: Image -> Val;
 imageToVal(i) :=
-  (kindLED: kindImage, eImage: i);
+  (kindLed: kindImage, eImage: i);
 
 ////////////////////////////////////////////////////////////
 /* aggregation */
