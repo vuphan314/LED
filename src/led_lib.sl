@@ -81,14 +81,23 @@ prettyPrint(v) :=
     t := valToTrth(v);
     c := valToColl(v);
   in
-    "ERRONEOUS VALUE" when valOfKind(v, kindNull) else
-    s when valOfKind(v, kindStrg) else
-    a when valOfKind(v, kindAtm) else
-    numl when valOfKind(v, kindNumb) else
-    Conversion::boolToString(t) when valOfKind(v, kindTrth) else
-    prettyPrintColl(c, valToKind(v)) when valOfKinds(v, kindsColl) else
-    "an Easel " ++ valToKind(v) when valOfKinds(v, kindsEasel) else
+    "ERRONEOUS VALUE"
+      when valOfKind(v, kindNull) else
+    s
+      when valOfKind(v, kindStrg) else
+    a
+      when valOfKind(v, kindAtm) else
+    numl
+      when valOfKind(v, kindNumb) else
+    Conversion::boolToString(t)
+      when valOfKind(v, kindTrth) else
+    prettyPrintColl(c, valToKind(v))
+      when valOfKinds(v, kindsColl) else
+    "an Easel " ++ valToKind(v)
+      when valOfKinds(v, kindsEasel) else
     "CANNOT PRETTY-PRINT THIS TYPE";
+
+pp: Val -> char(1);
 pp(v) := prettyPrint(v);
 
 prettyPrintColl: Val(1) * char(1) -> char(1);
