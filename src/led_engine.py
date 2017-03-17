@@ -5,7 +5,6 @@ a semantically equivalent SL program.
 """
 
 ############################################################
-"""Import."""
 
 import argparse
 import os
@@ -19,30 +18,27 @@ import led_weaver
 
 ############################################################
 
-def write_output_files(led_path: str, force: bool) -> None:
+def write_output_files(led_path: str, force: bool):
     syntax_tree = led_parser.parse_file(led_path)
     sl_path, tex_path = [
         append_base_path(led_path, ext)
         for ext in ['.sl', '.tex']
     ]
+    print('Skipped writing SequenceL.')
     # write_sl(syntax_tree, sl_path, force) #todo
     write_tex(syntax_tree, tex_path, force)
 
-def write_sl(
-    syntax_tree: tuple, sl_path: str, force: bool
-) -> None:
+def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
     sl_str = led_translator.translateTop(syntax_tree)
     write_output_str(sl_str, sl_path, force)
 
-def write_tex(
-    syntax_tree: tuple, tex_path: str, force: bool
-) -> None:
+def write_tex(syntax_tree: tuple, tex_path: str, force: bool):
     tex_str = led_weaver.weave_top(syntax_tree)
     write_output_str(tex_str, tex_path, force)
 
 def write_output_str(
     output_str: str, output_path: str, force: bool
-) -> None:
+):
     write_mode = 'w' if force else 'x'
     with open(output_path, write_mode) as output_file:
         output_file.write(output_str)
@@ -67,7 +63,7 @@ class ArgvParser(argparse.ArgumentParser):
 
 ############################################################
 
-def main() -> None:
+def main():
     time_start = time.time()
     argv_parser = ArgvParser()
     if len(sys.argv) == 1:
