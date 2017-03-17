@@ -123,8 +123,7 @@ class RegionParser:
         parsed_elements = []
         cur_line = 1
         while True:
-            # search for the start of
-            # the next program region
+            # find the start of the next program region
             region_start = re.search(
                 r'/\$', unparsed_remainder
             )
@@ -162,8 +161,7 @@ class RegionParser:
             )
             cur_line += region.count('\n')
 
-            # remove current pre_region and
-            # region from unparsed_remainder
+            # remove pre_region & region from unparsed_remainder
             unparsed_remainder = unparsed_remainder[
                 region_end.end():
             ]
@@ -182,32 +180,30 @@ class RegionParser:
     def get_elements_from_region(
         self, region: str, line_number: int
     ) -> list:
-        # obtain lexing sequence from
-        # the region starting at line_number
+        # obtain lexing_sequence from
+        # region (starting at line_number)
         lexing_sequence = (
             self.lexer_instance.get_lexing_sequence(
                 region
             )
         )
 
-        # obtain parsetree
+        # obtain ast
         ast = self.parser_instance.get_ast(lexing_sequence)
         if ast is None:
             raise InvalidRegion(line_number, region)
 
-        # return cut_root (list of program elements) of
-        # the parsetree
+        # return cut_root (list of program elements) of ast
         return ast.children_list()
 
 class ParserError(Exception):
     def __init__(self, line_number: int, contents=''):
-        # super().__init__()
         self.contents = contents.strip()
         self.line_number = line_number
 
     def __str__(self):
         return (
-            '\n' 'The LED program contains '
+            '\nThe LED program contains '
             'an unmatched/invalid region starting from '
             'line {}:\n{}'.format(
                 self.line_number, self.contents
@@ -222,7 +218,7 @@ class InvalidRegion(ParserError):
 
 ############################################################
 
-def main() -> None:
+def main():
     led_path = sys.argv[1]
     syntax_dict = parse_file(led_path, verbose=True)
 
