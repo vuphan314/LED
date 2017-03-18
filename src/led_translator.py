@@ -334,19 +334,19 @@ def translateTop(T: tuple) -> str:
     return st
 
 ############################################################
-"""Copy LED library to end of easel output file."""
+"""Appened the LED library to the output SL file."""
 
-libName = 'led_lib.sl'
+LIB_NAME = 'led_lib.sl'
 
 def getLibsStr() -> str:
     st = ''
-    with open(libName) as libFile:
+    with open(LIB_NAME) as libFile:
         stLib = libFile.read()
         msg = '''
 
 {}
 
-'''.format(blockComment('BELOW IS A COPY OF ' + libName))
+'''.format(blockComment('BELOW IS A COPY OF ' + LIB_NAME))
         stLib = msg + stLib + '\n'
         stLib = markStartEnd(stLib) + '\n\n'
         st += stLib
@@ -392,7 +392,7 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 def translateRecur(dat: LedDatum, T) -> str:
     if isinstance(T, str):
         return appendUnderscore(T)
-    elif T[0] in lexemes:
+    elif T[0] in LEXEMES:
         return translateLexemes(dat, T)
     elif T[0] == 'actFunExpr':
         st = applyRecur(dat, T[1], T[2][1:])
@@ -403,15 +403,15 @@ def translateRecur(dat: LedDatum, T) -> str:
         return translateSet(dat, T)
     elif T[0] in AGGR_OPS:
         return translateAggr(dat, T)
-    elif T[0] in quantOps:
+    elif T[0] in QUANT_OPS:
         return translateQuant(dat, T)
     elif T[0] in nonstrictOps:
         return translateNonstrictOps(dat, T)
-    elif T[0] in libOps:
+    elif T[0] in LIB_OPS:
         return translateLibOps(dat, T)
-    elif T[0] in ifLabels:
+    elif T[0] in IF_LABELS:
         return translateIfClauses(dat, T)
-    elif T[0] in defLabels:
+    elif T[0] in DEF_LABELS:
         return translateDef(dat, T)
     else:
         return recurStr(translateRecur, dat, T)
@@ -690,7 +690,7 @@ def someStrFound(T, sts) -> bool:
 ############################################################
 """Translate constant/function/relation definitions."""
 
-defLabels = {'constDef', 'funDef', 'relDef'}
+DEF_LABELS = {'constDef', 'funDef', 'relDef'}
 
 def translateDef(dat: LedDatum, T) -> str:
     func = translateRecur(dat, T[1][1])
@@ -709,7 +709,7 @@ def translateDef(dat: LedDatum, T) -> str:
     )
     return st
 
-ifLabels = {'termIfBoolTerms', 'termIfBoolTermsO'}
+IF_LABELS = {'termIfBoolTerms', 'termIfBoolTermsO'}
 
 def translateIfClauses(dat: LedDatum, T) -> str:
     if T[0] == 'termOw':
@@ -802,20 +802,17 @@ def writeWhenElseClause(
 ############################################################
 """Translate LED library operations."""
 
-equalityOps = {'eq', 'uneq'}
-relationalOps = {'less', 'greater', 'lessEq', 'greaterEq'}
-boolOps = {'equiv', 'disj', 'neg'}
-overloadedOps = {'pipesOp', 'plusOp', 'starOp'}
-arOps = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
-setOps = {
-    'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet',
-    'iv'
-}
-tupleOps = {'tuIn', 'tuSl'}
+AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
+BOOL_OPS = {'equiv', 'disj', 'neg'}
+EQUALITY_OPS = {'eq', 'uneq'}
+OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
+RELATIONAL_OPS = {'less', 'greater', 'lessEq', 'greaterEq'}
+SET_OPS = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
+TUPLE_OPS = {'tuIn', 'tuSl'}
 
-libOps = (
-    overloadedOps | equalityOps | relationalOps | arOps |
-    setOps | boolOps | tupleOps
+LIB_OPS = (
+    AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS |
+    RELATIONAL_OPS | SET_OPS = | TUPLE_OPS
 )
 
 def translateLibOps(dat: LedDatum, T) -> str:
@@ -898,12 +895,12 @@ def termIfBoolTermsTotermIfBoolTermsO(termIfBoolTerms):
 ############################################################
 """Expand quantifying symbols."""
 
-quantOps = {'exist', 'univ'}
+QUANT_OPS = {'exist', 'univ'}
 
 def expandSymsInS(T):
     if type(T) == str:
         return T
-    elif T[0] in quantOps:
+    elif T[0] in QUANT_OPS:
         T2 = symsInSetToSymbInSet(T)
         return T2
     else:
@@ -1074,11 +1071,11 @@ def getSymbsFromSyms(T) -> tuple:
 
 lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
 dicts = lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}
-lexemes = unionDicts(dicts)
+LEXEMES = unionDicts(dicts)
 
 def translateLexemes(dat: LedDatum, T) -> str:
     lex = T[0]
-    func = lexemes[lex]
+    func = LEXEMES[lex]
     arg = T[1]
     if lex in lexemesDoublyQuoted:
         arg = addDoubleQuotes(arg)
