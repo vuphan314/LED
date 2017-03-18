@@ -40,39 +40,36 @@ class LedDatum:
         return dat
 
     def getNextIndepSymbs(self) -> tuple:
-        T = self.getSymbs()
-        return T
+        return self.getSymbs()
+        # current dependent symbols will be next independent symbols
 
-    def appendToAux(
-        self, extraAppend: str, isNext=False
-    ) -> str:
+    def appendToAux(self, postfix: str, isNext=False) -> str:
         num = auxFuncNum
         if isNext:
             num += 1
-        st = 'AUX_' + str(num) + '_' + extraAppend + '_'
+        st = 'AUX_' + str(num) + '_' + postfix + '_'
         return st
 
     """Fields specific to aggregation."""
-    # must assign immediately when instantiating
+    # must assign immediately when instantiating:
     aCateg = None # str
-    # must assign later by calling function aDefFunc
+    # must assign later by calling aDefFunc:
     aFunc = None # 'AUX_3_(x, y)'
 
     aVal = ''
-    # ground: 'x < y'
-    # eq:     'x + 1'
-    # set:    'x...2*x'
+        # ground: 'x < y'
+        # eq:     'x + 1'
+        # set:    'x...2*x'
 
-
-    # term
+    # term:
     aTerm = None # 'x + y'
-    condInst = None # LedDatum
+    condInst = None # condition instance (LedDatum)
 
-    # conj/disj
+    # conj/disj:
     subInst1 = None # LedDatum
     subInst2 = None # LedDatum
 
-    def aCheckCateg(self) -> None:
+    def aCheckCateg(self):
         if self.aCateg not in aCategs:
             raiseError('INVALID AGGREGATE CATEGORY')
 
@@ -485,8 +482,8 @@ def recurTuple(F, dat: LedDatum, T) -> tuple:
         tu += F(dat, t)
     return tu
 
-def recurVoid(F, dat: LedDatum, T) -> None:
-    """F: LedDatum * tree -> None."""
+def recurVoid(F, dat: LedDatum, T):
+    """F: LedDatum * tree."""
     for t in T[1:]:
         F(dat, t)
 
@@ -500,7 +497,7 @@ def recurTree(F, T):
 ############################################################
 """Update defined functions/constants."""
 
-def updateDefedFuncsConsts(prog) -> None:
+def updateDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
     for definition in prog[1:]:
@@ -509,7 +506,7 @@ def updateDefedFuncsConsts(prog) -> None:
         if definition[0] == 'constDef':
             defedConsts += st,
 
-def updateDefedConsts(prog) -> None:
+def updateDefedConsts(prog):
     global defedConsts
     defedConsts = ()
     for definition in prog[1:]:
@@ -636,7 +633,7 @@ funcsAddParams = {
     'addBoth': easelFuncsAddBoth
 }
 
-def updateFuncsAddParams(prog) -> None:
+def updateFuncsAddParams(prog):
     for definition in prog[1:]:
         head = translateRecur(LedDatum(), definition[1][1])
         if head not in easelFuncs:
@@ -1016,7 +1013,7 @@ def translateAggr(dat: LedDatum, T) -> str:
     else:
         return recurStr(translateAggr, dat, T)
 
-def updateDepSymbsRecur(dat: LedDatum, T) -> None:
+def updateDepSymbsRecur(dat: LedDatum, T):
     if type(T) == tuple:
         if T[0] == 'namedTermNoParenth':
             st = T[1][1]
