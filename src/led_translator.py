@@ -798,12 +798,18 @@ def writeWhenElseClause(
 ############################################################
 """Translate LED library operations."""
 
-AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
+AR_OPS = {
+    'binaryMinus', 'unaryMinus',
+    'div', 'flr', 'clng', 'md', 'exp'
+}
 BOOL_OPS = {'equiv', 'disj', 'neg'}
 EQUALITY_OPS = {'eq', 'uneq'}
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 RELATIONAL_OPS = {'less', 'greater', 'lessEq', 'greaterEq'}
-SET_OPS = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
+SET_OPS = {
+    'setMem', 'sbset', 'unn', 'nrsec', 'diff',
+    'powSet', 'iv'
+}
 TUPLE_OPS = {'tuIn', 'tuSl'}
 
 LIB_OPS = (
@@ -1065,15 +1071,16 @@ def getSymbsFromSyms(T) -> tuple:
 ############################################################
 """Translate lexemes."""
 
-lexemesDoublyQuoted = {'numl': 'nu', 'atom': 'at'}
-dicts = lexemesDoublyQuoted, {'string': 'st', 'truth': 'tr'}
-LEXEMES = unionDicts(dicts)
+LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
+LEXEMES = unionDicts(
+    (LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'})
+)
 
 def translateLexemes(dat: LedDatum, T) -> str:
     lex = T[0]
     func = LEXEMES[lex]
     arg = T[1]
-    if lex in lexemesDoublyQuoted:
+    if lex in LEXEMES_DOUBLY_QUOTED:
         arg = addDoubleQuotes(arg)
     args = arg,
     st = applyRecur(dat, func, args, isInLib=True)
@@ -1082,20 +1089,20 @@ def translateLexemes(dat: LedDatum, T) -> str:
 ############################################################
 """Import and use LED library."""
 
-libPath = '../led_lib.sl'
-libAs = ''
+LIB_PATH = '../led_lib.sl'
+LIB_AS = ''
 
 def importLib() -> str:
     st = 'import * from {} as '.format(
-        addDoubleQuotes(libPath)
+        addDoubleQuotes(LIB_PATH)
     )
-    if libAs != '':
-        st += libAs + '::'
+    if LIB_AS != '':
+        st += LIB_AS + '::'
     st += '*;\n\n'
     return st
 
 def prependLib(st: str) -> str:
-    st = libAs + st
+    st = LIB_AS + st
     return st
 
 ############################################################
