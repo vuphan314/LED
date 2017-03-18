@@ -689,7 +689,7 @@ def someStrFound(T, sts) -> bool:
         return False
 
 ############################################################
-"""Translate constant/function/relation definitions."""
+"""Tangle constant/function/relation definitions."""
 
 DEF_LABELS = {'constDef', 'funDef', 'relDef'}
 
@@ -744,7 +744,7 @@ def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
         raiseError('INVALID WHERE CLAUSES')
 
 ############################################################
-"""Translate collections."""
+"""Tangle collections."""
 
 def tangleTuple(dat: LedDatum, T) -> str:
     func = 'tu'
@@ -800,7 +800,7 @@ def writeWhenElseClause(
     return st
 
 ############################################################
-"""Translate LED library operations."""
+"""Tangle LED library operations."""
 
 AR_OPS = {
     'binaryMinus', 'unaryMinus',
@@ -1072,7 +1072,7 @@ def getSymbsFromSyms(T) -> tuple:
     return symbs
 
 ############################################################
-"""Translate lexemes."""
+"""Tangle lexemes."""
 
 LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
 LEXEMES = unionDicts(

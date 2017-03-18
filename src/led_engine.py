@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """LED engine.
 
 Convert an LED program into
@@ -13,7 +15,7 @@ import time
 
 from debugtools.debug_tool import *
 import led_parser
-import led_translator
+import led_tangler
 import led_weaver
 
 ############################################################
@@ -29,7 +31,7 @@ def write_output_files(led_path: str, force: bool):
     write_tex(syntax_tree, tex_path, force)
 
 def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
-    sl_str = led_translator.translateTop(syntax_tree)
+    sl_str = led_tangler.tangleTop(syntax_tree)
     write_output_str(sl_str, sl_path, force)
     print('Wrote {}.'.format(sl_path))
 
