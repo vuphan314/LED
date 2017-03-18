@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """Convert an LED parsetree to a SL program."""
 
 ############################################################
@@ -15,12 +17,7 @@ defedConsts = () # ('c1', 'c2',...)
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
-funcsAddParams = {
-    'addNeither': EASEL_FUNCS_ADD_NEITHER,
-    'addInput': EASEL_FUNCS_ADD_INPUT,
-    'addState': EASEL_FUNCS_ADD_STATE,
-    'addBoth': EASEL_FUNCS_ADD_BOTH
-}
+funcsAddParams = {} # set by setFuncsAddParams
 
 ############################################################
 
@@ -198,12 +195,12 @@ class LedDatum:
             expr = applyRecur(self, func, (), inds=(num,))
             sts += defRecur(self, symb, (), expr),
 
-        return = letCls[:n] + sts + letCls[n:]
+        return letCls[:n] + sts + letCls[n:]
 
     def aGetFuncConjDeep(self) -> str:
         func = self.appendToAux('DEEP')
         args = self.indepSymbs
-        return st = applyRecur(self, func, args)
+        return applyRecur(self, func, args)
 
     """Fields specific to quantification."""
     isUniv = None # bool
@@ -307,7 +304,7 @@ def translateTop(T: tuple) -> str:
     T = addOtherwiseClause(T)
     updateDefedFuncsConsts(T)
     if isGame:
-        updateFuncsAddParams(T)
+        setFuncsAddParams(T)
         T = addEaselParams(T)
         updateDefedConsts(T)
             # parameters were added to some constants,
@@ -624,7 +621,14 @@ EASEL_FUNCS = (
     EASEL_FUNCS_ADD_STATE | EASEL_FUNCS_ADD_BOTH
 )
 
-def updateFuncsAddParams(prog):
+def setFuncsAddParams(prog):
+    global funcsAddParams
+    funcsAddParams = {
+        'addNeither': EASEL_FUNCS_ADD_NEITHER,
+        'addInput': EASEL_FUNCS_ADD_INPUT,
+        'addState': EASEL_FUNCS_ADD_STATE,
+        'addBoth': EASEL_FUNCS_ADD_BOTH
+    }
     for definition in prog[1:]:
         head = translateRecur(LedDatum(), definition[1][1])
         if head not in EASEL_FUNCS:
@@ -637,7 +641,6 @@ def updateFuncsAddParams(prog):
                 key = 'addState'
             else:
                 key = 'addNeither'
-            global funcsAddParams
             funcsAddParams[key] |= {head}
 
 def needBoth(body) -> bool:
@@ -814,7 +817,7 @@ TUPLE_OPS = {'tuIn', 'tuSl'}
 
 LIB_OPS = (
     AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS |
-    RELATIONAL_OPS | SET_OPS = | TUPLE_OPS
+    RELATIONAL_OPS | SET_OPS | TUPLE_OPS
 )
 
 def translateLibOps(dat: LedDatum, T) -> str:
