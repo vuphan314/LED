@@ -4,19 +4,20 @@
 
 ############################################################
 
+from typing import Dict, Tuple
 from debugtools.debug_tool import *
 
 ############################################################
 """Python global variables."""
 
-isGame = False
-
 defedFuncs = () # defined functions
 defedConsts = () # ('c1', 'c2',...)
 
 auxFuncNum = 0
-auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
+auxFuncDefs = '' # 'auxFunc1 := 1; auxFunc2 := [2];...'
 
+# Easel:
+isGame = False
 funcsAddParams = {} # set by setFuncsAddParams
 
 ############################################################
@@ -45,7 +46,8 @@ class LedDatum:
 
     def getNextIndepSymbs(self) -> tuple:
         return self.getSymbs()
-        # current dependent symbols will be next independent symbols
+            # current dependent symbols will be
+            # next independent symbols
 
     def appendToAux(self, postfix: str, isNext=False) -> str:
         num = auxFuncNum
@@ -170,7 +172,8 @@ class LedDatum:
     def aGetConjLetClauses(
         self, bindings: tuple, inds: tuple
     ) -> tuple:
-        workarounds = 'workaround1_', 'workaround2_' # avoid SL bug
+        workarounds = 'workaround1_', 'workaround2_'
+            # Bryant's solution to avoid SL bug
         funcs = self.subInst1.aFunc, self.subInst2.aFunc
         letCls = ()
         for i in range(2):
@@ -292,15 +295,14 @@ class LedDatum:
 ############################################################
 """Top-level function.
 
-Translate an LED parsetree into a string which
+Convert an LED parsetree into a string which
 represents a SL program.
 
-Note: Python pseudotype `tree` is
-either type `tuple` or `str`.
+Python pseudotype `Tree` is either type `tuple` or `str`.
 """
 
 def translateTop(T: tuple) -> str:
-    T = updateIsGame(T)
+    T = setIsGame(T)
     T = addOtherwiseClause(T)
     updateDefedFuncsConsts(T)
     if isGame:
@@ -869,8 +871,7 @@ def funcIsAux(st: str) -> bool:
 ############################################################
 """Miscellaneous."""
 
-def unionDicts(ds) -> dict:
-    """Note: ds: tuple(dict)."""
+def unionDicts(ds: Tuple[Dict]) -> dict:
     D = {}
     for d in ds:
         D.update(d)
@@ -1130,13 +1131,14 @@ the SequenceL interpreter to test:
     return st
 
 ############################################################
-"""
-for each keyword *#isGame* found in LED input file
-- make python global variable `isGame` true
-- delete keyword from parsetree
+"""Check whether the LED program is an Easel game.
+
+For each keyword #isGame found in the LED program:
+- set the Python global variable isGame to True
+- delete that keyword from the parsetree
 """
 
-def updateIsGame(prog):
+def setIsGame(prog):
     prog2 = prog[:1]
     for el in prog[1:]:
         if el[0] == 'hashIsGame':

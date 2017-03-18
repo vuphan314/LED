@@ -1,6 +1,6 @@
 """LED engine.
 
-Translate an LED program into
+Convert an LED program into
 a semantically equivalent SL program.
 """
 
