@@ -672,7 +672,7 @@ def eachStrFound(T, sts) -> bool:
     return True
 
 def someStrFound(T, sts) -> bool:
-    if type(T) == str:
+    if isinstance(T, str):
         return T in sts
     else:
         for t in T[1:]:
@@ -682,7 +682,7 @@ def someStrFound(T, sts) -> bool:
 
 ############################################################
 """Tangle constant/function/relation definitions."""
-todo fix funDefNoWhere
+#todo fix funDefNoWhere
 DEF_LABELS = {'constDef', 'funDef', 'relDef'}
 
 def tangleDef(dat: LedDatum, T) -> str:
@@ -872,7 +872,7 @@ def unionDicts(ds: Tuple[Dict]) -> dict:
 """Add otherwise-clase."""
 
 def addOtherwiseClause(T):
-    if type(T) == str:
+    if isinstance(T, str):
         return T
     elif T[0] == 'termIfBoolTerms':
         return termIfBoolTermsTotermIfBoolTermsO(T)
@@ -895,7 +895,7 @@ def termIfBoolTermsTotermIfBoolTermsO(termIfBoolTerms):
 QUANT_OPS = {'exist', 'univ'}
 
 def expandSymsInS(T):
-    if type(T) == str:
+    if isinstance(T, str):
         return T
     elif T[0] in QUANT_OPS:
         T2 = symsInSetToSymbInSet(T)
@@ -1002,7 +1002,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
         return recurStr(tangleAggr, dat, T)
 
 def updateDepSymbsRecur(dat: LedDatum, T):
-    if type(T) == tuple:
+    if isinstance(T, tuple):
         if T[0] == 'namedTermNoParenth':
             st = T[1][1]
             if isNewDepSymb(dat, st):
@@ -1014,7 +1014,7 @@ def isGround(dat: LedDatum, T) -> bool:
     return not newDepSymbFound(dat, T)
 
 def newDepSymbFound(dat: LedDatum, T) -> bool:
-    if type(T) == str:
+    if isinstance(T, str):
         return False
     elif T[0] == 'namedTermNoParenth':
         if isNewDepSymb(dat, T[1][1]):
