@@ -1,7 +1,6 @@
 """Convert an LED parsetree to a SL program."""
 
 ############################################################
-"""Import."""
 
 from debugtools.debug_tool import *
 
@@ -10,30 +9,26 @@ from debugtools.debug_tool import *
 
 isGame = False
 
-defedFuncs = ()
+defedFuncs = () # defined functions
 defedConsts = () # ('c1', 'c2',...)
 
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
 ############################################################
-"""LED datum."""
 
 class LedDatum:
     indepSymbs = () # ('i1',...)
     depSymbs = () # ('d1',...)
 
     def getNumIndepSymbs(self) -> int:
-        n = len(self.indepSymbs)
-        return n
+        return len(self.indepSymbs)
 
     def getNumDepSymbs(self) -> int:
-        n = len(self.depSymbs)
-        return n
+        return len(self.depSymbs)
 
     def getSymbs(self) -> tuple:
-        T = self.indepSymbs + self.depSymbs
-        return T
+        return self.indepSymbs + self.depSymbs
 
     def getAnotherInst(self, isNext=False):
         if isNext:
