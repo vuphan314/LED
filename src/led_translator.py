@@ -102,20 +102,20 @@ class LedDatum:
 
         st = defRecur(
             self, func, (), inCl,
-            letCls=letCls, inds = (ind,), moreSpace=True
+            letCls=letCls, inds=(ind,), moreSpace=True
         )
         return st
 
     def aGetAggrLetClauses(self, ind: str) -> str:
         binding = 'b_'
         expr = applyRecur(
-            self, self.condInst.aFunc, (), inds = (ind,)
+            self, self.condInst.aFunc, (), inds=(ind,)
         )
         letCls = defRecur(self, binding, (), expr),
         for i in range(self.getNumDepSymbs()):
             num = str(i + 1)
             expr = applyRecur(
-                self, binding, (), inds = (num,)
+                self, binding, (), inds=(num,)
             )
             letCls += defRecur(
                 self, self.depSymbs[i], (), expr
@@ -159,28 +159,28 @@ class LedDatum:
 
         st = defRecur(
             self, func, (), expr, letCls=letCls,
-            inds = inds, moreSpace=True
+            inds=inds, moreSpace=True
         )
         return st
 
     def aGetConjLetClauses(
         self, bindings: tuple, inds: tuple
     ) -> tuple:
-        workarounds = 'workaround1_', 'workaround2_'
+        workarounds = 'workaround1_', 'workaround2_' # avoid SL bug
         funcs = self.subInst1.aFunc, self.subInst2.aFunc
         letCls = ()
         for i in range(2):
-            # assign workaround
             workaround = workarounds[i]
             func = funcs[i]
             letCls += defRecur(self, workaround, (), func),
-            # call workaround
+
             ind = inds[i]
             expr = applyRecur(
-                self, workaround, (), inds = (ind,)
+                self, workaround, (), inds=(ind,)
             )
             binding = bindings[i]
             letCls += defRecur(self, binding, (), expr),
+
         n = int(len(letCls) / 2)
 
         sts = ()
@@ -188,17 +188,15 @@ class LedDatum:
             symb = self.subInst1.depSymbs[i]
             func = bindings[0]
             num = str(i + 1)
-            expr = applyRecur(self, func, (), inds = (num,))
+            expr = applyRecur(self, func, (), inds=(num,))
             sts += defRecur(self, symb, (), expr),
 
-        sts = letCls[:n] + sts + letCls[n:]
-        return sts
+        return = letCls[:n] + sts + letCls[n:]
 
     def aGetFuncConjDeep(self) -> str:
         func = self.appendToAux('DEEP')
         args = self.indepSymbs
-        st = applyRecur(self, func, args)
-        return st
+        return st = applyRecur(self, func, args)
 
     """Fields specific to quantification."""
     isUniv = None # bool
@@ -246,7 +244,7 @@ class LedDatum:
 
         st = defRecur(
             self, func2, args2, expr,
-            inds = (ind,), letCls=letCls
+            inds=(ind,), letCls=letCls
         )
         return st
 
@@ -254,7 +252,7 @@ class LedDatum:
         """Return 'y := S(x)[i_];'."""
         expr = applyRecur(
             self, self.qGetFuncSet(), self.indepSymbs,
-            inds = (ind,)
+            inds=(ind,)
         )
         st = defRecur(self, self.depSymbs[0], (), expr)
         return st
@@ -425,7 +423,7 @@ def defRecur(
     dat: LedDatum, func, args: tuple, expr,
     inds=(), letCls=(), moreSpace=False
 ) -> str:
-    head = applyRecur(dat, func, args, inds = inds)
+    head = applyRecur(dat, func, args, inds=inds)
     expr = translateRecur(dat, expr)
     if letCls != ():
         letCls = writeLetClauses(letCls)
