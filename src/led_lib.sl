@@ -312,7 +312,7 @@ kindsEasel := [kindPoint, kindColor, kindImage];
 
 Val ::=
   (kindLed: char(1),
-  strg: char(1), atm: char(1),
+  chars: char(1),
   numb: Numb, trth: bool, coll: Val(1),
   ePoint: Point, eColor: Color, eImage: Image); // Easel
 
@@ -349,11 +349,11 @@ valToNumb(v) :=
 
 valToStrg: Val -> char(1);
 valToStrg(v) :=
-  v.strg;
+  v.chars;
 
 valToAtm: Val -> char(1);
 valToAtm(v) :=
-  v.atm;
+  v.chars;
 
 valToColl: Val -> Val(1);
 valToColl(v) :=
@@ -412,8 +412,7 @@ tr(t) :=
 
 strgToVal: char(1) -> Val;
 strgToVal(s(1)) :=
-  (kindLed: kindStrg, strg: s);
-
+  (kindLed: kindStrg, chars: s);
 
 st: char(1) -> Val;
 st(s(1)) :=
@@ -421,7 +420,7 @@ st(s(1)) :=
 
 atmToVal: char(1) -> Val;
 atmToVal(a(1)) :=
-  (kindLed: kindAtm, atm: a);
+  (kindLed: kindAtm, chars: a);
 
 at: char(1) -> Val;
 at(a(1)) :=
