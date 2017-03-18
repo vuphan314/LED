@@ -391,11 +391,10 @@ def tangleRecur(dat: LedDatum, T) -> str:
     elif T[0] in LEXEMES:
         return tangleLexemes(dat, T)
     elif T[0] == 'actFunExpr':
-        st = applyRecur(dat, T[1], T[2][1:])
-        return st
+        return applyRecur(dat, T[1], T[2][1:])
     elif T[0] == 'tpl':
         return tangleTuple(dat, T)
-    elif T[0] == 'set':
+    elif T[0] in SET_LABELS:
         return tangleSet(dat, T)
     elif T[0] in AGGR_OPS:
         return tangleAggr(dat, T)
@@ -747,9 +746,11 @@ def tangleTuple(dat: LedDatum, T) -> str:
     )
     return st
 
+SET_LABELS = {'setEmpty', 'setNonempty'}
+
 def tangleSet(dat: LedDatum, T) -> str:
     func = 'se'
-    if len(T) == 1: # empty set
+    if T[0] == 'setEmpty':
         args = '',
     else:
         terms = T[1]
