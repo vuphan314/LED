@@ -70,7 +70,7 @@ class LedDatum:
     subInst2 = None # LedDatum
 
     def aCheckCateg(self):
-        if self.aCateg not in aCategs:
+        if self.aCateg not in AGGR_CATEGS:
             raiseError('INVALID AGGREGATE CATEGORY')
 
     def aDefFunc(self) -> str:
@@ -84,7 +84,7 @@ class LedDatum:
         self.aCheckCateg()
         if self.aCateg == 'isAggr':
             st = self.aDefFuncAggr()
-        elif self.aCateg in aCategsLib:
+        elif self.aCateg in AGGR_LIB_CATEGS:
             st = self.aDefFuncLib()
         else: # 'solConj'
             st = self.aDefFuncConj()
@@ -134,7 +134,7 @@ class LedDatum:
     def aGetArgsLib(self) -> tuple:
         if self.aCateg == 'solDisj':
             return self.subInst1.aFunc, self.subInst2.aFunc
-        elif self.aCateg in aCategsLib:
+        elif self.aCateg in AGGR_LIB_CATEGS:
             return self.aVal,
         else:
             raiseError('NOT IN LIBRARY')
@@ -406,7 +406,7 @@ def translateRecur(dat: LedDatum, T) -> str:
         return translateTuple(dat, T)
     elif T[0] == 'set':
         return translateSet(dat, T)
-    elif T[0] in aggrOps:
+    elif T[0] in AGGR_OPS:
         return translateAggr(dat, T)
     elif T[0] in quantOps:
         return translateQuant(dat, T)
@@ -936,18 +936,17 @@ def symsInSetToSymbInSet(T):
 ############################################################
 """Aggregation."""
 
-aggrOps = {
-    'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum',
-    'aggrProd'
+AGGR_OPS = {
+    'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
 }
 
-aCategsLib = {
+AGGR_LIB_CATEGS = {
     'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'
 }
-aCategs = aCategsLib | {'isAggr', 'solConj'}
+AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
 
 def translateAggr(dat: LedDatum, T) -> str:
-    if T[0] in aggrOps:
+    if T[0] in AGGR_OPS:
         dat.aCateg = 'isAggr'
         if T[0] == 'setCompr':
             termTree = T[1]
