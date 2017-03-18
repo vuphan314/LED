@@ -680,9 +680,9 @@ def someStrFound(T, sts) -> bool:
         return False
 
 ############################################################
-"""Tangle constant/function/relation definitions."""
+"""Tangle function/relation definitions."""
 #todo fix funDefNoWhere
-DEF_LABELS = {'constDef', 'funDef', 'relDef'}
+DEF_LABELS = {'funDef', 'relDef'}
 
 def tangleDef(dat: LedDatum, T) -> str:
     func = tangleRecur(dat, T[1][1])
