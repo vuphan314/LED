@@ -15,6 +15,13 @@ defedConsts = () # ('c1', 'c2',...)
 auxFuncNum = 0
 auxFuncDefs = '' # 'aux1 := 1; aux2 := 2;...'
 
+funcsAddParams = {
+    'addNeither': EASEL_FUNCS_ADD_NEITHER,
+    'addInput': EASEL_FUNCS_ADD_INPUT,
+    'addState': EASEL_FUNCS_ADD_STATE,
+    'addBoth': EASEL_FUNCS_ADD_BOTH
+}
+
 ############################################################
 
 class LedDatum:
@@ -565,69 +572,62 @@ def getIdsTuple(label: str, ids: tuple) -> tuple:
         tu += st,
     return tu
 
-easelInput = 'I'
-easelState = 'S'
+EASEL_INPUT = 'I'
+EASEL_STATE = 'S'
 
-easelParamsInput = easelInput,
-easelParamsState = easelState,
+EASEL_PARAMS_INPUT = EASEL_INPUT,
+EASEL_PARAMS_STATE = EASEL_STATE,
 
-easelParams = easelParamsInput + easelParamsState
+EASEL_PARAMS = EASEL_PARAMS_INPUT + EASEL_PARAMS_STATE
 
 def getParamsFromLexeme(id) -> tuple:
     st = translateRecur(LedDatum(), id)
     if not isinstance(st, str):
         raiseError('MUST BE STRING')
 
-    if not (st in defedFuncs or st in easelFuncs): # symbol
+    if not (st in defedFuncs or st in EASEL_FUNCS): # symbol
         return ()
     elif st in funcsAddParams['addNeither']:
         return ()
     elif st in funcsAddParams['addInput']:
-        return easelParamsInput
+        return EASEL_PARAMS_INPUT
     elif st in funcsAddParams['addState']:
-        return easelParamsState
+        return EASEL_PARAMS_STATE
     else:
-        return easelParams
+        return EASEL_PARAMS
 
 def appendUnderscore(st: str) -> str:
-    if st in easelFuncs and st not in easelFuncsGlobal:
+    if st in EASEL_FUNCS and st not in EASEL_FUNCS_GLOBAL:
         st += '_'
     return st
 
-easelFuncsClick = {'mouseClicked', 'mouseX', 'mouseY'}
-easelFuncsCurrentState = {'currentState'}
-easelFuncsGlobal = easelFuncsClick | easelFuncsCurrentState
+EASEL_FUNCS_CLICK = {'mouseClicked', 'mouseX', 'mouseY'}
+EASEL_FUNCS_CURRENT_STATE = {'currentState'}
+EASEL_FUNCS_GLOBAL = EASEL_FUNCS_CLICK | EASEL_FUNCS_CURRENT_STATE
 
-easelFuncsConstructor = {
+EASEL_FUNCS_CONSTRUCTOR = {
     'point', 'color', 'click', 'input', 'segment', 'circle',
     'text', 'disc', 'fTri', 'graphic'
 }
-easelFuncsAddNeither = easelFuncsConstructor | {
+EASEL_FUNCS_ADD_NEITHER = EASEL_FUNCS_CONSTRUCTOR | {
     'initialState'
 }
 
-easelFuncsAddInput = easelFuncsClick
+EASEL_FUNCS_ADD_INPUT = EASEL_FUNCS_CLICK
 
-easelFuncsAddState = easelFuncsCurrentState | {'images'}
+EASEL_FUNCS_ADD_STATE = EASEL_FUNCS_CURRENT_STATE | {'images'}
 
-easelFuncsAddBoth = {'newState'}
+EASEL_FUNCS_ADD_BOTH = {'newState'}
 
-easelFuncs = (
-    easelFuncsAddNeither | easelFuncsAddInput |
-    easelFuncsAddState | easelFuncsAddBoth
+EASEL_FUNCS = (
+    EASEL_FUNCS_ADD_NEITHER | EASEL_FUNCS_ADD_INPUT |
+    EASEL_FUNCS_ADD_STATE | EASEL_FUNCS_ADD_BOTH
 )
-
-funcsAddParams = {
-    'addNeither': easelFuncsAddNeither,
-    'addInput': easelFuncsAddInput,
-    'addState': easelFuncsAddState,
-    'addBoth': easelFuncsAddBoth
-}
 
 def updateFuncsAddParams(prog):
     for definition in prog[1:]:
         head = translateRecur(LedDatum(), definition[1][1])
-        if head not in easelFuncs:
+        if head not in EASEL_FUNCS:
             body = definition[2]
             if needBoth(body):
                 key = 'addBoth'
@@ -643,7 +643,7 @@ def updateFuncsAddParams(prog):
 def needBoth(body) -> bool:
     return (
         someStrFound(body, funcsAddParams['addBoth']) or
-        eachStrFound(body, easelParams) or
+        eachStrFound(body, EASEL_PARAMS) or
         needInput(body) and needState(body)
     )
 
@@ -654,7 +654,7 @@ def needInput(body) -> bool:
     """
     return (
         someStrFound(body, funcsAddParams['addInput']) or
-        someStrFound(body, easelParamsInput)
+        someStrFound(body, EASEL_PARAMS_INPUT)
     )
 
 def needState(body) -> bool:
@@ -664,7 +664,7 @@ def needState(body) -> bool:
     """
     return (
         someStrFound(body, funcsAddParams['addState']) or
-        someStrFound(body, easelParamsState)
+        someStrFound(body, EASEL_PARAMS_STATE)
     )
 
 def eachStrFound(T, sts) -> bool:
@@ -1104,7 +1104,7 @@ def prependLib(st: str) -> str:
 def printTest() -> str:
     st = ''
     for const in defedConsts:
-        if const == 'initialState' or const not in easelFuncs:
+        if const == 'initialState' or const not in EASEL_FUNCS:
             func = applyRecur(None, 'pp', (const,))
             st += func + '\n'
     if st != '':
