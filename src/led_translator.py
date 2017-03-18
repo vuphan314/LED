@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""Convert an LED parsetree to a SL program."""
+"""Convert an LED parsetree into a SL program."""
 
 ############################################################
 

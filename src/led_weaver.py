@@ -1,4 +1,6 @@
-"""Convert an LED parsertree to a TeX program."""
+#!/usr/bin/python3
+
+"""Convert an LED parsertree into a TeX program."""
 
 ############################################################
 """Import."""
