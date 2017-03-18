@@ -317,27 +317,17 @@ def tangleTop(T: tuple) -> str:
             # the output SL file
     else:
         imports = importLib()
-
-    tests = '\n' + printTest()
-
-    # for quantification:
     T = expandSymsInS(T)
-
-    dat = LedDatum()
-    st = tangleRecur(dat, T)
-
+    st = tangleRecur(LedDatum(), T)
     if auxFuncDefs != '':
         st += (
             blockComment('AUXILIARY FUNCTIONS') +
             '\n\n' + auxFuncDefs
         )
-
-    st = tests + imports + st
-
+    st = printTest() + imports + st
     if isGame:
         st += EASEL_FRAGMENT + getLibsStr()
-
-    return st
+    return st + '\n'
 
 ############################################################
 """Appened the LED library to the output SL file."""
