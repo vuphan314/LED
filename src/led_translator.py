@@ -286,7 +286,7 @@ class LedDatum:
         return st
 
 ############################################################
-"""Main function.
+"""Top-level function.
 
 Translate an LED parsetree into a string which
 represents a SL program.
@@ -297,27 +297,24 @@ either type `tuple` or `str`.
 
 def translateTop(T: tuple) -> str:
     T = updateIsGame(T)
-
     T = addOtherwiseClause(T)
     updateDefedFuncsConsts(T)
-
     if isGame:
         updateFuncsAddParams(T)
         T = addEaselParams(T)
-
-        # some constants were added parameters
         updateDefedConsts(T)
-
+            # parameters were added to some constants,
+            # making them non-constants
         imports = ''
-        # Easel doesn't work well with imports.
-        # Will write LED library at end of output file.
-
+            # Easel doesn't work well with imports,
+            # so I will append a copy of the LED library to
+            # the output SL file
     else:
         imports = importLib()
 
     tests = '\n' + printTest()
 
-    # for quantification
+    # for quantification:
     T = expandSymsInS(T)
 
     dat = LedDatum()
@@ -332,7 +329,7 @@ def translateTop(T: tuple) -> str:
     st = tests + imports + st
 
     if isGame:
-        st += easelFragment + getLibsStr()
+        st += EASEL_FRAGMENT + getLibsStr()
 
     return st
 
@@ -357,7 +354,7 @@ def getLibsStr() -> str:
 
 ############################################################
 
-easelFragment = '''
+EASEL_FRAGMENT = '''
 
 /*
 Easel fragment
