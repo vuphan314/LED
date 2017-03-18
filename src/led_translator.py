@@ -405,7 +405,7 @@ def translateRecur(dat: LedDatum, T) -> str:
         return translateAggr(dat, T)
     elif T[0] in QUANT_OPS:
         return translateQuant(dat, T)
-    elif T[0] in nonstrictOps:
+    elif T[0] in NONSTRICT_OPS:
         return translateNonstrictOps(dat, T)
     elif T[0] in LIB_OPS:
         return translateLibOps(dat, T)
@@ -441,22 +441,16 @@ def applyRecur(
     isInLib=False, argsAreBracketed=False, inds=()
 ) -> str:
     func = translateRecur(dat, func)
-
     if isInLib:
         func = prependLib(func)
-
     st = func
-
     if args != ():
         st2 = translateRecur(dat, args[0])
         for arg in args[1:]:
             st2 += ', ' + translateRecur(dat, arg)
-
         if argsAreBracketed:
             st2 = addBrackets(st2)
-
         st += addParentheses(st2)
-
     st = appendInds(st, inds)
     return st
 
@@ -771,7 +765,7 @@ def translateSet(dat: LedDatum, T) -> str:
 ############################################################
 """Nonstrict operations."""
 
-nonstrictOps = {'impl', 'conj'}
+NONSTRICT_OPS = {'impl', 'conj'}
 
 def translateNonstrictOps(dat: LedDatum, T):
     st1 = translateRecur(dat, T[1])
