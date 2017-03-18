@@ -21,7 +21,7 @@ import led_weaver
 ############################################################
 
 def write_output_files(led_path: str, force: bool):
-    syntax_tree = led_parser.parse_file(led_path)
+    syntax_tree = led_parser.parse_file(led_path, verbose=True)
     sl_path, tex_path = [
         append_base_path(led_path, ext)
         for ext in ['.sl', '.tex']

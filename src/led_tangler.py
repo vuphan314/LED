@@ -682,7 +682,7 @@ def someStrFound(T, sts) -> bool:
 
 ############################################################
 """Tangle constant/function/relation definitions."""
-
+todo fix funDefNoWhere
 DEF_LABELS = {'constDef', 'funDef', 'relDef'}
 
 def tangleDef(dat: LedDatum, T) -> str:
