@@ -26,9 +26,8 @@ def write_output_files(led_path: str, force: bool):
         append_base_path(led_path, ext)
         for ext in ['.sl', '.tex']
     ]
-    print('Skipped writing SequenceL.')
-    # write_sl(syntax_tree, sl_path, force) #todo
-    write_tex(syntax_tree, tex_path, force)
+    write_sl(syntax_tree, sl_path, force)
+    # write_tex(syntax_tree, tex_path, force)
 
 def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
     sl_str = led_tangler.tangleTop(syntax_tree)
