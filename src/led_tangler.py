@@ -301,7 +301,7 @@ represents a SL program.
 Python pseudotype `Tree` is either type `tuple` or `str`.
 """
 
-def translateTop(T: tuple) -> str:
+def tangleTop(T: tuple) -> str:
     T = setIsGame(T)
     T = addOtherwiseClause(T)
     updateDefedFuncsConsts(T)
@@ -324,7 +324,7 @@ def translateTop(T: tuple) -> str:
     T = expandSymsInS(T)
 
     dat = LedDatum()
-    st = translateRecur(dat, T)
+    st = tangleRecur(dat, T)
 
     if auxFuncDefs != '':
         st += (
@@ -395,39 +395,39 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 ############################################################
 """Recursion iterators."""
 
-def translateRecur(dat: LedDatum, T) -> str:
+def tangleRecur(dat: LedDatum, T) -> str:
     if isinstance(T, str):
         return appendUnderscore(T)
     elif T[0] in LEXEMES:
-        return translateLexemes(dat, T)
+        return tangleLexemes(dat, T)
     elif T[0] == 'actFunExpr':
         st = applyRecur(dat, T[1], T[2][1:])
         return st
     elif T[0] == 'tpl':
-        return translateTuple(dat, T)
+        return tangleTuple(dat, T)
     elif T[0] == 'set':
-        return translateSet(dat, T)
+        return tangleSet(dat, T)
     elif T[0] in AGGR_OPS:
-        return translateAggr(dat, T)
+        return tangleAggr(dat, T)
     elif T[0] in QUANT_OPS:
-        return translateQuant(dat, T)
+        return tangleQuant(dat, T)
     elif T[0] in NONSTRICT_OPS:
-        return translateNonstrictOps(dat, T)
+        return tangleNonstrictOps(dat, T)
     elif T[0] in LIB_OPS:
-        return translateLibOps(dat, T)
+        return tangleLibOps(dat, T)
     elif T[0] in IF_LABELS:
-        return translateIfClauses(dat, T)
+        return tangleIfClauses(dat, T)
     elif T[0] in DEF_LABELS:
-        return translateDef(dat, T)
+        return tangleDef(dat, T)
     else:
-        return recurStr(translateRecur, dat, T)
+        return recurStr(tangleRecur, dat, T)
 
 def defRecur(
     dat: LedDatum, func, args: tuple, expr,
     inds=(), letCls=(), moreSpace=False
 ) -> str:
     head = applyRecur(dat, func, args, inds=inds)
-    expr = translateRecur(dat, expr)
+    expr = tangleRecur(dat, expr)
     if letCls != ():
         letCls = writeLetClauses(letCls)
         inCl = writeInClause(expr)
@@ -446,14 +446,14 @@ def applyRecur(
     dat: LedDatum, func, args: tuple,
     isInLib=False, argsAreBracketed=False, inds=()
 ) -> str:
-    func = translateRecur(dat, func)
+    func = tangleRecur(dat, func)
     if isInLib:
         func = prependLib(func)
     st = func
     if args != ():
-        st2 = translateRecur(dat, args[0])
+        st2 = tangleRecur(dat, args[0])
         for arg in args[1:]:
-            st2 += ', ' + translateRecur(dat, arg)
+            st2 += ', ' + tangleRecur(dat, arg)
         if argsAreBracketed:
             st2 = addBrackets(st2)
         st += addParentheses(st2)
@@ -496,7 +496,7 @@ def updateDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
     for definition in prog[1:]:
-        st = translateRecur(LedDatum(), definition[1][1])
+        st = tangleRecur(LedDatum(), definition[1][1])
         defedFuncs += st,
         if definition[0] == 'constDef':
             defedConsts += st,
@@ -506,7 +506,7 @@ def updateDefedConsts(prog):
     defedConsts = ()
     for definition in prog[1:]:
         if definition[0] == 'constDef':
-            st = translateRecur(LedDatum(), definition[1])
+            st = tangleRecur(LedDatum(), definition[1])
             defedConsts += st,
 
 ############################################################
@@ -580,7 +580,7 @@ EASEL_PARAMS_STATE = EASEL_STATE,
 EASEL_PARAMS = EASEL_PARAMS_INPUT + EASEL_PARAMS_STATE
 
 def getParamsFromLexeme(id) -> tuple:
-    st = translateRecur(LedDatum(), id)
+    st = tangleRecur(LedDatum(), id)
     if not isinstance(st, str):
         raiseError('MUST BE STRING')
 
@@ -632,7 +632,7 @@ def setFuncsAddParams(prog):
         'addBoth': EASEL_FUNCS_ADD_BOTH
     }
     for definition in prog[1:]:
-        head = translateRecur(LedDatum(), definition[1][1])
+        head = tangleRecur(LedDatum(), definition[1][1])
         if head not in EASEL_FUNCS:
             body = definition[2]
             if needBoth(body):
@@ -693,8 +693,8 @@ def someStrFound(T, sts) -> bool:
 
 DEF_LABELS = {'constDef', 'funDef', 'relDef'}
 
-def translateDef(dat: LedDatum, T) -> str:
-    func = translateRecur(dat, T[1][1])
+def tangleDef(dat: LedDatum, T) -> str:
+    func = tangleRecur(dat, T[1][1])
     dat2 = dat.getAnotherInst()
 
     if T[0] in {'funDef', 'relDef'}:
@@ -702,7 +702,7 @@ def translateDef(dat: LedDatum, T) -> str:
 
     letCls = ()
     if len(T) > 3: # where-clauses
-        letCls = translateWhereClauses(dat2, T[3])
+        letCls = tangleWhereClauses(dat2, T[3])
 
     st = defRecur(
         dat2, func, dat2.indepSymbs, T[2],
@@ -712,42 +712,41 @@ def translateDef(dat: LedDatum, T) -> str:
 
 IF_LABELS = {'termIfBoolTerms', 'termIfBoolTermsO'}
 
-def translateIfClauses(dat: LedDatum, T) -> str:
+def tangleIfClauses(dat: LedDatum, T) -> str:
     if T[0] == 'termOw':
-        st = translateRecur(dat, T[1])
+        st = tangleRecur(dat, T[1])
         st = writeElseClause(st)
         return st
     elif T[0] == 'termIfBoolTerm':
-        st1 = translateRecur(dat, T[1])
-        st2 = translateRecur(dat, T[2])
+        st1 = tangleRecur(dat, T[1])
+        st2 = tangleRecur(dat, T[2])
         st2 = applyRecur(dat, 'valToTrth', (st2,))
         st = st1 + ' when ' + st2
         return st
     elif T[0] == 'termIfBoolTerms':
-        st = translateIfClauses(dat, T[1])
+        st = tangleIfClauses(dat, T[1])
         for t in T[2:]:
-            st2 = translateIfClauses(dat, t)
+            st2 = tangleIfClauses(dat, t)
             st += writeElseClause(st2)
         return st
     elif T[0] == 'termIfBoolTermsO':
-        return recurStr(translateIfClauses, dat, T)
+        return recurStr(tangleIfClauses, dat, T)
     else:
         raiseError('INVALID IF CLAUSES')
 
-# translateWhereClauses: LedDatum * tree -> tuple(str)
-def translateWhereClauses(dat, T):
+def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
     if T[0] == 'eq':
         st = defRecur(dat, T[1], (), T[2])
         return st,
     elif T[0] == 'conj':
-        return recurTuple(translateWhereClauses, dat, T)
+        return recurTuple(tangleWhereClauses, dat, T)
     else:
         raiseError('INVALID WHERE CLAUSES')
 
 ############################################################
 """Translate collections."""
 
-def translateTuple(dat: LedDatum, T) -> str:
+def tangleTuple(dat: LedDatum, T) -> str:
     func = 'tu'
     terms = T[1]
     st = applyRecur(
@@ -756,7 +755,7 @@ def translateTuple(dat: LedDatum, T) -> str:
     )
     return st
 
-def translateSet(dat: LedDatum, T) -> str:
+def tangleSet(dat: LedDatum, T) -> str:
     func = 'se'
     if len(T) == 1: # empty set
         args = '',
@@ -774,9 +773,9 @@ def translateSet(dat: LedDatum, T) -> str:
 
 NONSTRICT_OPS = {'impl', 'conj'}
 
-def translateNonstrictOps(dat: LedDatum, T):
-    st1 = translateRecur(dat, T[1])
-    st2 = translateRecur(dat, T[2])
+def tangleNonstrictOps(dat: LedDatum, T):
+    st1 = tangleRecur(dat, T[1])
+    st2 = tangleRecur(dat, T[2])
     if T[0] == 'conj':
         mainSt = 'valFalse'
         whenSt = 'not ' + applyRecur(
@@ -822,7 +821,7 @@ LIB_OPS = (
     RELATIONAL_OPS | SET_OPS | TUPLE_OPS
 )
 
-def translateLibOps(dat: LedDatum, T) -> str:
+def tangleLibOps(dat: LedDatum, T) -> str:
     st = applyRecur(dat, T[0], T[1:], isInLib=True)
     return st
 
@@ -943,7 +942,7 @@ AGGR_LIB_CATEGS = {
 }
 AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
 
-def translateAggr(dat: LedDatum, T) -> str:
+def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
         dat.aCateg = 'isAggr'
         if T[0] == 'setCompr':
@@ -955,10 +954,10 @@ def translateAggr(dat: LedDatum, T) -> str:
 
         updateDepSymbsRecur(dat, condTree)
         uTerm = dat.getAnotherInst(isNext=True)
-        dat.aTerm = translateRecur(uTerm, termTree)
+        dat.aTerm = tangleRecur(uTerm, termTree)
 
         uCond = dat.getAnotherInst()
-        translateAggr(uCond, condTree)
+        tangleAggr(uCond, condTree)
         dat.condInst = uCond
 
         args = dat.aDefFunc(),
@@ -966,7 +965,7 @@ def translateAggr(dat: LedDatum, T) -> str:
         return st
     elif isGround(dat, T):
         dat.aCateg = 'solGround'
-        dat.aVal = translateRecur(dat, T)
+        dat.aVal = tangleRecur(dat, T)
         st = dat.aDefFunc()
         return st
     elif T[0] in {'eq', 'setMem'}:
@@ -978,18 +977,18 @@ def translateAggr(dat: LedDatum, T) -> str:
         else: # 'setMem'
             dat.aCateg = 'solSet'
         updateDepSymbsRecur(dat, T[1])
-        dat.aVal = translateRecur(dat, T[2])
+        dat.aVal = tangleRecur(dat, T[2])
         st = dat.aDefFunc()
         return st
     elif T[0] == 'disj':
         dat.aCateg = 'solDisj'
 
         dat1 = dat.getAnotherInst()
-        translateAggr(dat1, T[1])
+        tangleAggr(dat1, T[1])
         dat.subInst1 = dat1
 
         dat2 = dat.getAnotherInst()
-        translateAggr(dat2, T[2])
+        tangleAggr(dat2, T[2])
         dat.subInst2 = dat2
 
         st = dat.aDefFunc()
@@ -998,17 +997,17 @@ def translateAggr(dat: LedDatum, T) -> str:
         dat.aCateg = 'solConj'
 
         dat1 = dat.getAnotherInst()
-        translateAggr(dat1, T[1])
+        tangleAggr(dat1, T[1])
         dat.subInst1 = dat1
 
         dat2 = dat1.getAnotherInst(isNext=True)
-        translateAggr(dat2, T[2])
+        tangleAggr(dat2, T[2])
         dat.subInst2 = dat2
 
         st = dat.aDefFunc()
         return st
     else:
-        return recurStr(translateAggr, dat, T)
+        return recurStr(tangleAggr, dat, T)
 
 def updateDepSymbsRecur(dat: LedDatum, T):
     if type(T) == tuple:
@@ -1042,17 +1041,17 @@ def isNewDepSymb(dat: LedDatum, id: str) -> bool:
 ############################################################
 """Quantification."""
 
-def translateQuant(dat: LedDatum, T) -> str:
+def tangleQuant(dat: LedDatum, T) -> str:
     dat.isUniv = T[0] == 'univ'
 
     symsInSet = T[1]
     dat.depSymbs = getSymbsFromSyms(symsInSet[1])
 
     dat2 = dat.getAnotherInst()
-    dat.qSet = translateRecur(dat2, symsInSet[2])
+    dat.qSet = tangleRecur(dat2, symsInSet[2])
 
     dat3 = dat.getAnotherInst(isNext=True)
-    dat.qPred = translateRecur(dat3, T[2])
+    dat.qPred = tangleRecur(dat3, T[2])
 
     global auxFuncDefs
     qFuncs = dat.qDefFuncs()
@@ -1080,7 +1079,7 @@ LEXEMES = unionDicts(
     (LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'})
 )
 
-def translateLexemes(dat: LedDatum, T) -> str:
+def tangleLexemes(dat: LedDatum, T) -> str:
     lex = T[0]
     func = LEXEMES[lex]
     arg = T[1]
