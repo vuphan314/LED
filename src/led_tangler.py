@@ -49,7 +49,9 @@ class LedDatum:
             # current dependent symbols will be
             # next independent symbols
 
-    def appendToAux(self, postfix: str, isNext=False) -> str:
+    def appendToAux(
+        self, postfix: str, isNext=False
+    ) -> str:
         num = auxFuncNum
         if isNext:
             num += 1
@@ -593,7 +595,9 @@ def appendUnderscore(st: str) -> str:
 
 EASEL_FUNCS_CLICK = {'mouseClicked', 'mouseX', 'mouseY'}
 EASEL_FUNCS_CURRENT_STATE = {'currentState'}
-EASEL_FUNCS_GLOBAL = EASEL_FUNCS_CLICK | EASEL_FUNCS_CURRENT_STATE
+EASEL_FUNCS_GLOBAL = (
+    EASEL_FUNCS_CLICK | EASEL_FUNCS_CURRENT_STATE
+)
 
 EASEL_FUNCS_CONSTRUCTOR = {
     'point', 'color', 'click', 'input', 'segment', 'circle',
@@ -605,7 +609,9 @@ EASEL_FUNCS_ADD_NEITHER = EASEL_FUNCS_CONSTRUCTOR | {
 
 EASEL_FUNCS_ADD_INPUT = EASEL_FUNCS_CLICK
 
-EASEL_FUNCS_ADD_STATE = EASEL_FUNCS_CURRENT_STATE | {'images'}
+EASEL_FUNCS_ADD_STATE = (
+    EASEL_FUNCS_CURRENT_STATE | {'images'}
+)
 
 EASEL_FUNCS_ADD_BOTH = {'newState'}
 
@@ -927,7 +933,8 @@ def symsInSetToSymbInSet(T):
 """Aggregation."""
 
 AGGR_OPS = {
-    'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
+    'setCompr', 'aggrUnn', 'aggrNrsec',
+    'aggrSum', 'aggrProd'
 }
 
 AGGR_LIB_CATEGS = {
@@ -1107,7 +1114,10 @@ def prependLib(st: str) -> str:
 def printTest() -> str:
     st = ''
     for const in defedConsts:
-        if const == 'initialState' or const not in EASEL_FUNCS:
+        if (
+            const == 'initialState' or
+            const not in EASEL_FUNCS
+        ):
             func = applyRecur(None, 'pp', (const,))
             st += func + '\n'
     if st != '':
