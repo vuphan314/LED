@@ -161,7 +161,8 @@ class RegionParser:
             )
             cur_line += region.count('\n')
 
-            # remove pre_region & region from unparsed_remainder
+            # remove pre_region & region
+            # from unparsed_remainder
             unparsed_remainder = unparsed_remainder[
                 region_end.end():
             ]
