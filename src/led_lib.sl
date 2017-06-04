@@ -215,7 +215,8 @@ disc(ce, rad, c) :=
 
 fTri: Point * Point * Point * Color -> Image;
 fTri(v1, v2, v3, c) :=
-  (kind: "triangle", vert1: v1, vert2: v2, vert3: v3, iColor: c);
+  (kind: "triangle", vert1: v1, vert2: v2, vert3: v3,
+  iColor: c);
 
 graphic: char(1) * Point * int * int -> Image;
 graphic(graphicFile(1), c, w, h) :=
@@ -996,7 +997,8 @@ repBlToNumb(rB(1)) :=
     iN := rB[2 ... size(rB) - 3];
     rept := intNumlToNumb(iN);
     lenRept := size(iN);
-    divisor := binaryMinusNumb(expNumb(numbTen, lenRept), numbOne);
+    divisor := binaryMinusNumb(expNumb(numbTen, lenRept),
+      numbOne);
   in
     divNumb(rept, divisor);
 
@@ -1024,7 +1026,8 @@ stdValSetToTrth(f, v, v2) :=
   in
     trthToVal(t);
 
-stdSetSetToTrth: (Val(1) * Val(1) -> bool) * Val * Val -> Val;
+stdSetSetToTrth: (Val(1) * Val(1) -> bool) * Val * Val ->
+  Val;
 stdSetSetToTrth(f, v1, v2) :=
   let
     s1 := valToSet(v1);
@@ -1033,7 +1036,8 @@ stdSetSetToTrth(f, v1, v2) :=
   in
     trthToVal(t);
 
-stdSetSetToSet: (Val(1) * Val(1) -> Val(1)) * Val * Val -> Val;
+stdSetSetToSet: (Val(1) * Val(1) -> Val(1)) * Val * Val ->
+  Val;
 stdSetSetToSet(f, v1, v2) :=
   let
     s1 := valToSet(v1);
@@ -1258,7 +1262,8 @@ clngNumb(numb) :=
 
 abNumb: Numb -> Numb;
 abNumb(numb) :=
-  twoIntsToNumbRed(Math::abs(numbToNumr(numb)), numbToDenr(numb));
+  twoIntsToNumbRed(Math::abs(numbToNumr(numb)),
+    numbToDenr(numb));
 
 mdNumb: int32 * int32 -> int32;
 mdNumb(i1, i2) :=
