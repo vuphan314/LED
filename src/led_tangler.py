@@ -834,7 +834,7 @@ def writeLetClauses(tup: tuple) -> str:
     return st
 
 def writeInClause(st: str) -> str:
-    st = '\tin\n\t\t' + st;
+    st = '\tin\n\t\t' + st
     return st
 
 def writeElseClause(st: str) -> str:
