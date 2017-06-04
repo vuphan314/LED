@@ -10,13 +10,13 @@
 
 \setlength{\parindent}{0pt}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{ledCmnt}{}{}
 
 \newenvironment{ledDef}{\begin{dmath}}{\end{dmath} \medskip}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLS_CMDS
 
 % DEF_LABELS
@@ -48,7 +48,8 @@
 \newcommand{\starOp}[2]{\infixPar{#1}{#2}{\times}}
 
 % BOOL_OPS
-\newcommand{\equivLED}[2]{\infixPar{#1}{#2}{\Leftrightarrow}}
+\newcommand{\equivLED}[2]
+  {\infixPar{#1}{#2}{\Leftrightarrow}}
 \newcommand{\impl}[2]{\infixPar{#1}{#2}{\Rightarrow}}
 \newcommand{\disj}[2]{\infixPar{#1}{#2}{\vee}}
 \newcommand{\conj}[2]{\infixPar{#1}{#2}{\wedge}}
@@ -86,7 +87,7 @@
 \newcommand{\setMem}[2]{\infixPar{#1}{#2}{\in}}
 \newcommand{\symsInSet}[2]{\setMem{#1}{#2}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % surrounders
 \newcommand{\parentheses}[1]{\left( #1 \right)}
