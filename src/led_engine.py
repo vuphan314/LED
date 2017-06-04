@@ -21,7 +21,9 @@ import led_weaver
 ############################################################
 
 def write_output_files(led_path: str, force: bool):
-    syntax_tree = led_parser.parse_file(led_path, verbose=True)
+    syntax_tree = led_parser.parse_file(
+        led_path, verbose=True
+    )
     sl_path, tex_path = [
         append_base_path(led_path, ext)
         for ext in ['.sl', '.tex']
@@ -34,7 +36,9 @@ def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
     write_output_str(sl_str, sl_path, force)
     print('Wrote {}.'.format(sl_path))
 
-def write_tex(syntax_tree: tuple, tex_path: str, force: bool):
+def write_tex(
+    syntax_tree: tuple, tex_path: str, force: bool
+):
     tex_str = led_weaver.weave_top(syntax_tree)
     write_output_str(tex_str, tex_path, force)
     print('Wrote {}.'.format(tex_path))
