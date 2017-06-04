@@ -12,7 +12,7 @@ from debugtools.debug_tool import *
 TEX_TOP = (
     '\\documentclass{led_doc}' '\n'
     '\\begin{document}' '\n'
-    )
+)
 TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
 DEF_LABELS = {
@@ -25,7 +25,6 @@ AGGR_OPS = {
 }
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 BOOL_OPS = {
-    # separate 'equiv',
     'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
 }
 AR_OPS = {'unaryMinus', 'binaryMinus', 'div', 'md', 'exp', 'flr', 'clng'}
