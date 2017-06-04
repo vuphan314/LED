@@ -11,5 +11,5 @@ pdf_path=$out_path/$base_path.pdf
 python3 led_engine.py $led_path -f
 # latexmk -pdf -outdir=$out_path $tex_path
 
-# cat $tex_path
+# less $tex_path
 # evince $pdf_path &
