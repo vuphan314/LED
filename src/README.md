@@ -1,4 +1,4 @@
-<h6>top
+<h6>top</h6>
 
 # LED ENGINE (SOURCE)
 
@@ -50,7 +50,6 @@
     ),
     ('ledCmnt', 'test:\n\ncmd:>pp(c)\n"true"')
   )
-
   ```
 - Python:
   ```
@@ -61,5 +60,4 @@
   >>> import led_parser
   >>> led_parser.parse_file('../examples/boolean.led')
   ('prog', ('funDef', ('funDefNoWhere', ('formFunExpr', ('funName', ('id', 'c'))), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',))))), ('ledCmnt', 'test:\n\ncmd:>pp(c)\n"true"'))
-
   ```
