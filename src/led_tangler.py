@@ -544,7 +544,6 @@ def addEaselParams(T):
         return recurTree(addEaselParams, T)
     elif T[0] == 'formFunExpr':
         params = getParamsFromLexeme(T[1])
-        # tst(params)
         syms = T[2]
         syms += getIdsTuple('symName', params)
         T = T[:2] + (syms,)
