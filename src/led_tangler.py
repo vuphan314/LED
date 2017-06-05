@@ -305,7 +305,7 @@ Python pseudotype `Tree` is either type `tuple` or `str`.
 
 def tangleTop(T: tuple) -> str:
     T = setIsGame(T)
-    T = addOtherwiseClause(T)
+    T = addOtherwiseClauses(T)
     updateDefedFuncsConsts(T)
     if isGame:
         setFuncsAddParams(T)
@@ -712,7 +712,7 @@ def tangleDef(dat: LedDatum, T) -> str:
     )
     return st
 
-IF_LABELS = {'termIfBoolTerms', 'termIfBoolTermsO'}
+IF_LABELS = {'condTerms', 'termIfBoolTerm', 'termOw'}
 
 def tangleIfClauses(dat: LedDatum, T) -> str:
     if T[0] == 'termOw':
@@ -725,16 +725,14 @@ def tangleIfClauses(dat: LedDatum, T) -> str:
         st2 = applyRecur(dat, 'valToTrth', (st2,))
         st = st1 + ' when ' + st2
         return st
-    elif T[0] == 'termIfBoolTerms':
+    elif T[0] == 'condTerms':
         st = tangleIfClauses(dat, T[1])
         for t in T[2:]:
             st2 = tangleIfClauses(dat, t)
             st += writeElseClause(st2)
         return st
-    elif T[0] == 'termIfBoolTermsO':
-        return recurStr(tangleIfClauses, dat, T)
     else:
-        raiseError('INVALID IF CLAUSES')
+        raiseError('INVALID IF-CLAUSES')
 
 def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
     if T[0] == 'eq':
@@ -743,7 +741,7 @@ def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
     elif T[0] == 'conj':
         return recurTuple(tangleWhereClauses, dat, T)
     else:
-        raiseError('INVALID WHERE CLAUSES')
+        raiseError('INVALID WHERE-CLAUSES')
 
 ############################################################
 """Tangle collections."""
@@ -883,23 +881,19 @@ def unionDicts(ds: Tuple[Dict]) -> dict:
 ############################################################
 """Add otherwise-clase."""
 
-def addOtherwiseClause(T):
+def addOtherwiseClauses(T):
     if isinstance(T, str):
         return T
-    elif T[0] == 'termIfBoolTerms':
-        return termIfBoolTermsTotermIfBoolTermsO(T)
-    elif T[0] == 'termIfBoolTermsO':
+    elif T[0] == 'condTerms':
+        if T[-1][0] == 'termIfBoolTerm': # != 'termOw'
+            t = 'valNull'
+            t = 'id', t
+            t = 'namedTermNoParenth', t
+            t = 'termOw', t
+            T += t,
         return T
     else:
-        return recurTree(addOtherwiseClause, T)
-
-def termIfBoolTermsTotermIfBoolTermsO(termIfBoolTerms):
-    t = 'valNull'
-    t = 'id', t
-    t = 'namedTermNoParenth', t
-    t = 'termOw', t
-    T = 'termIfBoolTermsO', termIfBoolTerms, t
-    return T
+        return recurTree(addOtherwiseClauses, T)
 
 ############################################################
 """Expand quantifying symbols."""
