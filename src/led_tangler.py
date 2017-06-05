@@ -542,7 +542,7 @@ def addEaselParams(T):
         terms += getIdsTuple('namedTermNoParenth', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
-    elif T[0] in {'formFunExpr', 'relT'}:
+    elif T[0] == 'formFunExpr':
         params = getParamsFromLexeme(T[1])
         # tst(params)
         syms = T[2]
