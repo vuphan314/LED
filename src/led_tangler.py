@@ -1070,7 +1070,7 @@ def getSymbsFromSyms(T) -> tuple:
     syms = T[1:]
     symbs = ()
     for sym in syms:
-        symb = sym[1][1]
+        symb = sym[1]
         symbs += symb,
     return symbs
 
