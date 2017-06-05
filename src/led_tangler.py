@@ -687,19 +687,22 @@ def someStrFound(T, sts) -> bool:
 
 ############################################################
 """Tangle function/relation definitions."""
-#todo fix funDefNoWhere
+
 DEF_LABELS = {'funDef', 'relDef'}
+DEF_WHERE_LABELS = {'funDefWhere', 'relDefWhere'}
 
 def tangleDef(dat: LedDatum, T) -> str:
+    T = T[1]
+
     func = tangleRecur(dat, T[1][1])
+
     dat2 = dat.getAnotherInst()
+    dat2.indepSymbs = getSymbsFromSyms(T[1][2])
 
-    if T[0] in {'funDef', 'relDef'}:
-        dat2.indepSymbs = getSymbsFromSyms(T[1][2])
-
-    letCls = ()
-    if len(T) > 3: # where-clauses
+    if T[0] in DEF_WHERE_LABELS:
         letCls = tangleWhereClauses(dat2, T[3])
+    else:
+        letCls = ()
 
     st = defRecur(
         dat2, func, dat2.indepSymbs, T[2],
