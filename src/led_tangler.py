@@ -697,7 +697,8 @@ def tangleDef(dat: LedDatum, T) -> str:
     func = tangleRecur(dat, T[1][1])
 
     dat2 = dat.getAnotherInst()
-    dat2.indepSymbs = getSymbsFromSyms(T[1][2])
+    if len(T[1]) > 2: # non-nullary function/relation
+        dat2.indepSymbs = getSymbsFromSyms(T[1][2])
 
     if T[0] in DEF_WHERE_LABELS:
         letCls = tangleWhereClauses(dat2, T[3])
