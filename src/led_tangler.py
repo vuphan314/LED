@@ -717,7 +717,6 @@ IF_LABELS = {'condTerms', 'termIfBoolTerm', 'termOw'}
 def tangleIfClauses(dat: LedDatum, T) -> str:
     if T[0] == 'termOw':
         st = tangleRecur(dat, T[1])
-        st = writeElseClause(st)
         return st
     elif T[0] == 'termIfBoolTerm':
         st1 = tangleRecur(dat, T[1])
@@ -1091,7 +1090,7 @@ def tangleLexemes(dat: LedDatum, T) -> str:
 ############################################################
 """Import and use LED library."""
 
-LIB_PATH = '../led_lib.sl'
+LIB_PATH = '../src/led_lib.sl'
 LIB_AS = ''
 
 def importLib() -> str:
