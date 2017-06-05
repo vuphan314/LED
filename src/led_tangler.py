@@ -530,7 +530,7 @@ def addEaselParams(T):
             T = 'formFunExpr', id, syms
         return T
     elif T[0] == 'constDef':
-        # todo!
+        todo!
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
