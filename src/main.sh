@@ -7,6 +7,7 @@ tex_path=$base_path.tex
 out_path=$examples_path
 pdf_path=$out_path/$base_path.pdf
 
+clear
 # python3 led_parser.py $led_path
 python3 led_engine.py $led_path -f
 # latexmk -pdf -outdir=$out_path $tex_path
