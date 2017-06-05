@@ -489,19 +489,23 @@ def recurTree(F, T):
 def updateDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
-    for definition in prog[1:]:
-        st = tangleRecur(LedDatum(), definition[1][1])
+    for led_def in prog[1:]:
+        st = tangleRecur(LedDatum(), led_def[1][1])
         defedFuncs += st,
-        if definition[0] == 'constDef':
+        if isConstDef(led_def):
             defedConsts += st,
 
 def updateDefedConsts(prog):
     global defedConsts
     defedConsts = ()
-    for definition in prog[1:]:
-        if definition[0] == 'constDef':
-            st = tangleRecur(LedDatum(), definition[1])
+    for led_def in prog[1:]:
+        if isConstDef(led_def):
+            st = tangleRecur(LedDatum(), led_def[1])
             defedConsts += st,
+
+def isConstDef(led_def):
+    formFunExpr = led_def[1][1]
+    return len(formFunExpr) == 2 # no 'terms'
 
 ############################################################
 """Easel."""
@@ -526,6 +530,7 @@ def addEaselParams(T):
             T = 'formFunExpr', id, syms
         return T
     elif T[0] == 'constDef':
+        # todo!
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
