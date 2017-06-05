@@ -393,7 +393,8 @@ def tangleRecur(dat: LedDatum, T) -> str:
     elif T[0] in LEXEMES:
         return tangleLexemes(dat, T)
     elif T[0] == 'actFunExpr':
-        return applyRecur(dat, T[1], T[2][1:])
+        args = T[2][1:] if len(T) > 2 else ()
+        return applyRecur(dat, T[1], args)
     elif T[0] == 'tpl':
         return tangleTuple(dat, T)
     elif T[0] in SET_LABELS:
