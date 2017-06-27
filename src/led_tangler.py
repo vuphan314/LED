@@ -624,19 +624,20 @@ def setFuncsAddParams(prog):
         'addState': EASEL_FUNCS_ADD_STATE,
         'addBoth': EASEL_FUNCS_ADD_BOTH
     }
-    for led_def in prog[1:]:
-        head = tangleRecur(LedDatum(), led_def[1][1])
-        if head not in EASEL_FUNCS:
-            body = led_def[2]
-            if needBoth(body):
-                key = 'addBoth'
-            elif needInput(body):
-                key = 'addInput'
-            elif needState(body):
-                key = 'addState'
-            else:
-                key = 'addNeither'
-            funcsAddParams[key] |= {head}
+    for prog_el in prog[1:]:
+        if prog_el[0] in DEF_LABELS: # is not 'ledCmnt'
+            fun_name = tangleRecur(LedDatum(), prog_el[1][1][1]) # no 'syms'
+            if fun_name not in EASEL_FUNCS:
+                body = prog_el[1][2]
+                if needBoth(body):
+                    key = 'addBoth'
+                elif needInput(body):
+                    key = 'addInput'
+                elif needState(body):
+                    key = 'addState'
+                else:
+                    key = 'addNeither'
+                funcsAddParams[key] |= {fun_name}
 
 def needBoth(body) -> bool:
     return (
