@@ -515,18 +515,18 @@ def addEaselParams(T):
         return T
     elif T[0] == 'namedTermNoParenth':
         id = T[1]
-        params = getParamsFromLexeme(id)
+        params = getEaselParamsFromLexeme(id)
         if params != ():
             terms = getIdsTree('terms', 'namedTermNoParenth', params)
             T = 'actFunExpr', id, terms
         return T
-    elif T[0] == 'constN':
-        id = T[1]
-        params = getParamsFromLexeme(id)
-        if params != ():
-            syms = getIdsTree('syms', 'symName', params)
-            T = 'formFunExpr', id, syms
-        return T
+    # elif T[0] == 'constN':
+    #     id = T[1]
+    #     params = getEaselParamsFromLexeme(id)
+    #     if params != ():
+    #         syms = getIdsTree('syms', 'symName', params)
+    #         T = 'formFunExpr', id, syms
+    #     return T
     elif T[0] == 'constDef':
         # todo!
         root = T[0]
@@ -540,16 +540,21 @@ def addEaselParams(T):
             T2 += whereCl,
         return T2
     elif T[0] == 'actFunExpr':
-        params = getParamsFromLexeme(T[1])
+        params = getEaselParamsFromLexeme(T[1])
         terms = T[2]
         terms += getIdsTuple('namedTermNoParenth', params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
     elif T[0] == 'formFunExpr':
-        params = getParamsFromLexeme(T[1])
-        syms = T[2]
-        syms += getIdsTuple('symName', params)
-        T = T[:2] + (syms,)
+        params = getEaselParamsFromLexeme(T[1])
+        if params != ():
+            syms = getIdsTuple('id', params)
+            if len(T) == 2: # nullary
+                syms = ('syms',) + syms
+                T += syms,
+            else:
+                syms = T[2] + syms
+                T = T[:2] + (syms,)
         return T
     else:
         return recurTree(addEaselParams, T)
@@ -575,7 +580,7 @@ EASEL_PARAMS_STATE = EASEL_STATE,
 
 EASEL_PARAMS = EASEL_PARAMS_INPUT + EASEL_PARAMS_STATE
 
-def getParamsFromLexeme(id) -> tuple:
+def getEaselParamsFromLexeme(id) -> tuple:
     st = tangleRecur(LedDatum(), id)
     if not isinstance(st, str):
         raiseError('MUST BE STRING')
@@ -625,7 +630,7 @@ def setFuncsAddParams(prog):
         'addBoth': EASEL_FUNCS_ADD_BOTH
     }
     for prog_el in prog[1:]:
-        if prog_el[0] in DEF_LABELS: # is not 'ledCmnt'
+        if prog_el[0] in DEF_LABELS: # != 'ledCmnt'
             fun_name = tangleRecur(LedDatum(), prog_el[1][1][1]) # no 'syms'
             if fun_name not in EASEL_FUNCS:
                 body = prog_el[1][2]
