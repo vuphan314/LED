@@ -303,11 +303,7 @@ def getLibsStr() -> str:
     st = ''
     with open(LIB_NAME) as libFile:
         stLib = libFile.read()
-        msg = '''
-
-{}
-
-'''.format(blockComment('BELOW IS A COPY OF ' + LIB_NAME))
+        msg = '\n\n{}\n\n'.format(blockComment('COPY OF ' + LIB_NAME))
         stLib = msg + stLib + '\n'
         stLib = markStartEnd(stLib) + '\n\n'
         st += stLib
@@ -380,8 +376,7 @@ def tangleRecur(dat: LedDatum, T) -> str:
         return recurStr(tangleRecur, dat, T)
 
 def defRecur(
-    dat: LedDatum, func, args: tuple, expr,
-    inds=(), letCls=(), moreSpace=False
+    dat: LedDatum, func, args: tuple, expr, inds=(), letCls=(), moreSpace=False
 ) -> str:
     head = applyRecur(dat, func, args, inds=inds)
     expr = tangleRecur(dat, expr)
@@ -400,8 +395,8 @@ def defRecur(
     return st
 
 def applyRecur(
-    dat: LedDatum, func, args: tuple,
-    isInLib=False, argsAreBracketed=False, inds=()
+    dat: LedDatum, func, args: tuple, isInLib=False, argsAreBracketed=False,
+    inds=()
 ) -> str:
     func = tangleRecur(dat, func)
     if isInLib:
