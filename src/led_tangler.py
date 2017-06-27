@@ -2,12 +2,12 @@
 
 """Convert an LED parsetree into a SL program."""
 
-############################################################
+################################################################################
 
 from typing import Dict, Tuple
 from debugtools.debug_tool import *
 
-############################################################
+################################################################################
 """Python global variables."""
 
 defedFuncs = () # defined functions
@@ -20,7 +20,7 @@ auxFuncDefs = '' # 'auxFunc1 := 1; auxFunc2 := [2];...'
 isGame = False
 funcsAddParams = {} # set by setFuncsAddParams
 
-############################################################
+################################################################################
 
 class LedDatum:
     indepSymbs = () # ('i1',...)
@@ -294,7 +294,7 @@ class LedDatum:
         st = self.appendToAux('C')
         return st
 
-############################################################
+################################################################################
 """Top-level function.
 
 Convert an LED parsetree into a string which
@@ -331,7 +331,7 @@ def tangleTop(T: tuple) -> str:
         st += EASEL_FRAGMENT + getLibsStr()
     return st + '\n'
 
-############################################################
+################################################################################
 """Appened the LED library to the output SL file."""
 
 LIB_NAME = 'led_lib.sl'
@@ -350,7 +350,7 @@ def getLibsStr() -> str:
         st += stLib
     return st
 
-############################################################
+################################################################################
 
 EASEL_FRAGMENT = '''
 
@@ -384,7 +384,7 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 '''
 
-############################################################
+################################################################################
 """Recursion iterators."""
 
 def tangleRecur(dat: LedDatum, T) -> str:
@@ -454,7 +454,7 @@ def applyRecur(
     st = appendInds(st, inds)
     return st
 
-############################################################
+################################################################################
 """Recursion helpers."""
 
 def recurStr(F, dat: LedDatum, T) -> str:
@@ -483,7 +483,7 @@ def recurTree(F, T):
         T2 += F(t),
     return T2
 
-############################################################
+################################################################################
 """Update defined functions/constants."""
 
 def updateDefedFuncsConsts(prog):
@@ -507,7 +507,7 @@ def isConstDef(led_def):
     formFunExpr = led_def[1][1]
     return len(formFunExpr) == 2 # no 'terms'
 
-############################################################
+################################################################################
 """Easel."""
 
 def addEaselParams(T):
@@ -680,7 +680,7 @@ def someStrFound(T, sts) -> bool:
                 return True
         return False
 
-############################################################
+################################################################################
 """Tangle function definitions."""
 
 DEF_LABELS = {'funDef', 'relDef'}
@@ -736,7 +736,7 @@ def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
     else:
         raiseError('INVALID WHERE-CLAUSES')
 
-############################################################
+################################################################################
 """Tangle collections."""
 
 def tangleTuple(dat: LedDatum, T) -> str:
@@ -763,7 +763,7 @@ def tangleSet(dat: LedDatum, T) -> str:
     )
     return st
 
-############################################################
+################################################################################
 """Nonstrict operations."""
 
 NONSTRICT_OPS = {'impl', 'conj'}
@@ -794,7 +794,7 @@ def writeWhenElseClause(
     st = addParentheses(st)
     return st
 
-############################################################
+################################################################################
 """Tangle LED library operations."""
 
 AR_OPS = {
@@ -820,7 +820,7 @@ def tangleLibOps(dat: LedDatum, T) -> str:
     st = applyRecur(dat, T[0], T[1:], isInLib=True)
     return st
 
-############################################################
+################################################################################
 """SequenceL helpers."""
 
 def writeLetClauses(tup: tuple) -> str:
@@ -862,7 +862,7 @@ def funcIsAux(st: str) -> bool:
     b = st[-1] == '_'
     return b
 
-############################################################
+################################################################################
 """Miscellaneous."""
 
 def unionDicts(ds: Tuple[Dict]) -> dict:
@@ -871,7 +871,7 @@ def unionDicts(ds: Tuple[Dict]) -> dict:
         D.update(d)
     return D
 
-############################################################
+################################################################################
 """Add otherwise-clase."""
 
 def addOtherwiseClauses(T):
@@ -888,7 +888,7 @@ def addOtherwiseClauses(T):
     else:
         return recurTree(addOtherwiseClauses, T)
 
-############################################################
+################################################################################
 """Expand quantifying symbols."""
 
 QUANT_OPS = {'exist', 'univ'}
@@ -921,7 +921,7 @@ def symsInSetToSymbInSet(T):
     T2 = recurTree(expandSymsInS, T2)
     return T2
 
-############################################################
+################################################################################
 """Aggregation."""
 
 AGGR_OPS = {
@@ -1030,7 +1030,7 @@ def newDepSymbFound(dat: LedDatum, T) -> bool:
 def isNewDepSymb(dat: LedDatum, id: str) -> bool:
     return id not in dat.getSymbs() + defedConsts
 
-############################################################
+################################################################################
 """Quantification."""
 
 def tangleQuant(dat: LedDatum, T) -> str:
@@ -1063,7 +1063,7 @@ def getSymbsFromSyms(T) -> tuple:
         symbs += symb,
     return symbs
 
-############################################################
+################################################################################
 """Tangle lexemes."""
 
 LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
@@ -1081,7 +1081,7 @@ def tangleLexemes(dat: LedDatum, T) -> str:
     st = applyRecur(dat, func, args, isInLib=True)
     return st
 
-############################################################
+################################################################################
 """Import and use LED library."""
 
 LIB_PATH = '../src/led_lib.sl'
@@ -1100,7 +1100,7 @@ def prependLib(st: str) -> str:
     st = LIB_AS + st
     return st
 
-############################################################
+################################################################################
 """Test SL constants."""
 
 def printTest() -> str:
@@ -1120,7 +1120,7 @@ def printTest() -> str:
         st += '\n\n'
     return st
 
-############################################################
+################################################################################
 """Check whether the LED program is an Easel game.
 
 For each keyword #isGame found in the LED program:
