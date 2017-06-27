@@ -265,8 +265,7 @@ class LedDatum:
 ################################################################################
 """Top-level function.
 
-Convert an LED parsetree into a string which
-represents a SL program.
+Convert an LED parsetree into a string which represents a SL program.
 
 Python pseudotype `Tree` is either type `tuple` or `str`.
 """
@@ -283,17 +282,13 @@ def tangleTop(T: tuple) -> str:
             # making them non-constants
         imports = ''
             # Easel doesn't work well with imports,
-            # so I will append a copy of the LED library to
-            # the output SL file
+            # so I will append a copy of the LED library to the output SL file
     else:
         imports = importLib()
     T = expandSymsInS(T)
     st = tangleRecur(LedDatum(), T)
     if auxFuncDefs != '':
-        st += (
-            blockComment('AUXILIARY FUNCTIONS') +
-            '\n\n' + auxFuncDefs
-        )
+        st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
     st = printTest() + imports + st
     if isGame:
         st += EASEL_FRAGMENT + getLibsStr()
