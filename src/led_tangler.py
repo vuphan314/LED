@@ -500,7 +500,7 @@ def addEaselParams(T):
         params = getEaselParamsFromLexeme(T[1])
         if params != ():
             syms = getIdsTuple('id', params)
-            if len(T) == 2: # nullary
+            if len(T) == 2: # constant
                 syms = ('syms',) + syms
                 T += syms,
             else:
