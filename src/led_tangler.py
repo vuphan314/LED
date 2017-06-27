@@ -121,12 +121,8 @@ class LedDatum:
         return letCls
 
     def aDefFuncLib(self) -> str:
-        expr = applyRecur(
-            self, self.aCateg, self.aGetArgsLib()
-        )
-        st = defRecur(
-            self, self.aFunc, (), expr, moreSpace=True
-        )
+        expr = applyRecur(self, self.aCateg, self.aGetArgsLib())
+        st = defRecur(self, self.aFunc, (), expr, moreSpace=True)
         return st
 
     def aGetArgsLib(self) -> tuple:
@@ -141,9 +137,7 @@ class LedDatum:
         func = 'join'
         args = self.aGetFuncConjDeep(),
         expr = applyRecur(self, func, args)
-        st = defRecur(
-            self, self.aFunc, (), expr, moreSpace=True
-        )
+        st = defRecur(self, self.aFunc, (), expr, moreSpace=True)
         st = self.aDefFuncConjDeep() + st
         return st
 
@@ -156,14 +150,11 @@ class LedDatum:
         letCls = self.aGetConjLetClauses(bindings, inds)
 
         st = defRecur(
-            self, func, (), expr, letCls=letCls,
-            inds=inds, moreSpace=True
+            self, func, (), expr, letCls=letCls, inds=inds, moreSpace=True
         )
         return st
 
-    def aGetConjLetClauses(
-        self, bindings: tuple, inds: tuple
-    ) -> tuple:
+    def aGetConjLetClauses(self, bindings: tuple, inds: tuple) -> tuple:
         workarounds = 'workaround1_', 'workaround2_'
             # Bryant's solution to avoid SL bug
         funcs = self.subInst1.aFunc, self.subInst2.aFunc
@@ -174,9 +165,7 @@ class LedDatum:
             letCls += defRecur(self, workaround, (), func),
 
             ind = inds[i]
-            expr = applyRecur(
-                self, workaround, (), inds=(ind,)
-            )
+            expr = applyRecur(self, workaround, (), inds=(ind,))
             binding = bindings[i]
             letCls += defRecur(self, binding, (), expr),
 
@@ -203,10 +192,7 @@ class LedDatum:
     qPred = '' # 'all y in S. y > x'
 
     def qDefFuncs(self) -> str:
-        st = (
-            self.qDefFuncMain() + self.qDefFuncPred() +
-            self.qDefFuncSet()
-        )
+        st = self.qDefFuncMain() + self.qDefFuncPred() + self.qDefFuncSet()
         return st
 
     def qDefFuncMain(self) -> str:
