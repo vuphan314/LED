@@ -208,9 +208,7 @@ class LedDatum:
         expr = applyRecur(self, funcQuant, argsQuant)
 
         funcMain = self.qGetFuncMain()
-        st = defRecur(
-            self, funcMain, S, expr, moreSpace=True
-        )
+        st = defRecur(self, funcMain, S, expr, moreSpace=True)
         return st
 
     def qDefFuncPred(self) -> str:
@@ -227,17 +225,13 @@ class LedDatum:
         func2 = self.qGetFuncPred()
         args2 = self.indepSymbs
 
-        st = defRecur(
-            self, func2, args2, expr,
-            inds=(ind,), letCls=letCls
-        )
+        st = defRecur(self, func2, args2, expr, inds=(ind,), letCls=letCls)
         return st
 
     def qGetPredLetClause(self, ind: str) -> str:
         """Return 'y := S(x)[i_];'."""
         expr = applyRecur(
-            self, self.qGetFuncSet(), self.indepSymbs,
-            inds=(ind,)
+            self, self.qGetFuncSet(), self.indepSymbs, inds=(ind,)
         )
         st = defRecur(self, self.depSymbs[0], (), expr)
         return st
@@ -246,9 +240,7 @@ class LedDatum:
         func = self.qGetFuncSet()
         args = self.indepSymbs
         expr = applyRecur(self, 'valToSet', (self.qSet,))
-        st = defRecur(
-            self, func, args, expr, moreSpace=True
-        )
+        st = defRecur(self, func, args, expr, moreSpace=True)
         return st
 
     def qGetFuncQuant(self) -> str:
