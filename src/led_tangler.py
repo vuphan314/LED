@@ -624,10 +624,10 @@ def setFuncsAddParams(prog):
         'addState': EASEL_FUNCS_ADD_STATE,
         'addBoth': EASEL_FUNCS_ADD_BOTH
     }
-    for definition in prog[1:]:
-        head = tangleRecur(LedDatum(), definition[1][1])
+    for led_def in prog[1:]:
+        head = tangleRecur(LedDatum(), led_def[1][1])
         if head not in EASEL_FUNCS:
-            body = definition[2]
+            body = led_def[2]
             if needBoth(body):
                 key = 'addBoth'
             elif needInput(body):
