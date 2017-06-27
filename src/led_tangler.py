@@ -1114,11 +1114,7 @@ def printTest() -> str:
             func = applyRecur(None, 'pp', (const,))
             st += func + '\n'
     if st != '':
-        head = '''
-Copy/paste the block below into
-the SequenceL interpreter to test:
-
-'''
+        head = 'Test with SequenceL interpreter:\n\n'
         tail = '\n(pp: pretty-print)'
         st = head + st + tail
         st = blockComment(st)
