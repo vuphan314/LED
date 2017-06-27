@@ -530,7 +530,7 @@ def addEaselParams(T):
             T = 'formFunExpr', id, syms
         return T
     elif T[0] == 'constDef':
-        todo!
+        # todo!
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
@@ -600,29 +600,23 @@ def appendUnderscore(st: str) -> str:
 
 EASEL_FUNCS_CLICK = {'mouseClicked', 'mouseX', 'mouseY'}
 EASEL_FUNCS_CURRENT_STATE = {'currentState'}
-EASEL_FUNCS_GLOBAL = (
-    EASEL_FUNCS_CLICK | EASEL_FUNCS_CURRENT_STATE
-)
+EASEL_FUNCS_GLOBAL = EASEL_FUNCS_CLICK | EASEL_FUNCS_CURRENT_STATE
 
 EASEL_FUNCS_CONSTRUCTOR = {
-    'point', 'color', 'click', 'input', 'segment', 'circle',
-    'text', 'disc', 'fTri', 'graphic'
+    'point', 'color', 'click', 'input', 'segment', 'circle', 'text', 'disc',
+    'fTri', 'graphic'
 }
-EASEL_FUNCS_ADD_NEITHER = EASEL_FUNCS_CONSTRUCTOR | {
-    'initialState'
-}
+EASEL_FUNCS_ADD_NEITHER = EASEL_FUNCS_CONSTRUCTOR | {'initialState'}
 
 EASEL_FUNCS_ADD_INPUT = EASEL_FUNCS_CLICK
 
-EASEL_FUNCS_ADD_STATE = (
-    EASEL_FUNCS_CURRENT_STATE | {'images'}
-)
+EASEL_FUNCS_ADD_STATE = EASEL_FUNCS_CURRENT_STATE | {'images'}
 
 EASEL_FUNCS_ADD_BOTH = {'newState'}
 
 EASEL_FUNCS = (
-    EASEL_FUNCS_ADD_NEITHER | EASEL_FUNCS_ADD_INPUT |
-    EASEL_FUNCS_ADD_STATE | EASEL_FUNCS_ADD_BOTH
+    EASEL_FUNCS_ADD_NEITHER | EASEL_FUNCS_ADD_INPUT | EASEL_FUNCS_ADD_STATE |
+    EASEL_FUNCS_ADD_BOTH
 )
 
 def setFuncsAddParams(prog):
@@ -657,7 +651,7 @@ def needBoth(body) -> bool:
 def needInput(body) -> bool:
     """Assumption:
 
-    not someStrFound(body, funcsAddParams['addBoth']).
+    not someStrFound(body, funcsAddParams['addBoth'])
     """
     return (
         someStrFound(body, funcsAddParams['addInput']) or
@@ -667,7 +661,7 @@ def needInput(body) -> bool:
 def needState(body) -> bool:
     """Assumption:
 
-    not someStrFound(body, funcsAddParams['addBoth']).
+    not someStrFound(body, funcsAddParams['addBoth'])
     """
     return (
         someStrFound(body, funcsAddParams['addState']) or
