@@ -520,13 +520,6 @@ def addEaselParams(T):
             terms = getIdsTree('terms', 'namedTermNoParenth', params)
             T = 'actFunExpr', id, terms
         return T
-    # elif T[0] == 'constN':
-    #     id = T[1]
-    #     params = getEaselParamsFromLexeme(id)
-    #     if params != ():
-    #         syms = getIdsTree('syms', 'symName', params)
-    #         T = 'formFunExpr', id, syms
-    #     return T
     elif T[0] == 'constDef':
         # todo!
         root = T[0]
