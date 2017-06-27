@@ -46,8 +46,7 @@ class LedDatum:
 
     def getNextIndepSymbs(self) -> tuple:
         return self.getSymbs()
-            # current dependent symbols will be
-            # next independent symbols
+            # current dependent symbols will be next independent symbols
 
     def appendToAux(
         self, postfix: str, isNext=False
