@@ -48,9 +48,7 @@ class LedDatum:
         return self.getSymbs()
             # current dependent symbols will be next independent symbols
 
-    def appendToAux(
-        self, postfix: str, isNext=False
-    ) -> str:
+    def appendToAux(self, postfix: str, isNext=False) -> str:
         num = auxFuncNum
         if isNext:
             num += 1
@@ -108,25 +106,18 @@ class LedDatum:
         inCl = self.aTerm
 
         st = defRecur(
-            self, func, (), inCl,
-            letCls=letCls, inds=(ind,), moreSpace=True
+            self, func, (), inCl, letCls=letCls, inds=(ind,), moreSpace=True
         )
         return st
 
     def aGetAggrLetClauses(self, ind: str) -> str:
         binding = 'b_'
-        expr = applyRecur(
-            self, self.condInst.aFunc, (), inds=(ind,)
-        )
+        expr = applyRecur(self, self.condInst.aFunc, (), inds=(ind,))
         letCls = defRecur(self, binding, (), expr),
         for i in range(self.getNumDepSymbs()):
             num = str(i + 1)
-            expr = applyRecur(
-                self, binding, (), inds=(num,)
-            )
-            letCls += defRecur(
-                self, self.depSymbs[i], (), expr
-            ),
+            expr = applyRecur(self, binding, (), inds=(num,))
+            letCls += defRecur(self, self.depSymbs[i], (), expr),
         return letCls
 
     def aDefFuncLib(self) -> str:
