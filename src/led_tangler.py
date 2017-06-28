@@ -58,7 +58,7 @@ class LedDatum:
         st = 'AUX_' + str(num) + '_' + postfix + '_'
         return st
 
-    """Fields specific to aggregation."""
+    """Fields specific to aggregation.""" # todo: examples/
     # must assign immediately when instantiating:
     aCateg = None # str
     # must assign later by calling aDefFunc:
