@@ -373,7 +373,7 @@ def tangleRecur(dat: LedDatum, T) -> str:
         return tangleIfClauses(dat, T)
     elif T[0] in DEF_LABELS:
         return tangleDef(dat, T)
-    elif T[0] == 'ledCmnt':
+    elif T[0] == CMNT_LABEL:
         return ''
     else:
         return recurStr(tangleRecur, dat, T)

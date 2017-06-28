@@ -170,7 +170,7 @@ class RegionParser:
             base_list.append(self.get_cmnt_tree(cmnt_str))
 
     def get_cmnt_tree(self, cmnt_str: str) -> tuple:
-        return 'ledCmnt', cmnt_str.strip()
+        return CMNT_LABEL, cmnt_str.strip()
 
     def get_elements_from_region(
         self, region: str, line_number: int

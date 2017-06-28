@@ -74,8 +74,8 @@ def weave_recur(T) -> str:
         return get_env('cases', T[1:])
     elif T[0] in DEF_LABELS:
         return get_env('ledDef', T[1:])
-    elif T[0] == 'ledCmnt':
-        return get_env('ledCmnt', T[1:])
+    elif T[0] == CMNT_LABEL:
+        return get_env(CMNT_LABEL, T[1:])
     else:
         return recur_str(weave_recur, T)
 
