@@ -581,7 +581,7 @@ def setFuncsAddParams(prog):
         'addBoth': EASEL_FUNCS_ADD_BOTH
     }
     for prog_el in prog[1:]:
-        if prog_el[0] in DEF_LABELS: # != 'ledCmnt'
+        if is_led_def(prog_el):
             fun_name = tangleRecur(LedDatum(), prog_el[1][1][1])
                 # no: ('syms',...)
             if fun_name not in EASEL_FUNCS:

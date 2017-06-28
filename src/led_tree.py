@@ -9,5 +9,5 @@ CMNT_LABEL = 'ledCmnt'
 
 ################################################################################
 
-def is_led_def(prog_el):
+def is_led_def(prog_el) -> bool:
     return prog_el[0] in DEF_LABELS # != CMNT_LABEL
