@@ -455,15 +455,16 @@ def setDefedFuncsConsts(prog):
     defedFuncs = ()
     defedConsts = ()
 
-    for led_def in prog[1:]:
-        id = led_def[1][1][1] # no: ('syms',...)
-        st = tangleRecur(LedDatum(), id)
-        defedFuncs += st,
-        if isConstDef(led_def):
-            defedConsts += st,
+    for prog_el in prog[1:]:
+        if is_led_def(prog_el):
+            fun_name = prog_el[1][1] # no: ('syms',...)
+            st = tangleRecur(LedDatum(), fun_name)
+            defedFuncs += st,
+            if isConstDef(prog_el):
+                defedConsts += st,
 
 def isConstDef(led_def):
-    formFunExpr = led_def[1][1]
+    formFunExpr = led_def[1]
     return len(formFunExpr) == 2 # no: ('terms',...)
 
 ################################################################################
@@ -582,7 +583,7 @@ def setFuncsAddParams(prog):
     }
     for prog_el in prog[1:]:
         if is_led_def(prog_el):
-            fun_name = tangleRecur(LedDatum(), prog_el[1][1][1])
+            fun_name = tangleRecur(LedDatum(), prog_el[1][1])
                 # no: ('syms',...)
             if fun_name not in EASEL_FUNCS:
                 body = prog_el[1][2]
@@ -643,22 +644,20 @@ def someStrFound(T, sts) -> bool:
 """Tangle function definitions."""
 
 def tangleDef(dat: LedDatum, T) -> str:
-    T = T[1]
+    formFunExpr = T[1]
 
-    func = tangleRecur(dat, T[1][1])
+    fun_name = tangleRecur(dat, formFunExpr[1])
 
     dat2 = dat.getAnotherInst()
-    if len(T[1]) > 2: # non-constant function
-        dat2.indepSymbs = getSymbsFromSyms(T[1][2])
+    if len(formFunExpr) > 2: # non-constant function
+        dat2.indepSymbs = getSymbsFromSyms(formFunExpr[2])
 
+    letCls = ()
     if T[0] in DEF_WHERE_LABELS:
         letCls = tangleWhereClauses(dat2, T[3])
-    else:
-        letCls = ()
 
     st = defRecur(
-        dat2, func, dat2.indepSymbs, T[2],
-        moreSpace=True, letCls=letCls
+        dat2, fun_name, dat2.indepSymbs, T[2], moreSpace=True, letCls=letCls
     )
     return st
 
