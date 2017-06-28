@@ -447,8 +447,11 @@ def recurTree(F, T):
 def setDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
+
+    # clear before possible 2nd call:
     defedFuncs = ()
     defedConsts = ()
+
     for led_def in prog[1:]:
         id = led_def[1][1][1] # no: ('syms',...)
         st = tangleRecur(LedDatum(), id)
@@ -883,9 +886,7 @@ AGGR_OPS = {
     'aggrSum', 'aggrProd'
 }
 
-AGGR_LIB_CATEGS = {
-    'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'
-}
+AGGR_LIB_CATEGS = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
 
 def tangleAggr(dat: LedDatum, T) -> str:
