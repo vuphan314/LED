@@ -2,12 +2,13 @@
 
 """Convert an LED parsertree into a TeX program."""
 
-############################################################
-"""Import."""
+################################################################################
 
 from debugtools.debug_tool import *
 
-############################################################
+from led_tree import *
+
+################################################################################
 
 TEX_TOP = (
     '\\documentclass{led_doc}' '\n'
@@ -15,9 +16,7 @@ TEX_TOP = (
 )
 TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
-DEF_LABELS = {
-    'funDefNoWhere', 'relDefNoWhere', 'funDefWhere', 'relDefWhere'
-}
+
 IF_CLAUSES = {'termIfBoolTerm', 'termOw'}
 QUANT_OPS = {'exist', 'univ'}
 AGGR_OPS = {
@@ -39,7 +38,7 @@ CLS_CMDS = (
 FUN_EXPRS = {'formFunExpr', 'actFunExpr'}
 MANY_LABELS = {'terms', 'syms'}
 
-############################################################
+################################################################################
 
 def weave_top(T) -> str:
     # T = change_label(T)
@@ -52,7 +51,7 @@ def change_label(T):
     else:
         return recur_tree(change_label, T)
 
-############################################################
+################################################################################
 
 def weave_recur(T) -> str:
     if isinstance(T, str):
@@ -73,14 +72,14 @@ def weave_recur(T) -> str:
         return get_cmd(T[0], T[1:])
     elif T[0] == 'condTerms':
         return get_env('cases', T[1:])
-    elif T[0] in {'funDef', 'relDef'}:
+    elif T[0] in DEF_LABELS:
         return get_env('ledDef', T[1:])
     elif T[0] == 'ledCmnt':
         return get_env('ledCmnt', T[1:])
     else:
         return recur_str(weave_recur, T)
 
-############################################################
+################################################################################
 
 def weave_fun_expr(T) -> str:
     args = ()
@@ -94,7 +93,7 @@ def weave_many(args: tuple) -> str:
         st += ', ' + weave_recur(arg)
     return st
 
-############################################################
+################################################################################
 
 def weave_call(func, args: tuple) -> str:
     st = weave_recur(func)
@@ -104,7 +103,7 @@ def weave_call(func, args: tuple) -> str:
         st += ' ' + st2
     return st
 
-############################################################
+################################################################################
 
 def get_env(env_name: str, env_items: tuple) -> str:
     st = ''
@@ -123,7 +122,7 @@ def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
         st += surround_str(st2, '{', '}')
     return st
 
-############################################################
+################################################################################
 
 def surround_str(
     inner_str: str, left_str: str, right_str: str
@@ -131,7 +130,7 @@ def surround_str(
     st = left_str + inner_str + right_str
     return st
 
-############################################################
+################################################################################
 
 def recur_tree(F, T):
     T2 = T[:1]

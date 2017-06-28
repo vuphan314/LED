@@ -5,7 +5,10 @@
 ################################################################################
 
 from typing import Dict, Tuple
+
 from debugtools.debug_tool import *
+
+from led_tree import *
 
 ################################################################################
 """Python global variables."""
@@ -477,11 +480,10 @@ def addEaselParams(T):
             T = 'actFunExpr', id, terms
         return T
     elif T[0] == 'constDef':
-        # todo!
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
-            root = 'funDef'
+            root = funDef_ # todo: 'funDefWhere', 'relDefWhere'
         expr = addEaselParams(T[2])
         T2 = root, head, expr
         if len(T) > 3:
@@ -639,9 +641,6 @@ def someStrFound(T, sts) -> bool:
 
 ################################################################################
 """Tangle function definitions."""
-
-DEF_LABELS = {'funDef', 'relDef'}
-DEF_WHERE_LABELS = {'funDefWhere', 'relDefWhere'}
 
 def tangleDef(dat: LedDatum, T) -> str:
     T = T[1]

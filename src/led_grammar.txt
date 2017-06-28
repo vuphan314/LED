@@ -4,8 +4,8 @@ prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 prog_el(T) ::= hashIsGame(T)
 prog_el(T) ::= led_def(T)
 
-led_def(funDef T) ::= fun_def(T)
-led_def(relDef T) ::= rel_def(T)
+led_def(T) ::= fun_def(T)
+led_def(T) ::= rel_def(T)
 
 fun_def(funDefNoWhere T T2) ::= form_fun_expr(T) colonEq def_body(T2)
 fun_def(funDefWhere T T2 T3) ::= form_fun_expr(T) colonEq def_body(T2) where bool_term(T3)
