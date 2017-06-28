@@ -10,15 +10,15 @@ from debugtools.debug_tool import *
 ################################################################################
 """Python global variables."""
 
-defedFuncs = () # defined functions
-defedConsts = () # ('c1', 'c2',...)
+defedFuncs = () # defined functions (including constants): ('f1', 'f2',...)
+defedConsts = () # defined constants (to print tests)
 
 auxFuncNum = 0
 auxFuncDefs = '' # 'auxFunc1 := 1; auxFunc2 := [2];...'
 
 # Easel:
 isGame = False
-funcsAddParams = {} # set by setFuncsAddParams
+funcsAddParams = {} # set by: setFuncsAddParams
 
 ################################################################################
 
@@ -273,11 +273,11 @@ Python pseudotype `Tree` is either type `tuple` or `str`.
 def tangleTop(T: tuple) -> str:
     T = setIsGame(T)
     T = addOtherwiseClauses(T)
-    updateDefedFuncsConsts(T)
+    setDefedFuncsConsts(T)
     if isGame:
         setFuncsAddParams(T)
         T = addEaselParams(T)
-        updateDefedConsts(T)
+        setDefedFuncsConsts(T)
             # parameters were added to some constants,
             # making them non-constants
         imports = ''
@@ -442,28 +442,23 @@ def recurTree(F, T):
     return T2
 
 ################################################################################
-"""Update defined functions/constants."""
+"""Set defined functions/constants."""
 
-def updateDefedFuncsConsts(prog):
+def setDefedFuncsConsts(prog):
     global defedFuncs
     global defedConsts
+    defedFuncs = ()
+    defedConsts = ()
     for led_def in prog[1:]:
-        st = tangleRecur(LedDatum(), led_def[1][1])
+        id = led_def[1][1][1] # no: ('syms',...)
+        st = tangleRecur(LedDatum(), id)
         defedFuncs += st,
         if isConstDef(led_def):
             defedConsts += st,
 
-def updateDefedConsts(prog):
-    global defedConsts
-    defedConsts = ()
-    for led_def in prog[1:]:
-        if isConstDef(led_def):
-            st = tangleRecur(LedDatum(), led_def[1])
-            defedConsts += st,
-
 def isConstDef(led_def):
     formFunExpr = led_def[1][1]
-    return len(formFunExpr) == 2 # no 'terms'
+    return len(formFunExpr) == 2 # no: ('terms',...)
 
 ################################################################################
 """Easel."""
@@ -582,7 +577,8 @@ def setFuncsAddParams(prog):
     }
     for prog_el in prog[1:]:
         if prog_el[0] in DEF_LABELS: # != 'ledCmnt'
-            fun_name = tangleRecur(LedDatum(), prog_el[1][1][1]) # no 'syms'
+            fun_name = tangleRecur(LedDatum(), prog_el[1][1][1])
+                # no: ('syms',...)
             if fun_name not in EASEL_FUNCS:
                 body = prog_el[1][2]
                 if needBoth(body):
