@@ -10,22 +10,20 @@
 
 \setlength{\parindent}{0pt}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newenvironment{ledCmnt}{}{}
 
 \newenvironment{ledDef}{\begin{dmath}}{\end{dmath} \medskip}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLS_CMDS
 
 % DEF_LABELS
 \newcommand{\funDefNoWhere}[2]{\defNoWhere{#1}{#2}{:=}}
-\newcommand{\funDefWhere}[3]
-  {\funDefNoWhere{#1}{#2} \whereClause{#3}}
+\newcommand{\funDefWhere}[3]{\funDefNoWhere{#1}{#2} \whereClause{#3}}
 \newcommand{\relDefNoWhere}[2]{\defNoWhere{#1}{#2}{\equiv}}
-\newcommand{\relDefWhere}[3]
-  {\relDefNoWhere{#1}{#2} \whereClause{#3}}
+\newcommand{\relDefWhere}[3]{\relDefNoWhere{#1}{#2} \whereClause{#3}}
 
 % IF_CLAUSES
 \newcommand{\termIfBoolTerm}[2]{#1 & \textKeyword{if} #2 \\}
@@ -87,7 +85,7 @@
 \newcommand{\setMem}[2]{\infixPar{#1}{#2}{\in}}
 \newcommand{\symsInSet}[2]{\setMem{#1}{#2}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % surrounders
 \newcommand{\parentheses}[1]{\left( #1 \right)}
@@ -99,8 +97,7 @@
 
 % infix
 \newcommand{\infixNoPar}[3]{{#1}\ {#3}\ {#2}}
-\newcommand{\infixPar}[3]{\infixNoPar
-  {\parentheses{#1}}{\parentheses{#2}}{#3}}
+\newcommand{\infixPar}[3]{\infixNoPar{\parentheses{#1}}{\parentheses{#2}}{#3}}
 
 % misc
 \newcommand{\defNoWhere}[3]{\infixNoPar{#1}{#2}{#3}}
