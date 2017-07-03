@@ -743,20 +743,7 @@ def writeWhenElseClause(
     return st
 
 ################################################################################
-"""Tangle LED library operations."""
-
-AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
-BOOL_OPS = {'equiv', 'disj', 'neg'}
-EQUALITY_OPS = {'eq', 'uneq'}
-OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
-RELATIONAL_OPS = {'less', 'greater', 'lessEq', 'greaterEq'}
-SET_OPS = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
-TUPLE_OPS = {'tuIn', 'tuSl'}
-
-LIB_OPS = (
-    AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS | RELATIONAL_OPS |
-    SET_OPS | TUPLE_OPS
-)
+"""Tangle library operations."""
 
 def tangleLibOps(dat: LedDatum, T) -> str:
     st = applyRecur(dat, T[0], T[1:], isInLib=True)

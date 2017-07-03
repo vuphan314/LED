@@ -1,13 +1,26 @@
 """Define labels appearing in an LED parsetree."""
 
 ################################################################################
+"""program element"""
 
+CMNT_LABEL = 'ledCmnt'
 DEF_WHERE_LABELS = {'funDefWhere', 'relDefWhere'}
 DEF_LABELS = DEF_WHERE_LABELS | {'funDefNoWhere', 'relDefNoWhere'}
 
-CMNT_LABEL = 'ledCmnt'
-
-################################################################################
-
 def is_led_def(prog_el) -> bool:
     return prog_el[0] in DEF_LABELS # != CMNT_LABEL
+
+################################################################################
+"""library operations"""
+
+AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
+BOOL_OPS = {'equiv', 'disj', 'neg'}
+EQUALITY_OPS = {'eq', 'uneq'}
+OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
+RELATIONAL_OPS = {'less', 'greater', 'lessEq', 'greaterEq'}
+SET_OPS = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
+TUPLE_OPS = {'tuIn', 'tuSl'}
+LIB_OPS = (
+    AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS | RELATIONAL_OPS |
+    SET_OPS | TUPLE_OPS
+)
