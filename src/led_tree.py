@@ -5,6 +5,7 @@
 from typing import Dict, Tuple
 
 ################################################################################
+"""miscellaneous"""
 
 def unionDicts(ds: Tuple[Dict]) -> dict:
     D = {}
@@ -28,7 +29,7 @@ def is_led_def(prog_el) -> bool:
 AGGR_OPS = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 ################################################################################
-"""library operations"""
+"""library operation"""
 
 AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
 BOOL_OPS = {'equiv', 'disj', 'neg'}
@@ -43,7 +44,7 @@ LIB_OPS = (
 )
 
 ################################################################################
-"""lexemes"""
+"""lexeme"""
 
 LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
 LEXEMES = unionDicts((LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'}))

@@ -639,7 +639,7 @@ def someStrFound(T, sts) -> bool:
         return False
 
 ################################################################################
-"""Tangle function definitions."""
+"""Tangle function definition."""
 
 def tangleDef(dat: LedDatum, T) -> str:
     formFunExpr = T[1]
@@ -690,7 +690,7 @@ def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
         raiseError('INVALID WHERE-CLAUSES')
 
 ################################################################################
-"""Tangle collections."""
+"""Tangle collection."""
 
 def tangleTuple(dat: LedDatum, T) -> str:
     func = 'tu'
@@ -741,7 +741,7 @@ def writeWhenElseClause(
     return st
 
 ################################################################################
-"""Tangle library operations."""
+"""Tangle library operation."""
 
 def tangleLibOps(dat: LedDatum, T) -> str:
     st = applyRecur(dat, T[0], T[1:], isInLib=True)
@@ -975,7 +975,7 @@ def getSymbsFromSyms(T) -> tuple:
     return symbs
 
 ################################################################################
-"""Tangle lexemes."""
+"""Tangle lexeme."""
 
 def tangleLexemes(dat: LedDatum, T) -> str:
     lex = T[0]
