@@ -23,12 +23,9 @@ import led_weaver
 ################################################################################
 
 def write_output_files(led_path: str, force: bool):
-    syntax_tree = led_parser.parse_file(
-        led_path, verbose=True
-    )
+    syntax_tree = led_parser.parse_file(led_path, verbose=True)
     sl_path, tex_path = [
-        append_base_path(led_path, ext)
-        for ext in ['.sl', '.tex']
+        append_base_path(led_path, ext) for ext in ['.sl', '.tex']
     ]
     write_sl(syntax_tree, sl_path, force)
     # write_tex(syntax_tree, tex_path, force)
@@ -38,23 +35,17 @@ def write_sl(syntax_tree: tuple, sl_path: str, force: bool):
     write_output_str(sl_str, sl_path, force)
     print('Wrote {}.'.format(sl_path))
 
-def write_tex(
-    syntax_tree: tuple, tex_path: str, force: bool
-):
+def write_tex(syntax_tree: tuple, tex_path: str, force: bool):
     tex_str = led_weaver.weave_top(syntax_tree)
     write_output_str(tex_str, tex_path, force)
     print('Wrote {}.'.format(tex_path))
 
-def write_output_str(
-    output_str: str, output_path: str, force: bool
-):
+def write_output_str(output_str: str, output_path: str, force: bool):
     write_mode = 'w' if force else 'x'
     with open(output_path, write_mode) as output_file:
         output_file.write(output_str)
 
-def append_base_path(
-    led_path: str, base_appendage: str
-) -> str:
+def append_base_path(led_path: str, base_appendage: str) -> str:
     base_path = os.path.splitext(led_path)[0]
     appended_path = base_path + base_appendage
     return appended_path
