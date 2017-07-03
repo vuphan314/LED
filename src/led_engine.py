@@ -6,7 +6,7 @@ Convert an LED program into
 a semantically equivalent SL program.
 """
 
-############################################################
+################################################################################
 
 import argparse
 import os
@@ -18,7 +18,7 @@ import led_parser
 import led_tangler
 import led_weaver
 
-############################################################
+################################################################################
 
 def write_output_files(led_path: str, force: bool):
     syntax_tree = led_parser.parse_file(
@@ -57,7 +57,7 @@ def append_base_path(
     appended_path = base_path + base_appendage
     return appended_path
 
-############################################################
+################################################################################
 
 class ArgvParser(argparse.ArgumentParser):
     def __init__(self):
@@ -68,7 +68,7 @@ class ArgvParser(argparse.ArgumentParser):
             help='OVERWRITE existing .sl and .tex files'
         )
 
-############################################################
+################################################################################
 
 def main():
     time_start = time.time()
