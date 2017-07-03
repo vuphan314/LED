@@ -29,6 +29,11 @@ def is_led_def(prog_el) -> bool:
 AGGR_OPS = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 ################################################################################
+"""collection"""
+
+SET_LABELS = {'setEmpty', 'setNonempty'}
+
+################################################################################
 """library operation"""
 
 AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}

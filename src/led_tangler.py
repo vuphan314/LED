@@ -695,13 +695,8 @@ def tangleWhereClauses(dat: LedDatum, T) -> Tuple[str]:
 def tangleTuple(dat: LedDatum, T) -> str:
     func = 'tu'
     terms = T[1]
-    st = applyRecur(
-        dat, func, terms[1:], isInLib=True,
-        argsAreBracketed=True
-    )
+    st = applyRecur(dat, func, terms[1:], isInLib=True, argsAreBracketed=True)
     return st
-
-SET_LABELS = {'setEmpty', 'setNonempty'}
 
 def tangleSet(dat: LedDatum, T) -> str:
     func = 'se'
