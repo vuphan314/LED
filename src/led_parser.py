@@ -89,7 +89,7 @@ class RegionParser:
         with open(led_path) as file_object:
             self.prog_str = file_object.read()
 
-        file_names = 'led_lexicon.txt', 'led_grammar.txt'
+        file_names = 'led_lexicon.gen', 'led_grammar.gen'
         lexicon_file, grammar_file = [
             path.join(path.dirname(path.abspath(__file__)), file_name)
             for file_name in file_names
