@@ -843,7 +843,7 @@ AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
 def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
         dat.aCateg = 'isAggr'
-        if T[0] == 'setCompr':
+        if T[0] == SET_COMPR:
             termTree = T[1]
             condTree = T[2]
         else:
