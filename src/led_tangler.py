@@ -994,9 +994,7 @@ LIB_PATH = '../src/led_lib.sl'
 LIB_AS = ''
 
 def importLib() -> str:
-    st = 'import * from {} as '.format(
-        addDoubleQuotes(LIB_PATH)
-    )
+    st = 'import * from {} as '.format(addDoubleQuotes(LIB_PATH))
     if LIB_AS != '':
         st += LIB_AS + '::'
     st += '*;\n\n'
@@ -1012,10 +1010,7 @@ def prependLib(st: str) -> str:
 def printTest() -> str:
     st = ''
     for const in defedConsts:
-        if (
-            const == 'initialState' or
-            const not in EASEL_FUNCS
-        ):
+        if const == 'initialState' or const not in EASEL_FUNCS:
             func = applyRecur(None, 'pp', (const,))
             st += func + '\n'
     if st != '':
