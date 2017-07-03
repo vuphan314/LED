@@ -712,10 +712,7 @@ def tangleSet(dat: LedDatum, T) -> str:
     else:
         terms = T[1]
         args = terms[1:]
-    st = applyRecur(
-        dat, func, args, isInLib=True,
-        argsAreBracketed=True
-    )
+    st = applyRecur(dat, func, args, isInLib=True, argsAreBracketed=True)
     return st
 
 ################################################################################
@@ -728,14 +725,10 @@ def tangleNonstrictOps(dat: LedDatum, T):
     st2 = tangleRecur(dat, T[2])
     if T[0] == 'conj':
         mainSt = 'valFalse'
-        whenSt = 'not ' + applyRecur(
-            dat, 'valToTrth', (st1,)
-        )
+        whenSt = 'not ' + applyRecur(dat, 'valToTrth', (st1,))
     elif T[0] == 'impl':
         mainSt = 'valTrue'
-        whenSt = 'not ' + applyRecur(
-            dat, 'valToTrth', (st1,)
-        )
+        whenSt = 'not ' + applyRecur(dat, 'valToTrth', (st1,))
     else:
         raiseError('MUST BE NON-STRICT OPERATION')
     elseSt = st2
@@ -752,23 +745,17 @@ def writeWhenElseClause(
 ################################################################################
 """Tangle LED library operations."""
 
-AR_OPS = {
-    'binaryMinus', 'unaryMinus',
-    'div', 'flr', 'clng', 'md', 'exp'
-}
+AR_OPS = {'binaryMinus', 'unaryMinus', 'div', 'flr', 'clng', 'md', 'exp'}
 BOOL_OPS = {'equiv', 'disj', 'neg'}
 EQUALITY_OPS = {'eq', 'uneq'}
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 RELATIONAL_OPS = {'less', 'greater', 'lessEq', 'greaterEq'}
-SET_OPS = {
-    'setMem', 'sbset', 'unn', 'nrsec', 'diff',
-    'powSet', 'iv'
-}
+SET_OPS = {'setMem', 'sbset', 'unn', 'nrsec', 'diff', 'powSet', 'iv'}
 TUPLE_OPS = {'tuIn', 'tuSl'}
 
 LIB_OPS = (
-    AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS |
-    RELATIONAL_OPS | SET_OPS | TUPLE_OPS
+    AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS | RELATIONAL_OPS |
+    SET_OPS | TUPLE_OPS
 )
 
 def tangleLibOps(dat: LedDatum, T) -> str:
