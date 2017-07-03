@@ -13,6 +13,8 @@ import os
 import sys
 import time
 
+sys.path.append('..')
+
 from debugtools.debug_tool import *
 import led_parser
 import led_tangler
