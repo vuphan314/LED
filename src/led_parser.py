@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2014, Evgenii Balai
+"""Copyright (c) 2014, Evgenii Balai
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -23,8 +22,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
-either expressed or implied, of the FreeBSD Project.
-"""
+either expressed or implied, of the FreeBSD Project."""
 
 # modified by Vu Phan
 
@@ -75,19 +73,13 @@ def get_syntax_str(T: tuple, tab_count=0) -> str:
         st += "('" + T[0] + "'"
         for t in T[1:]:
             st2 = ',\n'
-            st2 += get_syntax_str(
-                    t, tab_count=tab_count+1
-                )
+            st2 += get_syntax_str(t, tab_count=tab_count+1)
             st += st2
         st += '\n' + tabs + ')'
     return st
 
 def is_termimal(T: tuple) -> bool:
-    boo = (
-        isinstance(T, tuple) and
-        len(T) == 2 and
-        isinstance(T[1], str)
-    )
+    boo = isinstance(T, tuple) and len(T) == 2 and isinstance(T[1], str)
     return boo
 
 ################################################################################
@@ -99,16 +91,13 @@ class RegionParser:
 
         file_names = 'led_lexicon.txt', 'led_grammar.txt'
         lexicon_file, grammar_file = [
-            path.join(
-                path.dirname(path.abspath(__file__)),
-                file_name
-            ) for file_name in file_names
+            path.join(path.dirname(path.abspath(__file__)), file_name)
+            for file_name in file_names
         ]
 
         self.lexer_instance = lexer.Lexer(lexicon_file)
         self.parser_instance = parser.Parser(
-            grammar_file,
-            self.lexer_instance.lexicon_dict.keys()
+            grammar_file, self.lexer_instance.lexicon_dict.keys()
         )
 
     def get_parsed_elements(self) -> list:
@@ -118,19 +107,13 @@ class RegionParser:
         cur_line = 1
         while True:
             # find the start of the next program region
-            region_start = re.search(
-                r'/\$', unparsed_remainder
-            )
+            region_start = re.search(r'/\$', unparsed_remainder)
             if region_start is None:
-                self.append_cmnt_tree(
-                    parsed_elements, unparsed_remainder
-                )
+                self.append_cmnt_tree(parsed_elements, unparsed_remainder)
                 break
 
             # pre_region is comment
-            pre_region = unparsed_remainder[
-                :region_start.start()
-            ]
+            pre_region = unparsed_remainder[:region_start.start()]
             cur_line += pre_region.count('\n')
             self.append_cmnt_tree(
                 parsed_elements, pre_region
@@ -145,43 +128,29 @@ class RegionParser:
                 raise UnmatchedRegion(cur_line)
 
             # get elements from the found region
-            region = unparsed_remainder[
-                region_start.end():region_end.start()
-            ]
+            region = unparsed_remainder[region_start.end():region_end.start()]
             parsed_elements.extend(
-                self.get_elements_from_region(
-                    region, cur_line
-                )
+                self.get_elements_from_region(region, cur_line)
             )
             cur_line += region.count('\n')
 
             # remove pre_region & region
             # from unparsed_remainder
-            unparsed_remainder = unparsed_remainder[
-                region_end.end():
-            ]
+            unparsed_remainder = unparsed_remainder[region_end.end():]
 
         return parsed_elements
 
-    def append_cmnt_tree(
-        self, base_list: list, cmnt_str: str
-    ) -> None:
+    def append_cmnt_tree(self, base_list: list, cmnt_str: str) -> None:
         if cmnt_str and not cmnt_str.isspace():
             base_list.append(self.get_cmnt_tree(cmnt_str))
 
     def get_cmnt_tree(self, cmnt_str: str) -> tuple:
         return CMNT_LABEL, cmnt_str.strip()
 
-    def get_elements_from_region(
-        self, region: str, line_number: int
-    ) -> list:
+    def get_elements_from_region(self, region: str, line_number: int) -> list:
         # obtain lexing_sequence from
         # region (starting at line_number)
-        lexing_sequence = (
-            self.lexer_instance.get_lexing_sequence(
-                region
-            )
-        )
+        lexing_sequence = self.lexer_instance.get_lexing_sequence(region)
 
         # obtain ast
         ast = self.parser_instance.get_ast(lexing_sequence)
@@ -200,9 +169,7 @@ class ParserError(Exception):
         return (
             '\nThe LED program contains '
             'an unmatched/invalid region starting from '
-            'line {}:\n{}'.format(
-                self.line_number, self.contents
-            )
+            'line {}:\n{}'.format(self.line_number, self.contents)
         )
 
 class UnmatchedRegion(ParserError):
