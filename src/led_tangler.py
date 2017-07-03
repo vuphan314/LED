@@ -4,8 +4,6 @@
 
 ################################################################################
 
-from typing import Dict, Tuple
-
 from debugtools.debug_tool import *
 
 from led_tree import *
@@ -792,15 +790,6 @@ def funcIsAux(st: str) -> bool:
     return b
 
 ################################################################################
-"""Miscellaneous."""
-
-def unionDicts(ds: Tuple[Dict]) -> dict:
-    D = {}
-    for d in ds:
-        D.update(d)
-    return D
-
-################################################################################
 """Add otherwise-clase."""
 
 def addOtherwiseClauses(T):
@@ -851,12 +840,7 @@ def symsInSetToSymbInSet(T):
     return T2
 
 ################################################################################
-"""Aggregation."""
-
-AGGR_OPS = {
-    'setCompr', 'aggrUnn', 'aggrNrsec',
-    'aggrSum', 'aggrProd'
-}
+"""Tangle aggregation."""
 
 AGGR_LIB_CATEGS = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
@@ -992,11 +976,6 @@ def getSymbsFromSyms(T) -> tuple:
 
 ################################################################################
 """Tangle lexemes."""
-
-LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
-LEXEMES = unionDicts(
-    (LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'})
-)
 
 def tangleLexemes(dat: LedDatum, T) -> str:
     lex = T[0]

@@ -1,6 +1,18 @@
 """Define labels appearing in an LED parsetree."""
 
 ################################################################################
+
+from typing import Dict, Tuple
+
+################################################################################
+
+def unionDicts(ds: Tuple[Dict]) -> dict:
+    D = {}
+    for d in ds:
+        D.update(d)
+    return D
+
+################################################################################
 """program element"""
 
 CMNT_LABEL = 'ledCmnt'
@@ -9,6 +21,11 @@ DEF_LABELS = DEF_WHERE_LABELS | {'funDefNoWhere', 'relDefNoWhere'}
 
 def is_led_def(prog_el) -> bool:
     return prog_el[0] in DEF_LABELS # != CMNT_LABEL
+
+################################################################################
+"""aggregation"""
+
+AGGR_OPS = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 ################################################################################
 """library operations"""
@@ -24,3 +41,9 @@ LIB_OPS = (
     AR_OPS | BOOL_OPS | EQUALITY_OPS | OVERLOADED_OPS | RELATIONAL_OPS |
     SET_OPS | TUPLE_OPS
 )
+
+################################################################################
+"""lexemes"""
+
+LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
+LEXEMES = unionDicts((LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'}))
