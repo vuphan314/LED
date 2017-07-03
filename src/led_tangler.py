@@ -60,7 +60,7 @@ class LedDatum:
     # must assign immediately when instantiating:
     aCateg = None # str
     # must assign later by calling aDefFunc:
-    aFunc = None # 'AUX_3_(x, y)'
+    aFormFunExpr = None # 'AUX_3_(x, y)'
 
     aVal = ''
         # ground: 'x < y'
@@ -69,7 +69,7 @@ class LedDatum:
 
     # term:
     aTerm = None # 'x + y'
-    condInst = None # condition instance (LedDatum)
+    condInst = None # condition instance (type: LedDatum)
 
     # conj/disj:
     subInst1 = None # LedDatum
@@ -85,7 +85,7 @@ class LedDatum:
 
         func = self.appendToAux('AGGR')
         args = self.indepSymbs
-        self.aFunc = applyRecur(self, func, args)
+        self.aFormFunExpr = applyRecur(self, func, args)
 
         self.aCheckCateg()
         if self.aCateg == 'isAggr':
@@ -97,12 +97,12 @@ class LedDatum:
         global auxFuncDefs
         auxFuncDefs += st
 
-        return self.aFunc
+        return self.aFormFunExpr
 
     def aDefFuncAggr(self) -> str:
         ind = 'i_'
 
-        func = self.aFunc
+        func = self.aFormFunExpr
         letCls = self.aGetAggrLetClauses(ind)
         inCl = self.aTerm
 
@@ -113,7 +113,7 @@ class LedDatum:
 
     def aGetAggrLetClauses(self, ind: str) -> str:
         binding = 'b_'
-        expr = applyRecur(self, self.condInst.aFunc, (), inds=(ind,))
+        expr = applyRecur(self, self.condInst.aFormFunExpr, (), inds=(ind,))
         letCls = defRecur(self, binding, (), expr),
         for i in range(self.getNumDepSymbs()):
             num = str(i + 1)
@@ -123,12 +123,12 @@ class LedDatum:
 
     def aDefFuncLib(self) -> str:
         expr = applyRecur(self, self.aCateg, self.aGetArgsLib())
-        st = defRecur(self, self.aFunc, (), expr, moreSpace=True)
+        st = defRecur(self, self.aFormFunExpr, (), expr, moreSpace=True)
         return st
 
     def aGetArgsLib(self) -> tuple:
         if self.aCateg == 'solDisj':
-            return self.subInst1.aFunc, self.subInst2.aFunc
+            return self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
         elif self.aCateg in AGGR_LIB_CATEGS:
             return self.aVal,
         else:
@@ -138,7 +138,7 @@ class LedDatum:
         func = 'join'
         args = self.aGetFuncConjDeep(),
         expr = applyRecur(self, func, args)
-        st = defRecur(self, self.aFunc, (), expr, moreSpace=True)
+        st = defRecur(self, self.aFormFunExpr, (), expr, moreSpace=True)
         st = self.aDefFuncConjDeep() + st
         return st
 
@@ -158,7 +158,7 @@ class LedDatum:
     def aGetConjLetClauses(self, bindings: tuple, inds: tuple) -> tuple:
         workarounds = 'workaround1_', 'workaround2_'
             # Bryant's solution to avoid SL bug
-        funcs = self.subInst1.aFunc, self.subInst2.aFunc
+        funcs = self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
         letCls = ()
         for i in range(2):
             workaround = workarounds[i]
