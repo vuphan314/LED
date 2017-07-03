@@ -56,7 +56,7 @@ class LedDatum:
         st = 'AUX_' + str(num) + '_' + postfix + '_'
         return st
 
-    """Fields specific to aggregation.""" # todo: examples/
+    """Fields specific to aggregation.""" # todo 1
     # must assign immediately when instantiating:
     aCateg = None # str
     # must assign later by calling aDefFunc:
@@ -482,7 +482,7 @@ def addEaselParams(T):
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
-            root = funDef_ # todo: 'funDefWhere', 'relDefWhere'
+            root = funDef_ # todo 3: 'funDefWhere', 'relDefWhere'
         expr = addEaselParams(T[2])
         T2 = root, head, expr
         if len(T) > 3:
@@ -835,7 +835,7 @@ def symsInSetToSymbInSet(T):
     return T2
 
 ################################################################################
-"""Tangle aggregation."""
+"""Tangle aggregation.""" # todo 2
 
 AGGR_LIB_CATEGS = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
 AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
