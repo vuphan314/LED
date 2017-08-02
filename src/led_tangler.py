@@ -57,12 +57,12 @@ class LedDatum:
         return st
 
     """Fields specific to aggregation.""" # todo 1
-    # must assign immediately when instantiating:
+    # must assign immediately when instantiating (see `AGGR_CATEGS`):
     aCateg = None # str
     # must assign later by calling `aDefFunc`:
     aFormFunExpr = None # 'AUX_3_(x, y)'
 
-    aVal = ''
+    aVal = '' # todo 0 what is this thing?
         # ground: 'x < y'
         # eq:     'x + 1'
         # set:    'x...2*x'
