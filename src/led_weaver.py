@@ -124,9 +124,7 @@ def get_cmd(cmd_name: str, cmd_args: tuple) -> str:
 
 ################################################################################
 
-def surround_str(
-    inner_str: str, left_str: str, right_str: str
-) -> str:
+def surround_str(inner_str: str, left_str: str, right_str: str) -> str:
     st = left_str + inner_str + right_str
     return st
 

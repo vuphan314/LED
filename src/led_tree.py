@@ -27,7 +27,7 @@ def is_led_def(prog_el) -> bool:
 """aggregation"""
 
 SET_COMPR = 'setCompr'
-AGGR_OPS = SET_COMPR | {'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
+AGGR_OPS = {SET_COMPR, 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 ################################################################################
 """collection"""
