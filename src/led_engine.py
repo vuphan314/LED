@@ -2,8 +2,7 @@
 
 """LED engine.
 
-Convert an LED program into
-a semantically equivalent SL program.
+Convert an LED program into a semantically equivalent SL program.
 """
 
 ################################################################################
