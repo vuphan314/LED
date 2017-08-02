@@ -59,7 +59,7 @@ class LedDatum:
     """Fields specific to aggregation.""" # todo 1
     # must assign immediately when instantiating:
     aCateg = None # str
-    # must assign later by calling aDefFunc:
+    # must assign later by calling `aDefFunc`:
     aFormFunExpr = None # 'AUX_3_(x, y)'
 
     aVal = ''
@@ -90,7 +90,7 @@ class LedDatum:
         self.aCheckCateg()
         if self.aCateg == 'isAggr':
             st = self.aDefFuncAggr()
-        elif self.aCateg in AGGR_LIB_CATEGS:
+        elif self.aCateg in LIB_AGGR_CATEGS:
             st = self.aDefFuncLib()
         else: # 'solConj'
             st = self.aDefFuncConj()
@@ -129,7 +129,7 @@ class LedDatum:
     def aGetArgsLib(self) -> tuple:
         if self.aCateg == 'solDisj':
             return self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
-        elif self.aCateg in AGGR_LIB_CATEGS:
+        elif self.aCateg in LIB_AGGR_CATEGS:
             return self.aVal,
         else:
             raiseError('NOT IN LIBRARY')
@@ -837,9 +837,6 @@ def symsInSetToSymbInSet(T):
 ################################################################################
 """Tangle aggregation.""" # todo 2
 
-AGGR_LIB_CATEGS = {'solGround', 'solEq', 'solEqs', 'solSet', 'solDisj'}
-AGGR_CATEGS = AGGR_LIB_CATEGS | {'isAggr', 'solConj'}
-
 def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
         dat.aCateg = 'isAggr'
@@ -862,7 +859,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
         st = applyRecur(dat, T[0], args)
         return st
     elif isGround(dat, T):
-        dat.aCateg = 'solGround'
+        dat.aCateg = GROUND_SOL
         dat.aVal = tangleRecur(dat, T)
         st = dat.aDefFunc()
         return st
