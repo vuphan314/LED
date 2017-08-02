@@ -27,7 +27,7 @@ public
   valNull,
 // aggregation:
   setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
-// solution set:
+// solution-set:
   solGround, solEq, solEqs, solSet, solDisj, unnBinds,
 // quantification:
   someSet, allSet, valToSet,
@@ -483,7 +483,7 @@ aggrProd(vs(1)) :=
   Sequence::fold(vs, mult);
 
 ////////////////////////////////////////////////////////////////////////////////
-/* solution set */
+/* solution-set */
 
 solGround: Val -> Val(2);
 solGround(v) :=
