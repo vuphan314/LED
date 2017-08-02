@@ -92,7 +92,7 @@ class LedDatum:
             st = self.aDefFuncAggr()
         elif self.aCateg in LIB_AGGR_CATEGS:
             st = self.aDefFuncLib()
-        else: # 'solConj'
+        else: # CONJ_SOL
             st = self.aDefFuncConj()
         global auxFuncDefs
         auxFuncDefs += st
@@ -127,7 +127,7 @@ class LedDatum:
         return st
 
     def aGetArgsLib(self) -> tuple:
-        if self.aCateg == 'solDisj':
+        if self.aCateg == DISJ_SOL:
             return self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
         elif self.aCateg in LIB_AGGR_CATEGS:
             return self.aVal,
@@ -868,15 +868,15 @@ def tangleAggr(dat: LedDatum, T) -> str:
             if T[1][0] == 'namedTermNoParenth':
                 dat.aCateg = 'solEq'
             else: # 'tupT'
-                dat.aCateg = 'solEqs'
+                dat.aCateg = EQS_SOL
         else: # 'setMem'
-            dat.aCateg = 'solSet'
+            dat.aCateg = SET_SOL
         updateDepSymbsRecur(dat, T[1])
         dat.aVal = tangleRecur(dat, T[2])
         st = dat.aDefFunc()
         return st
     elif T[0] == 'disj':
-        dat.aCateg = 'solDisj'
+        dat.aCateg = DISJ_SOL
 
         dat1 = dat.getAnotherInst()
         tangleAggr(dat1, T[1])
@@ -889,7 +889,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
         st = dat.aDefFunc()
         return st
     elif T[0] == 'conj':
-        dat.aCateg = 'solConj'
+        dat.aCateg = CONJ_SOL
 
         dat1 = dat.getAnotherInst()
         tangleAggr(dat1, T[1])
