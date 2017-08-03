@@ -90,7 +90,7 @@ class LedDatum:
         self.aCheckCateg()
         if self.aCateg == 'isAggr':
             st = self.aDefFuncAggr()
-        elif self.aCateg in LIB_AGGR_CATEGS:
+        elif self.aCateg in LIB_SOLS:
             st = self.aDefFuncLib()
         else: # CONJ_SOL
             st = self.aDefFuncConj()
@@ -129,7 +129,7 @@ class LedDatum:
     def aGetArgsLib(self) -> tuple:
         if self.aCateg == DISJ_SOL:
             return self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
-        elif self.aCateg in LIB_AGGR_CATEGS:
+        elif self.aCateg in LIB_SOLS:
             return self.aVal,
         else:
             raiseError('NOT IN LIBRARY')
@@ -870,7 +870,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
             else: # 'tupT'
                 dat.aCateg = EQS_SOL
         else: # 'setMem'
-            dat.aCateg = SET_SOL
+            dat.aCateg = SET_MEM_SOL
         updateDepSymbsRecur(dat, T[1])
         dat.aVal = tangleRecur(dat, T[2])
         st = dat.aDefFunc()
