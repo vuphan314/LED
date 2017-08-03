@@ -71,7 +71,7 @@ class LedDatum:
     aTerm = None # 'x + y'
     condInst = None # condition instance (type: LedDatum)
 
-    # conj/disj:
+    # for disjunction/conjunction:
     subInst1 = None # LedDatum
     subInst2 = None # LedDatum
 
@@ -147,7 +147,7 @@ class LedDatum:
         inds = 'i1_', 'i2_'
 
         func = self.aGetFuncConjDeep()
-        expr = applyRecur(self, 'unnBinds', bindings)
+        expr = applyRecur(self, 'unnBindings', bindings)
         letCls = self.aGetConjLetClauses(bindings, inds)
 
         st = defRecur(
@@ -866,7 +866,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == ACT_FUN_EXPR:
-                dat.aCateg = 'solEq'
+                dat.aCateg = 'eqSolSet'
             else: # 'tupT'
                 dat.aCateg = EQS_SOL
         else: # 'setMem'
