@@ -56,7 +56,7 @@ class LedDatum:
         st = 'AUX_' + str(num) + '_' + postfix + '_'
         return st
 
-    """Fields specific to aggregation.""" # todo 1
+    """Fields specific to aggregation."""
     # must assign immediately when instantiating (see `AGGR_CATEGS`):
     aggrCateg = None # str
     # must assign later by calling `aDefFunc`:
@@ -832,7 +832,7 @@ def symsInSetToSymbInSet(T):
     return T2
 
 ################################################################################
-"""Tangle aggregation.""" # todo 2
+"""Tangle aggregation."""
 
 def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
