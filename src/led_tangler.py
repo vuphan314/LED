@@ -58,7 +58,7 @@ class LedDatum:
 
     """Fields specific to aggregation.""" # todo 1
     # must assign immediately when instantiating (see `AGGR_CATEGS`):
-    aCateg = None # str
+    aggrCateg = None # str
     # must assign later by calling `aDefFunc`:
     aFormFunExpr = None # 'AUX_3_(x, y)'
 
@@ -76,7 +76,7 @@ class LedDatum:
     subInst2 = None # LedDatum
 
     def aCheckCateg(self):
-        if self.aCateg not in AGGR_CATEGS:
+        if self.aggrCateg not in AGGR_CATEGS:
             raiseError('INVALID AGGREGATE CATEGORY')
 
     def aDefFunc(self) -> str:
@@ -88,9 +88,9 @@ class LedDatum:
         self.aFormFunExpr = applyRecur(self, func, args)
 
         self.aCheckCateg()
-        if self.aCateg == READY_LIST:
-            st = self.aDefFuncAggr()
-        elif self.aCateg in LIB_SOLS:
+        if self.aggrCateg == READY_LIST:
+            st = self.aDefFuncReadyList()
+        elif self.aggrCateg in LIB_SOLS:
             st = self.aDefFuncLib()
         else: # CONJ_SOL
             st = self.aDefFuncConj()
@@ -99,7 +99,7 @@ class LedDatum:
 
         return self.aFormFunExpr
 
-    def aDefFuncAggr(self) -> str:
+    def aDefFuncReadyList(self) -> str:
         ind = 'i_'
 
         func = self.aFormFunExpr
@@ -122,14 +122,14 @@ class LedDatum:
         return letCls
 
     def aDefFuncLib(self) -> str:
-        expr = applyRecur(self, self.aCateg, self.aGetArgsLib())
+        expr = applyRecur(self, self.aggrCateg, self.aGetArgsLib())
         st = defRecur(self, self.aFormFunExpr, (), expr, moreSpace=True)
         return st
 
     def aGetArgsLib(self) -> tuple:
-        if self.aCateg == DISJ_SOL:
+        if self.aggrCateg == DISJ_SOL:
             return self.subInst1.aFormFunExpr, self.subInst2.aFormFunExpr
-        elif self.aCateg in LIB_SOLS:
+        elif self.aggrCateg in LIB_SOLS:
             return self.aVal,
         else:
             raiseError('NOT IN LIBRARY')
@@ -839,7 +839,7 @@ def symsInSetToSymbInSet(T):
 
 def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
-        dat.aCateg = READY_LIST
+        dat.aggrCateg = READY_LIST
         if T[0] == SET_COMPR:
             termTree = T[1]
             condTree = T[2]
@@ -859,24 +859,24 @@ def tangleAggr(dat: LedDatum, T) -> str:
         st = applyRecur(dat, T[0], args)
         return st
     elif isGround(dat, T):
-        dat.aCateg = GROUND_SOL
+        dat.aggrCateg = GROUND_SOL
         dat.aVal = tangleRecur(dat, T)
         st = dat.aDefFunc()
         return st
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == ACT_FUN_EXPR:
-                dat.aCateg = 'eqSol'
+                dat.aggrCateg = 'eqSol'
             else: # 'tupT'
-                dat.aCateg = EQS_SOL
+                dat.aggrCateg = EQS_SOL
         else: # 'setMem'
-            dat.aCateg = SET_MEM_SOL
+            dat.aggrCateg = SET_MEM_SOL
         updateDepSymbsRecur(dat, T[1])
         dat.aVal = tangleRecur(dat, T[2])
         st = dat.aDefFunc()
         return st
     elif T[0] == 'disj':
-        dat.aCateg = DISJ_SOL
+        dat.aggrCateg = DISJ_SOL
 
         dat1 = dat.getAnotherInst()
         tangleAggr(dat1, T[1])
@@ -889,7 +889,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
         st = dat.aDefFunc()
         return st
     elif T[0] == 'conj':
-        dat.aCateg = CONJ_SOL
+        dat.aggrCateg = CONJ_SOL
 
         dat1 = dat.getAnotherInst()
         tangleAggr(dat1, T[1])
