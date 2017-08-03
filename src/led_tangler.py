@@ -352,7 +352,7 @@ def tangleRecur(dat: LedDatum, T) -> str:
         return appendUnderscore(T)
     elif T[0] in LEXEMES:
         return tangleLexemes(dat, T)
-    elif T[0] == 'actFunExpr':
+    elif T[0] == ACT_FUN_EXPR:
         args = T[2][1:] if len(T) > 2 else ()
         return applyRecur(dat, T[1], args)
     elif T[0] == 'tpl':
@@ -476,7 +476,7 @@ def addEaselParams(T):
         params = getEaselParamsFromLexeme(id)
         if params != ():
             terms = getIdsTree('terms', ACT_FUN_EXPR, params)
-            T = 'actFunExpr', id, terms
+            T = ACT_FUN_EXPR, id, terms
         return T
     elif T[0] == 'constDef':
         root = T[0]
@@ -489,7 +489,7 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == 'actFunExpr':
+    elif T[0] == ACT_FUN_EXPR:
         params = getEaselParamsFromLexeme(T[1])
         terms = T[2]
         terms += getIdsTuple(ACT_FUN_EXPR, params)
