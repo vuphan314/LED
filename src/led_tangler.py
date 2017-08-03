@@ -471,11 +471,11 @@ def isConstDef(led_def):
 def addEaselParams(T):
     if isinstance(T, str):
         return T
-    elif T[0] == 'namedTermNoParenth':
+    elif T[0] == ACT_FUN_EXPR:
         id = T[1]
         params = getEaselParamsFromLexeme(id)
         if params != ():
-            terms = getIdsTree('terms', 'namedTermNoParenth', params)
+            terms = getIdsTree('terms', ACT_FUN_EXPR, params)
             T = 'actFunExpr', id, terms
         return T
     elif T[0] == 'constDef':
@@ -492,7 +492,7 @@ def addEaselParams(T):
     elif T[0] == 'actFunExpr':
         params = getEaselParamsFromLexeme(T[1])
         terms = T[2]
-        terms += getIdsTuple('namedTermNoParenth', params)
+        terms += getIdsTuple(ACT_FUN_EXPR, params)
         T = T[:2] + (terms,)
         return recurTree(addEaselParams, T)
     elif T[0] == 'formFunExpr':
@@ -785,7 +785,7 @@ def funcIsAux(st: str) -> bool:
     return b
 
 ################################################################################
-"""Add otherwise-clase."""
+"""Add otherwise-clauses."""
 
 def addOtherwiseClauses(T):
     if isinstance(T, str):
@@ -794,7 +794,7 @@ def addOtherwiseClauses(T):
         if T[-1][0] == 'termIfBoolTerm': # != 'termOw'
             t = 'valNull'
             t = 'id', t
-            t = 'namedTermNoParenth', t
+            t = ACT_FUN_EXPR, t
             t = 'termOw', t
             T += t,
         return T
@@ -865,7 +865,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
         return st
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
-            if T[1][0] == 'namedTermNoParenth':
+            if T[1][0] == ACT_FUN_EXPR:
                 dat.aCateg = 'solEq'
             else: # 'tupT'
                 dat.aCateg = EQS_SOL
@@ -906,7 +906,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
 
 def updateDepSymbsRecur(dat: LedDatum, T):
     if isinstance(T, tuple):
-        if T[0] == 'namedTermNoParenth':
+        if T[0] == ACT_FUN_EXPR:
             st = T[1][1]
             if isNewDepSymb(dat, st):
                 dat.depSymbs += st,
@@ -919,7 +919,7 @@ def isGround(dat: LedDatum, T) -> bool:
 def newDepSymbFound(dat: LedDatum, T) -> bool:
     if isinstance(T, str):
         return False
-    elif T[0] == 'namedTermNoParenth':
+    elif T[0] == ACT_FUN_EXPR:
         if isNewDepSymb(dat, T[1][1]):
             return True
         else:
