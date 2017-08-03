@@ -468,18 +468,18 @@ def isConstDef(led_def):
 def addEaselParams(T):
     if isinstance(T, str):
         return T
-    elif T[0] == ACT_FUN_EXPR:
+    elif T[0] == ACT_FUN_EXPR: # todo nullary ACT_FUN_EXPR
         id = T[1]
         params = getEaselParamsFromLexeme(id)
         if params != ():
             terms = getIdsTree('terms', ACT_FUN_EXPR, params)
             T = ACT_FUN_EXPR, id, terms
         return T
-    elif T[0] == 'constDef':
+    elif T[0] == 'constDef': # todo 'funDefWhere', 'relDefWhere'
         root = T[0]
         head = addEaselParams(T[1])
         if head[0] == 'formFunExpr':
-            root = funDef_ # todo 3: 'funDefWhere', 'relDefWhere'
+            root = funDef_
         expr = addEaselParams(T[2])
         T2 = root, head, expr
         if len(T) > 3:
