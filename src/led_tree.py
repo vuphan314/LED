@@ -30,7 +30,7 @@ SET_COMPR = 'setCompr'
 AGGR_OPS = {SET_COMPR, 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 # aggregate categories:
-GROUND_SOL = 'solGround' # 1 + 2 = 3
+GROUND_SOL = 'solGround' # 1 + 2 < 3
 EQ_SOL = 'solEq' # x = 1
 EQS_SOL = 'solEqs' # (x, y) = (1, 2)
 SET_SOL = 'solSet' # x in {1, 2}
