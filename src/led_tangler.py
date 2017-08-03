@@ -62,10 +62,7 @@ class LedDatum:
     # must assign later by calling `aDefFunc`:
     aFormFunExpr = None # 'AUX_3_(x, y)'
 
-    aVal = '' # todo 0 what is this thing?
-        # ground: 'x < y'
-        # eq:     'x + 1'
-        # set:    'x...2*x'
+    aVal = '' # of `{-x | x = 1}` is `1`
 
     # term:
     aTerm = None # 'x + y'
