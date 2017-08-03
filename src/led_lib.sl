@@ -34,7 +34,7 @@ public
 // when-clauses:
   valToTrth,
 // some values:
-  valTrue, valFalse,
+  valEmptySet, valTrue, valFalse, valZero, valOne, valTen,
 // boolean:
   equiv, impl, disj, conj, neg,
 // equality:
