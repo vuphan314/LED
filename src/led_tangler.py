@@ -866,7 +866,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
     elif T[0] in {'eq', 'setMem'}:
         if T[0] == 'eq':
             if T[1][0] == ACT_FUN_EXPR:
-                dat.aCateg = 'eqSolSet'
+                dat.aCateg = 'eqSol'
             else: # 'tupT'
                 dat.aCateg = EQS_SOL
         else: # 'setMem'

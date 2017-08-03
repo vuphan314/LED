@@ -28,7 +28,7 @@ public
 // aggregation:
   setCompr, aggrUnn, aggrNrsec, aggrSum, aggrProd,
 // solution-set:
-  groundSolSet, eqSolSet, eqsSolSet, setMemSolSet, unnSolSets, unnBindings,
+  groundSol, eqSol, eqsSol, setMemSol, unnSols, unnBindings,
 // quantification:
   someSet, allSet, valToSet,
 // when-clauses:
@@ -485,30 +485,30 @@ aggrProd(vs(1)) :=
 ////////////////////////////////////////////////////////////////////////////////
 /* solution-set */
 
-groundSolSet: Val -> Val(2);
-groundSolSet(v) :=
+groundSol: Val -> Val(2);
+groundSol(v) :=
   let
     isTrue := valToTrth(v);
   in
     [[]] when isTrue else [];
 
-eqSolSet: Val -> Val(2);
-eqSolSet(v) :=
+eqSol: Val -> Val(2);
+eqSol(v) :=
   [[v]];
 
-eqsSolSet: Val -> Val(2);
-eqsSolSet(v) :=
+eqsSol: Val -> Val(2);
+eqsSol(v) :=
   [valToTpl(v)];
 
-setMemSolSet: Val -> Val(2);
-setMemSolSet(v)[i] :=
+setMemSol: Val -> Val(2);
+setMemSol(v)[i] :=
   let
     vs := valToSet(v);
   in
     [vs[i]];
 
-unnSolSets: Val(2) * Val(2) -> Val(2);
-unnSolSets(s1(2), s2(2)) :=
+unnSols: Val(2) * Val(2) -> Val(2);
+unnSols(s1(2), s2(2)) :=
   removeDups(s1 ++ s2);
 
 unnBindings: Val(1) * Val(1) -> Val(1);
