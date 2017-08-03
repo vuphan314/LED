@@ -30,14 +30,17 @@ SET_COMPR = 'setCompr'
 AGGR_OPS = {SET_COMPR, 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 
 # aggregate categories:
-GROUND_SOL = 'groundSol' # 1 + 2 < 3
-EQ_SOL = 'eqSol' # x = 1
-EQS_SOL = 'eqsSol' # (x, y) = (1, 2)
-SET_MEM_SOL = 'setMemSol' # x in {1, 2}
-DISJ_SOL = 'unnSols' # x = 1 V y in {2}
+GROUND_SOL = 'groundSol' # of `1 + 2 < 0` is `[]`
+EQ_SOL = 'eqSol' # of `x = 1` is `[[1]]`
+EQS_SOL = 'eqsSol' # of `(x, y) = (1, 2)` is `[[1, 2]]`
+SET_MEM_SOL = 'setMemSol' # of `x in {1, 2}` is `[[1], [2]]`
+DISJ_SOL = 'unnSols' # of solutions `[[1]]` and `[[2]]` is `[[1], [2]]`
+    # for boolean term `x = 1 V x in {2}`
 LIB_SOLS = {GROUND_SOL, EQ_SOL, EQS_SOL, SET_MEM_SOL, DISJ_SOL}
-CONJ_SOL = 'conjSol' # x = 1 & y in {2}
-AGGR_CATEGS = LIB_SOLS | {CONJ_SOL, 'isAggr'} # todo what is 'isAggr'
+CONJ_SOL = 'conjSol' # of `x = 1 & y in {2}` is `[[1, 2]]`
+READY_LIST = 'readyList'
+    # of `{x^2 | x in {-2, 2}}` or `Sum[x in {-2, 2}](x^2)` is `[4, 4]`
+AGGR_CATEGS = LIB_SOLS | {CONJ_SOL, READY_LIST}
 
 ################################################################################
 """collection"""

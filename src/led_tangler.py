@@ -88,7 +88,7 @@ class LedDatum:
         self.aFormFunExpr = applyRecur(self, func, args)
 
         self.aCheckCateg()
-        if self.aCateg == 'isAggr':
+        if self.aCateg == READY_LIST:
             st = self.aDefFuncAggr()
         elif self.aCateg in LIB_SOLS:
             st = self.aDefFuncLib()
@@ -839,7 +839,7 @@ def symsInSetToSymbInSet(T):
 
 def tangleAggr(dat: LedDatum, T) -> str:
     if T[0] in AGGR_OPS:
-        dat.aCateg = 'isAggr'
+        dat.aCateg = READY_LIST
         if T[0] == SET_COMPR:
             termTree = T[1]
             condTree = T[2]
