@@ -491,18 +491,18 @@ def addEaselParams(T):
     else:
         return recurTree(addEaselParams, T)
 
-def getIdsTree(label1: str, label2: str, ids: tuple):
-    tu = getIdsTuple(label2, ids)
+def getIdsTree(label1: str, label2: str, sts: tuple):
+    tu = getIdsTuple(label2, sts)
     tu = (label1,) + tu
     return tu
 
-def getIdsTuple(label: str, ids: tuple) -> tuple:
-    tu = ()
-    for id in ids:
-        st = 'id', id
-        st = label, st
-        tu += st,
-    return tu
+def getIdsTuple(label: str, sts: tuple) -> tuple:
+    T = ()
+    for st in sts:
+        t = 'id', st
+        t = label, t
+        T += t,
+    return T
 
 EASEL_INPUT = 'I'
 EASEL_STATE = 'S'
