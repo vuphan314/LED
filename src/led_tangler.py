@@ -467,6 +467,7 @@ def addEaselParams(T):
     elif T[0] == ACT_FUN_EXPR:
         id = T[1]
         params = getEaselParamsFromLexeme(id)
+        params = getIdsTuple(ID, params)
         if isConstFunExpr(T):
             if params != ():
                 terms = getIdsTree(TERMS, ACT_FUN_EXPR, params)
@@ -481,7 +482,7 @@ def addEaselParams(T):
         params = getEaselParamsFromLexeme(T[1])
         if params != ():
             syms = getIdsTuple(ID, params)
-            if len(T) == 2: # constant
+            if isConstFunExpr(T):
                 syms = (SYMS,) + syms
                 T += syms,
             else:
