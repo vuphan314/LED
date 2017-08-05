@@ -5,22 +5,6 @@
 from typing import Dict, Tuple
 
 ################################################################################
-"""miscellaneous"""
-
-def isConstDef(led_def) -> bool:
-    form_fun_expr = led_def[1]
-    return isConstFunExpr(form_fun_expr)
-
-def isConstFunExpr(fun_expr) -> bool:
-    return len(fun_expr) == 2 # no: ('terms',...)
-
-def unionDicts(ds: Tuple[Dict]) -> dict:
-    D = {}
-    for d in ds:
-        D.update(d)
-    return D
-
-################################################################################
 """program element"""
 
 CMNT_LABEL = 'ledCmnt'
@@ -74,8 +58,26 @@ LIB_OPS = (
 
 ACT_FUN_EXPR = 'actFunExpr'
 
+def isConstDef(led_def) -> bool:
+    form_fun_expr = led_def[1]
+    return isConstFunExpr(form_fun_expr)
+
+def isConstFunExpr(fun_expr) -> bool:
+    return len(fun_expr) == 2 # no: ('terms',...)
+
+################################################################################
+"""terms"""
+
+TERMS = 'terms'
+
 ################################################################################
 """lexeme"""
+
+def unionDicts(ds: Tuple[Dict]) -> dict:
+    D = {}
+    for d in ds:
+        D.update(d)
+    return D
 
 LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
 LEXEMES = unionDicts((LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'}))

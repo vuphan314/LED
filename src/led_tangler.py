@@ -482,7 +482,7 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == ACT_FUN_EXPR:
+    elif T[0] == ACT_FUN_EXPR: # nonconst act fun expr
         params = getEaselParamsFromLexeme(T[1])
         terms = T[2]
         terms += getIdsTuple(ACT_FUN_EXPR, params)
