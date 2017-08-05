@@ -1,7 +1,6 @@
 /$ c := true & false V ~ 1 = 2 / 2 => false <=> `a /= {} $/
 
 test:
-
 \begin{verbatim}
 cmd:>pp(c)
 "true"

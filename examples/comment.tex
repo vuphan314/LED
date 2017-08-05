@@ -1,10 +1,9 @@
-\documentclass{led_doc}
+\documentclass{../src/led_doc}
 \begin{document}
-LED Engine: \today \hrulefill
 
 \begin{ledCmnt}
 \section{Example}
-This is commentary in \textbf{TeX} syntax.
+This is commentary in \textbf{\TeX} syntax.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -13,6 +12,12 @@ This is commentary in \textbf{TeX} syntax.
 
 \begin{ledCmnt}
 The line above will be converted to $math$.
+
+test:
+\begin{verbatim}
+cmd:>pp(thisIsLEDSyntax)
+"14"
+\end{verbatim}
 \end{ledCmnt}
 
 \end{document}

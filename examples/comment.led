@@ -1,4 +1,10 @@
 \section{Example}
-This is commentary in \textbf{TeX} syntax.
+This is commentary in \textbf{\TeX} syntax.
 /$ thisIsLEDSyntax := Sum [x in {1..3}] x^2 $/
 The line above will be converted to $math$.
+
+test:
+\begin{verbatim}
+cmd:>pp(thisIsLEDSyntax)
+"14"
+\end{verbatim}
