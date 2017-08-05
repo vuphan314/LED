@@ -564,10 +564,9 @@ def setFuncsAddParams(prog):
     }
     for prog_el in prog[1:]:
         if is_led_def(prog_el):
-            fun_name = tangleRecur(LedDatum(), prog_el[1][1])
-                # no: ('syms',...)
+            fun_name = tangleRecur(LedDatum(), prog_el[1][1]) # no: ('syms',...)
             if fun_name not in EASEL_FUNCS:
-                body = prog_el[1][2]
+                body = prog_el[2]
                 if needBoth(body):
                     key = 'addBoth'
                 elif needInput(body):
