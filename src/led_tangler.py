@@ -1005,10 +1005,10 @@ For each keyword #isGame found in the LED program:
 
 def setIsGame(prog):
     prog2 = prog[:1]
-    for el in prog[1:]:
-        if el[0] == 'hashIsGame':
+    for prog_el in prog[1:]:
+        if is_game_flag(prog_el):
             global isGame
             isGame = True
         else:
-            prog2 += el,
+            prog2 += prog_el,
     return prog2

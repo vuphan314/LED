@@ -38,7 +38,7 @@ A {\em state} is a set of moves, thought of as the set of moves made far in the
 game. In this program, the variable $S$ will range over states.
 
 Tell the translator to produce a SequenceL file that runs with Easel:
-$ #isGame $/
+/$ #isGame $/
 
 The following are recognized as constant symmbols in the Easel environment
 \begin{enumerate}

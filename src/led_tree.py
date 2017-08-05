@@ -8,11 +8,18 @@ from typing import Dict, Tuple
 """program element"""
 
 CMNT_LABEL = 'ledCmnt'
+GAME_LABEL = 'ledGame'
 DEF_WHERE_LABELS = {'funDefWhere', 'relDefWhere'}
 DEF_LABELS = DEF_WHERE_LABELS | {'funDefNoWhere', 'relDefNoWhere'}
 
+def is_led_cmnt(prog_el) -> bool:
+    return prog_el[0] == CMNT_LABEL
+
+def is_game_flag(prog_el) -> bool:
+    return prog_el[0] == GAME_LABEL
+
 def is_led_def(prog_el) -> bool:
-    return prog_el[0] in DEF_LABELS # != CMNT_LABEL
+    return prog_el[0] in DEF_LABELS
 
 ################################################################################
 """aggregation"""

@@ -1,7 +1,7 @@
 prog_el_s(progEls T) ::= prog_el(T)
 prog_el_s(progEls T cut_root(Ts)) ::= prog_el(T) prog_el_s(Ts)
 
-prog_el(T) ::= hashIsGame(T)
+prog_el(T) ::= ledGame(T)
 prog_el(T) ::= led_def(T)
 
 led_def(T) ::= fun_def(T)

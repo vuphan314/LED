@@ -43,6 +43,8 @@ def weave_top(prog) -> str:
     for prog_el in prog[1:]:
         if is_led_def(prog_el):
             st += get_env('ledDef', (prog_el,))
+        elif is_game_flag(prog_el):
+            st += r' \textbf{isGame} '
         else:
             st += get_env(CMNT_LABEL, prog_el[1:])
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
@@ -52,8 +54,6 @@ def weave_top(prog) -> str:
 def weave_recur(T) -> str:
     if isinstance(T, str):
         return T
-    elif T[0] == 'hashIsGame':
-        return ''
     elif T[0] == 'string':
         return get_cmd('texttt', T[1:])
     elif T[0] == 'truth':
