@@ -1,0 +1,48 @@
+\documentclass{../src/led_doc}
+\begin{document}
+
+\begin{ledDef}
+\funDefNoWhere{f \parentheses{t}}{\setCompr{\tpl{x, y, z}}{\conj{\setMem{x}{\iv{t}{\starOp{2}{t}}}}{\eq{\tpl{y, z}}{\tpl{\exp{x}{2}, \exp{x}{3}}}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c1}{f \parentheses{1}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c2}{\aggrSum{\setMem{x}{\iv{1}{2}}}{\aggrSum{\setMem{y}{\setNonempty{\exp{x}{2}}}}{\starOp{x}{y}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c3}{\aggrProd{\setMem{x}{\iv{1}{\unaryMinus{1}}}}{\exp{x}{x}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c4}{\aggrUnn{\conj{\setMem{x}{\iv{\unaryMinus{2}}{2}}}{\eq{\md{x}{2}}{1}}}{\setNonempty{\pipesOp{x}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefNoWhere{r \parentheses{s, t}}{\eq{\aggrNrsec{\disj{\eq{x}{s}}{\eq{x}{t}}}{\setNonempty{\exp{x}{2}}}}{\setNonempty{1}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c5}{r \parentheses{\unaryMinus{1}, 1}}
+\end{ledDef}
+
+\begin{ledCmnt}
+test:
+\begin{verbatim}
+cmd:>pp(c1)
+"{(1, 1, 1), (2, 4, 8)}"
+cmd:>pp(c2)
+"9"
+cmd:>pp(c3)
+"1"
+cmd:>pp(c4)
+"{1}"
+cmd:>pp(c5)
+"true"
+\end{verbatim}
+\end{ledCmnt}
+
+\end{document}
