@@ -36,7 +36,7 @@ CLS_CMDS = (
 )
 
 FUN_EXPRS = {FORM_FUN_EXPR, ACT_FUN_EXPR}
-MANY_LABELS = {TERMS, 'syms'}
+MANY_LABELS = {TERMS, SYMS}
 
 ################################################################################
 

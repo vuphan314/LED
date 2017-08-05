@@ -482,7 +482,7 @@ def addEaselParams(T):
         if params != ():
             syms = getIdsTuple('id', params)
             if len(T) == 2: # constant
-                syms = ('syms',) + syms
+                syms = (SYMS,) + syms
                 T += syms,
             else:
                 syms = T[2] + syms
