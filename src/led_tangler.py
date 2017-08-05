@@ -275,6 +275,7 @@ def tangleTop(T: tuple) -> str:
     if isGame:
         setFuncsAddParams(T)
         T = addEaselParams(T)
+        T = appendUnderscore(T)
         setDefedFuncsConsts(T)
             # parameters were added to some constants,
             # making them non-constants
@@ -287,7 +288,7 @@ def tangleTop(T: tuple) -> str:
     st = tangleRecur(LedDatum(), T)
     if auxFuncDefs != '':
         st += blockComment('AUXILIARY FUNCTIONS') + '\n\n' + auxFuncDefs
-    st = printTest() + imports + st
+    st = writeTest() + imports + st
     if isGame:
         st += EASEL_FRAGMENT + getLibsStr()
     return st + '\n'
@@ -346,11 +347,11 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
 def tangleRecur(dat: LedDatum, T) -> str:
     if isinstance(T, str):
-        return appendUnderscore(T)
+        return T
     elif T[0] in LEXEMES:
         return tangleLexemes(dat, T)
     elif T[0] == ACT_FUN_EXPR:
-        args = T[2][1:] if len(T) > 2 else ()
+        args = T[2][1:] if not isConstFunExpr(T) else ()
         return applyRecur(dat, T[1], args)
     elif T[0] == 'tpl':
         return tangleTuple(dat, T)
@@ -528,10 +529,13 @@ def getEaselParamsFromLexeme(id) -> tuple:
     else:
         return EASEL_PARAMS
 
-def appendUnderscore(st: str) -> str:
-    if st in EASEL_FUNCS and st not in EASEL_FUNCS_GLOBAL:
-        st += '_'
-    return st
+def appendUnderscore(T):
+    if isinstance(T, str):
+        if T in EASEL_FUNCS - EASEL_FUNCS_GLOBAL:
+            T += '_'
+        return T
+    else:
+        return recurTree(appendUnderscore, T)
 
 EASEL_FUNCS_CLICK = {'mouseClicked', 'mouseX', 'mouseY'}
 EASEL_FUNCS_CURRENT_STATE = {'currentState'}
@@ -981,7 +985,7 @@ def prependLib(st: str) -> str:
 ################################################################################
 """Test SL constants."""
 
-def printTest() -> str:
+def writeTest() -> str:
     st = ''
     for const in defedConsts:
         if const == 'initialState' or const not in EASEL_FUNCS:
