@@ -11,7 +11,7 @@
 /$ c5 := r(-1, 1) $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(c1)
 "{(1, 1, 1), (2, 4, 8)}"
 cmd:>pp(c2)
@@ -22,3 +22,4 @@ cmd:>pp(c4)
 "{1}"
 cmd:>pp(c5)
 "true"
+\end{verbatim}

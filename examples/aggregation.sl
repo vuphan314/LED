@@ -1,7 +1,4 @@
-
-/* 
-Copy/paste the block below into
-the SequenceL interpreter to test:
+/* Test with SequenceL interpreter:
 
 pp(c1)
 pp(c2)
@@ -11,7 +8,7 @@ pp(c5)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../src/led_lib.sl" as *;
 
 f(t) := 
 		setCompr(AUX_4_AGGR_(t));
@@ -37,10 +34,10 @@ c5 :=
 /* AUXILIARY FUNCTIONS */
 
 AUX_1_AGGR_(t) := 
-		solSet(iv(t, starOp(nu("2"), t)));
+		setMemSol(iv(t, starOp(nu("2"), t)));
 
 AUX_2_AGGR_(t, x) := 
-		solEqs(tu([exp(x, nu("2")), exp(x, nu("3"))]));
+		eqsSol(tu([exp(x, nu("2")), exp(x, nu("3"))]));
 
 AUX_3_DEEP_(t)[i1_, i2_] := 
 	let
@@ -50,7 +47,7 @@ AUX_3_DEEP_(t)[i1_, i2_] :=
 		workaround2_ := AUX_2_AGGR_(t, x);
 		b2_ := workaround2_[i2_];
 	in
-		unnBinds(b1_, b2_);
+		unnBindings(b1_, b2_);
 
 AUX_3_AGGR_(t) := 
 		join(AUX_3_DEEP_(t));
@@ -65,7 +62,7 @@ AUX_4_AGGR_(t)[i_] :=
 		tu([x, y, z]);
 
 AUX_5_AGGR_(x) := 
-		solSet(se([exp(x, nu("2"))]));
+		setMemSol(se([exp(x, nu("2"))]));
 
 AUX_6_AGGR_(x)[i_] := 
 	let
@@ -75,7 +72,7 @@ AUX_6_AGGR_(x)[i_] :=
 		starOp(x, y);
 
 AUX_7_AGGR_ := 
-		solSet(iv(nu("1"), nu("2")));
+		setMemSol(iv(nu("1"), nu("2")));
 
 AUX_8_AGGR_[i_] := 
 	let
@@ -85,7 +82,7 @@ AUX_8_AGGR_[i_] :=
 		aggrSum(AUX_6_AGGR_(x));
 
 AUX_9_AGGR_ := 
-		solSet(iv(nu("1"), unaryMinus(nu("1"))));
+		setMemSol(iv(nu("1"), unaryMinus(nu("1"))));
 
 AUX_10_AGGR_[i_] := 
 	let
@@ -95,10 +92,10 @@ AUX_10_AGGR_[i_] :=
 		exp(x, x);
 
 AUX_11_AGGR_ := 
-		solSet(iv(unaryMinus(nu("2")), nu("2")));
+		setMemSol(iv(unaryMinus(nu("2")), nu("2")));
 
 AUX_12_AGGR_(x) := 
-		solGround(eq(md(x, nu("2")), nu("1")));
+		groundSol(eq(md(x, nu("2")), nu("1")));
 
 AUX_13_DEEP_[i1_, i2_] := 
 	let
@@ -108,7 +105,7 @@ AUX_13_DEEP_[i1_, i2_] :=
 		workaround2_ := AUX_12_AGGR_(x);
 		b2_ := workaround2_[i2_];
 	in
-		unnBinds(b1_, b2_);
+		unnBindings(b1_, b2_);
 
 AUX_13_AGGR_ := 
 		join(AUX_13_DEEP_);
@@ -121,13 +118,13 @@ AUX_14_AGGR_[i_] :=
 		se([pipesOp(x)]);
 
 AUX_15_AGGR_(s, t) := 
-		solEq(s);
+		eqSol(s);
 
 AUX_16_AGGR_(s, t) := 
-		solEq(t);
+		eqSol(t);
 
 AUX_17_AGGR_(s, t) := 
-		solDisj(AUX_15_AGGR_(s, t), AUX_16_AGGR_(s, t));
+		unnSols(AUX_15_AGGR_(s, t), AUX_16_AGGR_(s, t));
 
 AUX_18_AGGR_(s, t)[i_] := 
 	let
