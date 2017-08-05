@@ -19,20 +19,21 @@ TEX_BOTTOM = '\n' '\\end{document}' '\n'
 
 IF_CLAUSES = {'termIfBoolTerm', 'termOw'}
 QUANT_OPS = {'exist', 'univ'}
-AGGR_OPS = {
-    'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'
-}
+AGGR_OPS = {'setCompr', 'aggrUnn', 'aggrNrsec', 'aggrSum', 'aggrProd'}
 OVERLOADED_OPS = {'pipesOp', 'plusOp', 'starOp'}
 BOOL_OPS = {
-    'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq', 'greaterEq'
+    'impl', 'disj', 'conj', 'neg', 'eq', 'uneq', 'less', 'greater', 'lessEq',
+    'greaterEq'
 }
 AR_OPS = {'unaryMinus', 'binaryMinus', 'div', 'md', 'exp', 'flr', 'clng'}
 TUPLE_LABELS = {'tpl', 'tuIn', 'tuSl'}
 SET_LABELS = {
-    'powSet', 'setEmpty', 'setNonempty', 'iv', 'unn', 'diff', 'nrsec', 'sbset', 'setMem', 'symsInSet'
+    'powSet', 'setEmpty', 'setNonempty', 'iv', 'unn', 'diff', 'nrsec', 'sbset',
+    'setMem', 'symsInSet'
 }
 CLS_CMDS = (
-    DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
+    DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS |
+    AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
 ################################################################################
@@ -42,7 +43,7 @@ def weave_top(T) -> str:
     st = weave_recur(T)
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
 
-def change_label(T):
+def change_label(T): # todo what is this?
     if isinstance(T, str):
         return T
     else:
@@ -80,7 +81,7 @@ def weave_recur(T) -> str:
 
 def weave_fun_expr(T) -> str:
     args = ()
-    if len(T) > 2:
+    if isConstFunExpr(T):
         args = T[2][1:]
     return weave_call(T[1], args)
 

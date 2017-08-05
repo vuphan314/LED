@@ -1,7 +1,6 @@
-\LoadClass[11pt]{extarticle}
-% 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
+\LoadClass[14pt]{extarticle} % 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
 
-\usepackage[hmargin=0.5in]{geometry}
+\usepackage[scale=.9]{geometry}
 \usepackage[yyyymmdd]{datetime}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -46,12 +45,11 @@
 \newcommand{\starOp}[2]{\infixPar{#1}{#2}{\times}}
 
 % BOOL_OPS
-\newcommand{\equivLED}[2]
-  {\infixPar{#1}{#2}{\Leftrightarrow}}
+\newcommand{\equivLED}[2]{\infixPar{#1}{#2}{\Leftrightarrow}}
 \newcommand{\impl}[2]{\infixPar{#1}{#2}{\Rightarrow}}
 \newcommand{\disj}[2]{\infixPar{#1}{#2}{\vee}}
 \newcommand{\conj}[2]{\infixPar{#1}{#2}{\wedge}}
-% builtin \neg
+% use default: \neg
 \newcommand{\eq}[2]{\infixPar{#1}{#2}{=}}
 \newcommand{\uneq}[2]{\infixPar{#1}{#2}{\ne}}
 \newcommand{\less}[2]{\infixPar{#1}{#2}{<}}
