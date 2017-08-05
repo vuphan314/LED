@@ -480,7 +480,7 @@ def addEaselParams(T):
     elif T[0] == FORM_FUN_EXPR:
         params = getEaselParamsFromLexeme(T[1])
         if params != ():
-            syms = getIdsTuple('id', params)
+            syms = getIdsTuple(ID, params)
             if len(T) == 2: # constant
                 syms = (SYMS,) + syms
                 T += syms,
@@ -499,7 +499,7 @@ def getIdsTree(label1: str, label2: str, sts: tuple):
 def getIdsTuple(label: str, sts: tuple) -> tuple:
     T = ()
     for st in sts:
-        t = 'id', st
+        t = ID, st
         t = label, t
         T += t,
     return T
@@ -775,7 +775,7 @@ def addOtherwiseClauses(T):
     elif T[0] == 'condTerms':
         if T[-1][0] == 'termIfBoolTerm': # != 'termOw'
             t = 'valNull'
-            t = 'id', t
+            t = ID, t
             t = ACT_FUN_EXPR, t
             t = 'termOw', t
             T += t,

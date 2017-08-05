@@ -83,5 +83,6 @@ def unionDicts(ds: Tuple[Dict]) -> dict:
         D.update(d)
     return D
 
+ID = 'id'
 LEXEMES_DOUBLY_QUOTED = {'numl': 'nu', 'atom': 'at'}
 LEXEMES = unionDicts((LEXEMES_DOUBLY_QUOTED, {'string': 'st', 'truth': 'tr'}))
