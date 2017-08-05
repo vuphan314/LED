@@ -1,4 +1,4 @@
-\LoadClass[14pt]{extarticle} % 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
+\LoadClass[12pt]{extarticle} % 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
 
 \usepackage[scale=.9]{geometry}
 \usepackage[yyyymmdd]{datetime}
@@ -8,6 +8,7 @@
 \usepackage{blindtext}
 
 \setlength{\parindent}{0pt}
+\setlength{\parskip}{.2in}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
