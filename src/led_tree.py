@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """Define labels appearing in an LED parsetree."""
 
 ################################################################################

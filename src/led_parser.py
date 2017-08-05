@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """Copyright (c) 2014, Evgenii Balai
 All rights reserved.
 
@@ -31,6 +33,8 @@ either expressed or implied, of the FreeBSD Project."""
 from os import path
 import re
 import sys
+
+sys.path.append('..')
 
 from debugtools.debug_tool import *
 from genparser.src.astgen.parsing import lexer, parser
@@ -185,4 +189,5 @@ def main():
     syntax_dict = parse_file(led_path, verbose=True)
 
 if __name__ == '__main__':
+    pass
     main()
