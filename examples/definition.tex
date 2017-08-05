@@ -1,0 +1,111 @@
+\documentclass{../src/led_doc}
+\begin{document}
+
+\begin{ledDef}
+\funDefNoWhere{a1}{0}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{a2}{x}{\eq{x}{0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{a3}{y}{\conj{\eq{x}{0}}{\eq{y}{x}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{f1 \parentheses{x}}{
+\begin{cases}
+\termIfBoolTerm{1}{\greater{x}{0}}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{f2 \parentheses{x}}{
+\begin{cases}
+\termIfBoolTerm{1}{\greater{x}{0}}
+\termIfBoolTerm{0}{\eq{x}{0}}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{f3 \parentheses{x}}{
+\begin{cases}
+\termIfBoolTerm{1}{\greater{x}{0}}
+\termIfBoolTerm{0}{\eq{x}{0}}
+\termOw{\unaryMinus{1}}
+\end{cases}
+}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c1}{f1 \parentheses{1}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c2}{f2 \parentheses{0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c3}{f3 \parentheses{\unaryMinus{1}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefWhere{f \parentheses{x, y}}{
+\begin{cases}
+\termIfBoolTerm{z1}{\greater{x}{y}}
+\termIfBoolTerm{z2}{\eq{x}{y}}
+\termOw{z3}
+\end{cases}
+}{\conj{\conj{\eq{z1}{\binaryMinus{x}{y}}}{\eq{z2}{z1}}}{\eq{z3}{z2}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{d1}{f \parentheses{1, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{d2}{f \parentheses{0, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{d3}{f \parentheses{\unaryMinus{1}, 0}}
+\end{ledDef}
+
+\begin{ledDef}
+\relDefWhere{r \parentheses{x, y, z}}{\eq{t}{0}}{\eq{t}{\starOp{\starOp{x}{y}}{z}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{e}{r \parentheses{\unaryMinus{1}, 0, 1}}
+\end{ledDef}
+
+\begin{ledCmnt}
+test:
+\begin{verbatim}
+cmd:>pp(a1)
+"0"
+cmd:>pp(a2)
+"0"
+cmd:>pp(a3)
+"0"
+cmd:>pp(c1)
+"1"
+cmd:>pp(c2)
+"0"
+cmd:>pp(c3)
+"-1"
+cmd:>pp(d1)
+"1"
+cmd:>pp(d2)
+"0"
+cmd:>pp(d3)
+"-1"
+cmd:>pp(e)
+"true"
+\end{verbatim}
+\end{ledCmnt}
+
+\end{document}
