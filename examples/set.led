@@ -7,7 +7,7 @@
 /$ c7 := Pow({1, 2}) $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(c1)
 "true"
 cmd:>pp(c2)
@@ -22,3 +22,4 @@ cmd:>pp(c6)
 "{(2, `a), (1, `a)}"
 cmd:>pp(c7)
 "{{}, {2}, {1}, {1, 2}}"
+\end{verbatim}

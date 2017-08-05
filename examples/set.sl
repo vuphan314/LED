@@ -1,7 +1,4 @@
-
-/* 
-Copy/paste the block below into
-the SequenceL interpreter to test:
+/* Test with SequenceL interpreter:
 
 pp(c1)
 pp(c2)
@@ -13,7 +10,7 @@ pp(c7)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../src/led_lib.sl" as *;
 
 c1 := 
 		setMem(plusOp(nu("1"), nu("1")), iv(div(nu("4"), nu("2")), nu("3")));
