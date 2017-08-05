@@ -1,0 +1,17 @@
+\documentclass{../src/led_doc}
+\begin{document}
+
+\begin{ledDef}
+\funDefNoWhere{c}{\equivLED{\impl{\disj{\conj{\textKeyword{true}}{\textKeyword{false}}}{\neg{\eq{1}{\div{2}{2}}}}}{\textKeyword{false}}}{\uneq{`a}{\setEmpty}}}
+\end{ledDef}
+
+\begin{ledCmnt}
+test:
+
+\begin{verbatim}
+cmd:>pp(c)
+"true"
+\end{verbatim}
+\end{ledCmnt}
+
+\end{document}
