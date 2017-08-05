@@ -58,6 +58,7 @@ LIB_OPS = (
 
 FORM_FUN_EXPR = 'formFunExpr'
 ACT_FUN_EXPR = 'actFunExpr'
+FUN_EXPRS = {FORM_FUN_EXPR, ACT_FUN_EXPR}
 
 def isConstDef(led_def) -> bool:
     form_fun_expr = led_def[1]
@@ -71,6 +72,7 @@ def isConstFunExpr(fun_expr) -> bool:
 
 SYMS = 'syms'
 TERMS = 'terms'
+MANY_LABELS = {TERMS, SYMS}
 
 ################################################################################
 """lexeme"""
