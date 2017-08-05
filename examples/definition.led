@@ -27,7 +27,7 @@ $/
 /$ e := r(-1, 0, 1) $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(a1)
 "0"
 cmd:>pp(a2)
@@ -48,3 +48,4 @@ cmd:>pp(d3)
 "-1"
 cmd:>pp(e)
 "true"
+\end{verbatim}
