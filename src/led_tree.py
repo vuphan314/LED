@@ -56,6 +56,7 @@ LIB_OPS = (
 ################################################################################
 """function expression"""
 
+FORM_FUN_EXPR = 'formFunExpr'
 ACT_FUN_EXPR = 'actFunExpr'
 
 def isConstDef(led_def) -> bool:

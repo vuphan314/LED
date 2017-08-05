@@ -35,7 +35,7 @@ CLS_CMDS = (
     DEF_LABELS | IF_CLAUSES | QUANT_OPS | AGGR_OPS | OVERLOADED_OPS | BOOL_OPS | AR_OPS | TUPLE_LABELS | SET_LABELS
 )
 
-FUN_EXPRS = {'formFunExpr', ACT_FUN_EXPR}
+FUN_EXPRS = {FORM_FUN_EXPR, ACT_FUN_EXPR}
 MANY_LABELS = {TERMS, 'syms'}
 
 ################################################################################
