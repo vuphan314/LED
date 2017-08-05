@@ -4,6 +4,7 @@ input_base=$1 # dir `examples/`: tab-autocompletion appends `.`
 examples_path=../examples # relative to dir `src/`
 base_path=$examples_path/$input_base
 led_path=${base_path}led
+sl_path=${base_path}sl
 tex_path=${base_path}tex
 out_path=$examples_path
 pdf_path=$out_path/${base_path}pdf
@@ -11,5 +12,7 @@ pdf_path=$out_path/${base_path}pdf
 cd ../src/
 clear
 python3 led_engine.py $led_path -f
+atom $led_path $sl_path $tex_path
 latexmk -pdf -synctex=1 -outdir=$out_path $tex_path
+evince $pdf_path &
 cd $examples_path

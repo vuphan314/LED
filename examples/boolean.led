@@ -2,5 +2,7 @@
 
 test:
 
+\begin{verbatim}
 cmd:>pp(c)
 "true"
+\end{verbatim}
