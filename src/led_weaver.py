@@ -38,9 +38,14 @@ CLS_CMDS = (
 
 ################################################################################
 
-def weave_top(T) -> str:
+def weave_top(prog) -> str:
     # T = change_label(T)
-    st = weave_recur(T)
+    st = ''
+    for prog_el in prog[1:]:
+        if is_led_def(prog_el):
+            st += get_env('ledDef', (prog_el,))
+        else:
+            st += get_env(CMNT_LABEL, prog_el[1:])
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
 
 def change_label(T): # todo what is this?
@@ -70,10 +75,6 @@ def weave_recur(T) -> str:
         return get_cmd(T[0], T[1:])
     elif T[0] == 'condTerms':
         return get_env('cases', T[1:])
-    elif T[0] in DEF_LABELS:
-        return get_env('ledDef', T[1:])
-    elif T[0] == CMNT_LABEL:
-        return get_env(CMNT_LABEL, T[1:])
     else:
         return recur_str(weave_recur, T)
 
