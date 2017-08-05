@@ -1,0 +1,52 @@
+\documentclass{../src/led_doc}
+\begin{document}
+
+\begin{ledDef}
+\funDefNoWhere{c1}{\setMem{\plusOp{1}{1}}{\iv{\div{4}{2}}{3}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c2}{\sbset{\setNonempty{1, \starOp{0.(3..)}{3}}}{\setNonempty{1}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c3}{\unn{\setEmpty}{\setNonempty{2}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c4}{\nrsec{\setNonempty{2}}{\setNonempty{2, 3}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c5}{\diff{\setNonempty{4}}{\setNonempty{2, 4}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c6}{\starOp{\setNonempty{1, 2}}{\setNonempty{`a}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c7}{\powSet{\setNonempty{1, 2}}}
+\end{ledDef}
+
+\begin{ledCmnt}
+test:
+\begin{verbatim}
+cmd:>pp(c1)
+"true"
+cmd:>pp(c2)
+"true"
+cmd:>pp(c3)
+"{2}"
+cmd:>pp(c4)
+"{2}"
+cmd:>pp(c5)
+"{}"
+cmd:>pp(c6)
+"{(2, `a), (1, `a)}"
+cmd:>pp(c7)
+"{{}, {2}, {1}, {1, 2}}"
+\end{verbatim}
+\end{ledCmnt}
+
+\end{document}
