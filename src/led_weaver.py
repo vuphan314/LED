@@ -44,7 +44,7 @@ def weave_top(prog) -> str:
         if is_led_def(prog_el):
             st += get_env('ledDef', (prog_el,))
         elif is_game_flag(prog_el):
-            st += r' \textbf{isGame} '
+            st += r'\textbf{ledGame}'
         else:
             st += get_env(CMNT_LABEL, prog_el[1:])
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
