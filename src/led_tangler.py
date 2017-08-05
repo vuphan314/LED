@@ -468,7 +468,7 @@ def addEaselParams(T):
         id = T[1]
         params = getEaselParamsFromLexeme(id)
         if params != ():
-            terms = getIdsTree('terms', ACT_FUN_EXPR, params)
+            terms = getIdsTree(TERMS, ACT_FUN_EXPR, params)
             T = ACT_FUN_EXPR, id, terms
         return T
     elif T[0] == 'constDef': # todo 'funDefWhere', 'relDefWhere'
