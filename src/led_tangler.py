@@ -477,17 +477,6 @@ def addEaselParams(T):
             terms += getIdsTuple(ACT_FUN_EXPR, params)
             T = T[:2] + (terms,)
             return recurTree(addEaselParams, T)
-    elif T[0] == 'constDef': # todo 'funDefWhere', 'relDefWhere'
-        root = T[0]
-        head = addEaselParams(T[1])
-        if head[0] == 'formFunExpr':
-            root = funDef_
-        expr = addEaselParams(T[2])
-        T2 = root, head, expr
-        if len(T) > 3:
-            whereCl = addEaselParams(T[3])
-            T2 += whereCl,
-        return T2
     elif T[0] == 'formFunExpr':
         params = getEaselParamsFromLexeme(T[1])
         if params != ():
