@@ -1,8 +1,8 @@
-\documentclass{led_doc}
+\documentclass{../src/led_doc}
 \begin{document}
 
 \begin{ledCmnt}
-Currently, all infix operands are parenthesized:
+Currently, all infix operands are parenthesized in the generated \TeX{} code:
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -10,10 +10,16 @@ Currently, all infix operands are parenthesized:
 \end{ledDef}
 
 \begin{ledCmnt}
-Otherwise:
+Otherwise, this error would appear in the \TeX{} code:
 $$ zero := 0 \times 1 + 2 $$
 
 (Automatic removal of unnecessary parentheses is nontrivial.)
+
+test:
+\begin{verbatim}
+cmd:>pp(zero)
+"0"
+\end{verbatim}
 \end{ledCmnt}
 
 \end{document}

@@ -1,9 +1,15 @@
-Currently, all infix operands are parenthesized:
+Currently, all infix operands are parenthesized in the generated \TeX{} code:
 /$
 zero := 0 * (1 + 2)
 $/
 
-Otherwise:
+Otherwise, this error would appear in the \TeX{} code:
 $$ zero := 0 \times 1 + 2 $$
 
 (Automatic removal of unnecessary parentheses is nontrivial.)
+
+test:
+\begin{verbatim}
+cmd:>pp(zero)
+"0"
+\end{verbatim}
