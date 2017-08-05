@@ -1,4 +1,4 @@
-input_base=tmp
+input_base=$1
 # aggregation, boolean, comment, comparison, countingGame, definition, nonstrict, precedence, quantification, set, tictactoe, tmp
 
 examples_path=../examples
