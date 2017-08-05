@@ -1,4 +1,4 @@
-\documentclass{led_doc}
+\documentclass{../src/led_doc}
 \begin{document}
 
 \begin{ledCmnt}
@@ -43,9 +43,9 @@ game. In this program, the variable $S$ will range over states.
 
 Tell the translator to produce a SequenceL file that runs with Easel:
 \end{ledCmnt}
-
+\textbf{ledGame}
 \begin{ledCmnt}
-The following are recognized as constant symmbols in the Easel engvironment
+The following are recognized as constant symmbols in the Easel environment
 \begin{enumerate}
 \item $currentState$ (same type as user-defined $initialState$)
 \item $mouseClicked$ (boolean, true if the left mouse button is clicked in the current frame)
@@ -395,13 +395,9 @@ $moveMade(c)$ means that cell c has been clicked and the player to move may lega
 \begin{ledCmnt}
 \section{Test cases}
 
-This section contains test cases for use with the SequenceL interpreter.
+This section contains test cases for the SequenceL interpreter.
 
 \begin{verbatim}
-============================================================
-TEST: SEQUENCEL INTERPRETER
-============================================================
-
 cmd:>pp(initialState_)
 "{}"
 cmd:>pp(rows)
@@ -444,12 +440,9 @@ cmd:>pp(restartMidY)
 "750"
 cmd:>pp(restartButton)
 "{an Easel image, an Easel image, an Easel image, an Easel image, an Easel image}"
-
-============================================================
-LED engine took: 43 secs.
-============================================================
-
 \end{verbatim}
+
+LED engine took: 20 secs.
 \end{ledCmnt}
 
 \end{document}
