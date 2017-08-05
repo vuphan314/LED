@@ -1,0 +1,34 @@
+\documentclass{../src/led_doc}
+\begin{document}
+
+\begin{ledDef}
+\funDefNoWhere{c1}{\exist{\symsInSet{v}{\setNonempty{1, 2, 3}}}{\setMem{v}{\setNonempty{2, 4, 6}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c2}{\univ{\symsInSet{v}{\setNonempty{1, 3}}}{\conj{\setMem{v}{\iv{\unaryMinus{5}}{5}}}{\eq{\md{v}{2}}{1}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c3}{\exist{\symsInSet{x}{\iv{1}{2}}}{\exist{\symsInSet{y}{\setNonempty{\exist{\symsInSet{z}{\setEmpty}}{\textKeyword{true}}}}}{\conj{\less{x}{1.5}}{y}}}}
+\end{ledDef}
+
+\begin{ledDef}
+\funDefNoWhere{c4}{\univ{\symsInSet{x}{\setEmpty}}{\disj{\greater{x}{0}}{\exist{\symsInSet{y}{\iv{x}{\plusOp{x}{3}}}}{\less{y}{0}}}}}
+\end{ledDef}
+
+\begin{ledCmnt}
+test:
+\begin{verbatim}
+cmd:>pp(c1)
+"true"
+cmd:>pp(c2)
+"true"
+cmd:>pp(c3)
+"false"
+cmd:>pp(c4)
+"true"
+\end{verbatim}
+\end{ledCmnt}
+
+\end{document}
