@@ -1,6 +1,5 @@
-Use keyword *ledGame* to translate LED into
-Easel-ready SequenceL:
-$ ledGame $/
+Use keyword *ledGame* to translate LED into Easel-ready SequenceL:
+/$ ledGame $/
 
 /$ initialState := 0 $/
 
@@ -13,6 +12,7 @@ Display number in *currentState*:
 $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(initialState_)
 "0"
+\end{verbatim}
