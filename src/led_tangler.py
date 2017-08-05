@@ -458,10 +458,6 @@ def setDefedFuncsConsts(prog):
             if isConstDef(prog_el):
                 defedConsts += st,
 
-def isConstDef(led_def):
-    formFunExpr = led_def[1]
-    return len(formFunExpr) == 2 # no: ('terms',...)
-
 ################################################################################
 """Easel."""
 

@@ -7,6 +7,13 @@ from typing import Dict, Tuple
 ################################################################################
 """miscellaneous"""
 
+def isConstDef(led_def) -> bool:
+    form_fun_expr = led_def[1]
+    return isConstFunExpr(form_fun_expr)
+
+def isConstFunExpr(fun_expr) -> bool:
+    return len(fun_expr) == 2 # no: ('terms',...)
+
 def unionDicts(ds: Tuple[Dict]) -> dict:
     D = {}
     for d in ds:
