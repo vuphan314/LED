@@ -3,10 +3,11 @@
 /$ c3 := true <=> false V false & 0/0 = 0 => 0/0 = 0 $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(c1)
 "false"
 cmd:>pp(c2)
 "true"
 cmd:>pp(c3)
 "true"
+\end{verbatim}
