@@ -1,7 +1,4 @@
-
-/* 
-Copy/paste the block below into
-the SequenceL interpreter to test:
+/* Test with SequenceL interpreter:
 
 pp(c0)
 pp(c1)
@@ -17,7 +14,7 @@ pp(c10)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../src/led_lib.sl" as *;
 
 c0 := 
 		uneq(nu("3"), nu("5"));

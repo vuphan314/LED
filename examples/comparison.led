@@ -11,7 +11,7 @@
 /$ c10 := true /= {} $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(c0)
 "true"
 cmd:>pp(c1)
@@ -34,3 +34,4 @@ cmd:>pp(c9)
 "true"
 cmd:>pp(c10)
 "true"
+\end{verbatim}
