@@ -464,13 +464,19 @@ def setDefedFuncsConsts(prog):
 def addEaselParams(T):
     if isinstance(T, str):
         return T
-    elif T[0] == ACT_FUN_EXPR: # todo nullary ACT_FUN_EXPR
+    elif T[0] == ACT_FUN_EXPR:
         id = T[1]
         params = getEaselParamsFromLexeme(id)
-        if params != ():
-            terms = getIdsTree(TERMS, ACT_FUN_EXPR, params)
-            T = ACT_FUN_EXPR, id, terms
-        return T
+        if isConstFunExpr(T):
+            if params != ():
+                terms = getIdsTree(TERMS, ACT_FUN_EXPR, params)
+                T = ACT_FUN_EXPR, id, terms
+            return T
+        else:
+            terms = T[2]
+            terms += getIdsTuple(ACT_FUN_EXPR, params)
+            T = T[:2] + (terms,)
+            return recurTree(addEaselParams, T)
     elif T[0] == 'constDef': # todo 'funDefWhere', 'relDefWhere'
         root = T[0]
         head = addEaselParams(T[1])
@@ -482,12 +488,6 @@ def addEaselParams(T):
             whereCl = addEaselParams(T[3])
             T2 += whereCl,
         return T2
-    elif T[0] == ACT_FUN_EXPR: # nonconst act fun expr
-        params = getEaselParamsFromLexeme(T[1])
-        terms = T[2]
-        terms += getIdsTuple(ACT_FUN_EXPR, params)
-        T = T[:2] + (terms,)
-        return recurTree(addEaselParams, T)
     elif T[0] == 'formFunExpr':
         params = getEaselParamsFromLexeme(T[1])
         if params != ():
