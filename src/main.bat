@@ -3,7 +3,7 @@ goto starting
 :looping
   set fold=..\examples\
   set fil=tictactoe
-  set fils=aggregation, boolean, comparison, countingGame, definition, nonstrict, quantification, set, tictactoe, tmp, tmpGame
+  set fils=aggregation, boolean, comment, comparison, countingGame, definition, nonstrict, precedence, quantification, set, tictactoe, tmp
   for %%i in (%fil%) do (
     set base=%fold%%%~ni
     set led=!base!.led
