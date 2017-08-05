@@ -268,13 +268,9 @@ $/
 
 \section{Test cases}
 
-This section contains test cases for use with the SequenceL interpreter.
+This section contains test cases for the SequenceL interpreter.
 
 \begin{verbatim}
-============================================================
-TEST: SEQUENCEL INTERPRETER
-============================================================
-
 cmd:>pp(initialState_)
 "{}"
 cmd:>pp(rows)
@@ -317,9 +313,6 @@ cmd:>pp(restartMidY)
 "750"
 cmd:>pp(restartButton)
 "{an Easel image, an Easel image, an Easel image, an Easel image, an Easel image}"
-
-============================================================
-LED engine took: 43 secs.
-============================================================
-
 \end{verbatim}
+
+LED engine took: 43 secs.
