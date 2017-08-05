@@ -4,7 +4,7 @@
 /$ c4 := all x in {}. (x > 0 V some y in {x..x+3}. y < 0) $/
 
 test:
-
+\begin{verbatim}
 cmd:>pp(c1)
 "true"
 cmd:>pp(c2)
@@ -13,3 +13,4 @@ cmd:>pp(c3)
 "false"
 cmd:>pp(c4)
 "true"
+\end{verbatim}
