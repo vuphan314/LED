@@ -998,7 +998,7 @@ def printTest() -> str:
 ################################################################################
 """Check whether the LED program is an Easel game.
 
-For each keyword #isGame found in the LED program:
+For each keyword `ledGame` found in the LED program:
 - set the Python global variable isGame to True
 - delete that keyword from the parsetree
 """

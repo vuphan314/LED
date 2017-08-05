@@ -1,6 +1,6 @@
-Use keyword *#isGame* to translate LED into
+Use keyword *ledGame* to translate LED into
 Easel-ready SequenceL:
-$ #isGame $/
+$ ledGame $/
 
 /$ initialState := 0 $/
 
