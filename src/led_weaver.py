@@ -11,7 +11,7 @@ from led_tree import *
 ################################################################################
 
 TEX_TOP = (
-    '\\documentclass{led_doc}' '\n'
+    '\\documentclass{../src/led_doc}' '\n'
     '\\begin{document}' '\n'
 )
 TEX_BOTTOM = '\n' '\\end{document}' '\n'
@@ -81,7 +81,7 @@ def weave_recur(T) -> str:
 
 def weave_fun_expr(T) -> str:
     args = ()
-    if isConstFunExpr(T):
+    if not isConstFunExpr(T):
         args = T[2][1:]
     return weave_call(T[1], args)
 
