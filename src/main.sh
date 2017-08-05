@@ -10,7 +10,7 @@ pdf_path=$out_path/$base_path.pdf
 clear
 # python3 led_parser.py $led_path
 python3 led_engine.py $led_path -f
-latexmk -pdf -outdir=$out_path $tex_path
+# latexmk -pdf -outdir=$out_path $tex_path
 
 # less $tex_path
 # evince $pdf_path &
