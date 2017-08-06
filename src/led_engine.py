@@ -7,14 +7,14 @@ Convert an LED program into a semantically equivalent SL program.
 
 ################################################################################
 
+import sys
+sys.path.append('..')
+from debugtools.debug_tool import *
+
 import argparse
 import os
-import sys
 import time
 
-sys.path.append('..')
-
-from debugtools.debug_tool import *
 import led_parser
 import led_tangler
 import led_weaver

@@ -4,6 +4,8 @@
 
 ################################################################################
 
+import sys
+sys.path.append('..')
 from debugtools.debug_tool import *
 
 from led_tree import *

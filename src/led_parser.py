@@ -30,13 +30,12 @@ either expressed or implied, of the FreeBSD Project."""
 
 ################################################################################
 
-from os import path
-import re
 import sys
-
 sys.path.append('..')
-
 from debugtools.debug_tool import *
+
+import re
+
 from genparser.src.astgen.parsing import lexer, parser
 
 from led_tree import *
@@ -185,8 +184,11 @@ class InvalidRegion(ParserError):
 ################################################################################
 
 def main():
-    led_path = sys.argv[1]
-    syntax_dict = parse_file(led_path, verbose=True)
+    if len(sys.argv) == 2:
+        led_path = sys.argv[1]
+        syntax_dict = parse_file(led_path, verbose=True)
+    else:
+        print('must provide exactly 1 arg: <led_path>')
 
 if __name__ == '__main__':
     pass
