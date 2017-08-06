@@ -2,11 +2,15 @@
 
 block_cipher = None
 
+added_files = [
+  ('led_lexicon.gen', ''),
+  ('led_grammar.gen', '')
+]
 
 a = Analysis(['translator.py'],
              pathex=['D:\\git\\LEDtoSLtranslator\\src'],
              binaries=None,
-             datas= [('LedLexicon.txt', ''), ('LedGrammar.txt', '')],
+             datas= added_files,
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
