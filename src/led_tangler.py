@@ -99,12 +99,12 @@ class LedDatum:
     def aDefFuncReadyList(self) -> str:
         ind = 'i_'
 
-        func = self.aFormFunExpr
+        fun_name = self.aFormFunExpr
         letCls = self.aGetAggrLetClauses(ind)
         inCl = self.aTerm
 
         st = defRecur(
-            self, func, (), inCl, letCls=letCls, inds=(ind,), moreSpace=True
+            self, fun_name, (), inCl, letCls=letCls, inds=(ind,), moreSpace=True
         )
         return st
 
