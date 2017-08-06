@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['led_engine.py'],
-             pathex=['D:\\repos\\led\\src'],
+             pathex=['/home/vu/repos/led/src'],
              binaries=[],
              datas=[],
              hiddenimports=[],
