@@ -466,41 +466,42 @@ def addEaselParams(T):
     if isinstance(T, str):
         return T
     elif T[0] == ACT_FUN_EXPR:
-        fun_name = T[1]
-        params = getEaselParamsFromLexeme(fun_name)
-        params = getLabeledTuple(ID, params)
-        params = getLabeledTuple(ACT_FUN_EXPR, params)
+        id = T[1]
+        params = getEaselParamsFromLexeme(id)
+        params = getIdsTuple(ID, params)
         if isConstFunExpr(T):
             if params != ():
-                terms = getLabeledTree(TERMS, params)
-                T = ACT_FUN_EXPR, fun_name, terms
+                terms = getIdsTree(TERMS, ACT_FUN_EXPR, params)
+                T = ACT_FUN_EXPR, id, terms
             return T
         else:
             terms = T[2]
-            terms += params
+            terms += getIdsTuple(ACT_FUN_EXPR, params)
             T = T[:2] + (terms,)
             return recurTree(addEaselParams, T)
     elif T[0] == FORM_FUN_EXPR:
-        fun_name = T[1]
-        params = getEaselParamsFromLexeme(fun_name)
-        params = getLabeledTuple(ID, params)
+        params = getEaselParamsFromLexeme(T[1])
         if params != ():
+            syms = getIdsTuple(ID, params)
             if isConstFunExpr(T):
-                syms = getLabeledTree(SYMS, params)
+                syms = (SYMS,) + syms
                 T += syms,
             else:
-                syms = T[2] + params
+                syms = T[2] + syms
                 T = T[:2] + (syms,)
         return T
     else:
         return recurTree(addEaselParams, T)
 
-def getLabeledTree(label: str, tup: tuple):
-    return (label,) + tup
+def getIdsTree(label1: str, label2: str, sts: tuple):
+    tu = getIdsTuple(label2, sts)
+    tu = (label1,) + tu
+    return tu
 
-def getLabeledTuple(label: str, tup: tuple) -> tuple:
+def getIdsTuple(label: str, sts: tuple) -> tuple:
     T = ()
-    for t in tup:
+    for st in sts:
+        t = ID, st
         t = label, t
         T += t,
     return T
