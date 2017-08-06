@@ -21,8 +21,8 @@ import led_weaver
 
 ################################################################################
 
-def write_output_files(led_path: str, force: bool):
-    syntax_tree = led_parser.parse_file(led_path, verbose=True)
+def write_output_files(led_path: str, verbose: bool, force: bool):
+    syntax_tree = led_parser.parse_file(led_path, verbose)
     sl_path, tex_path = [
         append_base_path(led_path, ext) for ext in ['.sl', '.tex']
     ]
@@ -56,6 +56,10 @@ class ArgvParser(argparse.ArgumentParser):
         super().__init__()
         self.add_argument('LED_file')
         self.add_argument(
+            '-v', '--verbose', action='store_true',
+            help='print LED parsetree'
+        )
+        self.add_argument(
             '-f', '--force', action='store_true',
             help='OVERWRITE existing .sl and .tex files'
         )
@@ -70,8 +74,9 @@ def main():
     else:
         parsed_argv = argv_parser.parse_args()
         led_path = parsed_argv.LED_file
+        verbose = parsed_argv.verbose
         force = parsed_argv.force
-        write_output_files(led_path, force)
+        write_output_files(led_path, verbose, force)
     time_taken = int(time.time() - time_start)
     print('LED engine took: {} secs.'.format(time_taken))
 

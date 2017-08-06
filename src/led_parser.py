@@ -47,7 +47,7 @@ PRETTY_STR_TAB = ' ' * 2
 
 ################################################################################
 
-def parse_file(led_path: str, verbose=False) -> tuple:
+def parse_file(led_path: str, verbose: bool) -> tuple:
     region_parser = RegionParser(led_path)
     syntax_list = region_parser.get_parsed_elements()
     syntax_list = ['prog'] + syntax_list
@@ -192,5 +192,4 @@ def main():
         print('must provide exactly 1 arg: <led_path>')
 
 if __name__ == '__main__':
-    pass
     main()

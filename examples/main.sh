@@ -11,7 +11,7 @@ pdf_path=$out_path/${base_path}pdf
 
 cd ../src/
 clear
-python3 led_engine.py $led_path -f
+python3 led_engine.py $led_path -f $2 # -v
 # atom $led_path $sl_path $tex_path
 # latexmk -pdf -outdir=$out_path $tex_path # -synctex=1
 # evince $pdf_path &
