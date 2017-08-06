@@ -905,11 +905,9 @@ def isGround(dat: LedDatum, T) -> bool:
 def newDepSymbFound(dat: LedDatum, T) -> bool:
     if isinstance(T, str):
         return False
-    elif T[0] == ACT_FUN_EXPR:
-        if isNewDepSymb(dat, T[1][1]):
-            return True
-        else:
-            return False
+    elif T[0] == ACT_FUN_EXPR and isConstFunExpr(T):
+        st = T[1][1]
+        return isNewDepSymb(dat, st)
     else:
         for t in T[1:]:
             if newDepSymbFound(dat, t):
