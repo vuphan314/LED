@@ -2,15 +2,11 @@
 
 block_cipher = None
 
-added_files = [
-  ('led_lexicon.gen', ''),
-  ('led_grammar.gen', '')
-]
 
 a = Analysis(['led_engine.py'],
-             pathex=['/home/vu/repos/led/src/'],
-             binaries=None,
-             datas= added_files,
+             pathex=['/home/vu/repos/led/src'],
+             binaries=[],
+             datas=[('led_lexicon.gen', ''), ('led_grammar.gen', ''), ('led_lib.sl', '')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -25,8 +21,9 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='translator',
+          name='led',
           debug=False,
           strip=False,
           upx=True,
+          runtime_tmpdir=None,
           console=True )
