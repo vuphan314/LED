@@ -7,58 +7,56 @@
 \author{Qianji Zheng and J. Nelson Rushton, Texas Tech University}
 \maketitle
 
-This is an LED program that defines a simple tic tac toe game to run in the easel game engine.
+This is an LED program that defines a simple tic tac toe game to run in the Easel game engine.
 
-The game begins with an empty gridTic Tac Toe
- and it being $x$'s turn to move. When an empty cell is clicked,
-the player whose turn it occupies that cell and it becomes the other player's turn, until the
-game is over. When the game is over a message is displayed giving the result of the  game.
-The player can press the 'reset' button at any time to restart the game.
+Code is enclosed between begin-code and end-code delimiters (slash-dollar and dollar-slash, respectively), and all other text is documentary.
 
-\section{Data model}
+The game begins with an empty grid and it being x's turn to move. When an empty cell is clicked, the player whose turn it is occupies that cell, and it becomes the other player's turn, until the game is over. When the game is over, a message is displayed giving the result of the  game. The player can press the restart button at any time to restart the game.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data Model}
+
+This section is documentary, since the current implementation is untyped.
 
 A {\em player} is either $x$ or $o$. In this program, the variable $p$ will range over players.
 
 A {\em cell} is an integer in $\{1..9\}$. In this program, the variable $c$ will range over cells.
 
 Cells represent squares on the tic tac toe board as pictured below:
-
 \begin{verbatim}
-
-    1|2|3
-    -----
-    4|5|6
-    -----
-    7|8|9
-
+  1|2|3
+  -----
+  4|5|6
+  -----
+  7|8|9
 \end{verbatim}
 
-A {\em move} is a pair $(p,c)$ where $p$ is a player and $c$ is a cell.
-The move $(p,c)$ represents a move by player $p$ in cell $c$. In this program,
-the variable $m4$ will range over moves.
+A {\em move} is a pair $(p,c)$ where $p$ is a player and $c$ is a cell. The move $(p,c)$ represents a move by player $p$ in cell $c$. In this program, the variable $m$ will range over moves.
 
-A {\em state} is a set of moves, thought of as the set of moves made far in the
-game. In this program, the variable $S$ will range over states.
+A {\em state} is a set of moves, thought of as the set of moves made so far in the game. In this program, the variable $S$ will range over states. $currentState$ is a constant symbol denoting the current state of the game, which could be any state in any game of tic tac toe. (Readers familiar with Gurevich Machines will find this device familiar; others, maybe not so much.)
 
 Tell the translator to produce a SequenceL file that runs with Easel:
 \end{ledCmnt}
-\textbf{ledGame}
+
+\begin{ledDef}
+ledGame
+\end{ledDef}
+
 \begin{ledCmnt}
-The following are recognized as constant symmbols in the Easel environment
+todo new line here
+The following are recognized as constant symbols in the Easel environment:
 \begin{enumerate}
-\item $currentState$ (same type as user-defined $initialState$)
-\item $mouseClicked$ (boolean, true if the left mouse button is clicked in the current frame)
-\item $mouseX$, $mouseY$: integer
+\item $currentState$: same type as user-defined $initialState$
+\item $mouseClicked$: true if the left mouse button is clicked in the current frame, false otherwise
+\item $mouseX$, $mouseY$: integer coordinates of the mouse
 \end{enumerate}
 
-\section{Game rules}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Game Rules}
 
+This section defines the rules of tic tac toe in LED.
 
-This section defines the rules of tic-tac-toe in LED.
-
-Since the state of the game is the set of moves that have been made,
-the beginning state $initialState$ is the empty set.
+Since the state of the game is the set of moves that have been made, the beginning state $initialState$ is the empty set.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -66,8 +64,7 @@ the beginning state $initialState$ is the empty set.
 \end{ledDef}
 
 \begin{ledCmnt}
-Player $p$ {\em occupies} cell $c$ if the move $(p,c)$ is a member of $currentState$.
-Cell $c$ is $occupied$ if it is occupied by $x$ or by $o$.
+Player $p$ $occupies$ cell $c$ if the move $(p,c)$ is a member of $currentState$. Cell $c$ is $occupied$ if it is occupied by $x$ or by $o$.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -87,7 +84,7 @@ A {\em row} is a set of cells that form three in a row either horizontally, vert
 \end{ledDef}
 
 \begin{ledCmnt}
-{\em threeInRow(p)} if player $p$ occupies all of the cells in some row.
+$threeInRow(p)$ if player $p$ occupies all of the cells in some row.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -128,9 +125,7 @@ $playerToMove$ is $x$ if an even number of moves have been made, and $o$ otherwi
 \end{ledDef}
 
 \begin{ledCmnt}
-$legalToMoveIn(c)$ means that it is legal for the player whose
-turn it is to move in cell $c$ in the current state of the game ---
-that is, if the game is not over and the cell is not occupied.
+$legalToMoveIn(c)$ means that it is legal for the player whose turn it is to move in cell $c$ in the current state of the game -- that is, if the game is not over and the cell is not occupied.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -138,7 +133,8 @@ that is, if the game is not over and the cell is not occupied.
 \end{ledDef}
 
 \begin{ledCmnt}
-\section{Video output}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Video Output}
 
 The default color used in this game is $BLACK$.
 \end{ledCmnt}
@@ -164,10 +160,7 @@ The default color used in this game is $BLACK$.
 \end{ledDef}
 
 \begin{ledCmnt}
-The purpose of this section is to define the {\em display} function,
-which specifies the images to display on the screen in each game state.
-The  $gridDisplay$ consists is a set of four line segments that make up the tic
-tac toe playing area.
+TThis section defines the $gridDisplay$ function, which specifies the images to display on the screen in each game state. $gridDisplay$ consists of a set of four line segments that make up the tic tac toe playing area.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -195,9 +188,7 @@ $centerX(c)$ and $centerY(c)$ are the $x$ and $y$ coordinates of the center of c
 \end{ledDef}
 
 \begin{ledCmnt}
-$cellDisplay(c)$ is a display of a text character `x' or an `o' in cell $c$,
-or the empty display, respectively in case cell $c$ is occupied by $x$, occupied
-by $o$, or not occupied in the current game state.
+$cellDisplay(c)$ is a display of a text character `x' or an `o' in cell $c$, or the empty display, respectively in case cell $c$ is occupied by $x$, occupied by $o$, or not occupied in the current game state.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -231,9 +222,7 @@ $cellDisplays$ is the set of all images of $x$'s and $o$'s on the board in the c
 \end{ledDef}
 
 \begin{ledCmnt}
-If the game is not over, $currentPlayerDisplay$ is a text in the upper left hand
-region of the game window indicating the player to move, either ``play x's turn'' or
-``play o's turn'',
+If the game is not over, $currentPlayerDisplay$ is a text in the upper left hand region of the game window indicating the player to move, either ``play x's turn'' or ``play o's turn''.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -246,9 +235,7 @@ region of the game window indicating the player to move, either ``play x's turn'
 \end{ledDef}
 
 \begin{ledCmnt}
-The {\em restart button} consists of a rectangle around a ``restart'' text,
-displayed in the upper right region of the screen. Formally, it is a set of
-four line segments and a text.
+The {\em restart button} consists of a rectangle around a ``restart'' text, displayed in the upper right region of the screen. Formally, it is a set of four line segments and a text.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -300,8 +287,7 @@ four line segments and a text.
 \end{ledDef}
 
 \begin{ledCmnt}
-If the game is over, $gameResultDisplay$ is a display in the upper left region of the
-screen telling the outcome of the game, either ``x won'', "o won", or ``cat got it''
+If the game is over, $gameResultDisplay$ is a display in the upper left region of the screen telling the outcome of the game, either ``x won'', ``o won'', or ``cat got it''.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -315,9 +301,7 @@ screen telling the outcome of the game, either ``x won'', "o won", or ``cat got 
 \end{ledDef}
 
 \begin{ledCmnt}
-The ``display'' is the screen display for the current game state. The grid, cell
-displays, and restart button are always displayed. Additionally, the display includes
-the game results if the game is over, and the player to move if the game is not over.
+The {\em display} is the screen display for the current game state. The grid, cell displays, and restart button are always displayed. Additionally, the display includes the game results if the game is over, and the player to move if the game is not over.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -330,13 +314,12 @@ the game results if the game is over, and the player to move if the game is not 
 \end{ledDef}
 
 \begin{ledCmnt}
-\section{Mouse input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mouse Input}
 
-This section defines $update$, which specifies the program's response to mouse
-input. The variable $pt$ will vary over points.
+This section defines {\em update}, which specifies the program's response to mouse input. The variable $pt$ will vary over points.
 
-$xMin(c)$, $xMax(c)$, $yMin(c)$, and $yMax(c)$ denote the graphical boundaries of
-cell $c$, in the obvious manner.
+$xMin(c)$, $xMax(c)$, $yMin(c)$, and $yMax(c)$ denote the graphical boundaries of cell $c$, in the obvious manner.
 \end{ledCmnt}
 
 \begin{ledDef}
@@ -393,6 +376,7 @@ $moveMade(c)$ means that cell c has been clicked and the player to move may lega
 \end{ledDef}
 
 \begin{ledCmnt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Test cases}
 
 This section contains test cases for the SequenceL interpreter.
