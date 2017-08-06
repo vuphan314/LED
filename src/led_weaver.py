@@ -43,12 +43,12 @@ CLS_CMDS = (
 def weave_top(prog) -> str:
     st = ''
     for prog_el in prog[1:]:
-        if is_led_def(prog_el):
-            st += get_env('ledDef', (prog_el,))
-        elif is_game_flag(prog_el):
-            st += r'\textbf{ledGame}'
-        else:
+        if is_led_cmnt(prog_el):
             st += get_env(CMNT_LABEL, prog_el[1:])
+        elif is_game_flag(prog_el) or is_led_def(prog_el):
+            st += get_env('ledDef', (prog_el,))
+        else:
+            raiseError('WRONG PROGRAM ELEMENT')
     return surround_str(st, TEX_TOP, TEX_BOTTOM)
 
 ################################################################################
