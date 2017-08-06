@@ -12,7 +12,7 @@ from led_tree import *
 """Python global variables."""
 
 defedFuncs = () # defined functions (including constants): ('f1', 'f2',...)
-defedConsts = () # defined constants (to print tests)
+defedConsts = () # defined constants (to write tests)
 
 auxFuncNum = 0
 auxFuncDefs = '' # 'auxFunc1 := 1; auxFunc2 := [2];...'
@@ -916,8 +916,8 @@ def newDepSymbFound(dat: LedDatum, T) -> bool:
                 return True
         return False
 
-def isNewDepSymb(dat: LedDatum, id: str) -> bool:
-    return id not in dat.getSymbs() + defedConsts
+def isNewDepSymb(dat: LedDatum, st: str) -> bool:
+    return st not in dat.getSymbs() + defedConsts
 
 ################################################################################
 """Quantification."""
