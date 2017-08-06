@@ -34,6 +34,7 @@ import sys
 sys.path.append('..')
 from debugtools.debug_tool import *
 
+from os import path
 import re
 
 from genparser.src.astgen.parsing import lexer, parser
