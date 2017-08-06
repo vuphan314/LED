@@ -258,7 +258,6 @@ AUX_8_AGGR_(I, S)[i_] :=
 	let
 		b_ := AUX_7_AGGR_(I, S)[i_];
 		c := b_[1];
-		moveMadeIn := b_[2];
 	in
 		tu([playerToMove(S), c]);
 
@@ -292,7 +291,7 @@ images(S) :=
 sounds: Input * State -> char(2);
 sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 
-/* ################################################## */
+/* ************************************************************************** */
 /* SECTION START */
 
 /* COPY OF led_lib.sl */
@@ -1586,6 +1585,6 @@ expTwoInts(numr, denr, p) :=
     expTwoInts(denr, numr, -p);
 
 /* SECTION END */
-/* ################################################## */
+/* ************************************************************************** */
 
 

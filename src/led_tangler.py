@@ -893,7 +893,7 @@ def tangleAggr(dat: LedDatum, T) -> str:
 
 def updateDepSymbsRecur(dat: LedDatum, T):
     if isinstance(T, tuple):
-        if T[0] == ACT_FUN_EXPR:
+        if T[0] == ACT_FUN_EXPR and isConstFunExpr(T):
             st = T[1][1]
             if isNewDepSymb(dat, st):
                 dat.depSymbs += st,
