@@ -8,6 +8,8 @@ import sys
 sys.path.append('..')
 from debugtools.debug_tool import *
 
+from os import path
+
 from led_tree import *
 
 ################################################################################
@@ -294,21 +296,6 @@ def tangleTop(T: tuple) -> str:
     if isGame:
         st += EASEL_FRAGMENT + getLibsStr()
     return st + '\n'
-
-################################################################################
-"""Appened the LED library to the output SL file."""
-
-LIB_NAME = 'led_lib.sl'
-
-def getLibsStr() -> str:
-    st = ''
-    with open(LIB_NAME) as libFile:
-        stLib = libFile.read()
-        msg = '\n\n{}\n\n'.format(blockComment('COPY OF ' + LIB_NAME))
-        stLib = msg + stLib + '\n'
-        stLib = markStartEnd(stLib) + '\n\n'
-        st += stLib
-    return st
 
 ################################################################################
 
@@ -967,7 +954,8 @@ def tangleLexemes(dat: LedDatum, T) -> str:
 ################################################################################
 """Import and use LED library."""
 
-LIB_PATH = '../src/led_lib.sl'
+LIB_NAME = 'led_lib.sl'
+LIB_PATH = path.join(path.dirname(path.abspath(__file__)), LIB_NAME)
 LIB_AS = ''
 
 def importLib() -> str:
@@ -979,6 +967,19 @@ def importLib() -> str:
 
 def prependLib(st: str) -> str:
     st = LIB_AS + st
+    return st
+
+################################################################################
+"""Appened the LED library to the output SL file."""
+
+def getLibsStr() -> str:
+    st = ''
+    with open(LIB_NAME) as libFile:
+        stLib = libFile.read()
+        msg = '\n\n{}\n\n'.format(blockComment('COPY OF ' + LIB_NAME))
+        stLib = msg + stLib + '\n'
+        stLib = markStartEnd(stLib) + '\n\n'
+        st += stLib
     return st
 
 ################################################################################
