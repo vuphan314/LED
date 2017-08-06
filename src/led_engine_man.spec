@@ -7,8 +7,8 @@ added_files = [
   ('led_grammar.gen', '')
 ]
 
-a = Analysis(['translator.py'],
-             pathex=['D:\\git\\LEDtoSLtranslator\\src'],
+a = Analysis(['led_engine.py'],
+             pathex=['/home/vu/repos/led/src/'],
              binaries=None,
              datas= added_files,
              hiddenimports=[],
