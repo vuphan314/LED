@@ -4,7 +4,7 @@ pp(thisIsLEDSyntax)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 thisIsLEDSyntax := 
 		aggrSum(AUX_2_AGGR_);

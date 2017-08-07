@@ -6,7 +6,7 @@ pp(c3)
 
 (pp: pretty-print) */
 
-import * from "../src/led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 c1 := 
 		(valFalse when not valToTrth(tr(false)) else eq(div(nu("0"), nu("0")), nu("0")));

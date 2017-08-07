@@ -8,7 +8,7 @@ pp(c5)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 f(t) := 
 		setCompr(AUX_4_AGGR_(t));

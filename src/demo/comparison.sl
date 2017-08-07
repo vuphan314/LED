@@ -14,7 +14,7 @@ pp(c10)
 
 (pp: pretty-print) */
 
-import * from "../led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 c0 := 
 		uneq(nu("3"), nu("5"));

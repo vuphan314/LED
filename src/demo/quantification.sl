@@ -7,7 +7,7 @@ pp(c4)
 
 (pp: pretty-print) */
 
-import * from "../src/led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 c1 := 
 		AUX_1_A_;

@@ -46,7 +46,7 @@ sounds(I, S) := ["ding"] when I.iClick.clicked else [];
 /* ************************************************************************** */
 /* SECTION START */
 
-/* COPY OF led_lib.sl */
+/* COPY OF lib.sl */
 
 /* LED library written in SequenceL */
 

@@ -10,7 +10,7 @@ pp(c7)
 
 (pp: pretty-print) */
 
-import * from "../src/led_lib.sl" as *;
+import * from "../lib.sl" as *;
 
 c1 := 
 		setMem(plusOp(nu("1"), nu("1")), iv(div(nu("4"), nu("2")), nu("3")));
