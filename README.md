@@ -12,18 +12,26 @@ LED system translates [literate language LED][linkLED] into:
   - [TeX file][tttTEX]
     - [PDF file][tttPDF]
 
+## BINARY DOWNLOAD
+see [latest release][releases]
+
 ## USAGE
-- download these 3 files to some directory `d/`:
-  - [binary][bin]
-  - [SequenceL library `lib.sl`][libSL]
-  - [TeX library `lib.cls`][libCLS]
+- save these 3 files to some directory `d/`:
+  - [LED binary for your OS][releases]
+  - [LED library for SequenceL: `lib.sl`][libSL]
+  - [LED library for TeX: `lib.cls`][libCLS]
 - create a subdirectory `s/` in `d/`
 - in `s/`, place some LED file `f.led`
   - or save this [demo LED file][aggrLED]
 - open a terminal in `d/` and pass the LED file's path to the binary:
-  ```
-  ./led s/f.led -f
-  ```
+  - Ubuntu:
+    ```
+    ./led s/f.led -f
+    ```
+  - Windows:
+    ```
+    led.exe  s/f.led -f
+    ```
   - WARNING: flag `-f` overwrites `.sl` and `.tex` files in `s/`
 
 ## GIT SUBMODULES
@@ -40,7 +48,8 @@ is developed by Evgenii Balai.
 [tttTEX]:https://github.com/vuphan314/LED/blob/master/src/demo/tictactoe.tex
 [tttPDF]:https://github.com/vuphan314/LED/blob/master/src/demo/tictactoe.pdf
 
-[bin]:https://github.com/vuphan314/led/tree/master/bin
+[releases]:https://github.com/vuphan314/led/releases
+
 [libSL]:https://raw.githubusercontent.com/vuphan314/led/master/src/lib.sl
 [libCLS]:https://raw.githubusercontent.com/vuphan314/led/master/src/lib.cls
 [aggrLED]:https://raw.githubusercontent.com/vuphan314/led/master/src/demo/aggregation.led
