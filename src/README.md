@@ -55,5 +55,5 @@
   Type "help", "copyright", "credits" or "license" for more information.
   >>> import led_parser
   >>> led_parser.parse_file('demo/boolean.led', False)
-('prog', ('funDefNoWhere', ('formFunExpr', ('id', 'c')), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',)))), ('ledCmnt', 'test:\n\\begin{verbatim}\ncmd:>pp(c)\n"true"\n\\end{verbatim}'))
+  ('prog', ('funDefNoWhere', ('formFunExpr', ('id', 'c')), ('equiv', ('impl', ('disj', ('conj', ('truth', 'true'), ('truth', 'false')), ('neg', ('eq', ('numl', '1'), ('div', ('numl', '2'), ('numl', '2'))))), ('truth', 'false')), ('uneq', ('atom', '`a'), ('setEmpty',)))), ('ledCmnt', 'test:\n\\begin{verbatim}\ncmd:>pp(c)\n"true"\n\\end{verbatim}'))
   ```
