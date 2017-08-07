@@ -954,7 +954,7 @@ def tangleLexemes(dat: LedDatum, T) -> str:
 ################################################################################
 """Import and use LED library."""
 
-LIB_NAME = 'led_lib.sl'
+LIB_NAME = 'lib.sl'
 LIB_AS = ''
 
 def importLib() -> str:
