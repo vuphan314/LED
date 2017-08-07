@@ -13,7 +13,7 @@ pp(e)
 
 (pp: pretty-print) */
 
-import * from "../src/led_lib.sl" as *;
+import * from "../led_lib.sl" as *;
 
 a1 := 
 		nu("0");
