@@ -11,7 +11,7 @@ LED system translates [literate language LED][linkLED] into:
   - [SequenceL file][tttSL]
   - [TeX file][tttTEX]
     - [PDF file][tttPDF]
-- [all examples][demo] (input: `.led`, output: `.sl`, `.tex`, `.pdf`)
+- [all examples][demo] (input: `*.led`; output: `*.sl`, `*.tex`, `*.pdf`)
 
 ## BINARY DOWNLOAD
 see [latest release][releases]
