@@ -1,6 +1,8 @@
 function set_paths {
-  base_path=$1 # with trailing `.`
+  base_name=$1 # with trailing `.`
 
+  demo_path=demo/
+  base_path=$demo_path/$base_name
   led_path=${base_path}led
   sl_path=${base_path}sl
   tex_path=${base_path}tex
@@ -10,16 +12,20 @@ function set_paths {
 function process_led_file {
   led_path=$1
 
-  ../led $led_path -f -v
+  echo "Processing $led_path."
+  src_path=..
+  cd $src_path
+  ./led $led_path -f # -v
   # atom $led_path $sl_path $tex_path
-  # latexmk -pdf $tex_path # -synctex=1
+  # cd $demo_path && latexmk -pdf && cd $src_path
   # evince $pdf_path &
+  cd $demo_path
 }
 
 function run_one {
-  base_path=$1
+  base_name=$1
 
-  set_paths $base_path
+  set_paths $base_name
   process_led_file $led_path
 }
 
@@ -28,6 +34,7 @@ function run_all {
   for base_path in ${base_paths[@]}; do
     set_paths $base_path
     process_led_file $led_path
+    echo -e "\n"
   done
 }
 
