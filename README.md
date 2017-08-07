@@ -15,8 +15,8 @@ LED system translates [literate language LED][linkLED] into:
 ## USAGE
 - download these 3 files to some directory `d/`:
   - [binary][bin]
-  - [SequenceL library][libSL]
-  - [TeX library][libCLS]
+  - [SequenceL library `lib.sl`][libSL]
+  - [TeX library `lib.cls`][libCLS]
 - create a subdirectory `s/` in `d/`
 - in `s/`, place some LED file `f.led`
   - or save this [demo LED file][aggrLED]
