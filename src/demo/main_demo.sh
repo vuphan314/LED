@@ -10,7 +10,7 @@ out_path=$demo_path
 pdf_path=$out_path/${base_path}pdf
 
 clear
-./led $led_path -f $2 # -v
+../led $led_path -f $2 # -v
 # atom $led_path $sl_path $tex_path
 # latexmk -pdf -outdir=$out_path $tex_path # -synctex=1
 # evince $pdf_path &
