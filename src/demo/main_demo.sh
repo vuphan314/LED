@@ -1,7 +1,7 @@
 function set_paths {
   base_name=$1 # with trailing `.`
 
-  demo_path=demo/
+  demo_path=demo
   base_path=$demo_path/$base_name
   led_path=${base_path}led
   sl_path=${base_path}sl

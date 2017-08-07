@@ -31,9 +31,8 @@ A {\em move} is a pair $(p,c)$ where $p$ is a player and $c$ is a cell. The move
 
 A {\em state} is a set of moves, thought of as the set of moves made so far in the game. In this program, the variable $S$ will range over states. $currentState$ is a constant symbol denoting the current state of the game, which could be any state in any game of tic tac toe. (Readers familiar with Gurevich Machines will find this device familiar; others, maybe not so much.)
 
-Tell the translator to produce a SequenceL file that runs with Easel:
-/$ ledGame $/
-todo new line here
+Tell the translator to produce a SequenceL file that runs with Easel: /$ ledGame $/
+
 The following are recognized as constant symbols in the Easel environment:
 \begin{enumerate}
 \item $currentState$: same type as user-defined $initialState$
