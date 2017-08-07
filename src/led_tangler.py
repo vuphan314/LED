@@ -955,11 +955,10 @@ def tangleLexemes(dat: LedDatum, T) -> str:
 """Import and use LED library."""
 
 LIB_NAME = 'led_lib.sl'
-LIB_PATH = path.join(path.dirname(path.abspath(__file__)), LIB_NAME)
 LIB_AS = ''
 
 def importLib() -> str:
-    st = 'import * from {} as '.format(addDoubleQuotes(LIB_PATH))
+    st = 'import * from {} as '.format(addDoubleQuotes('../' + LIB_NAME))
     if LIB_AS != '':
         st += LIB_AS + '::'
     st += '*;\n\n'

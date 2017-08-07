@@ -13,7 +13,7 @@ from led_tree import *
 ################################################################################
 
 TEX_TOP = (
-    '\\documentclass{../src/led_doc}' '\n'
+    '\\documentclass{../led_doc}' '\n'
     '\\begin{document}' '\n'
 )
 TEX_BOTTOM = '\n' '\\end{document}' '\n'
