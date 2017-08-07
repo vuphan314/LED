@@ -8,7 +8,7 @@
 - `led_lexicon.gen`
 - `led_grammar.gen`
 
-### DEMOS
+### DEMO
 - Windows Command Prompt:
   ```
   D:\repos\LED\src
