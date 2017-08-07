@@ -11,6 +11,7 @@ LED system translates [literate language LED][linkLED] into:
   - [SequenceL file][tttSL]
   - [TeX file][tttTEX]
     - [PDF file][tttPDF]
+- [all examples][demo] (input: `.led`, output: `.sl`, `.tex`, `.pdf`)
 
 ## BINARY DOWNLOAD
 see [latest release][releases]
@@ -47,6 +48,7 @@ is developed by Evgenii Balai.
 [tttSL]:https://github.com/vuphan314/LED/blob/master/src/demo/tictactoe.sl
 [tttTEX]:https://github.com/vuphan314/LED/blob/master/src/demo/tictactoe.tex
 [tttPDF]:https://github.com/vuphan314/LED/blob/master/src/demo/tictactoe.pdf
+[demo]:https://github.com/vuphan314/led/tree/master/src/demo
 
 [releases]:https://github.com/vuphan314/led/releases
 
