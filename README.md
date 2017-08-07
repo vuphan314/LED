@@ -18,9 +18,9 @@ see [latest release][releases]
 
 ## USAGE
 - save these 3 files to some directory `d/`:
-  - [LED binary for your OS][releases]
-  - [LED library for SequenceL: `lib.sl`][libSL]
-  - [LED library for TeX: `lib.cls`][libCLS]
+  - [LED binary for your OS][releases]: Ubuntu `led` or Windows `led.exe`
+  - [LED library for SequenceL][libSL]: `lib.sl`
+  - [LED library for TeX][libCLS]: `lib.cls`
 - create a subdirectory `s/` in `d/`
 - in `s/`, place some LED file `f.led`
   - or save this [demo LED file][aggrLED]
