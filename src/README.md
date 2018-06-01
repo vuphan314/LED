@@ -11,7 +11,7 @@
 ### DEMO
 - Windows Command Prompt:
   ```
-  D:\repos\LED\src
+  D:\github\led\src
   $ python led_parser.py demo/boolean.led
   ('prog',
     ('funDefNoWhere',
@@ -49,7 +49,7 @@
   ```
 - Python:
   ```
-  D:\repos\LED\src
+  D:\github\led\src
   $ py
   Python 3.5.2 (v3.5.2:4def2a2901a5, Jun 25 2016, 22:18:55) [MSC v.1900 64 bit (AMD64)] on win32
   Type "help", "copyright", "credits" or "license" for more information.
