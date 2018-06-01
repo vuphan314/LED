@@ -1,4 +1,4 @@
-<h6>top</h6>
+<!-- <h6>top</h6> -->
 
 # LED: LANGUAGE OF EFFECTIVE DEFINITIONS
 LED system translates [literate language LED][linkLED] into:
@@ -22,7 +22,7 @@ see [latest release][releases]
   - [LED library for SequenceL][libSL] (`lib.sl`)
   - [LED library for TeX][libCLS] (`lib.cls`)
 - create a subdirectory `s/` in `d/`
-- in `s/`, place some LED file `f.led`
+- in `s/`: place some LED file `f.led`
   - or save this [demo LED file][aggrLED]
 - open a terminal in `d/` and pass the LED file's path to the binary:
   - Ubuntu:
@@ -39,7 +39,7 @@ see [latest release][releases]
 - `src/genparser/`: [generic parser][genparser] by Evgenii Balai
 - `src/pyinstaller/`: [PyInstaller][pyinstaller]
 
-<!----------------------------------------------------------------------------->
+<!-- ####################################################################### -->
 
 [linkLED]:https://docs.google.com/document/d/1xj5VUX6l9NYXQFuT-gVksSMwx5ovuQFkGymcgoZBagc/edit
 [linkSL]:http://texasmulticore.com/wp-content/uploads/2016/07/SequenceL-Language-Reference.pdf
