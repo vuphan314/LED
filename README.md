@@ -36,8 +36,8 @@ see [latest release][releases]
   - WARNING: flag `-f` overwrites `.sl` and `.tex` files in `s/`
 
 ## GIT SUBMODULES
-The [generic parser][genparser] (`src/genparser/`)
-is developed by Evgenii Balai.
+- `src/genparser/`: [generic parser][genparser] by Evgenii Balai
+- `src/pyinstaller/`: [PyInstaller][pyinstaller]
 
 <!----------------------------------------------------------------------------->
 
@@ -57,3 +57,4 @@ is developed by Evgenii Balai.
 [aggrLED]:https://raw.githubusercontent.com/vuphan314/led/master/src/demo/aggregation.led
 
 [genparser]:https://github.com/iensen/genparser
+[pyinstaller]:https://www.pyinstaller.org
