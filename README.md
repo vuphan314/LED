@@ -1,30 +1,28 @@
-<!-- <h6>top</h6> -->
-
-# LED: LANGUAGE OF EFFECTIVE DEFINITIONS
+# LED: Language of Effective Definitions
 LED system translates [literate language LED][linkLED] into:
 - [functional language SequenceL][linkSL]
 - formatting language TeX
 
-## DEMO
-- input: [LED file][tttLED]
-- output:
+## Demo
+- Input: [LED file][tttLED]
+- Output:
   - [SequenceL file][tttSL]
   - [TeX file][tttTEX]
     - [PDF file][tttPDF]
-- [all examples][demo] (input: `*.led`; output: `*.sl`, `*.tex`, `*.pdf`)
+- [All examples][demo] (input: `*.led`; output: `*.sl`, `*.tex`, `*.pdf`)
 
-## BINARY DOWNLOAD
-see [latest release][releases]
+## Binary download
+See [latest release][releases]
 
-## USAGE
-- save these 3 files to some directory `d/`:
+## Usage
+- Save these 3 files to some directory `d/`:
   - [LED binary for your OS][releases] (Ubuntu `led` or Windows `led.exe`)
   - [LED library for SequenceL][libSL] (`lib.sl`)
   - [LED library for TeX][libCLS] (`lib.cls`)
-- create a subdirectory `s/` in `d/`
-- in `s/`: place some LED file `f.led`
+- Create a subdirectory `s/` in `d/`
+- In `s/`: place some LED file `f.led`
   - or save this [demo LED file][aggrLED]
-- open a terminal in `d/` and pass the LED file's path to the binary:
+- Open a terminal in `d/` and pass the LED file's path to the binary:
   - Ubuntu:
     ```
     ./led s/f.led -f
@@ -35,9 +33,9 @@ see [latest release][releases]
     ```
   - WARNING: flag `-f` overwrites `.sl` and `.tex` files in `s/`
 
-## GIT SUBMODULES
+## Git submodules
 - `src/genparser/`: [generic parser][genparser] by Evgenii Balai
-- `src/pyinstaller/`: [PyInstaller][pyinstaller]
+- `src/pyinstaller/`: [Python installer][pyinstaller] by David Cortesi
 
 <!-- ####################################################################### -->
 
