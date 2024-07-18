@@ -6,7 +6,6 @@
 
 import sys
 sys.path.append('..')
-from debugtools.debug_tool import *
 
 from os import path
 
@@ -265,13 +264,16 @@ class LedDatum:
         return st
 
 ################################################################################
+"""Wrap a string in a block comment."""
+def blockComment(text: str) -> str:
+    return f'/* {text} */'
+
 """Top-level function.
 
 Convert an LED parsetree into a string which represents a SL program.
 
 Python pseudotype `Tree` is either type `tuple` or `str`.
 """
-
 def tangleTop(T: tuple) -> str:
     T = setIsGame(T)
     T = addOtherwiseClauses(T)

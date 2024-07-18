@@ -9,7 +9,6 @@ Convert an LED program into a semantically equivalent SL program.
 
 import sys
 sys.path.append('..')
-from debugtools.debug_tool import *
 
 import argparse
 import os

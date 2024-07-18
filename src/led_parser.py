@@ -32,7 +32,6 @@ either expressed or implied, of the FreeBSD Project."""
 
 import sys
 sys.path.append('..')
-from debugtools.debug_tool import *
 
 from os import path
 import re

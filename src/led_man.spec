@@ -4,9 +4,8 @@ block_cipher = None
 
 
 a = Analysis(['led_engine.py'],
-             pathex=['/home/vu/repos/led/src'],
              binaries=[],
-             datas=[('led_lexicon.gen', ''), ('led_grammar.gen', '')],
+             datas=[('led_lexicon.gen', '.'), ('led_grammar.gen', '.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
